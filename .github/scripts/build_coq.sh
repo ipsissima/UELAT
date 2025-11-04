@@ -18,25 +18,19 @@ if [ -f "Coq/Makefile" ]; then
 else
   if [ -f "Coq/_CoqProject" ]; then
     echo "_CoqProject found—generating Makefile and building"
-    pushd Coq > /dev/null
-    coq_makefile -f _CoqProject -o Makefile
-    make 2>&1 | tee "../$LOG"
-    EXIT_CODE=${PIPESTATUS[0]}
-    popd > /dev/null
-    if [ "$EXIT_CODE" -ne 0 ]; then
-      echo "Coq build failed (coq_makefile). See $LOG"
-      exit "$EXIT_CODE"
-    fi
   else
-    echo "No Makefile or _CoqProject: compiling .v files directly"
-    set +e
-    find Coq -name '*.v' -print0 | xargs -0 -n1 -I{} bash -lc 'echo "Compiling {}"; coqc "{}"' 2>&1 | tee "$LOG"
-    EXIT_CODE=${PIPESTATUS[0]}
-    set -e
-    if [ "$EXIT_CODE" -ne 0 ]; then
-      echo "Coq build failed when compiling .v files. See $LOG"
-      exit "$EXIT_CODE"
-    fi
+    echo "No _CoqProject found—generating one from existing .v files"
+    bash tools/gen_coqproject.sh
+  fi
+
+  pushd Coq > /dev/null
+  coq_makefile -f _CoqProject -o Makefile
+  make 2>&1 | tee "../$LOG"
+  EXIT_CODE=${PIPESTATUS[0]}
+  popd > /dev/null
+  if [ "$EXIT_CODE" -ne 0 ]; then
+    echo "Coq build failed (coq_makefile). See $LOG"
+    exit "$EXIT_CODE"
   fi
 fi
 

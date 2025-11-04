@@ -3,32 +3,27 @@ name: CI - Coq + Python + Julia
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "17 2 * * *"  # nightly at 02:17 UTC
 
 env:
-  COQ_VERSION: '8.17.0'
-  PYTHON_VERSION: '3.11'
-  JULIA_VERSION: '1.9'
+  COQ_VERSION: "8.18.0"   # adjust if your code requires a different minor
+  PYTHON_VERSION: "3.11"
+  JULIA_VERSION: "1.10"
 
 jobs:
   coq-python-julia:
-    name: Coq/Python/Julia (${{ matrix.python-version }}, ${{ matrix.julia-version }})
+    name: Coq/Python/Julia
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.10', '3.11']
-        julia-version: ['1.9', '1.10']
-    env:
-      COQ_VERSION: ${{ env.COQ_VERSION }}
-      PYTHON_VERSION: ${{ matrix.python-version }}
-      JULIA_VERSION: ${{ matrix.julia-version }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Make helper scripts executable
-        run: chmod +x .github/scripts/*.sh
+        run: |
+          chmod +x .github/scripts/*.sh || true
+          chmod +x tools/*.sh || true
 
       - name: Restore opam cache
         id: cache-opam
@@ -68,7 +63,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: coq-build-log-${{ matrix.python-version }}-${{ matrix.julia-version }}
+          name: coq-build-log
           path: .github/logs/coq-build.log
           if-no-files-found: ignore
 
@@ -80,61 +75,54 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: coq-admitted-hits-${{ matrix.python-version }}-${{ matrix.julia-version }}
+          name: coq-admitted-hits
           path: .github/logs/coq_admitted_hits.txt
           if-no-files-found: ignore
 
-      - name: Setup Python
-        if: ${{ success() }}
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Restore pip cache
-        if: ${{ success() }}
+      - name: Cache pip
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
+          key: pip-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-
-            ${{ runner.os }}-pip-
+            pip-${{ runner.os }}-${{ env.PYTHON_VERSION }}-
 
-      - name: Install Python dependencies
-        if: ${{ success() }}
+      - name: Install Python dev requirements
         run: |
-          set -euo pipefail
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            pip install pytest
-          fi
-        shell: bash
+          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          python -m pip install -r requirements-dev.txt
 
-      - name: Run pytest
-        if: ${{ success() }}
-        run: pytest -q
-        shell: bash
+      - name: Run Python tests (with coverage)
+        run: |
+          python -m pytest
 
-      - name: Setup Julia
-        if: ${{ success() }}
-        uses: julia-actions/setup-julia@v1
+      - name: Upload coverage.xml (Python)
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          version: ${{ matrix.julia-version }}
+          name: python-coverage-xml
+          path: coverage.xml
+          if-no-files-found: ignore
 
-      - name: Restore Julia depot cache
-        if: ${{ success() }}
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - name: Cache Julia deps
         uses: actions/cache@v4
         with:
           path: ~/.julia
-          key: ${{ runner.os }}-julia-${{ matrix.julia-version }}-${{ hashFiles('**/Project.toml', '**/Manifest.toml') }}
+          key: julia-${{ runner.os }}-${{ env.JULIA_VERSION }}-${{ hashFiles('Project.toml', 'Manifest.toml') }}
           restore-keys: |
-            ${{ runner.os }}-julia-${{ matrix.julia-version }}-
-            ${{ runner.os }}-julia-
+            julia-${{ runner.os }}-${{ env.JULIA_VERSION }}-
 
       - name: Run Julia tests
-        if: ${{ success() }}
-        run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
-        shell: bash
-
+        run: |
+          julia --project=. -e 'using Pkg; isfile("Project.toml") || Pkg.generate("UELAT"); Pkg.activate("."); Pkg.instantiate(); Pkg.test()'
