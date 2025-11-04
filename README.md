@@ -53,6 +53,20 @@ Modular subfolders (`Utils/`, `Examples/`), data files, scripts for numerical ex
 
 ---
 
+## 🔁 Reproducible build
+
+Use a local opam switch pinned to the versions enforced in CI:
+
+```sh
+opam switch create . ocaml-variants.4.14.2+options
+opam install . --deps-only -y
+make -C Coq -j$(nproc)
+```
+
+Continuous integration also runs these builds inside docker-coq images for Coq 8.18 and 8.19 to ensure reproducibility.
+
+---
+
 ## 🧑‍🔬 Next Steps and Roadmap
 
 - Modularize code (move utility functions to `coq/Utils/`, examples to `coq/Examples/`)
