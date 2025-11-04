@@ -1,0 +1,6 @@
+name = "UELAT"
+uuid = "b83e4f30-0154-4039-a555-15f3b250231f"
+version = "0.1.0"
+
+[compat]
+julia = "1.9, 1.10"

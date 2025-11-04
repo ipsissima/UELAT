@@ -3,10 +3,10 @@
 This repository uses GitHub Actions to run Coq proofs and unit tests for Python and Julia.
 The workflow runs on `ubuntu-latest` and performs:
 
-- Coq build (via `.github/scripts/build_coq.sh`). Output goes to `.github/logs/coq-build.log`.
+- Coq build (via `.github/scripts/build_coq.sh`, which respects `Coq/_CoqProject`). Output goes to `.github/logs/coq-build.log`.
 - A check for uses of `Axiom` or `Admitted` (via `.github/scripts/check_coq_no_admitted.sh`). Matches are saved to `.github/logs/coq_admitted_hits.txt`.
-- Python unit tests (via pytest).
-- Julia unit tests (`julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'`).
+- Python unit tests (via `pytest`) that discover tests under `tests/`.
+- Julia unit tests (`julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'`) which leverage the root `Project.toml` and `test/` directory.
 
 ## Run locally
 
@@ -29,8 +29,8 @@ bash .github/scripts/check_coq_no_admitted.sh
 
 Run Python tests:
 ```bash
-python -m pip install -r requirements.txt
-pytest -q
+python -m pip install pytest
+pytest
 ```
 
 Run Julia tests:
