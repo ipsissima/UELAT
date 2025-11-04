@@ -1,3 +1,4 @@
+[![CI](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml/badge.svg)](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml)
 # Certificate-Based Approximation in Sobolev Spaces
 
 This repository hosts the formal Coq development for certificate-driven approximation of functions in Sobolev spaces, as described in the appendices of our manuscript and in our patent-pending system. It implements fully constructive, machine-checkable algorithms for universal embedding and approximation, using local certificates, compatibility checks, and partition-of-unity gluing.
