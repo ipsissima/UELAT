@@ -1,34 +1,46 @@
-# Continuous Integration
+# CI for UELAT
 
-This repository uses a GitHub Actions workflow to exercise the Coq proofs and the accompanying Python and Julia test suites.
+This repository uses GitHub Actions to run Coq proofs and unit tests for Python and Julia.
+The workflow runs on `ubuntu-latest` and performs:
 
-## What runs in CI?
+- Coq build (via `.github/scripts/build_coq.sh`). Output goes to `.github/logs/coq-build.log`.
+- A check for uses of `Axiom` or `Admitted` (via `.github/scripts/check_coq_no_admitted.sh`). Matches are saved to `.github/logs/coq_admitted_hits.txt`.
+- Python unit tests (via pytest).
+- Julia unit tests (`julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'`).
 
-The workflow lives in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) and performs the following steps on Ubuntu:
+## Run locally
 
-1. Install Coq (via [`coq-community/setup-coq`](https://github.com/coq-community/setup-coq)) together with any opam dependencies.
-2. Build all Coq sources by running [`.github/scripts/build_coq.sh`](../.github/scripts/build_coq.sh), capturing the compiler output in `coq-build.log` for later inspection.
-3. Ensure no proof files contain `Admitted` or `Axiom` by running [`.github/scripts/check_coq_no_admitted.sh`](../.github/scripts/check_coq_no_admitted.sh).
-4. Run the Python unit tests with `pytest` for Python 3.10 and 3.11.
-5. Run the Julia test suite via `Pkg.test()` for Julia 1.9 and 1.10.
-6. Cache opam, pip, and Julia package directories to speed up subsequent runs.
-7. Upload `coq-build.log` as a workflow artifact whenever the Coq build fails.
+Make helper scripts executable:
+```bash
+chmod +x .github/scripts/*.sh
+```
 
-## Reproducing locally
-
-To reproduce the checks locally, install the required toolchains and run:
-
-```sh
-# Coq build and admitted check
+Run Coq build:
+```bash
 bash .github/scripts/build_coq.sh
+# logs are written to .github/logs/coq-build.log
+```
+
+Check for Axiom/Admitted:
+```bash
 bash .github/scripts/check_coq_no_admitted.sh
+# matches (if any) are in .github/logs/coq_admitted_hits.txt
+```
 
-# Python tests
-python3 -m pip install -r requirements.txt  # or pip install pytest if no requirements.txt
+Run Python tests:
+```bash
+python -m pip install -r requirements.txt
 pytest -q
+```
 
-# Julia tests
+Run Julia tests:
+```bash
 julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
 ```
 
-Adjust the Python and Julia versions locally to match those declared at the top of the workflow file.
+## Debugging CI failures
+If Coq build fails, download .github/logs/coq-build.log from the workflow artifacts.
+
+If the admitted/axiom check fails, download .github/logs/coq_admitted_hits.txt.
+
+For opam-related failures, ensure you have opam and Coq installed locally; the CI installs Coq via coq-community/setup-coq or opam.

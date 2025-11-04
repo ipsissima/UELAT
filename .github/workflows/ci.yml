@@ -27,6 +27,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Make helper scripts executable
+        run: chmod +x .github/scripts/*.sh
+
       - name: Restore opam cache
         id: cache-opam
         uses: actions/cache@v4
@@ -45,22 +48,41 @@ jobs:
           coq: ${{ env.COQ_VERSION }}
 
       - name: Install opam dependencies
-        if: ${{ hashFiles('**/*.opam') != '' }}
         run: |
           set -euo pipefail
           opam update
-          opam install . --deps-only --yes
+          if ls *.opam >/dev/null 2>&1; then
+            opam install --yes . --deps-only
+          elif [ -f Coq/_CoqProject ]; then
+            opam install --yes coq-platform-minimal
+          else
+            echo "No .opam files or _CoqProject found; skipping opam dependency install."
+          fi
         shell: bash
 
-      - name: Build Coq project
-        id: build_coq
+      - name: Build Coq (run build script)
         run: bash .github/scripts/build_coq.sh
         shell: bash
 
-      - name: Check for Admitted or Axiom
-        if: ${{ success() }}
+      - name: Upload coq-build.log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coq-build-log-${{ matrix.python-version }}-${{ matrix.julia-version }}
+          path: .github/logs/coq-build.log
+          if-no-files-found: ignore
+
+      - name: Check for Axiom/Admitted
         run: bash .github/scripts/check_coq_no_admitted.sh
         shell: bash
+
+      - name: Upload admitted hits on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coq-admitted-hits-${{ matrix.python-version }}-${{ matrix.julia-version }}
+          path: .github/logs/coq_admitted_hits.txt
+          if-no-files-found: ignore
 
       - name: Setup Python
         if: ${{ success() }}
@@ -116,10 +138,3 @@ jobs:
         run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
         shell: bash
 
-      - name: Upload Coq build log
-        if: ${{ always() && steps.build_coq.outcome == 'failure' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: coq-build-log-${{ matrix.python-version }}-${{ matrix.julia-version }}
-          path: coq-build.log
-          if-no-files-found: ignore
