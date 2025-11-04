@@ -126,3 +126,45 @@ jobs:
       - name: Run Julia tests
         run: |
           julia --project=. -e 'using Pkg; isfile("Project.toml") || Pkg.generate("UELAT"); Pkg.activate("."); Pkg.instantiate(); Pkg.test()'
+
+  coq-opam-matrix:
+    name: Coq (opam, pinned)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        coq_image: [ "8.18", "8.19" ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Coq via docker-coq-action
+        uses: coq-community/docker-coq-action@v1
+        with:
+          opam_file: "uelat.opam"
+          coq_version: "${{ matrix.coq_image }}"
+          # Script runs inside container with opam set up
+          custom_script: |
+            set -euxo pipefail
+            opam update -y
+            # Install build deps for this package but not the package itself
+            opam install . --deps-only -y --with-test
+            # Build Coq
+            if [ -f Coq/_CoqProject ] && [ ! -f Coq/Makefile ]; then coq_makefile -f Coq/_CoqProject -o Coq/Makefile; fi
+            make -C Coq -j2
+            # Enforce no Admitted/Axiom
+            bash .github/scripts/no_admitted_axioms.sh Coq
+            # Optional: coqchk all produced .vo (best-effort generic check)
+            find Coq -name "*.vo" -print0 | xargs -0 -I{} true  # placeholder
+            # If you want coqchk per module once namespaces stabilize, replace the line above with:
+            # find Coq -name "*.vo" -printf "%f\n" | sed 's/\.vo$//' | xargs -I{} coqchk -q -norec -R Coq UELAT {}
+
+      - name: Upload Coq logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coq-logs-${{ matrix.coq_image }}
+          path: |
+            Coq/*.log
+            Coq/*/*.log
+            **/coq*.log
+            **/*.v.d

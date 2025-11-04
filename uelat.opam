@@ -1,0 +1,25 @@
+opam-version: "2.1"
+name: "uelat"
+version: "0.1.0"
+synopsis: "UELAT formalization (Coq)"
+maintainer: "Andreu Ballús <roamruls@gmail.com>"
+authors: ["Andreu Ballús"]
+license: "CC-BY-4.0"
+homepage: "https://github.com/ipsissima/UELAT"
+bug-reports: "https://github.com/ipsissima/UELAT/issues"
+
+depends: [
+  "ocaml" {>= "4.14.2" & < "5.1"}
+  "coq"   {>= "8.18.0" & < "8.20"}
+  # add Coq libs here when they appear, e.g.:
+  # "coq-mathcomp-ssreflect" {>= "1.14"}
+]
+
+build: [
+  [ "sh" "-exc" "if [ -f Coq/_CoqProject ]; then coq_makefile -f Coq/_CoqProject -o Coq/Makefile; fi" ]
+  [ "sh" "-exc" "make -C Coq -j$(nproc)" ]
+]
+
+install: []
+authors: ["Andreu Ballús"]
+
