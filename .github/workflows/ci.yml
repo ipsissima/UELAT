@@ -1,170 +1,75 @@
-name: CI - Coq + Python + Julia
+name: CI
 
 on:
   push:
   pull_request:
-  schedule:
-    - cron: "17 2 * * *"  # nightly at 02:17 UTC
 
-env:
-  COQ_VERSION: "8.18.0"   # adjust if your code requires a different minor
-  PYTHON_VERSION: "3.11"
-  JULIA_VERSION: "1.10"
+permissions:
+  contents: read
 
 jobs:
-  coq-python-julia:
-    name: Coq/Python/Julia
+  coq:
+    name: Coq build (opam)
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Make helper scripts executable
-        run: |
-          chmod +x .github/scripts/*.sh || true
-          chmod +x tools/*.sh || true
-
-      - name: Restore opam cache
-        id: cache-opam
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.opam
-            ~/.cache/opam
-          key: ${{ runner.os }}-opam-${{ env.COQ_VERSION }}-${{ hashFiles('**/*.opam', '**/_CoqProject') }}
-          restore-keys: |
-            ${{ runner.os }}-opam-${{ env.COQ_VERSION }}-
-            ${{ runner.os }}-opam-
-
-      - name: Setup Coq
-        uses: coq-community/setup-coq@v2
-        with:
-          coq: ${{ env.COQ_VERSION }}
-
-      - name: Install opam dependencies
-        run: |
-          set -euo pipefail
-          opam update
-          if ls *.opam >/dev/null 2>&1; then
-            opam install --yes . --deps-only
-          elif [ -f Coq/_CoqProject ]; then
-            opam install --yes coq-platform-minimal
-          else
-            echo "No .opam files or _CoqProject found; skipping opam dependency install."
-          fi
-        shell: bash
-
-      - name: Build Coq (run build script)
-        run: bash .github/scripts/build_coq.sh
-        shell: bash
-
-      - name: Upload coq-build.log on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coq-build-log
-          path: .github/logs/coq-build.log
-          if-no-files-found: ignore
-
-      - name: Check for Axiom/Admitted
-        run: bash .github/scripts/check_coq_no_admitted.sh
-        shell: bash
-
-      - name: Upload admitted hits on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coq-admitted-hits
-          path: .github/logs/coq_admitted_hits.txt
-          if-no-files-found: ignore
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/requirements*.txt') }}
-          restore-keys: |
-            pip-${{ runner.os }}-${{ env.PYTHON_VERSION }}-
-
-      - name: Install Python dev requirements
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
-          python -m pip install -r requirements-dev.txt
-
-      - name: Run Python tests (with coverage)
-        run: |
-          python -m pytest
-
-      - name: Upload coverage.xml (Python)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-coverage-xml
-          path: coverage.xml
-          if-no-files-found: ignore
-
-      - name: Set up Julia
-        uses: julia-actions/setup-julia@v2
-        with:
-          version: ${{ env.JULIA_VERSION }}
-
-      - name: Cache Julia deps
-        uses: actions/cache@v4
-        with:
-          path: ~/.julia
-          key: julia-${{ runner.os }}-${{ env.JULIA_VERSION }}-${{ hashFiles('Project.toml', 'Manifest.toml') }}
-          restore-keys: |
-            julia-${{ runner.os }}-${{ env.JULIA_VERSION }}-
-
-      - name: Run Julia tests
-        run: |
-          julia --project=. -e 'using Pkg; isfile("Project.toml") || Pkg.generate("UELAT"); Pkg.activate("."); Pkg.instantiate(); Pkg.test()'
-
-  coq-opam-matrix:
-    name: Coq (opam, pinned)
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        coq_image: [ "8.18", "8.19" ]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Coq via docker-coq-action
-        uses: coq-community/docker-coq-action@v1
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
         with:
-          opam_file: "uelat.opam"
-          coq_version: "${{ matrix.coq_image }}"
-          # Script runs inside container with opam set up
-          custom_script: |
-            set -euxo pipefail
-            opam update -y
-            # Install build deps for this package but not the package itself
-            opam install . --deps-only -y --with-test
-            # Build Coq
-            if [ -f Coq/_CoqProject ] && [ ! -f Coq/Makefile ]; then coq_makefile -f Coq/_CoqProject -o Coq/Makefile; fi
-            make -C Coq -j2
-            # Enforce no Admitted/Axiom
-            bash .github/scripts/no_admitted_axioms.sh Coq
-            # Optional: coqchk all produced .vo (best-effort generic check)
-            find Coq -name "*.vo" -print0 | xargs -0 -I{} true  # placeholder
-            # If you want coqchk per module once namespaces stabilize, replace the line above with:
-            # find Coq -name "*.vo" -printf "%f\n" | sed 's/\.vo$//' | xargs -I{} coqchk -q -norec -R Coq UELAT {}
+          ocaml-compiler: 4.14.2
+          dune-cache: true
 
-      - name: Upload Coq logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Install Coq (opam)
+        run: |
+          eval $(opam env)
+          opam repo add --all-switches --set-default coq-released https://coq.inria.fr/opam/released
+          opam update
+          opam install -y coq.8.19.2
+
+      - name: Build Coq project
+        run: |
+          eval $(opam env)
+          make coq -j2
+
+      - name: Fail on Admitted/Axiom
+        run: |
+          eval $(opam env)
+          bash scripts/no_admit.sh
+
+  python:
+    name: Python unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          name: coq-logs-${{ matrix.coq_image }}
-          path: |
-            Coq/*.log
-            Coq/*/*.log
-            **/coq*.log
-            **/*.v.d
+          python-version: '3.12'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          if [ -f pyproject.toml ] || [ -f setup.cfg ] || [ -f setup.py ]; then pip install -e .; fi
+      - name: Run tests
+        run: pytest -q
+
+  julia:
+    name: Julia unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Instantiate & test
+        run: |
+          julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
+
+  lint:
+    name: Workflow lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: actionlint
+        uses: rhysd/actionlint@v1
