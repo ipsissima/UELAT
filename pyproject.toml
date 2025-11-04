@@ -1,6 +1,16 @@
-[build-system]
-requires = ["setuptools>=61"]
-build-backend = "setuptools.build_meta"
-
 [tool.pytest.ini_options]
-addopts = "-q"
+addopts = "-q --maxfail=1 --disable-warnings --cov --cov-report=xml"
+
+[tool.coverage.run]
+branch = true
+source = ["."]
+omit = [
+  "Coq/",
+  "docs/",
+  ".github/**",
+]
+
+[tool.coverage.report]
+fail_under = 60
+skip_covered = true
+show_missing = true

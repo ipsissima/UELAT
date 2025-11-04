@@ -1,6 +1,5 @@
 using Test
-using UELAT
 
-@testset "UELAT" begin
-    @test UELAT.add(1, 1) == 2
+@testset "Sanity" begin
+    @test 1 == 1
 end

@@ -1,3 +1,4 @@
+[![CI](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml/badge.svg)](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml)
 # Certificate-Based Approximation in Sobolev Spaces
 
 ![CI](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml/badge.svg)
