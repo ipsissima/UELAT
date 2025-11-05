@@ -48,8 +48,8 @@ jobs:
         shell: bash
         run: |
           eval "$(opam env)"
-          COQ_FILES="$(git ls-files 'Coq/*.v' 'Coq/*/*.v' 'Coq/*/*/*.v')"
-          coq_makefile -f Coq/_CoqProject $COQ_FILES -o Coq/Makefile
+          readarray -t COQ_FILES < <(git ls-files 'Coq/*.v' 'Coq/*/*.v' 'Coq/*/*/*.v')
+          coq_makefile -f Coq/_CoqProject "${COQ_FILES[@]}" -o Coq/Makefile
           make -C Coq -j2
 
       - name: coqchk (typecheck library)
