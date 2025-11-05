@@ -1,7 +1,14 @@
 -Q . Coq
+-Q Coq UELAT
 Coq/Certificate.v
 Coq/ErrorBound.v
 Coq/Example.v
 Coq/PartitionOfUnity.v
 Coq/Reconstruct.v
 Coq/SobolevApprox.v
+Coq/UELAT.v
+Coq/Util/Modulus.v
+Coq/Approx/Certificate.v
+Coq/Approx/Bernstein_Lipschitz.v
+Coq/Approx/Weierstrass_Lipschitz.v
+Coq/Examples/ExpCert.v

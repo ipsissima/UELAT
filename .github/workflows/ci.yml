@@ -32,10 +32,19 @@ jobs:
           eval $(opam env)
           make coq -j2
 
+      - name: Forbid Admitted/Axiom in core Coq sources
+        run: |
+          ! grep -R -nE '\b(Admitted|Axiom)\b' Coq/Util Coq/Approx
+
       - name: Fail on Admitted/Axiom
         run: |
           eval $(opam env)
           bash scripts/no_admit.sh
+
+      - name: Logical consistency check
+        run: |
+          eval $(opam env)
+          coqchk -q -R Coq UELAT UELAT
 
   python:
     name: Python unit tests
