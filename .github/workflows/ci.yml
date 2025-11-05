@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
 
+env:
+  JULIA_NUM_THREADS: 2
+  OPAMYES: true
+  COQCHK_ARGS: "-q -R Coq UELAT UELAT"
+
 permissions:
   contents: read
 
@@ -14,6 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache opam
+        uses: actions/cache@v4
+        with:
+          path: ~/.opam
+          key: ${{ runner.os }}-opam-${{ hashFiles('**/uelat.opam') }}
+
       - name: Set up OCaml/opam
         uses: ocaml/setup-ocaml@v3
         with:
@@ -23,30 +34,32 @@ jobs:
       - name: Prepare opam & repos
         shell: bash
         run: |
+          set -eux
           opam init -a --bare --disable-sandboxing || true
           opam repo add coq-released https://coq.inria.fr/opam/released || \
             opam repo set-url coq-released https://coq.inria.fr/opam/released
           opam update
 
-      - name: Create local switch & install deps
+      - name: Setup opam switch safely
         shell: bash
         run: |
-          if opam switch list --short | grep -Fxq "."; then
-            opam switch set .
+          set -eux
+          SWITCH_NAME="uelat"
+          if opam switch list --short | grep -Fxq "${SWITCH_NAME}"; then
+            echo "Reusing existing switch '${SWITCH_NAME}'"
+            opam switch set "${SWITCH_NAME}"
           else
-            opam switch create . ocaml-base-compiler.4.14.1 -y
+            echo "Creating new switch '${SWITCH_NAME}'"
+            opam switch create "${SWITCH_NAME}" ocaml-base-compiler.4.14.2
           fi
           eval "$(opam env)"
-          if ls -- *.opam >/dev/null 2>&1; then
-            opam pin add -n -y .
-            opam install -y --deps-only .
-          else
-            opam install -y dune
-          fi
+          opam pin add uelat.dev . --no-action --yes
+          opam install . --deps-only --yes
 
       - name: Build Coq
         shell: bash
         run: |
+          set -eux
           eval "$(opam env)"
           readarray -t COQ_FILES < <(git ls-files 'Coq/*.v' 'Coq/*/*.v' 'Coq/*/*/*.v')
           coq_makefile -f Coq/_CoqProject "${COQ_FILES[@]}" -o Coq/Makefile
@@ -55,8 +68,9 @@ jobs:
       - name: coqchk (UELAT)
         shell: bash
         run: |
+          set -eux
           eval "$(opam env)"
-          coqchk -q -R Coq UELAT UELAT
+          coqchk $COQCHK_ARGS
 
       - name: No Admitted/Axiom in constructive island
         shell: bash
@@ -97,9 +111,10 @@ jobs:
           julia --color=yes --project=. -e '
             using Pkg;
             Pkg.instantiate();
-            try Pkg.develop(PackageSpec(path=".")) catch; end
+            Pkg.resolve();
             Pkg.build();
-            Pkg.test()'
+            Pkg.test(; coverage=true);
+          '
 
   lint:
     name: Workflow lint
