@@ -1,5 +1,6 @@
 using Test
+using UELAT
 
-@testset "Sanity" begin
-    @test 1 == 1
+@testset "UELAT smoke" begin
+    @test true
 end
