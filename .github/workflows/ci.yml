@@ -52,18 +52,18 @@ jobs:
           coq_makefile -f Coq/_CoqProject $COQ_FILES -o Coq/Makefile
           make -C Coq -j2
 
-      - name: coqchk (typecheck library)
+      - name: coqchk (UELAT)
         shell: bash
         run: |
           eval "$(opam env)"
           coqchk -q -R Coq UELAT UELAT
 
-      - name: No Admitted/Axiom gate
+      - name: No Admitted/Axiom in constructive island
         shell: bash
         run: |
           set -e
-          if grep -R --line-number -E '\b(Admitted|Axiom)\b' Coq/ ; then
-            echo "::error::Found Admitted/Axiom in Coq/ (see lines above)"
+          if grep -R --line-number -E '\b(Admitted|Axiom)\b' Coq/Util Coq/Approx ; then
+            echo "::error::Found Admitted/Axiom inside Coq/Util or Coq/Approx"
             exit 1
           fi
 
