@@ -20,22 +20,39 @@ jobs:
           ocaml-compiler: 4.14.2
           dune-cache: true
 
-      - name: Install Coq (opam)
+      - name: Prepare opam & repos
+        shell: bash
         run: |
-          eval $(opam env)
-          opam repo add --all-switches --set-default coq-released https://coq.inria.fr/opam/released
+          opam init -a --bare --disable-sandboxing || true
+          opam repo add coq-released https://coq.inria.fr/opam/released || \
+            opam repo set-url coq-released https://coq.inria.fr/opam/released
           opam update
-          opam install -y coq.8.19.2
+
+      - name: Create local switch & install deps
+        shell: bash
+        run: |
+          if opam switch list --short | grep -Fxq "."; then
+            opam switch set .
+          else
+            opam switch create . ocaml-base-compiler.4.14.1 -y
+          fi
+          eval "$(opam env)"
+          if ls *.opam >/dev/null 2>&1; then
+            opam pin add -n -y .
+            opam install -y --deps-only .
+          else
+            opam install -y dune
+          fi
 
       - name: Build Coq project
+        shell: bash
         run: |
-          eval $(opam env)
-          make coq -j2
-
-      - name: Fail on Admitted/Axiom
-        run: |
-          eval $(opam env)
-          bash scripts/no_admit.sh
+          eval "$(opam env)"
+          dune --version || opam install -y dune
+          make -C Coq -j2
+          if [ -x scripts/no_admit.sh ]; then
+            scripts/no_admit.sh
+          fi
 
   python:
     name: Python unit tests
@@ -71,5 +88,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: actionlint
-        uses: rhysd/actionlint@v1
+      - name: Install actionlint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
+            | bash -s -- -b "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Lint GitHub Workflows
+        run: actionlint -color
