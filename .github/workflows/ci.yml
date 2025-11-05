@@ -44,20 +44,28 @@ jobs:
             opam install -y dune
           fi
 
-      - name: Build Coq project
+      - name: Build Coq
         shell: bash
         run: |
           eval "$(opam env)"
-          dune --version || opam install -y dune
+          COQ_FILES="$(git ls-files 'Coq/*.v' 'Coq/*/*.v' 'Coq/*/*/*.v')"
+          coq_makefile -f Coq/_CoqProject $COQ_FILES -o Coq/Makefile
           make -C Coq -j2
-          if [ -x scripts/no_admit.sh ]; then
-            scripts/no_admit.sh
-          fi
 
-      - name: Logical consistency check
+      - name: coqchk (typecheck library)
+        shell: bash
         run: |
           eval "$(opam env)"
           coqchk -q -R Coq UELAT UELAT
+
+      - name: No Admitted/Axiom gate
+        shell: bash
+        run: |
+          set -e
+          if grep -R --line-number -E '\b(Admitted|Axiom)\b' Coq/ ; then
+            echo "::error::Found Admitted/Axiom in Coq/ (see lines above)"
+            exit 1
+          fi
 
   python:
     name: Python unit tests
