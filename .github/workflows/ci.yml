@@ -70,7 +70,8 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
-          coqchk $COQCHK_ARGS
+          IFS=' ' read -r -a coqchk_args <<< "$COQCHK_ARGS"
+          coqchk "${coqchk_args[@]}"
 
       - name: No Admitted/Axiom in constructive island
         shell: bash
