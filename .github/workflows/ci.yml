@@ -84,9 +84,14 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1.10'
-      - name: Instantiate & test
+      - name: Julia tests
         run: |
-          julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
+          julia --color=yes --project=. -e '
+            using Pkg;
+            Pkg.instantiate();
+            try Pkg.develop(PackageSpec(path=".")) catch; end
+            Pkg.build();
+            Pkg.test()'
 
   lint:
     name: Workflow lint
@@ -95,8 +100,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install actionlint
         run: |
-          curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
-            | bash -s -- -b "$HOME/.local/bin"
+          curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash -o /tmp/download-actionlint.bash
+          bash /tmp/download-actionlint.bash latest "$HOME/.local/bin"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Lint GitHub Workflows
         run: actionlint -color
