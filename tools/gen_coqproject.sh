@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generates Coq/_CoqProject by enumerating .v files if it doesn't exist.
+# Generates Coq/_CoqProject with the project namespace if it doesn't exist.
 # Safe to run repeatedly.
 
 ROOT="Coq"
@@ -19,17 +19,11 @@ if [ -f "$OUT" ]; then
   exit 0
 fi
 
-# Heuristic logical path: map Coq/ to logical root UELAT
-# Adjust if you have a different namespace layout.
-echo "-Q . UELAT" > "$OUT"
-
-# Enumerate .v files relative to Coq/
-# _CoqProject expects relative paths from its own directory
-(
-  cd "$ROOT"
-  # List all .v files, sorted, relative to Coq/
-  git ls-files '*.v' 2>/dev/null || true
-  find . -type f -name '*.v' 2>/dev/null
-) | sed 's|^\./||' | sort -u >> "$OUT"
+# Map the Coq/ directory to the logical namespace UELAT. The file list is
+# provided explicitly when invoking coq_makefile, so we do not enumerate it
+# here.
+cat <<'EON' > "$OUT"
+-Q Coq UELAT
+EON
 
 echo "Wrote $OUT"
