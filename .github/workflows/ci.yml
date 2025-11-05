@@ -54,6 +54,11 @@ jobs:
             scripts/no_admit.sh
           fi
 
+      - name: Logical consistency check
+        run: |
+          eval $(opam env)
+          coqchk -q -R Coq UELAT UELAT
+
   python:
     name: Python unit tests
     runs-on: ubuntu-latest
