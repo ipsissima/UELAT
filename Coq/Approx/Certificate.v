@@ -1,29 +1,37 @@
-From mathcomp Require Import all_ssreflect all_algebra.
-From mathcomp.analysis Require Import reals normedtype.
-Require Import Coq.Reals.Reals Coq.micromega.Lra.
+From Coq Require Import Reals List Arith Binomial Psatz.
+Import ListNotations.
+Local Open Scope R_scope.
 
-Set Implicit Arguments.
-Unset Strict Implicit.
-Unset Printing Implicit Defensive.
+Module UELAT_Certificate.
 
-Module Certificate.
-
+(* Finite certificate for approximating f : [0,1]→R by a Bernstein polynomial *)
 Record cert := {
-  deg          : nat;      (* N *)
-  coeffs       : seq R;    (* a_0..a_N = f(k/N) *)
-  bound        : R;        (* claimed sup-norm error bound *)
-  bound_nonneg : 0 <= bound
+  deg    : nat;     (* N *)
+  coeffs : list R;  (* a_0,...,a_N = f(k/N) typically *)
+  bound  : R;       (* claimed sup-norm error bound ≥ 0 *)
+  bound_pos : 0 <= bound;
+  coeffs_len : length coeffs = S deg
 }.
 
-Definition C (n k:nat) : R := IZR (Z.of_nat (binom n k)).
-
+(* Standard Bernstein basis on [0,1] using nat binomial *)
 Definition bernstein (N k:nat) (x:R) : R :=
-  C N k * (x ^ k) * ((1 - x) ^ (N - k)).
+  IZR (binomial N k) * (x ^ k) * ((1 - x) ^ (N - k)).
+
+Fixpoint nth_default (d:R) (l:list R) (k:nat) : R :=
+  match l, k with
+  | [], _ => d
+  | a::_, 0 => a
+  | _::t, S k' => nth_default d t k'
+  end.
 
 Definition eval_cert (c:cert) (x:R) : R :=
-  \sum_(k < c.(deg).+1) (nth 0%R c.(coeffs) k) * bernstein c.(deg) k x.
+  let N := c.(deg) in
+  let a := c.(coeffs) in
+  let fix sum k :=
+      match k with
+      | O => nth_default 0 a 0 * bernstein N 0 x
+      | S k' => sum k' + nth_default 0 a (S k') * bernstein N (S k') x
+      end
+  in sum N.
 
-Definition sound_on (f:R->R) (c:cert) : Prop :=
-  forall x, 0 <= x <= 1 -> Rabs (f x - eval_cert c x) <= c.(bound).
-
-End Certificate.
+End UELAT_Certificate.
