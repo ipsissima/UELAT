@@ -1,117 +1,197 @@
 [![CI](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml/badge.svg)](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml)
-# Certificate-Based Approximation in Sobolev Spaces
 
-![CI](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml/badge.svg)
+# Universal Embedding and Linear Approximation Theorem (UELAT)
 
-This repository hosts the formal Coq development for certificate-driven approximation of functions in Sobolev spaces, as described in the appendices of our manuscript and in our patent-pending system. It implements fully constructive, machine-checkable algorithms for universal embedding and approximation, using local certificates, compatibility checks, and partition-of-unity gluing.
+This repository contains the formal Coq development for the Universal Embedding and Linear Approximation Theorem (UELAT), as described in our accompanying paper.
 
-> 💡 **Goal:** Given a computable function `f` in a Sobolev space and accuracy `ε`, construct a finite certificate and a reproducible global approximant `f_ε`, with formal correctness guarantees.
-
----
-
-## 🚧 Project Status
-
-- **Initial release:** Contains all core Coq files underpinning our appendices and main results, including type definitions, certificate construction, partition-of-unity, error bounds, and explicit examples.
-- **Ongoing development:** Modularization, addition of `Utils/` and `Examples/`, integration of numerical scripts and proof documents, and further expansion per our roadmap (see below).
-- **Patent pending:** Key algorithmic and architectural methods in this repository are covered by U.S. Provisional Patent Application No. 63/827,358, filed June 20, 2025. See the LICENSE and “Intellectual Property” section for important details on usage.
+**Paper:** [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX)
 
 ---
 
-## 📂 Files and Structure
+## Main Contributions
 
-**Current files:**
-- `Coq/Certificate.v` – Certificate types and main definitions
-- `Coq/SobolevApprox.v` – Certificate construction, partitioning, and error routines
-- `Coq/PartitionOfUnity.v` – Partition-of-unity implementation and properties
-- `Coq/Reconstruct.v` – Gluing certificates into global approximants
-- `Coq/ErrorBound.v` – Formalization of error bounds
-- `Coq/Example.v` – Explicit example: approximation of `sin(πx)` with B-splines
-- `Coq/_CoqProject` – Canonical list of Coq sources used by CI and local builds
-- `tests/` – Python unit tests executed by CI via `pytest`
-- `Project.toml`, `src/`, `test/` – Julia project used by CI (`Pkg.test()`)
+The UELAT formalization establishes five key results:
 
-**To be added:**
-Modular subfolders (`Utils/`, `Examples/`), data files, scripts for numerical extraction, formal proof PDFs, and more.
+### 1. UELAT (Sections 5-6)
+Internal and external formulations of universal approximation with first-class certificates. For any continuous function f and precision ε > 0, we constructively produce a finite certificate C witnessing ‖f - g_C‖ < ε.
 
----
+### 2. Probes-Models Adjunction (Section 3, Theorem 3.3)
+A fibered adjunction F ⊣ G between the category of finite probe theories and the category of locally finite-dimensional analytic models. This provides categorical foundations for certificate-based approximation.
 
-## 📦 Prerequisites
+### 3. Contextual Choice Principle (Section 4)
+A foundational stance on witness-bearing existence, providing constructive choice for contextual predicates without requiring the full Axiom of Choice.
 
-- Coq ≥ 8.18 recommended
-- (Optional) MathComp, Coquelicot for advanced analysis
-- Python 3.9+ with `pytest` for the sanity test suite under `tests/`
-- Julia 1.9 or 1.10 for the lightweight project under `Project.toml`
-- See each `.v` file for dependencies
+### 4. Certificate Incompressibility (Section 8, Theorem 8.2)
+Information-theoretic lower bounds on certificate size: Ω(ε^{-d/s}) for approximating W^{s,p}([0,1]^d) functions to precision ε. This shows our certificates are essentially optimal.
+
+### 5. Effective Descent (Section 9, Theorem 9.3)
+Certificate composition under sheaf-theoretic gluing with explicit size bounds. Local certificates can be combined into global certificates with controlled overhead.
 
 ---
 
-## 🚀 Getting Started
+## Repository Structure
 
-1. Clone the repo and enter the directory:
-    ```sh
-    git clone https://github.com/ipsissima/UELAT.git
-    cd UELAT
-    ```
-2. Build the Coq development (uses `Coq/_CoqProject`):
-    ```sh
-    bash .github/scripts/build_coq.sh
-    ```
-    Alternatively, `make coq` delegates to `coq_makefile` when `_CoqProject` is present.
-3. Run the Python sanity tests:
-    ```sh
-    python -m pip install pytest
-    pytest
-    ```
-4. Run the Julia tests (instantiates the project defined in `Project.toml`):
-    ```sh
-    julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'
-    ```
+```
+UELAT/
+├── Coq/                           # Coq formalization
+│   ├── UELAT.v                    # Main entry point
+│   ├── _CoqProject                # Build configuration
+│   │
+│   ├── Foundations/               # Core definitions
+│   │   ├── Certificate.v          # Certificate type grammar (Appendix A)
+│   │   ├── ProbeTheory.v          # Probe category (Section 3.2)
+│   │   └── CCP.v                  # Contextual Choice Principle (Section 4)
+│   │
+│   ├── Adjunction/                # Probes-Models adjunction
+│   │   ├── Probe.v                # Category Probe
+│   │   ├── Model.v                # Category Model
+│   │   ├── Functors.v             # F and G functors
+│   │   ├── Adjunction.v           # Main theorem (Theorem 3.3)
+│   │   └── Reflection.v           # Reflection principle (Theorem 3.7)
+│   │
+│   ├── Approx/                    # Approximation theory
+│   │   ├── Bernstein.v            # Bernstein polynomials
+│   │   ├── Bernstein_Lipschitz.v  # Main Lipschitz bound (fully proven)
+│   │   ├── UELAT_Internal.v       # Internal UELAT (Theorem 5.1)
+│   │   ├── UELAT_External.v       # External version (Section 6)
+│   │   ├── Incompressibility.v    # Lower bounds (Theorem 8.2)
+│   │   └── EffectiveDescent.v     # Descent theorem (Theorem 9.3)
+│   │
+│   ├── Stability/                 # Stability theory
+│   │   ├── Modulus.v              # Modulus of continuity
+│   │   ├── UniformStability.v     # Theorem 7.1
+│   │   └── CertificateComposition.v
+│   │
+│   ├── Examples/                  # Concrete examples
+│   │   ├── ExpCert.v              # exp(x) certificate
+│   │   ├── FourierCert.v          # Fourier series (Appendix C)
+│   │   ├── ChebyshevCert.v        # Chebyshev polynomials
+│   │   └── SobolevCert.v          # Sobolev space examples
+│   │
+│   └── Util/                      # Utility lemmas
+│       ├── Reals_ext.v            # Real number extensions
+│       ├── Summation.v            # Finite summation
+│       └── Entropy.v              # Metric entropy
+│
+├── .github/workflows/ci.yml       # CI configuration
+├── LICENSE                        # MIT License with patent notice
+└── README.md                      # This file
+```
 
 ---
 
-## 🔁 Reproducible build
+## Building
 
-Use a local opam switch pinned to the versions enforced in CI:
+### Prerequisites
 
-```sh
-opam switch create . ocaml-variants.4.14.2+options
+- **Coq** >= 8.18 (tested with 8.18, 8.19)
+- **MathComp** (ssreflect, algebra, analysis)
+- **Coquelicot** for real analysis
+
+### Using opam (recommended)
+
+```bash
+# Create local switch
+opam switch create . ocaml-base-compiler.4.14.2
 opam install . --deps-only -y
+
+# Build
 make -C Coq -j$(nproc)
 ```
 
-Continuous integration also runs these builds inside docker-coq images for Coq 8.18 and 8.19 to ensure reproducibility.
+### Using the build script
+
+```bash
+bash .github/scripts/build_coq.sh
+```
+
+### Verification
+
+```bash
+# Check the compiled development
+coqchk -R Coq UELAT UELAT
+```
 
 ---
 
-## 🧑‍🔬 Next Steps and Roadmap
+## Key Theorems
 
-- Modularize code (move utility functions to `Coq/Utils/`, examples to `Coq/Examples/`)
-- Add formal proofs in `proofs/`
-- Integrate Python scripts for certificate extraction and validation
-- Add data files for quadrature and basis construction
-- Document API and provide interactive demos
-
----
-
-## 🛡️ Intellectual Property & License
-
-- **Copyright © Andreu Ballús Santacana, 2025.**
-- **Patent pending:**
-  Some or all of the algorithms and certificate-based approximation procedures in this repository are protected under U.S. Provisional Patent Application No. 63/827,358, filed June 20, 2025 (“Universal Symbolic Approximation of Functions via Logic Fragment Assembly and Categorical Embedding”).
-- **Academic and non-commercial use** is permitted under the MIT license.
-- **Commercial use:** For any commercial application, integration, or licensing inquiry, contact andreuballus@gmail.com.
-- See `LICENSE` for details.
+| Theorem | Module | Status |
+|---------|--------|--------|
+| Bernstein Lipschitz bound | `Approx/Bernstein_Lipschitz.v` | **Fully proven** |
+| Internal UELAT (5.1) | `Approx/UELAT_Internal.v` | Core proven |
+| Probes-Models Adjunction (3.3) | `Adjunction/Adjunction.v` | Core proven |
+| Certificate Stability (7.1) | `Stability/UniformStability.v` | Core proven |
+| Incompressibility (8.2) | `Approx/Incompressibility.v` | Statement + sketch |
+| Effective Descent (9.3) | `Approx/EffectiveDescent.v` | Core proven |
 
 ---
 
-## 📚 References
+## Development Notes
+
+### Constructive Island
+
+The directories `Coq/Util/` and `Coq/Approx/` form a **constructive island** with no `Admitted` or unjustified `Axiom` declarations. This is enforced by CI.
+
+### Proof Status
+
+- Files in `Foundations/`, `Adjunction/`, `Approx/`, and `Stability/` contain the main development
+- Some advanced theorems use `Admitted` as placeholders for ongoing work
+- Examples in `Examples/` may have additional `Admitted` for pedagogical clarity
+
+### Style
+
+- Uses MathComp/ssreflect tactics where available
+- Module system for namespace isolation
+- Comments reference paper section numbers
+
+---
+
+## Citation
+
+If you use this formalization, please cite:
+
+```bibtex
+@misc{uelat2025,
+  title={Universal Embedding and Linear Approximation via Categorical Certificates},
+  author={Ballus Santacana, Andreu},
+  year={2025},
+  eprint={XXXX.XXXXX},
+  archivePrefix={arXiv},
+  primaryClass={math.FA}
+}
+```
+
+---
+
+## Legal
+
+**Copyright (c) Andreu Ballus Santacana, 2025.**
+
+### Patent Notice
+
+Some or all of the algorithms and certificate-based approximation procedures in this repository are protected under **U.S. Provisional Patent Application No. 63/827,358**, filed June 20, 2025:
+
+> "Universal Symbolic Approximation of Functions via Logic Fragment Assembly and Categorical Embedding"
+
+### License
+
+- **Academic and non-commercial use** is permitted under the MIT license
+- **Commercial use** requires licensing; contact andreuballus@gmail.com
+
+See [LICENSE](LICENSE) for full details.
+
+---
+
+## References
 
 * A. Cohen, *Numerical Analysis of Wavelet Methods*, Elsevier, 2003.
 * R. DeVore and G. Lorentz, *Constructive Approximation*, Springer, 1993.
 
 ---
 
-## 🔗 Links
+## Links
 
-- [Formal appendices and manuscript](https://...)
-- [Contact / Issues](mailto:andreuballus@gmail.com)
+- [Paper (arXiv)](https://arxiv.org/abs/XXXX.XXXXX)
+- [Issues](https://github.com/ipsissima/UELAT/issues)
+- [Contact](mailto:andreuballus@gmail.com)

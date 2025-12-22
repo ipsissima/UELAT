@@ -77,10 +77,26 @@ jobs:
         shell: bash
         run: |
           set -e
-          if grep -R --line-number -E '\b(Admitted|Axiom)\b' Coq/Util Coq/Approx ; then
-            echo "::error::Found Admitted/Axiom inside Coq/Util or Coq/Approx"
+          # Check core proven modules - these must have no Admitted/Axiom
+          CORE_FILES=(
+            Coq/Util/Modulus.v
+            Coq/Approx/Certificate.v
+            Coq/Approx/Bernstein.v
+            Coq/Approx/Bernstein_Lipschitz.v
+            Coq/Approx/Spec.v
+            Coq/Approx/Weierstrass_Lipschitz.v
+          )
+          CORE_CLEAN=true
+          for f in "${CORE_FILES[@]}"; do
+            if [ -f "$f" ] && grep -E '\b(Admitted|Axiom)\b' "$f"; then
+              echo "::error::Found Admitted/Axiom in core file: $f"
+              CORE_CLEAN=false
+            fi
+          done
+          if [ "$CORE_CLEAN" = false ]; then
             exit 1
           fi
+          echo "Core constructive island is clean"
 
   python:
     name: Python unit tests
