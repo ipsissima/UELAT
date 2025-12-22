@@ -26,9 +26,37 @@ Proof.
   - rewrite IH. lra.
 Qed.
 
-(* Routine analytic lemma, can be proved with standard algebraic manipulations. *)
+(** Auxiliary lemma: sum of v/c for v in list equals (sum of v)/c *)
+Lemma fold_right_div_distrib : forall (l : list R) (c : R),
+  c <> 0 ->
+  fold_right Rplus 0 (map (fun v => v / c) l) = fold_right Rplus 0 l / c.
+Proof.
+  intros l c Hc.
+  induction l as [|a l' IH].
+  - simpl. field. exact Hc.
+  - simpl. rewrite IH. field. exact Hc.
+Qed.
+
+(** Partition normalization lemma.
+    Either the sum equals 1 (normalized case) or 0 (degenerate case). *)
 Lemma partition_sums_to_one : forall n x,
   let φ := partition_of_unity n x in
   (n > 0)%nat ->
   fold_right Rplus 0 φ = 1 \/ fold_right Rplus 0 φ = 0.
-Admitted.
+Proof.
+  intros n x φ Hn.
+  unfold φ, partition_of_unity.
+  set (h := / INR n).
+  set (shifts := map (fun i => INR i * h) (seq 0 n)).
+  set (raw := map (fun s => bump ((x - s) / h)) shifts).
+  set (total := fold_right Rplus 0 raw).
+  destruct (Req_EM_T total 0) as [Htotal_zero | Htotal_nonzero].
+  - (* Case: total = 0 *)
+    right.
+    apply sum_repeat_0.
+  - (* Case: total ≠ 0, normalized sum equals 1 *)
+    left.
+    rewrite fold_right_div_distrib by exact Htotal_nonzero.
+    unfold total.
+    field. exact Htotal_nonzero.
+Qed.
