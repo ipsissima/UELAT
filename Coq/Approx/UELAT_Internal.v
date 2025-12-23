@@ -9,7 +9,7 @@
 
 From Coq Require Import Reals QArith List Arith Lia Lra.
 From UELAT.Foundations Require Import Certificate ProbeTheory CCP.
-From UELAT.Approx Require Import Certificate Bernstein Spec.
+From UELAT.Approx Require Import Certificate Bernstein_Lipschitz Spec.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -44,13 +44,12 @@ Hypothesis Hlip : forall x y, 0 <= x <= 1 -> 0 <= y <= 1 ->
 
     For all ε > 0, there exists:
     1. A finite probe theory T_ε
-    2. A certificate C_ε witnessing ‖f - P_ε f‖ < ε
+    2. A certificate C_ε witnessing ‖f - P_ε f‖ ≤ ε
     3. Such that |C_ε| ≤ N(ε) where N is computable from Lipschitz constant
 *)
 
-(** Certificate rank from precision *)
-Definition N_from_eps (eps : R) : nat :=
-  Z.to_nat (up ((L / (2 * eps))^2)).
+(** Certificate rank from precision - use proven formula from Bernstein_Lipschitz *)
+Definition N_from_eps (eps : R) : nat := Bernstein.N_of_eps L eps.
 
 (** Probe theory for ε-approximation *)
 Definition probe_theory_eps (eps : R) (Heps : eps > 0) : ProbeTheory.
@@ -72,26 +71,10 @@ Definition approximant (eps : R) (x : R) : R :=
   let N := N_from_eps eps in
   Bernstein.BN N f x.
 
-(** Archimedes lemma for our N *)
-Lemma N_from_eps_spec : forall eps,
-  eps > 0 ->
-  INR (N_from_eps eps) >= (L / (2 * eps))^2.
-Proof.
-  intros eps Heps.
-  unfold N_from_eps.
-  set (a := (L / (2 * eps))^2).
-  assert (Ha : 0 <= a).
-  { unfold a. apply Rle_0_sqr. }
-  destruct (archimed a) as [Hup _].
-  assert (Hpos : (0 <= up a)%Z).
-  { apply le_IZR. simpl.
-    apply Rle_trans with a; [exact Ha | apply Rlt_le; exact Hup]. }
-  rewrite INR_IZR_INZ.
-  rewrite Z2Nat.id; [| exact Hpos].
-  lra.
-Qed.
+(** * Main Internal UELAT Theorem
 
-(** * Main Internal UELAT Theorem *)
+    The bound uses ≤ (non-strict) which is what Bernstein approximation provides.
+*)
 
 Theorem internal_UELAT :
   forall eps, eps > 0 ->
@@ -100,9 +83,9 @@ Theorem internal_UELAT :
     cert_wf C /\
     (* Certificate size is bounded *)
     (cert_size C <= S (N_from_eps eps))%nat /\
-    (* Error bound holds *)
+    (* Error bound holds - Bernstein gives ≤, not < *)
     forall x, 0 <= x <= 1 ->
-      Rabs (f x - approximant eps x) < eps.
+      Rabs (f x - approximant eps x) <= eps.
 Proof.
   intros eps Heps.
   set (N := N_from_eps eps).
@@ -120,50 +103,21 @@ Proof.
   - split.
     + (* Size bound *)
       simpl. lia.
-    + (* Error bound - use Bernstein approximation theorem *)
+    + (* Error bound - directly from Bernstein_Lipschitz.bernstein_uniform_lipschitz *)
       intros x Hx.
-      unfold approximant.
+      unfold approximant, N_from_eps, N.
       (* Apply the main Bernstein-Lipschitz theorem *)
-      assert (HN : INR N >= (L / (2 * eps))^2).
-      { apply N_from_eps_spec. exact Heps. }
-      (* The Bernstein theorem gives us |B_N f - f| ≤ eps *)
-      assert (Hbound : Rabs (Bernstein.BN N f x - f x) <= eps).
-      {
-        apply Bernstein.bernstein_uniform_lipschitz with (L := L).
-        - exact HL.
-        - exact Hlip.
-        - exact Heps.
-        - exact HN.
-        - exact Hx.
-      }
-      (* Convert |B_N f - f| to |f - B_N f| *)
-      rewrite Rabs_minus_sym in Hbound.
-      (* We need strict inequality, but theorem gives ≤ *)
-      (* For L > 0, the bound is actually strict unless we're at boundary *)
-      (* For the general case, we can observe that if L = 0, f is constant *)
-      destruct (Req_dec L 0) as [HL0 | HLpos].
-      * (* L = 0 means f is constant, so B_N f = f exactly *)
-        assert (Hconst : forall y, 0 <= y <= 1 -> f y = f x).
-        {
-          intros y Hy.
-          specialize (Hlip x y Hx Hy).
-          rewrite HL0 in Hlip. rewrite Rmult_0_l in Hlip.
-          apply Rabs_le_0 in Hlip.
-          lra.
-        }
-        (* B_N f(x) = f(x) when f is constant *)
-        assert (HBN : Bernstein.BN N f x = f x).
-        {
-          unfold Bernstein.BN.
-          (* Each term f(k/N) = f(x), and sum of weights = 1 *)
-          admit. (* This requires showing sum of Bernstein weights = 1 *)
-        }
-        rewrite HBN. rewrite Rminus_diag_eq; [| reflexivity].
-        rewrite Rabs_R0. exact Heps.
-      * (* L > 0 case: the inequality is not tight for positive L *)
-        (* The variance bound x(1-x)/N < 1/(4N) and for large N, bound < eps *)
-        lra.
-Admitted.
+      assert (HN : INR (Bernstein.N_of_eps L eps) >= (L / (2 * eps))^2).
+      { apply Bernstein.N_of_eps_spec; [exact HL | exact Heps]. }
+      (* Use the proven Bernstein theorem *)
+      rewrite Rabs_minus_sym.
+      apply Bernstein.bernstein_uniform_lipschitz with (L := L).
+      * exact HL.
+      * exact Hlip.
+      * exact Heps.
+      * exact HN.
+      * exact Hx.
+Qed.
 
 (** * Effectivity *)
 
@@ -205,12 +159,12 @@ Theorem lipschitz_UELAT :
     forall eps, eps > 0 ->
     exists (C : Cert),
       cert_wf C /\
-      (cert_size C <= Z.to_nat (up ((L / (2 * eps))^2)) + 1)%nat /\
+      (cert_size C <= Bernstein.N_of_eps L eps + 1)%nat /\
       forall x, 0 <= x <= 1 ->
-        Rabs (f x - Bernstein.BN (Z.to_nat (up ((L / (2 * eps))^2))) f x) <= eps.
+        Rabs (f x - Bernstein.BN (Bernstein.N_of_eps L eps) f x) <= eps.
 Proof.
   intros f L HL Hlip eps Heps.
-  set (N := Z.to_nat (up ((L / (2 * eps))^2))).
+  set (N := Bernstein.N_of_eps L eps).
   exists (CoeffCert (S N)
             (seq 0 (S N))
             (repeat 0%Q (S N))
@@ -224,18 +178,12 @@ Proof.
     + simpl. lia.
     + (* Apply Bernstein theorem directly *)
       intros x Hx.
+      rewrite Rabs_minus_sym.
       apply Bernstein.bernstein_uniform_lipschitz with (L := L).
       * exact HL.
       * exact Hlip.
       * exact Heps.
-      * (* N >= (L/(2eps))^2 by construction *)
-        unfold N.
-        set (a := (L / (2 * eps))^2).
-        assert (Ha : 0 <= a) by (unfold a; apply Rle_0_sqr).
-        destruct (archimed a) as [Hup _].
-        assert (Hpos : (0 <= up a)%Z).
-        { apply le_IZR. simpl. lra. }
-        rewrite INR_IZR_INZ. rewrite Z2Nat.id; [lra | exact Hpos].
+      * apply Bernstein.N_of_eps_spec; [exact HL | exact Heps].
       * exact Hx.
 Qed.
 
