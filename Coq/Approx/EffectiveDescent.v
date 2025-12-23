@@ -159,11 +159,19 @@ Proof.
   { apply fold_right_Rplus_nonneg.
     intros x Hin.
     destruct (orb _ _); [| lra].
-    (* Delta values are non-negative *)
-    admit.
+    (* Delta values are non-negative by Hdeltas_nonneg *)
+    apply Rge_le.
+    (* The nth element of deltas is non-negative *)
+    assert (Hnth : nth _ deltas 0 >= 0).
+    { destruct (Nat.lt_ge_cases _ (length deltas)) as [Hlt | Hge].
+      - rewrite Forall_forall in Hdeltas_nonneg.
+        apply Hdeltas_nonneg. apply nth_In. exact Hlt.
+      - rewrite nth_overflow; [lra | exact Hge].
+    }
+    lra.
   }
   lra.
-Admitted.
+Qed.
 
 (** * Global Error Bound *)
 

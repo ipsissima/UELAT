@@ -173,14 +173,25 @@ Proof.
   intros f M num_parts eps_q Hpos.
   unfold parallel_certificates.
   rewrite map_map.
+  (* Each external_certificate has size = length of compute_coefficients = md_modulus M eps_q *)
+  assert (Hsize : forall i, cert_size (external_certificate f M eps_q) = md_modulus M eps_q).
+  { intro i. unfold external_certificate. simpl.
+    unfold compute_coefficients. rewrite map_length, seq_length. reflexivity. }
+  (* The map applies the same certificate to each partition *)
   induction num_parts as [|n IH].
   - lia.
   - simpl.
-    unfold external_certificate, compute_coefficients.
-    simpl. rewrite map_length, seq_length.
-    (* Each partition contributes at most md_modulus M eps_q + 1 *)
-    admit.
-Admitted.
+    rewrite Hsize.
+    (* cert_size = md_modulus M eps_q <= md_modulus M eps_q + 1 *)
+    (* And we have n certificates in the tail *)
+    destruct n.
+    + simpl. lia.
+    + assert (IH' : fold_right plus 0 (map (fun _ : nat => cert_size (external_certificate f M eps_q)) (seq 0 (S n)))
+               <= S n * (md_modulus M eps_q + 1)).
+      { apply IH. lia. }
+      simpl in IH'. rewrite Hsize in IH'.
+      lia.
+Qed.
 
 End ExternalUELAT.
 
