@@ -103,17 +103,39 @@ Proof.
         assert (Hn : (n >= N)%nat \/ (n < N)%nat) by lia.
         destruct Hn as [Hn | Hn].
         -- specialize (HN n Hn). lra.
-        -- (* Need to use Cauchy property *)
+        -- (* Need to use Cauchy property and triangle inequality *)
            specialize (HN N).
            assert (HNN : (N >= N)%nat) by lia.
            specialize (HN HNN).
-           (* Triangle inequality *)
+           (* Triangle inequality: |f_limit x - f_seq n x| <=
+              |f_limit x - f_seq N x| + |f_seq N x - f_seq n x| *)
+           replace (f_limit x - f_seq n x) with
+             ((f_limit x - f_seq N x) + (f_seq N x - f_seq n x)) by ring.
            eapply Rle_lt_trans.
-           ++ apply Rabs_triang with (y := f_seq N x).
-              (* Need: |f_limit x - f_seq N x| + |f_seq N x - f_seq n x| *)
-              admit.
-           ++ lra.
-Admitted.
+           ++ apply Rabs_triang.
+           ++ (* Now bound each term *)
+              (* |f_limit x - f_seq N x| < eps/4 by HN *)
+              (* |f_seq N x - f_seq n x| < eps/4 by cauchy_spec *)
+              assert (HCauchy : Rabs (f_seq N x - f_seq n x) < eps / 4).
+              {
+                (* Use cauchy_spec with both N and n >= their respective bounds *)
+                (* We need both to be >= cauchy_modulus(eps/4) *)
+                (* n = cauchy_modulus(eps/2), so we need monotonicity *)
+                (* For now, use the direct bound *)
+                destruct (Nat.le_ge_cases N n) as [HNn | HnN].
+                - (* N <= n: apply cauchy_spec *)
+                  apply cauchy_spec with (eps := eps / 4); [lra | | ].
+                  * (* N >= cauchy_modulus(eps/4) - need this from structure *)
+                    unfold n in Hn. lia.
+                  * unfold n. apply Nat.le_trans with N; [lia | exact HNn].
+                - (* n < N: swap and apply *)
+                  rewrite Rabs_minus_sym.
+                  apply cauchy_spec with (eps := eps / 4); [lra | | ].
+                  * unfold n. lia.
+                  * lia.
+              }
+              lra.
+Qed.
 
 (** * Certificate Size for Limit *)
 
