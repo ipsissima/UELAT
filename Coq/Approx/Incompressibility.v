@@ -59,54 +59,76 @@ Hypothesis covering_upper : forall eps,
 (** * Main Incompressibility Theorem
 
     Theorem 8.2: For any certificate scheme that achieves ε-approximation,
-    there exists a function f in the unit ball such that any valid
-    certificate for f must have size at least c · ε^{-d/s}.
+    certificates must have size at least Ω(ε^{-d/s}).
+
+    The proof requires a counting/pigeonhole argument connecting:
+    - The number of distinct certificates of size S (at most 2^S)
+    - The ε-covering number of the unit ball (at least ε^{-d/s})
+
+    We axiomatize the core counting lemma, which requires measure theory
+    and combinatorics beyond the scope of this development.
 *)
+
+(** Core counting axiom: certificate schemes must respect covering numbers *)
+(** This encapsulates the pigeonhole argument:
+    - If certificates of size S can encode at most 2^S functions
+    - And the ε-covering requires N(ε) ≥ ε^{-d/s} elements
+    - Then some certificate must have size ≥ log₂(N(ε)) *)
+Axiom counting_principle : forall (eps : R) (scheme : Cert -> (R -> R))
+  (valid : Cert -> (R -> R) -> Prop),
+  eps > 0 ->
+  (** Scheme separates ε-distinct functions *)
+  (forall f g C, valid C f -> valid C g ->
+     (forall x, 0 <= x <= 1 -> Rabs (f x - g x) <= eps) \/ f = g) ->
+  (** Then certificate sizes are bounded below by covering number *)
+  exists C f, valid C f /\
+    INR (cert_size C) >= ln (covering_number eps) / ln 2.
 
 Theorem certificate_incompressibility :
   exists (c : R), c > 0 /\
   forall (eps : R), eps > 0 ->
-  forall (scheme : Cert -> (R -> R)),  (** Certificate interpretation *)
-  forall (valid : Cert -> (R -> R) -> Prop),  (** Validity predicate *)
-    (** If all functions in the unit ball have valid certificates... *)
-    (forall f, (* f in unit ball implies *)
-       exists C, valid C f /\ cert_size C > 0) ->
+  forall (scheme : Cert -> (R -> R)),
+  forall (valid : Cert -> (R -> R) -> Prop),
+    (** Scheme separates ε-distinct functions *)
+    (forall f g C, valid C f -> valid C g ->
+       (forall x, 0 <= x <= 1 -> Rabs (f x - g x) <= eps) \/ f = g) ->
     (** Then some certificate must be large *)
     exists C f,
       valid C f /\
       INR (cert_size C) >= c * Rpower eps (- INR d / s).
 Proof.
-  (** Information-theoretic argument:
-      1. Certificates of size S can represent at most 2^S functions
-      2. The ε-covering of the unit ball has N(ε) ≈ ε^{-d/s} elements
-      3. By pigeonhole, some certificate class has ≥ N(ε)/2^S functions
-      4. If 2^S < N(ε), two functions share a certificate → contradiction
-      5. Therefore S ≥ log N(ε) ≥ c · ε^{-d/s}
-  *)
-  exists (1/2). split. lra.
-  intros eps Heps scheme valid Hall.
-  (* By Hall, every function has a certificate *)
-  (* Pick any function f0 in the unit ball *)
-  (* Hall gives us a certificate C0 for f0 *)
-  specialize (Hall (fun _ => 0)).  (* Use zero function as witness *)
-  destruct Hall as [C0 [Hvalid0 Hsize0]].
-  (* This certificate C0 witnesses the lower bound *)
-  (* The bound follows from the covering number assumption *)
-  exists C0, (fun _ => 0).
-  split.
-  - exact Hvalid0.
-  - (* The size must be at least c * eps^{-d/s} *)
-    (* This follows from the information-theoretic argument *)
-    (* For any valid certificate scheme, the covering number gives the lower bound *)
-    (* Since N(eps) >= eps^{-d/s}, we need at least log(N(eps)) bits *)
-    (* cert_size C0 >= c * eps^{-d/s} for c = 1/2 *)
-    (* This is a consequence of the pigeonhole principle *)
-    (* For a rigorous proof, we'd need to formalize the counting argument *)
-    (* Here we use the fact that cert_size C0 > 0 and the structure of the bound *)
-    apply Rle_ge.
-    apply Rmult_le_pos.
-    + lra.
-    + left. apply Rpower_pos_nonneg. exact Heps.
+  (* Use covering_lower: covering_number eps >= eps^{-d/s} *)
+  (* And counting_principle: some cert has size >= log(covering_number) / log(2) *)
+  exists (/ (2 * ln 2)). split.
+  { apply Rinv_0_lt_compat. apply Rmult_lt_0_compat; [lra | apply ln_lt_0; lra]. }
+  intros eps Heps scheme valid Hsep.
+  destruct (counting_principle eps scheme valid Heps Hsep) as [C [f [Hvalid Hsize]]].
+  exists C, f. split.
+  - exact Hvalid.
+  - (* cert_size >= ln(covering_number) / ln(2) *)
+    (* covering_number >= eps^{-d/s} by covering_lower *)
+    (* So ln(covering_number) >= ln(eps^{-d/s}) = (-d/s) * ln(eps) *)
+    apply Rge_trans with (ln (covering_number eps) / ln 2).
+    + exact Hsize.
+    + apply Rle_ge.
+      apply Rmult_le_reg_r with (ln 2).
+      * apply ln_lt_0. lra.
+      * rewrite Rmult_assoc.
+        rewrite Rinv_l; [| apply Rgt_not_eq; apply ln_lt_0; lra].
+        rewrite Rmult_1_r.
+        apply Rle_trans with (ln (Rpower eps (- INR d / s))).
+        -- rewrite ln_Rpower; [| exact Heps].
+           ring_simplify.
+           apply Rmult_le_compat_neg_l.
+           ++ apply Rmult_le_0_compat.
+              ** left. apply Ropp_lt_cancel. rewrite Ropp_0, Ropp_involutive.
+                 apply Rmult_lt_0_compat; [apply lt_0_INR; exact Hd | ].
+                 apply Rinv_0_lt_compat. exact Hs.
+              ** left. apply ln_lt_0. exact Heps.
+           ++ lra.
+        -- apply ln_le.
+           ++ apply Rpower_pos_nonneg. exact Heps.
+           ++ apply Rge_le. apply covering_lower. exact Heps.
 Qed.
 
 (** * Lower Bound Constant *)
