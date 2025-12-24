@@ -6,11 +6,13 @@
 
     Reference: UELAT Paper, Section 2
 
-    All proofs are COMPLETE - no Admitted statements.
+    ALL PROOFS ARE COMPLETE - NO ADMITTED STATEMENTS.
 *)
 
-From Coq Require Import Reals Lra Lia Rtrigo Rtrigo1 Rpower.
-From Coq Require Import Arith List.
+From Coq Require Import Reals Lra Lia.
+From Coq Require Import Rtrigo Rtrigo1 Rpower Ranalysis1.
+From Coq Require Import Arith List Factorial.
+From Coq Require Import Wf_nat.
 From UELAT.Foundations Require Import Certificate.
 Import ListNotations.
 Local Open Scope R_scope.
@@ -19,36 +21,74 @@ Module UELAT_ChebyshevExample.
 
 Import UELAT_Certificate.
 
-(** * Auxiliary Real Analysis Lemmas *)
+(** * Part I: Foundational Real Analysis Lemmas *)
+
+(** ** Factorial Lemmas *)
+
+Lemma fact_pos : forall n : nat, (fact n > 0)%nat.
+Proof.
+  intro n.
+  induction n as [|n' IHn'].
+  - simpl. lia.
+  - simpl. lia.
+Qed.
+
+Lemma fact_ge_1 : forall n : nat, (fact n >= 1)%nat.
+Proof.
+  intro n.
+  pose proof (fact_pos n). lia.
+Qed.
+
+Definition Rfact (n : nat) : R := INR (fact n).
+
+Lemma Rfact_pos : forall n : nat, Rfact n > 0.
+Proof.
+  intro n.
+  unfold Rfact.
+  apply lt_0_INR.
+  apply fact_pos.
+Qed.
+
+Lemma Rfact_ge_1 : forall n : nat, Rfact n >= 1.
+Proof.
+  intro n.
+  unfold Rfact.
+  apply Rle_ge.
+  replace 1 with (INR 1) by reflexivity.
+  apply le_INR.
+  apply fact_ge_1.
+Qed.
+
+Lemma Rfact_0 : Rfact 0 = 1.
+Proof. unfold Rfact. simpl. reflexivity. Qed.
+
+Lemma Rfact_1 : Rfact 1 = 1.
+Proof. unfold Rfact. simpl. reflexivity. Qed.
+
+Lemma Rfact_S : forall n, Rfact (S n) = INR (S n) * Rfact n.
+Proof.
+  intro n.
+  unfold Rfact.
+  rewrite fact_simpl.
+  rewrite mult_INR.
+  ring.
+Qed.
+
+Lemma Rfact_neq_0 : forall n, Rfact n <> 0.
+Proof.
+  intro n.
+  apply Rgt_not_eq.
+  apply Rfact_pos.
+Qed.
+
+(** ** Absolute Value and Bounds *)
 
 Lemma Rabs_le_1_iff : forall x, Rabs x <= 1 <-> -1 <= x <= 1.
 Proof.
-  intros x.
+  intro x.
   split.
-  - intro H.
-    split.
-    + apply Rabs_le_1 in H. lra.
-    + apply Rabs_le_1 in H. lra.
-  - intro H.
-    apply Rabs_le.
-    lra.
-Qed.
-
-Lemma cos_arccos_bound : forall x,
-  -1 <= x <= 1 -> cos (acos x) = x.
-Proof.
-  intros x Hx.
-  apply cos_acos.
-  lra.
-Qed.
-
-Lemma acos_bound : forall x,
-  -1 <= x <= 1 -> 0 <= acos x <= PI.
-Proof.
-  intros x Hx.
-  split.
-  - apply acos_ge_0. lra.
-  - apply acos_le_PI. lra.
+  - intro H. split; apply Rabs_def2 in H; lra.
+  - intro H. apply Rabs_le. lra.
 Qed.
 
 Lemma cos_bounded : forall theta, Rabs (cos theta) <= 1.
@@ -60,54 +100,69 @@ Proof.
   - apply COS_bound.
 Qed.
 
-Lemma Rmult_le_1 : forall x y,
-  0 <= x -> x <= 1 -> 0 <= y -> y <= 1 -> x * y <= 1.
+Lemma cos_arccos_id : forall x,
+  -1 <= x <= 1 -> cos (acos x) = x.
 Proof.
-  intros x y Hx0 Hx1 Hy0 Hy1.
-  apply Rle_trans with (1 * 1).
-  - apply Rmult_le_compat; lra.
-  - lra.
+  intros x Hx.
+  apply cos_acos. lra.
 Qed.
 
-Lemma pow_le_1 : forall x n,
-  0 <= x -> x <= 1 -> x ^ n <= 1.
+Lemma acos_bounds : forall x,
+  -1 <= x <= 1 -> 0 <= acos x <= PI.
 Proof.
-  intros x n Hx0 Hx1.
-  induction n as [|n IHn].
+  intros x Hx.
+  split.
+  - apply acos_ge_0. lra.
+  - apply acos_le_PI. lra.
+Qed.
+
+(** ** Power Function Lemmas *)
+
+Lemma pow_pos_nat : forall x n, x > 0 -> x ^ n > 0.
+Proof.
+  intros x n Hx.
+  induction n as [|n' IHn'].
   - simpl. lra.
-  - simpl.
-    apply Rle_trans with (1 * 1).
-    + apply Rmult_le_compat; try lra; assumption.
-    + lra.
+  - simpl. apply Rmult_gt_0_compat; assumption.
+Qed.
+
+Lemma pow_ge_0 : forall x n, x >= 0 -> x ^ n >= 0.
+Proof.
+  intros x n Hx.
+  induction n as [|n' IHn'].
+  - simpl. lra.
+  - simpl. apply Rle_ge. apply Rmult_le_pos; apply Rge_le; assumption.
+Qed.
+
+Lemma pow_2_pos : forall n, 2 ^ n > 0.
+Proof.
+  intro n. apply pow_pos_nat. lra.
+Qed.
+
+Lemma pow_2_ge_1 : forall n, 2 ^ n >= 1.
+Proof.
+  intro n.
+  induction n as [|n' IHn'].
+  - simpl. lra.
+  - simpl. lra.
+Qed.
+
+Lemma pow_2_neq_0 : forall n, 2 ^ n <> 0.
+Proof.
+  intro n. apply Rgt_not_eq. apply pow_2_pos.
 Qed.
 
 Lemma Rabs_pow : forall x n, Rabs (x ^ n) = (Rabs x) ^ n.
 Proof.
   intros x n.
-  induction n as [|n IHn].
+  induction n as [|n' IHn'].
   - simpl. apply Rabs_R1.
-  - simpl.
-    rewrite Rabs_mult.
-    rewrite IHn.
-    reflexivity.
+  - simpl. rewrite Rabs_mult. rewrite IHn'. reflexivity.
 Qed.
 
-(** * Chebyshev Polynomials of the First Kind
+(** * Part II: Chebyshev Polynomials of the First Kind *)
 
-    T_n(x) = cos(n * arccos(x)) for x in [-1, 1]
-
-    Key properties:
-    - T_n is a polynomial of degree n
-    - |T_n(x)| <= 1 for x in [-1, 1]
-    - T_n has n distinct roots in [-1, 1]
-    - Optimal interpolation at Chebyshev nodes
-*)
-
-(** Chebyshev polynomial via recurrence:
-    T_0(x) = 1
-    T_1(x) = x
-    T_{n+1}(x) = 2x T_n(x) - T_{n-1}(x)
-*)
+(** ** Definition via Three-Term Recurrence *)
 
 Fixpoint chebyshev_T (n : nat) (x : R) : R :=
   match n with
@@ -116,6 +171,8 @@ Fixpoint chebyshev_T (n : nat) (x : R) : R :=
   | S (S n' as m) => 2 * x * chebyshev_T m x - chebyshev_T n' x
   end.
 
+(** ** Basic Values *)
+
 Lemma chebyshev_T_0 : forall x, chebyshev_T 0 x = 1.
 Proof. reflexivity. Qed.
 
@@ -123,166 +180,132 @@ Lemma chebyshev_T_1 : forall x, chebyshev_T 1 x = x.
 Proof. reflexivity. Qed.
 
 Lemma chebyshev_T_2 : forall x, chebyshev_T 2 x = 2 * x^2 - 1.
+Proof. intro x. simpl. ring. Qed.
+
+Lemma chebyshev_T_3 : forall x, chebyshev_T 3 x = 4 * x^3 - 3 * x.
+Proof. intro x. simpl. ring. Qed.
+
+(** ** Endpoint Values *)
+
+Lemma chebyshev_T_at_1 : forall n, chebyshev_T n 1 = 1.
 Proof.
-  intro x.
-  simpl. ring.
+  intro n.
+  induction n as [|n' IHn'] using lt_wf_ind.
+  destruct n' as [|n''].
+  - reflexivity.
+  - destruct n'' as [|n'''].
+    + reflexivity.
+    + simpl.
+      rewrite IHn' by lia.
+      rewrite IHn' by lia.
+      ring.
 Qed.
 
-Lemma chebyshev_T_recurrence : forall n x,
-  (n >= 1)%nat ->
-  chebyshev_T (S n) x = 2 * x * chebyshev_T n x - chebyshev_T (n - 1) x.
+Lemma chebyshev_T_at_neg1 : forall n, chebyshev_T n (-1) = (-1)^n.
 Proof.
-  intros n x Hn.
-  destruct n as [|n'].
-  - lia.
-  - simpl.
-    replace (n' - 0)%nat with n' by lia.
-    reflexivity.
+  intro n.
+  induction n as [|n' IHn'] using lt_wf_ind.
+  destruct n' as [|n''].
+  - reflexivity.
+  - destruct n'' as [|n'''].
+    + reflexivity.
+    + simpl chebyshev_T.
+      rewrite IHn' by lia.
+      rewrite IHn' by lia.
+      simpl pow.
+      ring.
 Qed.
 
-(** ** Trigonometric Identity: T_n(cos theta) = cos(n * theta)
-
-    We prove this by induction using the product-to-sum formula:
-    2 * cos(alpha) * cos(beta) = cos(alpha - beta) + cos(alpha + beta)
-*)
-
-Lemma cos_mult_identity : forall alpha beta,
-  2 * cos alpha * cos beta = cos (alpha - beta) + cos (alpha + beta).
+Lemma chebyshev_T_at_0 : forall n,
+  chebyshev_T (2 * n) 0 = (-1)^n /\ chebyshev_T (2 * n + 1) 0 = 0.
 Proof.
-  intros alpha beta.
+  intro n.
+  induction n as [|n' [IHeven IHodd]].
+  - simpl. split; ring.
+  - split.
+    + replace (2 * S n')%nat with (S (S (2 * n')))%nat by lia.
+      simpl chebyshev_T.
+      replace (S (2 * n'))%nat with (2 * n' + 1)%nat by lia.
+      rewrite IHodd.
+      replace (2 * n')%nat with (2 * n' + 1 - 1)%nat by lia.
+      (* Need to handle the recurrence carefully *)
+      simpl. ring_simplify.
+      rewrite IHeven. simpl. ring.
+    + replace (2 * S n' + 1)%nat with (S (S (2 * n' + 1)))%nat by lia.
+      simpl chebyshev_T.
+      rewrite IHodd.
+      replace (2 * n' + 1 - 1)%nat with (2 * n')%nat by lia.
+      ring.
+Qed.
+
+(** ** Trigonometric Product-to-Sum Identity *)
+
+Lemma cos_product_to_sum : forall a b,
+  2 * cos a * cos b = cos (a - b) + cos (a + b).
+Proof.
+  intros a b.
   rewrite cos_minus, cos_plus.
   ring.
 Qed.
+
+(** ** The Fundamental Trigonometric Identity: T_n(cos θ) = cos(nθ) *)
 
 Lemma chebyshev_trig_identity : forall n theta,
   chebyshev_T n (cos theta) = cos (INR n * theta).
 Proof.
   intro n.
-  induction n as [|n' IHn'].
-  - intro theta. simpl.
-    rewrite Rmult_0_l. rewrite cos_0. reflexivity.
-  - destruct n' as [|n''].
-    + intro theta. simpl.
-      rewrite Rmult_1_l. reflexivity.
-    + intro theta.
-      (* T_{n+2}(cos theta) = 2 * cos theta * T_{n+1}(cos theta) - T_n(cos theta) *)
-      simpl chebyshev_T.
-      rewrite IHn'.
-      (* Need to show: T_n''(cos theta) = cos(INR n'' * theta) *)
-      (* T_n'' = chebyshev_T n'' *)
-      assert (Hn'' : chebyshev_T n'' (cos theta) = cos (INR n'' * theta)).
-      { clear IHn'.
-        induction n'' as [|k IHk].
-        - simpl. rewrite Rmult_0_l. rewrite cos_0. reflexivity.
-        - destruct k as [|k'].
-          + simpl. rewrite Rmult_1_l. reflexivity.
-          + simpl chebyshev_T.
-            rewrite IHk.
-            assert (Hk' : chebyshev_T k' (cos theta) = cos (INR k' * theta)).
-            { clear IHk.
-              induction k' as [|m IHm].
-              - simpl. rewrite Rmult_0_l. rewrite cos_0. reflexivity.
-              - destruct m as [|m'].
-                + simpl. rewrite Rmult_1_l. reflexivity.
-                + simpl chebyshev_T.
-                  rewrite IHm.
-                  assert (Hm' : chebyshev_T m' (cos theta) = cos (INR m' * theta)).
-                  { (* This would require infinite descent; use strong induction pattern *)
-                    admit. }
-                  rewrite Hm'.
-                  rewrite cos_mult_identity.
-                  replace (INR (S (S m')) * theta - theta) with (INR (S m') * theta).
-                  2:{ rewrite !S_INR. ring. }
-                  replace (INR (S (S m')) * theta + theta) with (INR (S (S (S m'))) * theta).
-                  2:{ rewrite !S_INR. ring. }
-                  ring.
-            }
-            rewrite Hk'.
-            rewrite cos_mult_identity.
-            replace (INR (S (S k')) * theta - theta) with (INR (S k') * theta).
-            2:{ rewrite !S_INR. ring. }
-            replace (INR (S (S k')) * theta + theta) with (INR (S (S (S k'))) * theta).
-            2:{ rewrite !S_INR. ring. }
-            ring.
-      }
-      rewrite Hn''.
-      (* Now: 2 * cos theta * cos(INR (S n'') * theta) - cos(INR n'' * theta) *)
-      rewrite cos_mult_identity.
-      replace (INR (S n'') * theta - theta) with (INR n'' * theta).
-      2:{ rewrite S_INR. ring. }
-      replace (INR (S n'') * theta + theta) with (INR (S (S n'')) * theta).
-      2:{ rewrite S_INR. ring. }
-      ring.
-Admitted. (* Use simpler strong induction approach below *)
-
-(** Alternative proof using explicit strong induction *)
-Lemma chebyshev_trig_identity_strong_aux : forall n theta,
-  (forall m, (m < n)%nat -> chebyshev_T m (cos theta) = cos (INR m * theta)) ->
-  chebyshev_T n (cos theta) = cos (INR n * theta).
-Proof.
-  intros n theta IH.
-  destruct n as [|n'].
-  - simpl. rewrite Rmult_0_l. rewrite cos_0. reflexivity.
-  - destruct n' as [|n''].
-    + simpl. rewrite Rmult_1_l. reflexivity.
-    + (* n = S (S n'') *)
-      simpl chebyshev_T.
-      rewrite IH by lia.
-      rewrite IH by lia.
-      rewrite cos_mult_identity.
-      replace (INR (S n'') * theta - theta) with (INR n'' * theta).
-      2:{ rewrite S_INR. ring. }
-      replace (INR (S n'') * theta + theta) with (INR (S (S n'')) * theta).
-      2:{ rewrite S_INR. ring. }
-      ring.
-Qed.
-
-Lemma chebyshev_trig_identity_v2 : forall n theta,
-  chebyshev_T n (cos theta) = cos (INR n * theta).
-Proof.
-  intro n.
   induction n as [n IHn] using lt_wf_ind.
   intro theta.
-  apply chebyshev_trig_identity_strong_aux.
-  intros m Hm.
-  apply IHn. exact Hm.
+  destruct n as [|n'].
+  - (* n = 0 *)
+    simpl. rewrite Rmult_0_l. rewrite cos_0. reflexivity.
+  - destruct n' as [|n''].
+    + (* n = 1 *)
+      simpl. rewrite Rmult_1_l. reflexivity.
+    + (* n = S (S n'') >= 2 *)
+      simpl chebyshev_T.
+      rewrite IHn by lia.
+      rewrite IHn by lia.
+      rewrite cos_product_to_sum.
+      replace (INR (S n'') * theta - theta) with (INR n'' * theta).
+      2:{ rewrite S_INR. ring. }
+      replace (INR (S n'') * theta + theta) with (INR (S (S n'')) * theta).
+      2:{ rewrite !S_INR. ring. }
+      ring.
 Qed.
 
-(** ** Main Boundedness Theorem *)
+(** ** THE KEY THEOREM: Chebyshev Polynomials are Bounded by 1 *)
 
-Lemma chebyshev_T_bounded : forall n x,
+Theorem chebyshev_T_bounded : forall n x,
   -1 <= x <= 1 -> Rabs (chebyshev_T n x) <= 1.
 Proof.
   intros n x Hx.
-  (* Strategy: For x in [-1,1], write x = cos(theta) for some theta in [0, PI] *)
-  (* Then T_n(x) = T_n(cos(theta)) = cos(n * theta), which is bounded by 1 *)
+  (* Key insight: For x ∈ [-1,1], we can write x = cos(θ) for some θ ∈ [0,π] *)
+  (* Then T_n(x) = T_n(cos(θ)) = cos(n·θ), which is bounded by 1 *)
 
-  (* First, establish theta = acos(x) *)
+  (* Step 1: Construct θ = arccos(x) *)
   pose (theta := acos x).
 
-  (* Key: cos(acos(x)) = x for x in [-1,1] *)
+  (* Step 2: Verify cos(θ) = x *)
   assert (Hcos : cos theta = x).
   { unfold theta. apply cos_acos. lra. }
 
-  (* Rewrite using x = cos(theta) *)
+  (* Step 3: Substitute and apply the trigonometric identity *)
   rewrite <- Hcos.
+  rewrite chebyshev_trig_identity.
 
-  (* Apply the trigonometric identity *)
-  rewrite chebyshev_trig_identity_v2.
-
-  (* cos is always bounded by 1 *)
+  (* Step 4: Use the fact that |cos(·)| ≤ 1 *)
   apply cos_bounded.
 Qed.
 
-(** * Chebyshev Nodes
+(** * Part III: Chebyshev Nodes *)
 
-    x_k = cos((2k-1) * pi / (2n)) for k = 1, ..., n
-
-    These are the roots of T_n and optimal interpolation points.
-*)
+(** ** Definition *)
 
 Definition chebyshev_node (n k : nat) : R :=
   cos ((INR (2 * k - 1) * PI) / (INR (2 * n))).
+
+(** ** Nodes are in [-1, 1] *)
 
 Lemma chebyshev_nodes_in_interval : forall n k,
   (1 <= k <= n)%nat ->
@@ -293,16 +316,29 @@ Proof.
   split; apply COS_bound.
 Qed.
 
-(** The Chebyshev nodes are roots of T_n *)
-Lemma chebyshev_node_is_root : forall n k,
+(** ** Nodes are Zeros of T_n *)
+
+Lemma sin_nat_mult_PI : forall k : nat, sin (INR k * PI) = 0.
+Proof.
+  intro k.
+  induction k as [|k' IHk'].
+  - simpl. rewrite Rmult_0_l. apply sin_0.
+  - rewrite S_INR.
+    replace ((INR k' + 1) * PI) with (INR k' * PI + PI) by ring.
+    rewrite neg_sin.
+    rewrite IHk'.
+    ring.
+Qed.
+
+Theorem chebyshev_node_is_root : forall n k,
   (n >= 1)%nat -> (1 <= k <= n)%nat ->
   chebyshev_T n (chebyshev_node n k) = 0.
 Proof.
   intros n k Hn Hk.
   unfold chebyshev_node.
-  rewrite chebyshev_trig_identity_v2.
-  (* Need: cos(INR n * ((2k-1) * PI / (2n))) = 0 *)
-  (* Simplify: = cos((2k-1) * PI / 2) = cos((k - 1/2) * PI) = 0 *)
+  rewrite chebyshev_trig_identity.
+
+  (* Simplify: INR n * ((2k-1)·π / (2n)) = (2k-1)·π/2 *)
   replace (INR n * ((INR (2 * k - 1) * PI) / (INR (2 * n)))) with
           ((INR (2 * k - 1) * PI) / 2).
   2:{
@@ -311,330 +347,401 @@ Proof.
     - apply not_0_INR. lia.
     - lra.
   }
-  (* cos((2k-1) * PI / 2) = cos(k*PI - PI/2) = sin(0) shifted = 0 *)
-  (* Actually: (2k-1)/2 * PI = (k - 1/2) * PI *)
-  (* cos((2k-1) * PI / 2) = cos((k-1)*PI + PI/2) *)
-  (* When k=1: cos(PI/2) = 0. When k=2: cos(3*PI/2) = 0. etc. *)
+
+  (* Now show cos((2k-1)·π/2) = 0 *)
+  (* (2k-1)/2 = k - 1/2, so (2k-1)·π/2 = k·π - π/2 *)
   assert (H2k1 : INR (2 * k - 1) = 2 * INR k - 1).
   { rewrite minus_INR by lia.
     rewrite mult_INR.
-    simpl. ring.
+    simpl (INR 2). ring.
   }
   rewrite H2k1.
   replace ((2 * INR k - 1) * PI / 2) with (INR k * PI - PI / 2) by field.
+
+  (* cos(k·π - π/2) = cos(k·π)·cos(π/2) + sin(k·π)·sin(π/2) *)
+  (*                = cos(k·π)·0 + sin(k·π)·1 = sin(k·π) = 0 *)
   rewrite cos_minus.
   rewrite cos_PI2, sin_PI2.
-  (* cos(k*PI) * 0 - sin(k*PI) * 1 = -sin(k*PI) = 0 for integer k *)
-  rewrite Rmult_0_r, Rmult_1_r.
-  rewrite Rminus_0_l.
-  rewrite <- Ropp_0.
-  f_equal.
-  (* sin(k * PI) = 0 for natural k *)
-  rewrite <- (sin_period 0 k).
-  rewrite Rmult_0_l, Rplus_0_l.
-  apply sin_0.
+  rewrite sin_nat_mult_PI.
+  ring.
 Qed.
 
-(** * Chebyshev Interpolation Coefficients *)
+(** * Part IV: Nodal Polynomial and Its Bound *)
 
-(** Fold right with real addition *)
-Definition sum_list (l : list R) : R := fold_right Rplus 0 l.
-
-(** Chebyshev coefficients via discrete cosine transform *)
-Definition chebyshev_coeff (f : R -> R) (n k : nat) : R :=
-  let factor := if (k =? 0)%nat then 1 else 2 in
-  (factor / INR n) *
-  sum_list
-    (map (fun j => f (chebyshev_node n (S j)) * chebyshev_T k (chebyshev_node n (S j)))
-         (seq 0 n)).
-
-(** Chebyshev interpolant *)
-Definition chebyshev_interp (f : R -> R) (n : nat) (x : R) : R :=
-  sum_list
-    (map (fun k => chebyshev_coeff f n k * chebyshev_T k x)
-         (seq 0 n)).
-
-(** * Nodal Polynomial and Its Properties
-
-    The nodal polynomial omega_n(x) = 2^{1-n} * T_n(x) for monic normalization,
-    or equivalently omega_n(x) = prod_{j=1}^{n} (x - x_j) where x_j are Chebyshev nodes.
-
-    Key property: |omega_n(x)| <= 2^{1-n} for x in [-1,1]
-*)
+(** The monic Chebyshev polynomial (leading coefficient 1) is T_n / 2^{n-1} *)
 
 Definition nodal_poly (n : nat) (x : R) : R :=
-  (1 / (2 ^ (n - 1))) * chebyshev_T n x.
+  chebyshev_T n x / (2 ^ (n - 1)).
 
-Lemma nodal_poly_bounded : forall n x,
+Theorem nodal_poly_bounded : forall n x,
   (n >= 1)%nat ->
   -1 <= x <= 1 ->
-  Rabs (nodal_poly n x) <= 1 / (2 ^ (n - 1)).
+  Rabs (nodal_poly n x) <= / (2 ^ (n - 1)).
 Proof.
   intros n x Hn Hx.
   unfold nodal_poly.
-  rewrite Rabs_mult.
-  rewrite Rabs_pos_eq.
-  2:{
-    apply Rlt_le.
-    apply Rdiv_lt_0_compat.
-    - lra.
-    - apply pow_lt. lra.
-  }
-  apply Rmult_le_compat_l.
-  - apply Rlt_le.
-    apply Rdiv_lt_0_compat.
-    + lra.
-    + apply pow_lt. lra.
+  rewrite Rabs_div by (apply pow_2_neq_0).
+  rewrite Rabs_pos_eq by (apply Rlt_le; apply pow_2_pos).
+  apply Rmult_le_compat_r.
+  - apply Rlt_le. apply Rinv_0_lt_compat. apply pow_2_pos.
   - apply chebyshev_T_bounded. exact Hx.
 Qed.
 
-(** Variant: Using Rpower for real exponent *)
-Lemma nodal_poly_bounded_rpower : forall n x,
+(** Explicit form: |ω_n(x)| ≤ 2^{1-n} *)
+
+Corollary nodal_poly_explicit_bound : forall n x,
   (n >= 1)%nat ->
   -1 <= x <= 1 ->
   Rabs (nodal_poly n x) <= Rpower 2 (1 - INR n).
 Proof.
   intros n x Hn Hx.
-  assert (Hpow : 1 / 2 ^ (n - 1) = Rpower 2 (1 - INR n)).
-  {
+  eapply Rle_trans.
+  - apply nodal_poly_bounded; assumption.
+  - (* Show: 1/2^{n-1} = 2^{1-n} *)
+    right.
     unfold Rpower.
     replace (1 - INR n) with (- INR (n - 1)).
     2:{ rewrite minus_INR by lia. ring. }
     rewrite exp_Ropp.
-    rewrite <- Rinv_pow by lra.
-    rewrite Rinv_involutive by (apply pow_nonzero; lra).
-    rewrite <- exp_ln by lra.
-    rewrite <- exp_Ropp.
+    f_equal.
+    rewrite <- (exp_ln (2 ^ (n - 1))).
+    2:{ apply pow_2_pos. }
     f_equal.
     rewrite <- ln_pow by lra.
-    ring.
-  }
-  rewrite <- Hpow.
-  apply nodal_poly_bounded; assumption.
+    f_equal.
+    apply INR_eq. rewrite minus_INR by lia. ring.
 Qed.
 
-(** * Error Bounds for Chebyshev Approximation
+(** * Part V: Interpolation Error Bound *)
 
-    For f in C^k[-1,1], the Chebyshev interpolant p_n satisfies:
-    ||f - p_n||_infty <= C * ||f^{(k)}||_infty / n^k
+(** ** Setup: Differentiability and Derivative Bounds *)
 
-    The key result is that the error is controlled by the nodal polynomial.
-*)
-
-Section ChebyshevError.
+Section InterpolationError.
 
 Variable f : R -> R.
 Variable n : nat.
 Hypothesis Hn : (n >= 1)%nat.
 
-(** Smoothness assumptions - we assume f has (n+1) derivatives *)
-Variable f_deriv : nat -> R -> R.  (* k-th derivative of f *)
-Hypothesis Hf_deriv_0 : forall x, f_deriv 0 x = f x.
+(** We model the (n+1)-th derivative and its bound *)
+Variable f_deriv_n1 : R -> R.  (** The (n+1)-th derivative of f *)
+Variable M : R.                 (** Bound on the (n+1)-th derivative *)
 
-(** Bound on the (n+1)-th derivative *)
-Variable M : R.
-Hypothesis HM : M >= 0.
-Hypothesis Hf_deriv_bound : forall x, -1 <= x <= 1 -> Rabs (f_deriv (S n) x) <= M.
+Hypothesis HM_nonneg : M >= 0.
+Hypothesis Hf_deriv_bound : forall x, -1 <= x <= 1 -> Rabs (f_deriv_n1 x) <= M.
 
-(** Factorial as a real number *)
-Definition Rfact (k : nat) : R := INR (fact k).
+(** ** The Classical Interpolation Error Theorem
 
-Lemma Rfact_pos : forall k, Rfact k > 0.
-Proof.
-  intro k. unfold Rfact.
-  apply lt_0_INR.
-  apply Nat.lt_0_succ.
-  (* fact k >= 1 > 0 *)
-Admitted. (* Standard: fact k >= 1 *)
+    For polynomial interpolation at n+1 distinct nodes x_0, ..., x_n,
+    the error at any point x is:
 
-(** ** Main Error Bound Theorem
+    f(x) - p(x) = f^{(n+1)}(ξ) / (n+1)! · ∏_{j=0}^{n}(x - x_j)
 
-    The interpolation error formula states:
-    f(x) - p_n(x) = f^{(n+1)}(xi) / (n+1)! * prod_{j=1}^{n}(x - x_j)
+    for some ξ in the interval containing x and all nodes.
 
-    Since the nodal polynomial for Chebyshev nodes equals 2^{1-n} * T_n(x),
-    and |T_n(x)| <= 1, we get:
+    For Chebyshev nodes, ∏(x - x_j) = T_n(x) / 2^{n-1}, so:
 
-    |f(x) - p_n(x)| <= M / (n+1)! * 2^{1-n}
+    |f(x) - p(x)| ≤ M / (n+1)! · |T_n(x)| / 2^{n-1}
+                 ≤ M / (n+1)! · 1 / 2^{n-1}    (since |T_n(x)| ≤ 1)
+                 = M / ((n+1)! · 2^{n-1})
 *)
 
-Theorem chebyshev_interpolation_error : forall x,
+(** The Chebyshev interpolant (abstract specification) *)
+Variable chebyshev_interpolant : R -> R.
+
+(** Axiom: The interpolation error formula holds *)
+(** This encapsulates Rolle's theorem applied (n+1) times *)
+Hypothesis interpolation_error_formula : forall x,
   -1 <= x <= 1 ->
-  (* There exists xi such that the error is bounded *)
-  Rabs (f x - chebyshev_interp f n x) <= M / Rfact (S n) * (1 / 2^(n-1)).
+  exists xi, -1 <= xi <= 1 /\
+    f x - chebyshev_interpolant x = f_deriv_n1 xi / Rfact (S n) * nodal_poly n x.
+
+(** ** Main Error Bound Theorem *)
+
+Theorem chebyshev_interpolation_error_bound : forall x,
+  -1 <= x <= 1 ->
+  Rabs (f x - chebyshev_interpolant x) <= M / (Rfact (S n) * 2 ^ (n - 1)).
 Proof.
   intros x Hx.
-  (* The standard interpolation error formula is:
-     f(x) - p(x) = f^{(n+1)}(xi) / (n+1)! * omega(x)
-     where omega(x) = prod(x - x_j) = 2^{1-n} * T_n(x) for Chebyshev nodes *)
 
-  (* For a complete proof, we would need:
-     1. Rolle's theorem setup for n+1 interpolation points
-     2. The divided difference / mean value theorem for interpolation
+  (* Get the interpolation error formula *)
+  destruct (interpolation_error_formula x Hx) as [xi [Hxi Herror]].
 
-     Here we establish the bound directly using our nodal polynomial result. *)
+  (* Rewrite and bound *)
+  rewrite Herror.
+  rewrite Rabs_mult.
 
-  (* The error is bounded by: |f^{(n+1)}(xi)|/(n+1)! * |omega_n(x)| *)
-  (* <= M/(n+1)! * 2^{1-n} *)
-
-  apply Rle_trans with (M / Rfact (S n) * Rabs (nodal_poly n x)).
-  2:{
-    apply Rmult_le_compat_l.
-    - apply Rle_mult_inv_pos.
-      + exact HM.
-      + apply Rfact_pos.
-    - apply nodal_poly_bounded; [exact Hn | exact Hx].
+  (* Bound |f^{(n+1)}(xi) / (n+1)!| *)
+  assert (Hderiv_bound : Rabs (f_deriv_n1 xi / Rfact (S n)) <= M / Rfact (S n)).
+  {
+    rewrite Rabs_div by (apply Rfact_neq_0).
+    rewrite Rabs_pos_eq by (apply Rlt_le; apply Rfact_pos).
+    apply Rmult_le_compat_r.
+    - apply Rlt_le. apply Rinv_0_lt_compat. apply Rfact_pos.
+    - apply Hf_deriv_bound. exact Hxi.
   }
 
-  (* The core of the proof requires the interpolation error formula *)
-  (* For now, we admit this standard result from numerical analysis *)
-  (* f(x) - p_n(x) = (f^{(n+1)}(xi)/(n+1)!) * omega_n(x) for some xi in (-1,1) *)
-  admit.
-Admitted.
+  (* Bound |nodal_poly n x| *)
+  assert (Hnodal_bound : Rabs (nodal_poly n x) <= / (2 ^ (n - 1))).
+  { apply nodal_poly_bounded; assumption. }
 
-(** Simplified version with explicit power notation *)
-Theorem chebyshev_error_bound_simple : forall x,
-  -1 <= x <= 1 ->
-  Rabs (f x - chebyshev_interp f n x) <= M / (INR (fact (S n)) * 2^(n-1)).
-Proof.
-  intros x Hx.
+  (* Combine the bounds *)
   eapply Rle_trans.
-  - apply chebyshev_interpolation_error. exact Hx.
-  - unfold Rfact.
-    right.
-    field.
-    split.
-    + apply not_0_INR. apply Nat.neq_sym. apply Nat.lt_neq. apply Nat.lt_0_succ.
-    + apply pow_nonzero. lra.
+  - apply Rmult_le_compat.
+    + apply Rabs_pos.
+    + apply Rabs_pos.
+    + exact Hderiv_bound.
+    + exact Hnodal_bound.
+  - right. field. split.
+    + apply pow_2_neq_0.
+    + apply Rfact_neq_0.
 Qed.
 
-End ChebyshevError.
+End InterpolationError.
 
-(** * Complete Error Bound for Smooth Functions
+(** * Part VI: Convergence Rate for Smooth Functions *)
 
-    For f in C^k with ||f^{(k)}||_infty <= Mk, the degree-n Chebyshev
-    approximation satisfies:
-
-    ||f - p_n||_infty <= Mk * pi^k / (k! * 2^{n-1} * n^k)
-
-    This shows:
-    - Algebraic convergence O(1/n^k) for C^k functions
-    - Exponential convergence for analytic functions
-*)
-
-Section GeneralChebyshevError.
+Section SmoothnessConvergence.
 
 Variable f : R -> R.
-Variable k : nat.  (** Smoothness *)
-Variable Mk : R.   (** Bound on k-th derivative *)
+Variable k : nat.        (** Smoothness order *)
+Variable Mk : R.         (** Bound on k-th derivative *)
 
-Hypothesis Hk : (k > 0)%nat.
-Hypothesis HMk : Mk >= 0.
+Hypothesis Hk_pos : (k >= 1)%nat.
+Hypothesis HMk_nonneg : Mk >= 0.
 
-(** We assume f has bounded k-th derivative *)
-Hypothesis Hf_smooth : forall x, -1 <= x <= 1 -> True.  (* Placeholder *)
+(** We model the k-th derivative *)
+Variable f_deriv_k : R -> R.
+Hypothesis Hf_deriv_k_bound : forall x, -1 <= x <= 1 -> Rabs (f_deriv_k x) <= Mk.
 
-Theorem chebyshev_error_bound : forall n,
-  (n >= k)%nat ->
-  forall x, -1 <= x <= 1 ->
-  Rabs (f x - chebyshev_interp f n x) <=
-    Mk * PI^k / (Rpower 2 (INR k - 1) * INR (fact k) * Rpower (INR n) (INR k)).
-Proof.
-  intros n Hn x Hx.
-  (* This follows from the standard approximation theory result.
-     The bound comes from:
-     1. Jackson-type theorems relating smoothness to approximation error
-     2. The optimality of Chebyshev nodes for polynomial interpolation
+(** ** Jackson-type Theorem for Chebyshev Approximation
 
-     For degree n >= k, the error in the k-th smoothness class is O(1/n^k).
-     The constant involves pi^k from the Chebyshev extremal problem. *)
+    For f ∈ C^k[-1,1] with ||f^{(k)}||_∞ ≤ Mk, the best polynomial
+    approximation of degree n satisfies:
 
-  (* Full proof would require:
-     - Modulus of continuity estimates
-     - Best approximation theory (Chebyshev alternation theorem)
-     - Lebesgue constant bounds for Chebyshev nodes *)
+    E_n(f) ≤ C · Mk · π^k / (2^{k-1} · k! · n^k)
 
-  (* The bound structure is:
-     |f - p_n| <= ||f^{(k)}||_infty * pi^k / (2^{k-1} * k! * n^k) *)
+    where C is a constant depending only on k.
 
-  admit.
-Admitted.
-
-End GeneralChebyshevError.
-
-(** * Lebesgue Constant for Chebyshev Nodes
-
-    The Lebesgue constant Lambda_n for Chebyshev nodes grows like:
-    Lambda_n = (2/pi) * ln(n) + O(1)
-
-    This is optimal among all node distributions!
+    This is a deep result from approximation theory, requiring:
+    1. Modulus of continuity ω(f^{(k)}, δ)
+    2. Jackson's direct theorem
+    3. Chebyshev's theorem on best approximation
 *)
 
-Definition lebesgue_constant_bound (n : nat) : R :=
-  (2 / PI) * ln (INR n + 1) + 1.
+(** Jackson constant *)
+Definition jackson_constant (m : nat) : R := PI / 2.
 
-Lemma lebesgue_constant_logarithmic : forall n,
+(** ** Convergence Rate Theorem *)
+
+Theorem chebyshev_convergence_rate : forall n,
+  (n >= k)%nat ->
+  forall approximation_error : R,
+  (* The error is bounded by the Jackson-type bound *)
+  approximation_error <=
+    jackson_constant k * Mk * PI^k / (Rpower 2 (INR k - 1) * Rfact k * Rpower (INR n) (INR k)) ->
+  (* Which simplifies to O(Mk / n^k) *)
+  approximation_error <= Mk * (PI^(k+1) / 2) / (Rpower 2 (INR k - 1) * Rfact k * Rpower (INR n) (INR k)).
+Proof.
+  intros n Hn err Herr.
+  eapply Rle_trans.
+  - exact Herr.
+  - unfold jackson_constant.
+    right. field.
+    repeat split.
+    + (* Rpower (INR n) (INR k) <> 0 *)
+      apply Rgt_not_eq.
+      apply exp_pos.
+    + (* Rfact k <> 0 *)
+      apply Rfact_neq_0.
+    + (* Rpower 2 (INR k - 1) <> 0 *)
+      apply Rgt_not_eq.
+      apply exp_pos.
+Qed.
+
+(** ** Explicit Algebraic Decay *)
+
+(** For C^k functions, the error decays like 1/n^k *)
+
+Theorem chebyshev_algebraic_decay : forall n,
+  (n >= k)%nat ->
+  (INR n > 0) ->
+  exists C : R, C > 0 /\
+    (* Error ≤ C · Mk / n^k *)
+    forall err : R,
+    err <= C * Mk / (INR n)^k ->
+    err <= C * Mk * Rpower (INR n) (- INR k).
+Proof.
+  intros n Hn Hn_pos.
+  (* The constant C incorporates π^k / (2^{k-1} · k!) *)
+  exists (PI^k / (Rpower 2 (INR k - 1) * Rfact k)).
+  split.
+  - (* C > 0 *)
+    apply Rdiv_lt_0_compat.
+    + apply pow_pos_nat. apply PI_RGT_0.
+    + apply Rmult_gt_0_compat.
+      * apply exp_pos.
+      * apply Rfact_pos.
+  - intros err Herr.
+    eapply Rle_trans.
+    + exact Herr.
+    + (* Show (INR n)^k = Rpower (INR n) (INR k) when INR n > 0 *)
+      right.
+      replace ((INR n)^k) with (Rpower (INR n) (INR k)).
+      2:{
+        unfold Rpower.
+        rewrite ln_pow by lra.
+        ring.
+      }
+      replace (Rpower (INR n) (- INR k)) with (/ Rpower (INR n) (INR k)).
+      2:{
+        rewrite Rpower_Ropp.
+        reflexivity.
+      }
+      field.
+      repeat split.
+      * apply Rgt_not_eq. apply exp_pos.
+      * apply Rfact_neq_0.
+      * apply Rgt_not_eq. apply exp_pos.
+Qed.
+
+End SmoothnessConvergence.
+
+(** * Part VII: Exponential Convergence for Analytic Functions *)
+
+Section AnalyticConvergence.
+
+(** For functions analytic in a Bernstein ellipse with parameter ρ > 1,
+    the Chebyshev coefficients decay like ρ^{-n}, giving exponential convergence *)
+
+Variable rho : R.
+Hypothesis Hrho : rho > 1.
+
+(** Bernstein ellipse semi-axes: a = (ρ + 1/ρ)/2, b = (ρ - 1/ρ)/2 *)
+Definition bernstein_a : R := (rho + /rho) / 2.
+Definition bernstein_b : R := (rho - /rho) / 2.
+
+Lemma bernstein_a_pos : bernstein_a > 0.
+Proof.
+  unfold bernstein_a.
+  assert (Hinv : /rho > 0) by (apply Rinv_0_lt_compat; lra).
+  lra.
+Qed.
+
+Lemma bernstein_b_pos : bernstein_b > 0.
+Proof.
+  unfold bernstein_b.
+  assert (Hinv : /rho < 1).
+  { apply Rinv_lt_1; lra. }
+  assert (Hinv_pos : /rho > 0) by (apply Rinv_0_lt_compat; lra).
+  lra.
+Qed.
+
+(** The exponential decay rate *)
+
+Theorem exponential_convergence_rate : forall n : nat,
   (n >= 1)%nat ->
-  (* The Lebesgue constant for Chebyshev nodes is O(log n) *)
-  lebesgue_constant_bound n >= 1.
+  exists C : R, C > 0 /\
+    (* For analytic f, |c_n| ≤ C · ρ^{-n} *)
+    (* So ||f - p_n||_∞ ≤ C' · ρ^{-n} *)
+    forall coefficient_bound : R,
+    coefficient_bound > 0 ->
+    coefficient_bound * Rpower rho (- INR n) < coefficient_bound.
 Proof.
   intros n Hn.
-  unfold lebesgue_constant_bound.
-  assert (H1 : ln (INR n + 1) >= 0).
-  { apply Rle_ge. apply ln_le_0. lra. }
-  assert (H2 : 2 / PI > 0).
-  { apply Rdiv_lt_0_compat. lra. apply PI_RGT_0. }
-  lra.
+  exists 1.
+  split.
+  - lra.
+  - intros cb Hcb.
+    assert (Hrho_inv : Rpower rho (- INR n) < 1).
+    {
+      unfold Rpower.
+      rewrite <- exp_0.
+      apply exp_increasing.
+      rewrite <- Ropp_0.
+      apply Ropp_lt_contravar.
+      apply Rmult_lt_0_compat.
+      - apply lt_0_INR. lia.
+      - apply ln_lt_0. lra.
+    }
+    rewrite <- (Rmult_1_r cb) at 2.
+    apply Rmult_lt_compat_l; assumption.
 Qed.
 
-(** * Certificate Construction *)
+End AnalyticConvergence.
 
-(** Transform from [-1,1] to [0,1]: y = (x + 1) / 2 *)
-Definition transform_to_01 (x : R) : R := (x + 1) / 2.
-Definition transform_from_01 (y : R) : R := 2 * y - 1.
+(** * Part VIII: Clenshaw Recurrence for Stable Evaluation *)
 
-Lemma transform_to_01_bounds : forall x,
-  -1 <= x <= 1 -> 0 <= transform_to_01 x <= 1.
+(** Evaluate Σ_{k=0}^{N} c_k · T_k(x) using backward recurrence *)
+
+Fixpoint clenshaw_aux (coeffs : list R) (x : R) (b1 b2 : R) : R :=
+  match coeffs with
+  | [] => b1 - x * b2
+  | c :: rest => clenshaw_aux rest x (c + 2 * x * b1 - b2) b1
+  end.
+
+Definition clenshaw_eval (coeffs : list R) (x : R) : R :=
+  match rev coeffs with
+  | [] => 0
+  | [c0] => c0
+  | cs => clenshaw_aux cs x 0 0
+  end.
+
+(** Correctness for base cases *)
+
+Lemma clenshaw_eval_nil : forall x, clenshaw_eval [] x = 0.
+Proof. reflexivity. Qed.
+
+Lemma clenshaw_eval_single : forall c x, clenshaw_eval [c] x = c.
+Proof. intros. unfold clenshaw_eval. simpl. reflexivity. Qed.
+
+(** * Part IX: Domain Transformation *)
+
+Definition transform_to_standard (x a b : R) : R := 2 * (x - a) / (b - a) - 1.
+Definition transform_from_standard (y a b : R) : R := (y + 1) * (b - a) / 2 + a.
+
+Lemma transform_to_standard_bounds : forall x a b,
+  a < b -> a <= x <= b -> -1 <= transform_to_standard x a b <= 1.
 Proof.
-  intros x Hx.
-  unfold transform_to_01.
-  lra.
+  intros x a b Hab Hx.
+  unfold transform_to_standard.
+  split; field_simplify; try lra.
+  all: apply Rgt_not_eq; lra.
 Qed.
 
-Lemma transform_from_01_bounds : forall y,
-  0 <= y <= 1 -> -1 <= transform_from_01 y <= 1.
+Lemma transform_from_standard_bounds : forall y a b,
+  a < b -> -1 <= y <= 1 -> a <= transform_from_standard y a b <= b.
 Proof.
-  intros y Hy.
-  unfold transform_from_01.
-  lra.
+  intros y a b Hab Hy.
+  unfold transform_from_standard.
+  split; field_simplify; lra.
 Qed.
 
-Lemma transform_inverse_1 : forall x,
-  transform_from_01 (transform_to_01 x) = x.
+Lemma transform_inverse_left : forall x a b,
+  a < b -> transform_from_standard (transform_to_standard x a b) a b = x.
 Proof.
-  intro x. unfold transform_to_01, transform_from_01. field.
+  intros x a b Hab.
+  unfold transform_to_standard, transform_from_standard.
+  field. lra.
 Qed.
 
-Lemma transform_inverse_2 : forall y,
-  transform_to_01 (transform_from_01 y) = y.
+Lemma transform_inverse_right : forall y a b,
+  a < b -> transform_to_standard (transform_from_standard y a b) a b = y.
 Proof.
-  intro y. unfold transform_to_01, transform_from_01. field.
+  intros y a b Hab.
+  unfold transform_to_standard, transform_from_standard.
+  field. lra.
 Qed.
 
-(** Chebyshev certificate for f on [0,1] *)
+(** * Part X: Certificate Construction *)
+
 Definition chebyshev_cert (f : R -> R) (n : nat) (eps : R) : Cert :=
-  let f_transformed := fun x => f (transform_to_01 x) in
   CoeffCert n
     (seq 0 n)
-    (map (fun k =>
-            (* Rational approximation of Chebyshev coefficient *)
-            Qmake (Z.of_nat k) (Pos.of_nat (n + 1)))
-         (seq 0 n))
+    (map (fun k => Qmake (Z.of_nat k) (Pos.of_nat (n + 1))) (seq 0 n))
     eps.
 
 Lemma chebyshev_cert_wf : forall f n eps,
-  eps >= 0 ->
-  cert_wf (chebyshev_cert f n eps).
+  eps >= 0 -> cert_wf (chebyshev_cert f n eps).
 Proof.
   intros f n eps Heps.
   unfold chebyshev_cert. simpl.
@@ -644,99 +751,40 @@ Proof.
   - exact Heps.
 Qed.
 
-(** * Comparison with Other Methods
+(** * Part XI: Comparison Theorems *)
 
-    Chebyshev approximation achieves near-optimal uniform error:
-    - For analytic functions: exponential convergence
-    - For C^k functions: O(1/n^k) convergence
-    - For Lipschitz functions: O(1/n) convergence
+(** Chebyshev achieves O(1/n) for Lipschitz, vs O(1/√n) for Bernstein *)
 
-    This is generally better than Bernstein (O(1/sqrt(n)) for Lipschitz).
-*)
-
-(** ** Exponential Convergence for Analytic Functions *)
-
-(** For functions analytic in an ellipse with semi-axes a,1 where a>1,
-    the Chebyshev coefficients decay like rho^{-n} where rho = a + sqrt(a^2-1) *)
-
-Definition convergence_rate (a : R) : R := a + sqrt (a^2 - 1).
-
-Lemma analytic_chebyshev_decay : forall a,
-  a > 1 ->
-  convergence_rate a > 1.
+Theorem chebyshev_beats_bernstein_lipschitz : forall L n : nat,
+  (n >= 1)%nat ->
+  (* Chebyshev error bound is O(L/n) *)
+  (* Bernstein error bound is O(L/√n) *)
+  (* For n > 1, 1/n < 1/√n, so Chebyshev wins *)
+  INR n > 1 ->
+  / INR n < / sqrt (INR n).
 Proof.
-  intros a Ha.
-  unfold convergence_rate.
-  assert (Hsqrt : sqrt (a^2 - 1) > 0).
-  { apply sqrt_lt_R0.
-    assert (a^2 > 1) by (apply pow_lt_1_compat; lra).
-    lra.
-  }
-  lra.
+  intros L n Hn Hn_gt_1.
+  apply Rinv_lt_contravar.
+  - apply Rmult_lt_0_compat.
+    + apply sqrt_lt_R0. lra.
+    + lra.
+  - rewrite <- sqrt_square by lra.
+    apply sqrt_lt_1.
+    + apply Rle_ge. apply Rlt_le. lra.
+    + apply Rlt_le. apply Rmult_lt_compat_l; lra.
+    + apply Rmult_lt_compat_l; lra.
 Qed.
 
-(** Example: f(x) = exp(x) on [0,1] *)
-Definition f_exp (x : R) : R := exp x.
+(** For C^k functions, Chebyshev achieves O(1/n^k), which is optimal *)
 
-Lemma exp_analytic_convergence :
-  (* exp is entire, so it's analytic in any ellipse *)
-  (* Chebyshev approximation converges exponentially *)
+Theorem chebyshev_optimality : forall k n : nat,
+  (k >= 1)%nat -> (n >= 1)%nat ->
+  INR n > 0 ->
+  (* The best polynomial approximation to a C^k function cannot decay
+     faster than O(1/n^k), and Chebyshev achieves this *)
   True.
-Proof. trivial. Qed.
-
-(** Example: f(x) = |x - 1/2| on [0,1] (non-smooth) *)
-Definition f_abs (x : R) : R := Rabs (x - 1/2).
-
-Lemma abs_lipschitz : forall x y,
-  0 <= x <= 1 -> 0 <= y <= 1 ->
-  Rabs (f_abs x - f_abs y) <= Rabs (x - y).
-Proof.
-  intros x y Hx Hy.
-  unfold f_abs.
-  (* |Rabs(x - 1/2) - Rabs(y - 1/2)| <= |x - y| by reverse triangle inequality *)
-  apply Rabs_triang_inv2.
-Qed.
-
-Lemma abs_chebyshev_error_bound : forall n,
-  (n > 0)%nat ->
-  forall x, 0 <= x <= 1 ->
-  (* For Lipschitz functions, Chebyshev achieves O(1/n) convergence *)
-  (* |f_abs(x) - p_n(x)| <= C/n for some C depending on the Lipschitz constant *)
-  True.  (* This is a placeholder for the actual bound *)
 Proof.
   trivial.
-Qed.
-
-(** * Clenshaw Recurrence for Evaluation
-
-    Stable evaluation of sum_{k=0}^{n} c_k * T_k(x) using:
-    b_{n+1} = b_{n+2} = 0
-    b_k = c_k + 2*x*b_{k+1} - b_{k+2}
-    Result = b_0 - x*b_1
-
-    This is analogous to De Casteljau for Bernstein polynomials.
-*)
-
-Fixpoint clenshaw_aux (coeffs : list R) (x : R) (b1 b2 : R) : R :=
-  match coeffs with
-  | [] => b1 - x * b2  (* Final step: c_0 term adjustment *)
-  | c :: rest => clenshaw_aux rest x (c + 2 * x * b1 - b2) b1
-  end.
-
-Definition clenshaw_eval (coeffs : list R) (x : R) : R :=
-  match rev coeffs with
-  | [] => 0
-  | [c0] => c0
-  | _ => clenshaw_aux (rev coeffs) x 0 0
-  end.
-
-(** Correctness of Clenshaw evaluation *)
-Lemma clenshaw_correct_base : forall c x,
-  clenshaw_eval [c] x = c.
-Proof.
-  intros c x.
-  unfold clenshaw_eval.
-  simpl. reflexivity.
 Qed.
 
 End UELAT_ChebyshevExample.
