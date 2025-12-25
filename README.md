@@ -1,4 +1,4 @@
-﻿# License & Patent Notice
+# License & Patent Notice
 
 This repository is dual-licensed:
 
@@ -44,7 +44,53 @@ Certificate composition under sheaf-theoretic gluing with explicit size bounds. 
 
 ## Repository Structure
 
-UELAT/├── Coq/                           # Coq formalization│   ├── UELAT.v                    # Main entry point│   ├── _CoqProject                # Build configuration│   ││   ├── Foundations/               # Core definitions│   │   ├── Certificate.v          # Certificate type grammar (Appendix A)│   │   ├── ProbeTheory.v          # Probe category (Section 3.2)│   │   └── CCP.v                  # Contextual Choice Principle (Section 4)│   ││   ├── Adjunction/                # Probes-Models adjunction│   │   ├── Probe.v                # Category Probe│   │   ├── Model.v                # Category Model│   │   ├── Functors.v             # F and G functors│   │   ├── Adjunction.v           # Main theorem (Theorem 3.3)│   │   └── Reflection.v           # Reflection principle (Theorem 3.7)│   ││   ├── Approx/                    # Approximation theory│   │   ├── Bernstein.v            # Bernstein polynomials│   │   ├── Bernstein_Lipschitz.v  # Main Lipschitz bound (fully proven)│   │   ├── UELAT_Internal.v       # Internal UELAT (Theorem 5.1)│   │   ├── UELAT_External.v       # External version (Section 6)│   │   ├── Incompressibility.v    # Lower bounds (Theorem 8.2)│   │   └── EffectiveDescent.v     # Descent theorem (Theorem 9.3)│   ││   ├── Stability/                 # Stability theory│   │   ├── Modulus.v              # Modulus of continuity│   │   ├── UniformStability.v     # Theorem 7.1│   │   └── CertificateComposition.v│   ││   ├── Examples/                  # Concrete examples│   │   ├── ExpCert.v              # exp(x) certificate│   │   ├── FourierCert.v          # Fourier series (Appendix C)│   │   ├── ChebyshevCert.v        # Chebyshev polynomials (Verified & Optimized)│   │   └── SobolevCert.v          # Sobolev space examples│   ││   └── Util/                      # Utility lemmas│       ├── Reals_ext.v            # Real number extensions│       ├── Summation.v            # Finite summation│       └── Entropy.v              # Metric entropy│├── .github/workflows/ci.yml       # CI configuration├── https://www.google.com/search?q=LICENSE                        # AGPLv3 License└── README.md                      # This file
+```
+UELAT/
+├── Coq/                           # Coq formalization
+│   ├── UELAT.v                    # Main entry point
+│   ├── _CoqProject                # Build configuration
+│   │
+│   ├── Foundations/               # Core definitions
+│   │   ├── Certificate.v          # Certificate type grammar (Appendix A)
+│   │   ├── ProbeTheory.v          # Probe category (Section 3.2)
+│   │   └── CCP.v                  # Contextual Choice Principle (Section 4)
+│   │
+│   ├── Adjunction/                # Probes-Models adjunction
+│   │   ├── Probe.v                # Category Probe
+│   │   ├── Model.v                # Category Model
+│   │   ├── Functors.v             # F and G functors
+│   │   ├── Adjunction.v           # Main theorem (Theorem 3.3)
+│   │   └── Reflection.v           # Reflection principle (Theorem 3.7)
+│   │
+│   ├── Approx/                    # Approximation theory
+│   │   ├── Bernstein.v            # Bernstein polynomials
+│   │   ├── Bernstein_Lipschitz.v  # Main Lipschitz bound (fully proven)
+│   │   ├── UELAT_Internal.v       # Internal UELAT (Theorem 5.1)
+│   │   ├── UELAT_External.v       # External version (Section 6)
+│   │   ├── Incompressibility.v    # Lower bounds (Theorem 8.2)
+│   │   └── EffectiveDescent.v     # Descent theorem (Theorem 9.3)
+│   │
+│   ├── Stability/                 # Stability theory
+│   │   ├── Modulus.v              # Modulus of continuity
+│   │   ├── UniformStability.v     # Theorem 7.1
+│   │   └── CertificateComposition.v
+│   │
+│   ├── Examples/                  # Concrete examples
+│   │   ├── ExpCert.v              # exp(x) certificate
+│   │   ├── FourierCert.v          # Fourier series (Appendix C)
+│   │   ├── ChebyshevCert.v        # Chebyshev polynomials (Verified & Optimized)
+│   │   └── SobolevCert.v          # Sobolev space examples
+│   │
+│   └── Util/                      # Utility lemmas
+│       ├── Reals_ext.v            # Real number extensions
+│       ├── Summation.v            # Finite summation
+│       └── Entropy.v              # Metric entropy
+│
+├── .github/workflows/ci.yml       # CI configuration
+├── LICENSE                        # AGPLv3 License
+└── README.md                      # This file
+```
+
 ---
 
 ## Building
@@ -64,10 +110,64 @@ opam install . --deps-only -y
 
 # Build
 make -C Coq -j$(nproc)
-Using the build scriptBashbash .github/scripts/build_coq.sh
-VerificationBash# Check the compiled development
+```
+
+### Using the build script
+
+```bash
+bash .github/scripts/build_coq.sh
+```
+
+## Verification
+
+Check the compiled development:
+
+```bash
 coqchk -R Coq UELAT UELAT
-Key TheoremsTheoremModuleStatusBernstein Lipschitz boundApprox/Bernstein_Lipschitz.vFully provenChebyshev CertificationExamples/ChebyshevCert.vFully provenInternal UELAT (5.1)Approx/UELAT_Internal.vCore provenProbes-Models Adjunction (3.3)Adjunction/Adjunction.vCore provenCertificate Stability (7.1)Stability/UniformStability.vCore provenIncompressibility (8.2)Approx/Incompressibility.vFully provenEffective Descent (9.3)Approx/EffectiveDescent.vCore provenDevelopment NotesConstructive IslandThe directories Coq/Util/, Coq/Approx/, and Examples/ChebyshevCert.v form a constructive island with no Admitted or unjustified Axiom declarations. This is enforced by CI.Proof StatusFiles in Foundations/, Adjunction/, Approx/, and Stability/ contain the main developmentUpdate: The Chebyshev approximation layer and Information Theoretic lower bounds are now fully verified.Some advanced pedagogical examples in Examples/ (e.g. Sobolev) may still use Admitted as placeholders.StyleUses MathComp/ssreflect tactics where availableModule system for namespace isolationComments reference paper section numbersCitationIf you use this formalization, please cite:Code snippet@misc{uelat2025,
+```
+
+---
+
+## Key Theorems
+
+| Theorem | Module | Status |
+|---------|--------|--------|
+| Bernstein Lipschitz bound | `Approx/Bernstein_Lipschitz.v` | Fully proven |
+| Chebyshev Certification | `Examples/ChebyshevCert.v` | Fully proven |
+| Internal UELAT (5.1) | `Approx/UELAT_Internal.v` | Core proven |
+| Probes-Models Adjunction (3.3) | `Adjunction/Adjunction.v` | Core proven |
+| Certificate Stability (7.1) | `Stability/UniformStability.v` | Core proven |
+| Incompressibility (8.2) | `Approx/Incompressibility.v` | Fully proven |
+| Effective Descent (9.3) | `Approx/EffectiveDescent.v` | Core proven |
+
+---
+
+## Development Notes
+
+### Constructive Island
+
+The directories `Coq/Util/`, `Coq/Approx/`, and `Examples/ChebyshevCert.v` form a constructive island with no `Admitted` or unjustified `Axiom` declarations. This is enforced by CI.
+
+### Proof Status
+
+- Files in `Foundations/`, `Adjunction/`, `Approx/`, and `Stability/` contain the main development
+- The Chebyshev approximation layer and Information Theoretic lower bounds are now fully verified
+- Some advanced pedagogical examples in `Examples/` (e.g., Sobolev) may still use `Admitted` as placeholders
+
+### Style
+
+- Uses MathComp/ssreflect tactics where available
+- Module system for namespace isolation
+- Comments reference paper section numbers
+
+---
+
+## Citation
+
+If you use this formalization, please cite:
+
+```bibtex
+@misc{uelat2025,
   title={Universal Gluing and Contextual Choice: Categorical Logic and the Foundations of Analytic Approximation},
   author={Ballus Santacana, Andreu},
   year={2025},
@@ -75,4 +175,42 @@ Key TheoremsTheoremModuleStatusBernstein Lipschitz boundApprox/Bernstein_Lipschi
   archivePrefix={arXiv},
   primaryClass={math.FA}
 }
-LegalCopyright (c) Andreu Ballus Santacana, 2025.Patent NoticeSome or all of the algorithms and certificate-based approximation procedures in this repository are protected under U.S. Provisional Patent Application No. 63/827,358, filed June 20, 2025:"Universal Symbolic Approximation of Functions via Logic Fragment Assembly and Categorical Embedding"LicenseOpen Source: This project is licensed under the GNU Affero General Public License v3 (AGPLv3).Commercial Use: Commercial use, integration, or modification without the open-source requirements of AGPLv3 requires a separate commercial license.Contact: andreuballus@gmail.com for licensing inquiries.See LICENSE for full details.ReferencesA. Cohen, Numerical Analysis of Wavelet Methods, Elsevier, 2003.R. DeVore and G. Lorentz, Constructive Approximation, Springer, 1993.LinksPaper (arXiv)IssuesContact
+```
+
+---
+
+## Legal
+
+### Copyright
+
+Copyright (c) Andreu Ballus Santacana, 2025.
+
+### Patent Notice
+
+Some or all of the algorithms and certificate-based approximation procedures in this repository are protected under U.S. Provisional Patent Application No. 63/827,358, filed June 20, 2025:
+
+**"Universal Symbolic Approximation of Functions via Logic Fragment Assembly and Categorical Embedding"**
+
+### License
+
+- **Open Source:** This project is licensed under the GNU Affero General Public License v3 (AGPLv3).
+- **Commercial Use:** Commercial use, integration, or modification without the open-source requirements of AGPLv3 requires a separate commercial license.
+
+For licensing inquiries, contact: andreuballus@gmail.com
+
+See `LICENSE` for full details.
+
+---
+
+## References
+
+1. A. Cohen, *Numerical Analysis of Wavelet Methods*, Elsevier, 2003.
+2. R. DeVore and G. Lorentz, *Constructive Approximation*, Springer, 1993.
+
+---
+
+## Links
+
+- [Paper (arXiv)](https://arxiv.org/abs/2506.22693)
+- [Issues](https://github.com/ipsissima/UELAT/issues)
+- [Contact](mailto:andreuballus@gmail.com)
