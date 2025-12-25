@@ -1,0 +1,17 @@
+opam-version: "2.0"
+name: "uelat"
+version: "dev"
+synopsis: "Constructive eigenspace and certificate analysis framework"
+maintainer: "ipsissima"
+license: "MIT"
+depends: [
+  "ocaml" {>= "4.14.0"}
+  "coq" {>= "8.18" & < "8.20"}
+  "coq-mathcomp-ssreflect"
+  "coq-mathcomp-algebra"
+  "coq-mathcomp-analysis"
+  "coq-coquelicot"
+  "dune" {>= "3.10"}
+]
+build: [ "dune" "build" "-p" "uelat" "-j" jobs ]
+install: [ "dune" "install" "-p" "uelat" ]

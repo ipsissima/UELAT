@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  JULIA_NUM_THREADS: 2
+  OPAMYES: true
+  COQCHK_ARGS: "-q -R Coq UELAT UELAT"
+
+permissions:
+  contents: read
+
+jobs:
+  coq:
+    name: Coq build (opam)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache opam
+        uses: actions/cache@v4
+        with:
+          path: ~/.opam
+          key: ${{ runner.os }}-opam-${{ hashFiles('**/uelat.opam') }}
+
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: true
+
+      - name: Prepare opam & repos
+        shell: bash
+        run: |
+          set -eux
+          opam init -a --bare --disable-sandboxing || true
+          opam repo add coq-released https://coq.inria.fr/opam/released || \
+            opam repo set-url coq-released https://coq.inria.fr/opam/released
+          opam update
+
+      - name: Setup opam switch safely
+        shell: bash
+        run: |
+          set -eux
+          SWITCH_NAME="uelat"
+          if opam switch list --short | grep -Fxq "${SWITCH_NAME}"; then
+            echo "Reusing existing switch '${SWITCH_NAME}'"
+            opam switch set "${SWITCH_NAME}"
+          else
+            echo "Creating new switch '${SWITCH_NAME}'"
+            opam switch create "${SWITCH_NAME}" ocaml-base-compiler.4.14.2
+          fi
+          eval "$(opam env)"
+          opam pin add uelat.dev . --no-action --yes
+          opam install . --deps-only --yes
+
+      - name: Build Coq
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          readarray -t COQ_FILES < <(git ls-files 'Coq/*.v' 'Coq/*/*.v' 'Coq/*/*/*.v')
+          coq_makefile -f Coq/_CoqProject "${COQ_FILES[@]}" -o Coq/Makefile
+          make -C Coq -j2
+
+      - name: coqchk (UELAT)
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          IFS=' ' read -r -a COQCHK_ARGS_ARRAY <<< "$COQCHK_ARGS"
+          coqchk "${COQCHK_ARGS_ARRAY[@]}"
+
+      - name: No Admitted/Axiom in constructive island
+        shell: bash
+        run: |
+          set -e
+          # Check core proven modules - these must have no Admitted/Axiom
+          CORE_FILES=(
+            Coq/Util/Modulus.v
+            Coq/Approx/Certificate.v
+            Coq/Approx/Bernstein.v
+            Coq/Approx/Bernstein_Lipschitz.v
+            Coq/Approx/Spec.v
+            Coq/Approx/Weierstrass_Lipschitz.v
+          )
+          CORE_CLEAN=true
+          for f in "${CORE_FILES[@]}"; do
+            if [ -f "$f" ] && grep -E '\b(Admitted|Axiom)\b' "$f"; then
+              echo "::error::Found Admitted/Axiom in core file: $f"
+              CORE_CLEAN=false
+            fi
+          done
+          if [ "$CORE_CLEAN" = false ]; then
+            exit 1
+          fi
+          echo "Core constructive island is clean"
+
+  python:
+    name: Python unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          if [ -f pyproject.toml ] || [ -f setup.cfg ] || [ -f setup.py ]; then pip install -e .; fi
+      - name: Run tests
+        run: pytest -q
+
+  julia:
+    name: Julia unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - name: Julia tests
+        run: |
+          julia --color=yes --project=. -e '
+            using Pkg;
+            Pkg.instantiate();
+            Pkg.resolve();
+            Pkg.build();
+            Pkg.test(; coverage=true);
+          '
+
+  lint:
+    name: Workflow lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actionlint
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash -o /tmp/download-actionlint.bash
+          bash /tmp/download-actionlint.bash latest "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Lint GitHub Workflows
+        run: actionlint -color
