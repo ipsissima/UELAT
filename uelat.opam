@@ -3,7 +3,7 @@ name: "uelat"
 version: "dev"
 synopsis: "Constructive eigenspace and certificate analysis framework"
 maintainer: "ipsissima"
-license: "MIT"
+license: "AGPL-3.0"
 depends: [
   "ocaml" {>= "4.14.0"}
   "coq" {>= "8.18" & < "8.20"}
