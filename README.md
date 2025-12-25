@@ -1,16 +1,3 @@
-# License & Patent Notice
-
-This repository is dual-licensed:
-
-1.  **Open Source:** Available under the **GNU Affero General Public License v3 (AGPLv3)** for academic and open-source projects.
-2.  **Commercial:** For proprietary use, closed-source integration, or to use the algorithms without AGPL restrictions, you must purchase a **Commercial License**.
-
-> *Note: The algorithms, methods, and certificate procedures in this repository are protected by U.S. Patent App. No. 63/827,358. This software is strictly for open-source use unless a commercial license is obtained.*
-
-**Contact:** andreuballus@gmail.com
-
----
-
 [![CI](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml/badge.svg)](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml)
 
 # Universal Embedding and Linear Approximation Theorem (UELAT)
@@ -176,29 +163,6 @@ If you use this formalization, please cite:
   primaryClass={math.FA}
 }
 ```
-
----
-
-## Legal
-
-### Copyright
-
-Copyright (c) Andreu Ballus Santacana, 2025.
-
-### Patent Notice
-
-Some or all of the algorithms and certificate-based approximation procedures in this repository are protected under U.S. Provisional Patent Application No. 63/827,358, filed June 20, 2025:
-
-**"Universal Symbolic Approximation of Functions via Logic Fragment Assembly and Categorical Embedding"**
-
-### License
-
-- **Open Source:** This project is licensed under the GNU Affero General Public License v3 (AGPLv3).
-- **Commercial Use:** Commercial use, integration, or modification without the open-source requirements of AGPLv3 requires a separate commercial license.
-
-For licensing inquiries, contact: andreuballus@gmail.com
-
-See `LICENSE` for full details.
 
 ---
 
