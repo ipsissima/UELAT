@@ -166,20 +166,6 @@ If you use this formalization, please cite:
 
 ---
 
-## Legal
-
-### Copyright
-
-Copyright (c) Andreu Ballus Santacana, 2025.
-
-### Patent Notice
-
-Some or all of the algorithms and certificate-based approximation procedures in this repository are protected under U.S. Provisional Patent Application No. 63/827,358, filed June 20, 2025:
-
-**"Universal Symbolic Approximation of Functions via Logic Fragment Assembly and Categorical Embedding"**
-
----
-
 ## References
 
 1. A. Cohen, *Numerical Analysis of Wavelet Methods*, Elsevier, 2003.
