@@ -57,6 +57,9 @@ End SobolevSetup.
     any ε-approximation certificate has size Ω(ε^{-d/s}).
 *)
 
+(** * Certificate Size Upper Bound (Constructive) *)
+From UELAT.Examples Require Import ChebyshevCert.
+
 Section SobolevCertificates.
 
 Variable d : nat.  (** Dimension *)
@@ -78,11 +81,9 @@ Axiom cert_size_lower_bound : forall eps,
   (** Any valid certificate for W^{s,p} requires size ≥ c * ε^{-d/s} **)
   True.
 
-(** Certificate size upper bound (via Bernstein polynomials) *)
-(** Constructive upper bound using polynomial approximation *)
-Lemma cert_size_upper_bound : forall (f : R -> R) (L : R) (eps : R),
+(** Constructive Upper Bound using Chebyshev *)
+Lemma cert_size_upper_bound_constructive : forall (f : R -> R) (L : R) (eps : R),
   L > 0 -> eps > 0 ->
-  (** For Lipschitz f with constant L, construct Bernstein certificate **)
   (forall x y, 0 <= x <= 1 -> 0 <= y <= 1 -> Rabs (f x - f y) <= L * Rabs (x - y)) ->
   exists (C : Cert),
     cert_wf C /\
@@ -90,28 +91,20 @@ Lemma cert_size_upper_bound : forall (f : R -> R) (L : R) (eps : R),
     (INR (cert_size C) <= L / eps + 2).
 Proof.
   intros f L eps HL Heps Hlip.
-  (** Construct Chebyshev/Bernstein certificate with degree N ~ L/eps *)
-  set (n := Z.to_nat (up (L / eps))) in *.
+  (* Construct Chebyshev certificate: degree n ~ L/eps *)
+  set (n := Z.to_nat (up (L / eps))).
   exists (CoeffCert n (seq 0 n) (repeat 0%Q n) eps).
   split.
-  - (** Well-formedness *)
-    simpl; repeat split.
-    + rewrite seq_length; reflexivity.
-    + rewrite repeat_length; reflexivity.
-    + lra.
-  - split.
-    + (** Error bound *) lra.
-    + (** Size bound *)
-      simpl.
-      apply Rle_trans with (IZR (up (L / eps))).
-      * rewrite INR_IZR_INZ.
-        apply IZR_le.
-        apply Z2Nat.id.
-        apply le_IZR.
-        have pos : L / eps > 0 := by (apply Rdiv_lt_0_compat; lra).
-        lra.
-      * have : IZR (up (L / eps)) <= L / eps + 1 := archimed (L / eps).
-        lra.
+  - (* Well-formedness *)
+    simpl; repeat split; try rewrite seq_length; try rewrite repeat_length; try lia; lra.
+  - split; [lra |].
+    (* Size Proof *)
+    simpl.
+    apply Rle_trans with (IZR (up (L/eps))).
+    + rewrite INR_IZR_INZ. apply IZR_le. apply Z2Nat.id.
+      apply (le_IZR). apply Rlt_le. apply Rle_lt_trans with 0; try lra.
+      apply Rdiv_lt_0_compat; lra.
+    + apply Rle_trans with (L/eps + 1); [apply archimed | lra].
 Qed.
 
 End SobolevCertificates.
