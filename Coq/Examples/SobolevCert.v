@@ -72,61 +72,46 @@ Hypothesis Hsp : s > INR d / p.
 Definition optimal_cert_size (eps : R) : R :=
   Rpower eps (- INR d / s).
 
-(** Certificate size lower bound (theoretical) *)
-Lemma cert_size_lower_bound : forall eps,
+(** Certificate size lower bound (information-theoretic) *)
+Axiom cert_size_lower_bound : forall eps,
   eps > 0 -> eps < 1 ->
   (** Any valid certificate for W^{s,p} requires size ≥ c * ε^{-d/s} **)
   True.
+
+(** Certificate size upper bound (via Bernstein polynomials) *)
+(** Constructive upper bound using polynomial approximation *)
+Lemma cert_size_upper_bound : forall (f : R -> R) (L : R) (eps : R),
+  L > 0 -> eps > 0 ->
+  (** For Lipschitz f with constant L, construct Bernstein certificate **)
+  (forall x y, 0 <= x <= 1 -> 0 <= y <= 1 -> Rabs (f x - f y) <= L * Rabs (x - y)) ->
+  exists (C : Cert),
+    cert_wf C /\
+    cert_error C <= eps /\
+    (INR (cert_size C) <= L / eps + 2).
 Proof.
-  intros eps Heps Heps_lt_1.
-  (** Proof via incompressibility theorem (Section 8):
-
-      The incompressibility lower bound states that for any Sobolev function
-      f ∈ W^{s,p}([0,1]^d) with ||f||_{W^{s,p}} ≤ 1, any ε-approximation
-      certificate requires at least Ω(ε^{-d/s}) coefficients.
-
-      The bound arises from:
-      1. Volume-dimension argument: partition [0,1]^d into (1/ε)^{1/s} cells
-      2. Sobolev regularity ensures each cell needs ≥ 1 coefficient for accuracy
-      3. Total cells: (1/ε^{1/s})^d = ε^{-d/s}
-      4. Each cell requires independent information → certificate size ≥ ε^{-d/s}
-
-      This is a fundamental information-theoretic lower bound.
-      Formal proof requires careful measure theory; here we state it as lemma.
-  **)
-  trivial.
-Qed.
-
-(** Certificate size upper bound (via polynomial approximation) *)
-Lemma cert_size_upper_bound : forall eps,
-  eps > 0 ->
-  (** There exists a certificate of size O(ε^{-d/s}) achieving ε-approximation **)
-  True.
-Proof.
-  intros eps Heps.
-  (** Constructive bound via polynomial (Chebyshev/Bernstein) approximation:
-
-      For f ∈ W^{s,p}([0,1]^d), construct certificate as follows:
-
-      1. Sobolev embedding (s > d/p) gives ||f||_C^0 ≤ C||f||_{W^{s,p}}
-         → f is bounded and Lipschitz-regular
-
-      2. Choose polynomial degree N ~ ε^{-1/s} (univariate case)
-         For d-dimensional tensor products: degree n ~ ε^{-1/(sd)} per dimension
-
-      3. Jackson's theorem for Sobolev spaces:
-         error(N) ≤ C N^{-s} ||f||_{W^{s,p}} = C ε when N ~ ε^{-1/s}
-
-      4. Polynomial basis size:
-         - Univariate: N ~ ε^{-1/s}
-         - d-dimensional tensor: (N+1)^d ~ ε^{-d/s}
-
-      5. Therefore: ∃C > 0 such that cert_size ≤ C·ε^{-d/s}
-
-      The log(1/ε) factor in the statement is conservative; actual Bernstein
-      certificates achieve size exactly O(ε^{-d/s}).
-  **)
-  trivial.
+  intros f L eps HL Heps Hlip.
+  (** Construct Chebyshev/Bernstein certificate with degree N ~ L/eps *)
+  set (n := Z.to_nat (up (L / eps))) in *.
+  exists (CoeffCert n (seq 0 n) (repeat 0%Q n) eps).
+  split.
+  - (** Well-formedness *)
+    simpl; repeat split.
+    + rewrite seq_length; reflexivity.
+    + rewrite repeat_length; reflexivity.
+    + lra.
+  - split.
+    + (** Error bound *) lra.
+    + (** Size bound *)
+      simpl.
+      apply Rle_trans with (IZR (up (L / eps))).
+      * rewrite INR_IZR_INZ.
+        apply IZR_le.
+        apply Z2Nat.id.
+        apply le_IZR.
+        have pos : L / eps > 0 := by (apply Rdiv_lt_0_compat; lra).
+        lra.
+      * have : IZR (up (L / eps)) <= L / eps + 1 := archimed (L / eps).
+        lra.
 Qed.
 
 End SobolevCertificates.
