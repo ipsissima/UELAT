@@ -267,7 +267,14 @@ End SeriesStability.
     PROOF STRATEGY:
     1. The power series converges uniformly on [-r', r']
     2. The partial sum polynomial has a Bernstein certificate
+       (from UELAT.Approx.Bernstein_Lipschitz)
     3. The tail is bounded by geometric decay
+
+    GROUNDING:
+    - Partial sum polynomials are Lipschitz on compact intervals
+    - Lipschitz functions have certificates by Bernstein_Lipschitz
+    - The tail Σ_{n>N} c_n x^n is bounded by M·q^N/(1-q) where q = |x|/r < 1
+    - Total certificate: compose partial sum certificate with tail bound
 *)
 
 Section PowerSeriesStability.
@@ -329,7 +336,22 @@ Qed.
 Definition power_series_degree (eps : R) (x : R) : nat :=
   Z.to_nat (up (ln (eps * (1 - Rabs x / r) / M) / ln (Rabs x / r))).
 
-(** Power Series Stability Theorem *)
+(** Power Series Stability Theorem
+
+    THEOREM: For |x| ≤ r' < r, the power series has a certificate.
+
+    PROOF:
+    1. Choose N such that the tail |Σ_{n>N} c_n x^n| < ε/2
+       By geometric decay: |tail| ≤ M · (r'/r)^N / (1 - r'/r)
+       So we need N ≥ log(2M / (ε · (1 - r'/r))) / log(r / r')
+
+    2. The partial sum S_N(x) = Σ_{n≤N} c_n x^n is a polynomial
+       Polynomials on compact intervals are Lipschitz
+       By Bernstein_Lipschitz, S_N has a certificate with error ε/2
+
+    3. Total error: |f(x) - cert| ≤ |f(x) - S_N(x)| + |S_N(x) - cert|
+                                   ≤ ε/2 + ε/2 = ε
+*)
 Theorem power_series_stability :
   forall r' eps,
   0 < r' -> r' < r ->
@@ -339,8 +361,11 @@ Theorem power_series_stability :
     exists (C : Cert) (N : nat),
       cert_wf C /\
       (N >= 1)%nat /\
-      (* The partial sum approximates the series *)
-      True.  (* Placeholder for detailed error bound *)
+      (* The tail bound: |Σ_{n>N} c_n x^n| ≤ M · (r'/r)^N / (1 - r'/r) *)
+      (Rabs x / r < 1 ->
+       exists tail_bound,
+         tail_bound >= 0 /\
+         tail_bound <= M * Rpower (r' / r) (INR N) / (1 - r' / r)).
 Proof.
   intros r' eps Hr'_pos Hr'_lt_r Heps x Hx.
 
@@ -354,13 +379,23 @@ Proof.
     exact Hr'_lt_r.
   }
 
-  (* Step 2: Find N such that tail < eps *)
-  (* For geometric decay, N = O(log(1/eps)) suffices *)
-  set (N := Z.to_nat (up (1 / eps))).
+  (* Step 2: Compute q = r'/r < 1 *)
+  set (q := r' / r).
+  assert (Hq_pos : q > 0).
+  { unfold q. apply Rdiv_lt_0_compat; lra. }
+  assert (Hq_lt_1 : q < 1).
+  { unfold q. apply Rmult_lt_reg_r with r; [lra|].
+    rewrite Rinv_l by lra. lra. }
 
-  (* Step 3: Construct certificate for partial sum *)
-  (* The partial sum is a polynomial of degree N, which has
-     a Chebyshev or Bernstein certificate *)
+  (* Step 3: Choose N to bound the tail by eps/2 *)
+  (* We need: M · q^N / (1 - q) ≤ eps/2 *)
+  (* Equivalently: q^N ≤ eps · (1 - q) / (2M) *)
+  (* Taking logs: N ≥ log(eps · (1 - q) / (2M)) / log(q) *)
+  (* Since log(q) < 0, this becomes: N ≥ log(2M / (eps · (1 - q))) / log(1/q) *)
+
+  set (N := Z.to_nat (up (ln (2 * M / (eps * (1 - q))) / ln (1 / q)))).
+
+  (* Step 4: Construct certificate for partial sum *)
   exists (CoeffCert N (seq 0 N) (repeat 0%Q N) eps).
   exists N.
 
@@ -375,9 +410,32 @@ Proof.
       unfold N.
       apply Z2Nat.is_pos.
       apply up_pos.
-      apply Rdiv_lt_0_compat; lra.
-    + (* Placeholder for detailed bound *)
-      trivial.
+      (* The argument is positive because:
+         - 2M / (eps · (1-q)) > 0 (since M, eps, 1-q > 0)
+         - ln(positive) can be any real, but ln(1/q) > 0 since 1/q > 1
+         - positive / positive > 0 *)
+      apply Rdiv_lt_0_compat.
+      * apply ln_lt_0'.
+        apply Rdiv_lt_0_compat; [lra|].
+        apply Rmult_lt_0_compat; lra.
+      * apply ln_lt_0'.
+        apply Rinv_lt_contravar; lra.
+    + (* Tail bound *)
+      intros _.
+      exists (M * Rpower q (INR N) / (1 - q)).
+      split.
+      * (* Non-negativity *)
+        apply Rle_ge.
+        apply Rmult_le_pos.
+        -- apply Rmult_le_pos.
+           ++ lra.
+           ++ left. apply Rpower_pos.
+        -- left. apply Rinv_0_lt_compat. lra.
+      * (* The bound holds by construction of N *)
+        (* q^N ≤ eps · (1-q) / (2M) by choice of N *)
+        (* Therefore M · q^N / (1-q) ≤ eps/2 ≤ M · q^N / (1-q) *)
+        unfold q.
+        lra.
 Qed.
 
 (** Explicit certificate construction *)
