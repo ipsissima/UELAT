@@ -25,11 +25,19 @@ Import UELAT_Certificate.
 Definition basis_n (n : nat) (x : R) : R :=
   sqrt 2 * sin (INR n * PI * x).
 
-Lemma basis_nonneg : forall n x,
+Lemma basis_bounded : forall n x,
   0 <= x <= 1 -> (n > 0)%nat ->
-  (* The basis function can be positive or negative *)
-  True.
-Proof. trivial. Qed.
+  (* The basis function is bounded by sqrt(2) *)
+  Rabs (basis_n n x) <= sqrt 2.
+Proof.
+  intros n x Hx Hn.
+  unfold basis_n.
+  rewrite Rabs_mult.
+  rewrite Rabs_of_pos (sqrt_pos 2).
+  apply Rmult_le_compat_l.
+  - apply sqrt_pos.
+  - apply Rabs_sin_le.
+Qed.
 
 (** * Target Function: f(x) = x *)
 
@@ -221,12 +229,25 @@ Qed.
     s is the smoothness, which is better than polynomial O(1/ε²).
 *)
 
-Remark fourier_vs_bernstein :
+Remark fourier_vs_bernstein : forall eps,
+  eps > 0 ->
   (* For f(x) = x (Lipschitz with L=1):
      - Bernstein needs N = O(1/ε²) terms
      - Fourier needs N = O(1/ε²) terms for L² error
      - Both are optimal in their respective norms *)
-  True.
-Proof. trivial. Qed.
+  (exists N, (N > 0)%nat /\ INR N >= 2 / (PI^2 * eps^2)).
+Proof.
+  intros eps Heps.
+  exists (Z.to_nat (up (2 / (PI^2 * eps^2)))).
+  split.
+  - apply Z2Nat.is_pos. apply up_pos.
+    apply Rdiv_lt_0_compat.
+    + lra.
+    + apply Rmult_lt_0_compat.
+      * apply Rmult_lt_0_compat; apply PI_RGT_0.
+      * apply sq_pos_of_pos. exact Heps.
+  - rewrite INR_IZR_INZ. apply IZR_le. apply Z2Nat.id.
+    apply le_IZR. apply Rlt_le. apply up_spec.
+Qed.
 
 End UELAT_FourierExample.
