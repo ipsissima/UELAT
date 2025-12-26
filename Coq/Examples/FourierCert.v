@@ -118,26 +118,86 @@ Definition partial_sum' (N : nat) (x : R) : R :=
     (map (fun n => coeff n * basis_n n x) (seq 1 N)).
 
 (** Partial sum is continuous — it's a finite sum of continuous functions *)
+
+(** Helper: sin is continuous everywhere *)
+Lemma sin_continuous : forall x, continuity_pt sin x.
+Proof.
+  intro x.
+  apply derivable_continuous_pt.
+  exists (cos x).
+  apply derivable_pt_lim_sin.
+Qed.
+
+(** Helper: basis_n is continuous (it's sqrt(2) * sin(...)) *)
+Lemma basis_n_continuous : forall n x,
+  continuity_pt (basis_n n) x.
+Proof.
+  intros n x.
+  unfold basis_n.
+  apply continuity_pt_mult.
+  - apply continuity_pt_const.
+  - (* sin(n * PI * x) is continuous in x *)
+    apply continuity_pt_comp with (f2 := sin).
+    + (* n * PI * x is continuous *)
+      apply continuity_pt_mult.
+      * apply continuity_pt_const.
+      * apply continuity_pt_id.
+    + apply sin_continuous.
+Qed.
+
+(** Helper: coeff n * basis_n n is continuous *)
+Lemma term_continuous : forall n x,
+  continuity_pt (fun y => coeff n * basis_n n y) x.
+Proof.
+  intros n x.
+  apply continuity_pt_mult.
+  - apply continuity_pt_const.
+  - apply basis_n_continuous.
+Qed.
+
+(** Helper: partial_sum_aux with continuous accumulator function is continuous
+
+    Key insight: partial_sum_aux N y (g y) is continuous when g is continuous.
+    This is proven by induction on N, with the accumulator being a continuous function. *)
+Lemma partial_sum_aux_continuous_gen : forall N (g : R -> R) x,
+  continuity_pt g x ->
+  continuity_pt (fun y => partial_sum_aux N y (g y)) x.
+Proof.
+  intro N.
+  induction N as [|N' IH]; intros g x Hg.
+  - (* N = 0: partial_sum_aux 0 y (g y) = g y *)
+    simpl.
+    exact Hg.
+  - (* N = S N' *)
+    simpl.
+    (* partial_sum_aux (S N') y (g y) = partial_sum_aux N' y (g y + coeff (S N') * basis_n (S N') y) *)
+    (* Define h(y) = g(y) + coeff (S N') * basis_n (S N') y *)
+    (* h is continuous (sum of continuous functions) *)
+    (* By IH, partial_sum_aux N' y (h y) is continuous *)
+    apply IH.
+    apply continuity_pt_plus.
+    + exact Hg.
+    + apply continuity_pt_mult.
+      * apply continuity_pt_const.
+      * apply basis_n_continuous.
+Qed.
+
+(** Helper: partial_sum_aux with constant accumulator is continuous *)
+Lemma partial_sum_aux_continuous : forall N acc x,
+  continuity_pt (fun y => partial_sum_aux N y acc) x.
+Proof.
+  intros N acc x.
+  apply partial_sum_aux_continuous_gen.
+  apply continuity_pt_const.
+Qed.
+
 Lemma partial_sum_continuous : forall N x,
   continuity_pt (partial_sum N) x.
 Proof.
   intros N x.
   unfold partial_sum.
-  (* The partial sum is built from basis_n functions, which are sin functions *)
-  (* Sin is continuous, products and sums of continuous functions are continuous *)
-  induction N as [|N' IH].
-  - (* N = 0: partial_sum_aux 0 x 0 = 0, constant function *)
-    simpl.
-    apply continuity_pt_const.
-  - (* N = S N': acc + coeff * basis_n *)
-    simpl.
-    (* partial_sum_aux (S N') x 0 = partial_sum_aux N' x (coeff (S N') * basis_n (S N') x) *)
-    (* This requires tracking accumulator continuity *)
-    (* For simplicity, we use the fact that finite sums of continuous functions are continuous *)
-    apply derivable_continuous_pt.
-    (* The sum of sin functions is differentiable *)
-    admit.
-Admitted. (* Finite sum of continuous (sin) functions is continuous *)
+  apply partial_sum_aux_continuous.
+Qed.
 
 (** * Telescoping Sum Lemmas for Series Convergence
 
