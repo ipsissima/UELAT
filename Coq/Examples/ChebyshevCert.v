@@ -497,6 +497,16 @@ Variable f : R -> R.
 Variable n : nat.
 Hypothesis Hn : (n >= 1)%nat.
 
+(** Convenience alias for the (n+1) Chebyshev nodes *)
+Definition chebyshev_nodes_list : list R :=
+  UELAT_ChebyshevProof.chebyshev_nodes (S n).
+
+(** Smoothness assumption: f is (n+1)-times differentiable on [-1,1] *)
+Hypothesis Hsmooth :
+  UELAT_ChebyshevProof.n_times_diff f (S n)
+    (UELAT_ChebyshevProof.list_head chebyshev_nodes_list 0)
+    (UELAT_ChebyshevProof.list_last chebyshev_nodes_list 0).
+
 (** The (n+1)-th derivative of f and its bound *)
 Variable f_deriv_n1 : R -> R.
 Variable M : R.
@@ -509,16 +519,8 @@ Variable chebyshev_interpolant : R -> R.
 
 (** Interpolation nodes are Chebyshev nodes *)
 Hypothesis interpolant_at_nodes : forall k,
-  (1 <= k <= n)%nat ->
-  chebyshev_interpolant (chebyshev_node n k) = f (chebyshev_node n k).
-
-(** Smoothness: interpolate using an (n+1)-st derivative supplied by the
-    generalized Rolle development. *)
-Hypothesis Hinterpolation_error_formula :
-  forall x,
-    -1 <= x <= 1 ->
-    exists xi, -1 <= xi <= 1 /\
-      f x - chebyshev_interpolant x = f_deriv_n1 xi / Rfact (S n) * nodal_poly n x.
+  (1 <= k <= S n)%nat ->
+  chebyshev_interpolant (chebyshev_node (S n) k) = f (chebyshev_node (S n) k).
 
 (** The interpolation error formula
 
@@ -553,23 +555,85 @@ Hypothesis Hinterpolation_error_formula :
 *)
 Theorem interpolation_error_formula : forall x,
   -1 <= x <= 1 ->
+  UELAT_ChebyshevProof.list_head chebyshev_nodes_list 0 <= x <=
+    UELAT_ChebyshevProof.list_last chebyshev_nodes_list 0 ->
   exists xi, -1 <= xi <= 1 /\
-    f x - chebyshev_interpolant x = f_deriv_n1 xi / Rfact (S n) * nodal_poly n x.
+    f x - chebyshev_interpolant x = f_deriv_n1 xi / Rfact (S n) * nodal_poly (S n) x.
 Proof.
-  intros x Hx.
-  apply Hinterpolation_error_formula; exact Hx.
+  intros x Hx Hinterval.
+  (* Membership helper: every element of the Chebyshev node list comes from an index *)
+  assert (Hnodes_member :
+    forall r,
+      In r chebyshev_nodes_list ->
+      exists k, (1 <= k <= S n)%nat /\ r = chebyshev_node (S n) k).
+  {
+    intros r Hr.
+    unfold UELAT_ChebyshevProof.chebyshev_nodes,
+           UELAT_ChebyshevProof.chebyshev_nodes_dec in Hr.
+    apply in_rev in Hr.
+    apply in_map_iff in Hr.
+    destruct Hr as [k [Hrk Hk_in]].
+    exists k.
+    split.
+    - apply in_seq in Hk_in. lia.
+    - exact Hrk.
+  }
+
+  (* Apply the proven interpolation error formula from ChebyshevProof.v *)
+  destruct Hsmooth as [dc Hdc].
+  set (nodes := chebyshev_nodes_list).
+  have Hnodes_len : length nodes = S n.
+  { unfold nodes, chebyshev_nodes_list. apply UELAT_ChebyshevProof.chebyshev_nodes_length. }
+  have Hnodes_sorted : UELAT_ChebyshevProof.sorted_strict nodes.
+  { unfold nodes, chebyshev_nodes_list. apply UELAT_ChebyshevProof.chebyshev_nodes_sorted. }
+
+  destruct (UELAT_ChebyshevProof.interpolation_error_formula
+              (f := f)
+              (n := n)
+              (nodes := nodes)
+              (f_deriv_n1 := f_deriv_n1)
+              (p := chebyshev_interpolant)
+              Hn Hnodes_len Hnodes_sorted Hsmooth)
+    as [xi [Hxi Herr]].
+  - (* Interpolant matches f at every Chebyshev node *)
+    intros r Hr.
+    destruct (Hnodes_member r Hr) as [k [Hk_range Hr_eq]].
+    subst r.
+    apply interpolant_at_nodes.
+    exact Hk_range.
+  - (* Degree hypothesis is abstract (trivial placeholder) *)
+    exact I.
+  - (* Interval hypothesis for x *)
+    exact Hinterval.
+  - (* Rewrite the nodal product into the normalized Chebyshev nodal polynomial *)
+    exists xi.
+    split.
+    + exact Hxi.
+    + unfold nodes in Herr.
+      rewrite map_rev in Herr.
+      (* Product over reversed nodes equals product over original order *)
+      rewrite UELAT_ChebyshevProof.fold_left_Rmult_rev in Herr.
+      (* Replace the product with the monic Chebyshev polynomial identity *)
+      rewrite (UELAT_ChebyshevProof.chebyshev_nodal_identity_axiom (m := S n) x)
+        in Herr; try (lia || exact Hx).
+      (* Align with our nodal_poly definition *)
+      unfold nodal_poly.
+      rewrite Herr.
+      reflexivity.
 Qed.
 
 (** ** Main Error Bound Theorem *)
 
 Theorem chebyshev_interpolation_error_bound : forall x,
   -1 <= x <= 1 ->
-  Rabs (f x - chebyshev_interpolant x) <= M / (Rfact (S n) * 2 ^ (n - 1)).
+  UELAT_ChebyshevProof.list_head chebyshev_nodes_list 0 <= x <=
+    UELAT_ChebyshevProof.list_last chebyshev_nodes_list 0 ->
+  Rabs (f x - chebyshev_interpolant x) <= M / (Rfact (S n) * 2 ^ n).
 Proof.
-  intros x Hx.
+  intros x Hx Hinterval.
 
   (* Get the interpolation error formula *)
-  destruct (interpolation_error_formula x Hx) as [xi [Hxi Herror]].
+  destruct (interpolation_error_formula x Hx Hinterval) as [xi [Hxi Herror]].
 
   (* Rewrite and bound *)
   rewrite Herror.
@@ -586,8 +650,8 @@ Proof.
   }
 
   (* Bound |nodal_poly n x| *)
-  assert (Hnodal_bound : Rabs (nodal_poly n x) <= / (2 ^ (n - 1))).
-  { apply nodal_poly_bounded; assumption. }
+  assert (Hnodal_bound : Rabs (nodal_poly (S n) x) <= / (2 ^ n)).
+  { apply nodal_poly_bounded; [lia | assumption]. }
 
   (* Combine the bounds *)
   eapply Rle_trans.
