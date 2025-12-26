@@ -7,7 +7,7 @@
     Reference: UELAT Paper, Appendix A
 *)
 
-From Coq Require Import Reals QArith List Arith Lia.
+From Coq Require Import Reals QArith List Arith Lia Lra.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -117,14 +117,14 @@ Fixpoint cert_size (c : Cert) : nat :=
   | CoeffCert n _ _ _ => n
   | TailBoundCert N _ _ => N
   | GlueCert M locals _ _ =>
-      M + fold_right plus 0 (map cert_size locals)
-  | ModulusCert _ _ => 1  (** Representative size; actual size is query-dependent *)
+      M + fold_right Nat.add O (map cert_size locals)
+  | ModulusCert _ _ => 1%nat  (** Representative size; actual size is query-dependent *)
   | ComposeCert c1 c2 => cert_size c1 + cert_size c2
   end.
 
 (** * Certificate Error Bound Extraction *)
 
-Definition cert_error (c : Cert) : R :=
+Fixpoint cert_error (c : Cert) : R :=
   match c with
   | CoeffCert _ _ _ eps => eps
   | TailBoundCert _ tail_est _ => sqrt tail_est
@@ -136,19 +136,24 @@ Definition cert_error (c : Cert) : R :=
 
 (** * Certificate Well-formedness Predicate *)
 
-Fixpoint cert_wf (c : Cert) : Prop :=
-  match c with
-  | CoeffCert n idxs coeffs eps =>
-      length idxs = n /\ length coeffs = n /\ eps >= 0
-  | TailBoundCert N tail_est proof =>
-      (N > 0)%nat /\ tail_est >= 0
-  | GlueCert M locals compat part =>
-      (M > 0)%nat /\
-      length locals = M /\
-      Forall cert_wf locals
-  | ModulusCert _ _ => True
-  | ComposeCert c1 c2 => cert_wf c1 /\ cert_wf c2
-  end.
+(* Inductive predicate avoids termination issues with nested recursion *)
+Inductive cert_wf : Cert -> Prop :=
+  | wf_coeff : forall n idxs coeffs eps,
+      length idxs = n -> length coeffs = n -> eps >= 0 ->
+      cert_wf (CoeffCert n idxs coeffs eps)
+  | wf_tail : forall N tail_est proof,
+      (N > 0)%nat -> tail_est >= 0 ->
+      cert_wf (TailBoundCert N tail_est proof)
+  | wf_glue : forall M locals compat part,
+      (M > 0)%nat ->
+      length locals = M ->
+      Forall cert_wf locals ->
+      cert_wf (GlueCert M locals compat part)
+  | wf_modulus : forall f g,
+      cert_wf (ModulusCert f g)
+  | wf_compose : forall c1 c2,
+      cert_wf c1 -> cert_wf c2 ->
+      cert_wf (ComposeCert c1 c2).
 
 (** * Auxiliary Lemmas *)
 
@@ -157,16 +162,27 @@ Proof.
   intro c; induction c; simpl; lia.
 Qed.
 
+Lemma fold_Rmax_nonneg : forall l,
+  fold_right Rmax 0 l >= 0.
+Proof.
+  intro l; induction l as [|a l' IH]; simpl.
+  - lra.
+  - apply Rle_ge.
+    apply Rle_trans with (fold_right Rmax 0 l').
+    + apply Rge_le. lra.
+    + apply Rmax_r.
+Qed.
+
 Lemma cert_error_nonneg : forall c, cert_wf c -> cert_error c >= 0.
 Proof.
-  intro c; induction c; simpl; intros Hwf.
-  - destruct Hwf as [_ [_ Heps]]; exact Heps.
-  - destruct Hwf as [_ Htail].
-    apply sqrt_pos.
-  - apply Rmax_r.
-  - lra.
-  - destruct Hwf as [Hwf1 Hwf2].
-    specialize (IHc1 Hwf1); specialize (IHc2 Hwf2); lra.
+  intros c Hwf.
+  induction Hwf; simpl.
+  - (* CoeffCert *) exact H1.
+  - (* TailBoundCert *) 
+    apply Rle_ge. apply sqrt_pos.
+  - (* GlueCert *) apply fold_Rmax_nonneg.
+  - (* ModulusCert *) lra.
+  - (* ComposeCert *) lra.
 Qed.
 
 (** * CoeffCert Constructors and Accessors *)

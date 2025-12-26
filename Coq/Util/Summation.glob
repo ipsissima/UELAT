@@ -1,0 +1,549 @@
+DIGEST e8cc27a5f1956dc21306348f5de571da
+FUELAT.Util.Summation
+R232:236 Coq.Reals.Reals <> <> lib
+R238:241 Coq.Lists.List <> <> lib
+R243:247 Coq.Arith.Arith <> <> lib
+R249:251 Coq.micromega.Lra <> <> lib
+R253:255 Coq.micromega.Lia <> <> lib
+R265:277 Coq.Lists.List ListNotations <> mod
+mod 314:328 <> UELAT_Summation
+def 404:408 UELAT_Summation sum_n
+R418:421 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R415:417 Coq.Init.Datatypes <> nat ind
+R422:422 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 411:411 <> f:1
+R430:432 Coq.Init.Datatypes <> nat ind
+binder 426:426 <> n:2
+R437:437 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R450:450 UELAT.Util.Summation <> n:2 var
+R461:461 Coq.Init.Datatypes <> O constr
+R472:472 Coq.Init.Datatypes <> S constr
+R490:492 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R480:484 UELAT.Util.Summation <> sum_n:3 def
+R486:486 UELAT.Util.Summation <> f:1 var
+R493:493 UELAT.Util.Summation <> f:1 var
+prf 512:518 UELAT_Summation sum_n_O
+binder 529:529 <> f:5
+R541:543 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R532:536 UELAT.Util.Summation UELAT_Summation sum_n def
+R538:538 UELAT.Util.Summation <> f:5 var
+prf 579:585 UELAT_Summation sum_n_S
+binder 596:596 <> f:6
+binder 598:598 <> n:7
+R614:616 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R601:605 UELAT.Util.Summation UELAT_Summation sum_n def
+R607:607 UELAT.Util.Summation <> f:6 var
+R610:610 Coq.Init.Datatypes <> S constr
+R612:612 UELAT.Util.Summation <> n:7 var
+R626:628 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R617:621 UELAT.Util.Summation UELAT_Summation sum_n def
+R623:623 UELAT.Util.Summation <> f:6 var
+R625:625 UELAT.Util.Summation <> n:7 var
+R629:629 UELAT.Util.Summation <> f:6 var
+R631:631 UELAT.Util.Summation <> n:7 var
+prf 693:702 UELAT_Summation sum_n_plus
+binder 713:713 <> f:8
+binder 715:715 <> g:9
+binder 717:717 <> n:10
+R750:752 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R722:726 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 733:733 <> k:11
+R741:743 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R738:738 UELAT.Util.Summation <> f:8 var
+R740:740 UELAT.Util.Summation <> k:11 var
+R744:744 UELAT.Util.Summation <> g:9 var
+R746:746 UELAT.Util.Summation <> k:11 var
+R749:749 UELAT.Util.Summation <> n:10 var
+R762:764 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R753:757 UELAT.Util.Summation UELAT_Summation sum_n def
+R759:759 UELAT.Util.Summation <> f:8 var
+R761:761 UELAT.Util.Summation <> n:10 var
+R765:769 UELAT.Util.Summation UELAT_Summation sum_n def
+R771:771 UELAT.Util.Summation <> g:9 var
+R773:773 UELAT.Util.Summation <> n:10 var
+prf 883:894 UELAT_Summation sum_n_mult_l
+binder 905:905 <> c:12
+binder 907:907 <> f:13
+binder 909:909 <> n:14
+R940:942 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R914:918 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 925:925 <> k:15
+R931:933 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R930:930 UELAT.Util.Summation <> c:12 var
+R934:934 UELAT.Util.Summation <> f:13 var
+R936:936 UELAT.Util.Summation <> k:15 var
+R939:939 UELAT.Util.Summation <> n:14 var
+R944:946 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R943:943 UELAT.Util.Summation <> c:12 var
+R947:951 UELAT.Util.Summation UELAT_Summation sum_n def
+R953:953 UELAT.Util.Summation <> f:13 var
+R955:955 UELAT.Util.Summation <> n:14 var
+prf 1065:1076 UELAT_Summation sum_n_mult_r
+binder 1087:1087 <> f:16
+binder 1089:1089 <> c:17
+binder 1091:1091 <> n:18
+R1122:1124 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1096:1100 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 1107:1107 <> k:19
+R1115:1117 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1112:1112 UELAT.Util.Summation <> f:16 var
+R1114:1114 UELAT.Util.Summation <> k:19 var
+R1118:1118 UELAT.Util.Summation <> c:17 var
+R1121:1121 UELAT.Util.Summation <> n:18 var
+R1134:1136 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1125:1129 UELAT.Util.Summation UELAT_Summation sum_n def
+R1131:1131 UELAT.Util.Summation <> f:16 var
+R1133:1133 UELAT.Util.Summation <> n:18 var
+R1137:1137 UELAT.Util.Summation <> c:17 var
+prf 1278:1288 UELAT_Summation sum_n_const
+binder 1299:1299 <> c:20
+binder 1301:1301 <> n:21
+R1326:1328 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1306:1310 UELAT.Util.Summation UELAT_Summation sum_n def
+R1322:1322 UELAT.Util.Summation <> c:20 var
+R1325:1325 UELAT.Util.Summation <> n:21 var
+R1334:1336 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1329:1331 Coq.Reals.Raxioms <> INR def
+R1333:1333 UELAT.Util.Summation <> n:21 var
+R1337:1337 UELAT.Util.Summation <> c:20 var
+R1416:1422 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R1416:1422 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R1416:1422 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R1449:1453 Coq.Reals.RIneq <> S_INR thm
+R1449:1453 Coq.Reals.RIneq <> S_INR thm
+R1449:1453 Coq.Reals.RIneq <> S_INR thm
+prf 1497:1507 UELAT_Summation sum_n_split
+binder 1518:1518 <> f:22
+binder 1520:1520 <> m:23
+binder 1522:1522 <> n:24
+R1539:1544 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1529:1532 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R1528:1528 UELAT.Util.Summation <> m:23 var
+R1533:1533 UELAT.Util.Summation <> n:24 var
+R1554:1556 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1545:1549 UELAT.Util.Summation UELAT_Summation sum_n def
+R1551:1551 UELAT.Util.Summation <> f:22 var
+R1553:1553 UELAT.Util.Summation <> n:24 var
+R1566:1568 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R1557:1561 UELAT.Util.Summation UELAT_Summation sum_n def
+R1563:1563 UELAT.Util.Summation <> f:22 var
+R1565:1565 UELAT.Util.Summation <> m:23 var
+R1569:1573 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 1580:1580 <> k:25
+R1585:1585 UELAT.Util.Summation <> f:22 var
+R1589:1591 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1588:1588 UELAT.Util.Summation <> m:23 var
+R1592:1592 UELAT.Util.Summation <> k:25 var
+R1602:1604 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R1601:1601 UELAT.Util.Summation <> n:24 var
+R1605:1605 UELAT.Util.Summation <> m:23 var
+R1675:1677 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1675:1677 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1727:1736 Coq.Arith.PeanoNat Nat eq_dec thm
+R1741:1741 Coq.Init.Datatypes <> S constr
+R1727:1736 Coq.Arith.PeanoNat Nat eq_dec thm
+R1741:1741 Coq.Init.Datatypes <> S constr
+R1789:1791 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R1786:1786 Coq.Init.Datatypes <> S constr
+R1792:1792 Coq.Init.Datatypes <> S constr
+R1789:1791 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R1786:1786 Coq.Init.Datatypes <> S constr
+R1792:1792 Coq.Init.Datatypes <> S constr
+R1855:1858 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R1855:1858 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R1916:1922 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R1916:1922 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R1916:1922 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R1955:1957 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R1952:1952 Coq.Init.Datatypes <> S constr
+R1971:1971 Coq.Init.Datatypes <> S constr
+R1975:1977 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R1955:1957 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R1952:1952 Coq.Init.Datatypes <> S constr
+R1971:1971 Coq.Init.Datatypes <> S constr
+R1975:1977 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R2008:2014 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R2008:2014 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R2008:2014 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R2033:2036 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R2042:2042 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R2038:2040 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R2033:2036 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R2042:2042 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R2038:2040 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+prf 2121:2132 UELAT_Summation sum_n_abs_le
+binder 2143:2143 <> f:26
+binder 2145:2145 <> n:27
+R2166:2169 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R2150:2153 Coq.Reals.Rbasic_fun <> Rabs def
+R2156:2160 UELAT.Util.Summation UELAT_Summation sum_n def
+R2162:2162 UELAT.Util.Summation <> f:26 var
+R2164:2164 UELAT.Util.Summation <> n:27 var
+R2170:2174 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 2181:2181 <> k:28
+R2186:2189 Coq.Reals.Rbasic_fun <> Rabs def
+R2192:2192 UELAT.Util.Summation <> f:26 var
+R2194:2194 UELAT.Util.Summation <> k:28 var
+R2198:2198 UELAT.Util.Summation <> n:27 var
+R2267:2273 Coq.Reals.Rbasic_fun <> Rabs_R0 thm
+R2267:2273 Coq.Reals.Rbasic_fun <> Rabs_R0 thm
+R2267:2273 Coq.Reals.Rbasic_fun <> Rabs_R0 thm
+R2303:2311 Coq.Reals.RIneq <> Rle_trans thm
+R2303:2311 Coq.Reals.RIneq <> Rle_trans thm
+R2326:2336 Coq.Reals.Rbasic_fun <> Rabs_triang thm
+R2326:2336 Coq.Reals.Rbasic_fun <> Rabs_triang thm
+R2351:2365 Coq.Reals.RIneq <> Rplus_le_compat thm
+R2351:2365 Coq.Reals.RIneq <> Rplus_le_compat thm
+prf 2423:2430 UELAT_Summation sum_n_le
+binder 2441:2441 <> f:29
+binder 2443:2443 <> g:30
+binder 2445:2445 <> n:31
+R2450:2450 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2486:2492 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 2458:2458 <> k:32
+R2472:2475 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2463:2465 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R2462:2462 UELAT.Util.Summation <> k:32 var
+R2466:2466 UELAT.Util.Summation <> n:31 var
+R2479:2482 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R2476:2476 UELAT.Util.Summation <> f:29 var
+R2478:2478 UELAT.Util.Summation <> k:32 var
+R2483:2483 UELAT.Util.Summation <> g:30 var
+R2485:2485 UELAT.Util.Summation <> k:32 var
+R2502:2505 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R2493:2497 UELAT.Util.Summation UELAT_Summation sum_n def
+R2499:2499 UELAT.Util.Summation <> f:29 var
+R2501:2501 UELAT.Util.Summation <> n:31 var
+R2506:2510 UELAT.Util.Summation UELAT_Summation sum_n def
+R2512:2512 UELAT.Util.Summation <> g:30 var
+R2514:2514 UELAT.Util.Summation <> n:31 var
+R2607:2621 Coq.Reals.RIneq <> Rplus_le_compat thm
+R2607:2621 Coq.Reals.RIneq <> Rplus_le_compat thm
+prf 2703:2714 UELAT_Summation sum_n_nonneg
+binder 2725:2725 <> f:33
+binder 2727:2727 <> n:34
+R2732:2732 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2766:2772 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 2740:2740 <> k:35
+R2754:2757 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2745:2747 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R2744:2744 UELAT.Util.Summation <> k:35 var
+R2748:2748 UELAT.Util.Summation <> n:34 var
+R2761:2764 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2758:2758 UELAT.Util.Summation <> f:33 var
+R2760:2760 UELAT.Util.Summation <> k:35 var
+R2782:2785 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2773:2777 UELAT.Util.Summation UELAT_Summation sum_n def
+R2779:2779 UELAT.Util.Summation <> f:33 var
+R2781:2781 UELAT.Util.Summation <> n:34 var
+R2892:2895 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2883:2887 UELAT.Util.Summation UELAT_Summation sum_n def
+R2892:2895 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2883:2887 UELAT.Util.Summation UELAT_Summation sum_n def
+R2966:2969 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2966:2969 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+prf 3041:3055 UELAT_Summation sum_n_telescope
+binder 3066:3066 <> f:36
+binder 3068:3068 <> n:37
+R3105:3107 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3073:3077 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 3084:3084 <> k:38
+R3096:3098 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3089:3089 UELAT.Util.Summation <> f:36 var
+R3092:3092 Coq.Init.Datatypes <> S constr
+R3094:3094 UELAT.Util.Summation <> k:38 var
+R3099:3099 UELAT.Util.Summation <> f:36 var
+R3101:3101 UELAT.Util.Summation <> k:38 var
+R3104:3104 UELAT.Util.Summation <> n:37 var
+R3111:3113 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3108:3108 UELAT.Util.Summation <> f:36 var
+R3110:3110 UELAT.Util.Summation <> n:37 var
+R3114:3114 UELAT.Util.Summation <> f:36 var
+prf 3541:3547 UELAT_Summation pow_pos
+binder 3558:3558 <> r:39
+binder 3560:3560 <> n:40
+R3568:3571 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3564:3566 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3563:3563 UELAT.Util.Summation <> r:39 var
+R3577:3579 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3573:3575 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R3572:3572 UELAT.Util.Summation <> r:39 var
+R3576:3576 UELAT.Util.Summation <> n:40 var
+R3646:3662 Coq.Reals.RIneq <> Rmult_gt_0_compat thm
+R3646:3662 Coq.Reals.RIneq <> Rmult_gt_0_compat thm
+prf 3747:3761 UELAT_Summation sum_n_geometric
+binder 3772:3772 <> r:41
+binder 3774:3774 <> n:42
+R3785:3790 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3780:3783 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R3779:3779 UELAT.Util.Summation <> r:41 var
+R3815:3817 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3791:3795 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 3802:3802 <> k:43
+R3808:3810 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R3807:3807 UELAT.Util.Summation <> r:41 var
+R3811:3811 UELAT.Util.Summation <> k:43 var
+R3814:3814 UELAT.Util.Summation <> n:42 var
+R3818:3818 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R3828:3832 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R3838:3838 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R3820:3822 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3824:3826 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R3823:3823 UELAT.Util.Summation <> r:41 var
+R3827:3827 UELAT.Util.Summation <> n:42 var
+R3834:3836 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3837:3837 UELAT.Util.Summation <> r:41 var
+R3909:3912 Coq.Reals.Rdefinitions <> Rdiv def
+R3930:3932 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3930:3932 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3964:3972 Coq.Reals.RIneq <> Rmult_0_l thm
+R3964:3972 Coq.Reals.RIneq <> Rmult_0_l thm
+R3964:3972 Coq.Reals.RIneq <> Rmult_0_l thm
+R3993:3999 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R3993:3999 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R3993:3999 UELAT.Util.Summation UELAT_Summation sum_n_S thm
+R4078:4081 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R4074:4076 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4078:4081 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R4074:4076 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4139:4141 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4131:4133 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4110:4110 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4120:4124 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4130:4130 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4112:4114 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4116:4118 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4126:4128 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4135:4137 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4142:4142 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4154:4158 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4164:4164 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4144:4146 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4148:4150 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4151:4151 Coq.Init.Datatypes <> S constr
+R4160:4162 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4139:4141 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4131:4133 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4110:4110 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4120:4124 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4130:4130 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4112:4114 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4116:4118 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4126:4128 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4135:4137 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4142:4142 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4154:4158 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4164:4164 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4144:4146 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4148:4150 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4151:4151 Coq.Init.Datatypes <> S constr
+R4160:4162 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4187:4190 Coq.Reals.Rdefinitions <> Rdiv def
+R4209:4211 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4213:4215 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4216:4216 Coq.Init.Datatypes <> S constr
+R4248:4250 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4236:4238 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4228:4230 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4232:4234 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4244:4246 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4240:4242 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4252:4254 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4209:4211 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4213:4215 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4216:4216 Coq.Init.Datatypes <> S constr
+R4248:4250 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4236:4238 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4228:4230 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4232:4234 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4244:4246 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4240:4242 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4252:4254 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4312:4314 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4300:4302 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4292:4294 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4296:4298 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4308:4310 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4304:4306 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4316:4318 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4328:4328 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4338:4341 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4330:4332 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4334:4336 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4347:4350 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4356:4356 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4343:4345 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4352:4354 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4312:4314 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4300:4302 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4292:4294 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4296:4298 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4308:4310 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4304:4306 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4316:4318 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4328:4328 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4338:4341 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4330:4332 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4334:4336 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4347:4350 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4356:4356 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R4343:4345 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4352:4354 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4382:4399 Coq.Reals.RIneq <> Rmult_plus_distr_r thm
+R4382:4399 Coq.Reals.RIneq <> Rmult_plus_distr_r thm
+R4382:4399 Coq.Reals.RIneq <> Rmult_plus_distr_r thm
+R4431:4441 Coq.Reals.Raxioms <> Rmult_assoc thm
+R4431:4441 Coq.Reals.Raxioms <> Rmult_assoc thm
+R4431:4441 Coq.Reals.Raxioms <> Rmult_assoc thm
+R4452:4457 Coq.Reals.RIneq <> Rinv_r thm
+R4452:4457 Coq.Reals.RIneq <> Rinv_r thm
+R4452:4457 Coq.Reals.RIneq <> Rinv_r thm
+prf 4506:4526 UELAT_Summation sum_n_geometric_bound
+binder 4537:4537 <> r:44
+binder 4539:4539 <> n:45
+R4549:4552 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4545:4547 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R4548:4548 UELAT.Util.Summation <> r:44 var
+R4558:4563 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4554:4556 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R4553:4553 UELAT.Util.Summation <> r:44 var
+R4588:4590 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R4564:4568 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 4575:4575 <> k:46
+R4581:4583 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4580:4580 UELAT.Util.Summation <> r:44 var
+R4584:4584 UELAT.Util.Summation <> k:46 var
+R4587:4587 UELAT.Util.Summation <> n:45 var
+R4592:4595 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4601:4601 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4597:4599 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R4600:4600 UELAT.Util.Summation <> r:44 var
+R4643:4657 UELAT.Util.Summation UELAT_Summation sum_n_geometric thm
+R4643:4657 UELAT.Util.Summation UELAT_Summation sum_n_geometric thm
+R4643:4657 UELAT.Util.Summation UELAT_Summation sum_n_geometric thm
+R4676:4679 Coq.Reals.Rdefinitions <> Rdiv def
+R4690:4706 Coq.Reals.RIneq <> Rmult_lt_compat_r thm
+R4690:4706 Coq.Reals.RIneq <> Rmult_lt_compat_r thm
+R4719:4734 Coq.Reals.RIneq <> Rinv_0_lt_compat thm
+R4719:4734 Coq.Reals.RIneq <> Rinv_0_lt_compat thm
+R4763:4765 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R4759:4761 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4779:4785 UELAT.Util.Summation UELAT_Summation pow_pos thm
+R4763:4765 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R4759:4761 Coq.Reals.Rfunctions <> ::R_scope:x_'^'_x not
+R4779:4785 UELAT.Util.Summation UELAT_Summation pow_pos thm
+def 4851:4858 UELAT_Summation sum_list
+R4865:4868 Coq.Init.Datatypes <> list ind
+R4870:4870 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 4861:4861 <> l:47
+R4875:4875 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R4882:4891 Coq.Lists.List <> fold_right def
+R4901:4901 UELAT.Util.Summation <> l:47 var
+R4893:4897 Coq.Reals.Rdefinitions RbaseSymbolsImpl Rplus defax
+prf 4911:4922 UELAT_Summation sum_list_app
+binder 4933:4934 <> l1:48
+binder 4936:4937 <> l2:49
+R4961:4963 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4942:4949 UELAT.Util.Summation UELAT_Summation sum_list def
+R4954:4957 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4952:4953 UELAT.Util.Summation <> l1:48 var
+R4958:4959 UELAT.Util.Summation <> l2:49 var
+R4975:4977 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R4964:4971 UELAT.Util.Summation UELAT_Summation sum_list def
+R4973:4974 UELAT.Util.Summation <> l1:48 var
+R4978:4985 UELAT.Util.Summation UELAT_Summation sum_list def
+R4987:4988 UELAT.Util.Summation <> l2:49 var
+prf 5103:5114 UELAT_Summation sum_list_map
+binder 5126:5126 <> A:50
+R5142:5145 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5141:5141 UELAT.Util.Summation <> A:50 var
+R5146:5146 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 5137:5137 <> f:51
+R5154:5157 Coq.Init.Datatypes <> list ind
+R5159:5159 UELAT.Util.Summation <> A:50 var
+binder 5150:5150 <> l:52
+R5183:5185 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5165:5172 UELAT.Util.Summation UELAT_Summation sum_list def
+R5175:5177 Coq.Lists.List <> map def
+R5181:5181 UELAT.Util.Summation <> l:52 var
+R5179:5179 UELAT.Util.Summation <> f:51 var
+R5186:5195 Coq.Lists.List <> fold_right def
+R5224:5224 UELAT.Util.Summation <> l:52 var
+binder 5202:5202 <> a:53
+binder 5204:5206 <> acc:54
+R5214:5216 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R5211:5211 UELAT.Util.Summation <> f:51 var
+R5213:5213 UELAT.Util.Summation <> a:53 var
+R5217:5219 UELAT.Util.Summation <> acc:54 var
+prf 5344:5354 UELAT_Summation sum_list_le
+binder 5365:5366 <> l1:55
+binder 5368:5369 <> l2:56
+R5395:5400 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5383:5385 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5374:5379 Coq.Init.Datatypes <> length def
+R5381:5382 UELAT.Util.Summation <> l1:55 var
+R5386:5391 Coq.Init.Datatypes <> length def
+R5393:5394 UELAT.Util.Summation <> l2:56 var
+R5418:5423 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5401:5407 Coq.Lists.List <> Forall2 ind
+R5416:5417 UELAT.Util.Summation <> l2:56 var
+R5413:5414 UELAT.Util.Summation <> l1:55 var
+R5409:5411 Coq.Reals.Rdefinitions <> Rle def
+R5435:5438 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R5424:5431 UELAT.Util.Summation UELAT_Summation sum_list def
+R5433:5434 UELAT.Util.Summation <> l1:55 var
+R5439:5446 UELAT.Util.Summation UELAT_Summation sum_list def
+R5448:5449 UELAT.Util.Summation <> l2:56 var
+R5574:5588 Coq.Reals.RIneq <> Rplus_le_compat thm
+R5574:5588 Coq.Reals.RIneq <> Rplus_le_compat thm
+prf 5654:5668 UELAT_Summation sum_list_nonneg
+binder 5679:5679 <> l:57
+R5710:5715 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5684:5689 Coq.Lists.List <> Forall ind
+R5709:5709 UELAT.Util.Summation <> l:57 var
+binder 5696:5696 <> x:58
+R5702:5705 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R5701:5701 UELAT.Util.Summation <> x:58 var
+R5726:5729 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R5716:5723 UELAT.Util.Summation UELAT_Summation sum_list def
+R5725:5725 UELAT.Util.Summation <> l:57 var
+def 5905:5911 UELAT_Summation sum_n_n
+R5921:5924 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5918:5920 Coq.Init.Datatypes <> nat ind
+R5928:5931 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5925:5927 Coq.Init.Datatypes <> nat ind
+R5932:5932 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 5914:5914 <> f:59
+R5942:5944 Coq.Init.Datatypes <> nat ind
+binder 5936:5936 <> m:60
+binder 5938:5938 <> n:61
+R5949:5949 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R5956:5960 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 5967:5967 <> i:62
+R5972:5976 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 5983:5983 <> j:63
+R5988:5988 UELAT.Util.Summation <> f:59 var
+R5992:5992 UELAT.Util.Summation <> j:63 var
+R5990:5990 UELAT.Util.Summation <> i:62 var
+R5995:5995 UELAT.Util.Summation <> n:61 var
+R5998:5998 UELAT.Util.Summation <> m:60 var
+prf 6129:6140 UELAT_Summation sum_n_n_swap
+binder 6151:6151 <> f:64
+binder 6153:6153 <> m:65
+binder 6155:6155 <> n:66
+R6173:6175 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6160:6166 UELAT.Util.Summation UELAT_Summation sum_n_n def
+R6168:6168 UELAT.Util.Summation <> f:64 var
+R6170:6170 UELAT.Util.Summation <> m:65 var
+R6172:6172 UELAT.Util.Summation <> n:66 var
+R6176:6180 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 6187:6187 <> j:67
+R6192:6196 UELAT.Util.Summation UELAT_Summation sum_n def
+binder 6203:6203 <> i:68
+R6208:6208 UELAT.Util.Summation <> f:64 var
+R6210:6210 UELAT.Util.Summation <> i:68 var
+R6212:6212 UELAT.Util.Summation <> j:67 var
+R6215:6215 UELAT.Util.Summation <> m:65 var
+R6218:6218 UELAT.Util.Summation <> n:66 var
+R6253:6259 UELAT.Util.Summation UELAT_Summation sum_n_n def
+R6624:6638 UELAT.Util.Summation UELAT_Summation <> mod

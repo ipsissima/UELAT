@@ -7,6 +7,8 @@
 *)
 
 From Coq Require Import Reals Lra Lia.
+From Coq Require Import List.
+Import ListNotations.
 Local Open Scope R_scope.
 
 Module UELAT_Reals_ext.
@@ -43,8 +45,7 @@ Proof.
   intros x y z Hx.
   unfold Rpower.
   rewrite ln_exp.
-  ring_simplify.
-  reflexivity.
+  f_equal. ring.
 Qed.
 
 Lemma Rpower_plus : forall x y z,
@@ -52,7 +53,7 @@ Lemma Rpower_plus : forall x y z,
 Proof.
   intros x y z Hx.
   unfold Rpower.
-  rewrite Rmult_plus_distr_l.
+  replace ((y + z) * ln x) with (y * ln x + z * ln x) by ring.
   apply exp_plus.
 Qed.
 
@@ -62,8 +63,15 @@ Proof.
   intros x a b Hx0 Hx1 Hab.
   unfold Rpower.
   apply exp_increasing.
-  apply Rmult_lt_compat_neg_l.
-  - apply ln_lt_0. split; lra.
+  (* ln x < 0 when 0 < x < 1 *)
+  assert (Hln : ln x < 0).
+  { rewrite <- ln_1. apply ln_increasing; lra. }
+  (* b * ln x < a * ln x because ln x < 0 and a < b *)
+  apply Ropp_lt_cancel.
+  replace (- (b * ln x)) with (b * (- ln x)) by ring.
+  replace (- (a * ln x)) with (a * (- ln x)) by ring.
+  apply Rmult_lt_compat_r.
+  - lra.
   - exact Hab.
 Qed.
 
@@ -73,11 +81,13 @@ Proof.
   intros a x y Ha [Hx Hxy].
   destruct (Req_dec a 0) as [Ha0 | Ha0].
   - subst. rewrite !Rpower_O; lra.
-  - unfold Rpower.
-    apply Rlt_le.
-    apply exp_increasing.
-    apply Rmult_lt_compat_l; [lra |].
-    apply ln_increasing; lra.
+  - destruct (Rlt_le_dec x y) as [Hlt | Heq].
+    + unfold Rpower.
+      apply Rlt_le.
+      apply exp_increasing.
+      apply Rmult_lt_compat_l; [lra |].
+      apply ln_increasing; lra.
+    + assert (x = y) by lra. subst. lra.
 Qed.
 
 (** * Absolute Value Lemmas *)
@@ -112,16 +122,18 @@ Proof.
   intros x y Hy.
   unfold Rdiv.
   rewrite Rabs_mult.
-  rewrite Rabs_right; [reflexivity | apply Rlt_le; apply Rinv_0_lt_compat; exact Hy].
+  rewrite (Rabs_right (/ y)).
+  - reflexivity.
+  - apply Rle_ge. apply Rlt_le. apply Rinv_0_lt_compat. exact Hy.
 Qed.
 
 (** * Sqrt Lemmas *)
 
-Lemma sqrt_pos : forall x, sqrt x >= 0.
+Lemma sqrt_nonneg : forall x, sqrt x >= 0.
 Proof.
   intro x.
   apply Rle_ge.
-  apply sqrt_positivity.
+  apply sqrt_pos.
 Qed.
 
 Lemma sqrt_le_compat : forall x y,
@@ -147,7 +159,7 @@ Proof.
   intros x y Hx Hy.
   unfold Rdiv.
   rewrite sqrt_mult_alt.
-  - rewrite sqrt_Rinv; [reflexivity | lra].
+  - rewrite sqrt_inv. reflexivity.
   - exact Hx.
   - apply Rlt_le. apply Rinv_0_lt_compat. exact Hy.
 Qed.
@@ -226,7 +238,7 @@ Proof.
   apply exp_pos.
 Qed.
 
-Lemma ln_increasing : forall x y, 0 < x -> x < y -> ln x < ln y.
+Lemma ln_increasing' : forall x y, 0 < x -> x < y -> ln x < ln y.
 Proof.
   intros x y Hx Hxy.
   apply ln_increasing; [exact Hx | exact Hxy].

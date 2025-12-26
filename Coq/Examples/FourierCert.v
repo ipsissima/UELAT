@@ -15,7 +15,7 @@
     Reference: UELAT Paper, Appendix C
 *)
 
-From Coq Require Import Reals Lra Lia.
+From Coq Require Import Reals Lra Lia List.
 From UELAT.Foundations Require Import Certificate.
 Import ListNotations.
 Local Open Scope R_scope.
@@ -34,6 +34,14 @@ Import UELAT_Certificate.
 Definition basis_n (n : nat) (x : R) : R :=
   sqrt 2 * sin (INR n * PI * x).
 
+Lemma Rabs_sin_le : forall x, Rabs (sin x) <= 1.
+Proof.
+  intro x.
+  apply Rabs_le.
+  destruct (SIN_bound x) as [Hlo Hhi].
+  split; lra.
+Qed.
+
 Lemma basis_bounded : forall n x,
   0 <= x <= 1 -> (n > 0)%nat ->
   (* The basis function is bounded by sqrt(2) *)
@@ -42,7 +50,8 @@ Proof.
   intros n x Hx Hn.
   unfold basis_n.
   rewrite Rabs_mult.
-  rewrite Rabs_of_pos (sqrt_pos 2).
+  rewrite (Rabs_pos_eq (sqrt 2)) by (apply sqrt_pos).
+  rewrite <- (Rmult_1_r (sqrt 2)) at 2.
   apply Rmult_le_compat_l.
   - apply sqrt_pos.
   - apply Rabs_sin_le.
@@ -73,29 +82,23 @@ Proof.
   intros n Hn.
   unfold coeff.
   destruct n as [|n']; [lia |].
+  unfold Rdiv.
+  assert (Hpos : INR (S n') * PI > 0).
+  { apply Rmult_lt_0_compat; [apply lt_0_INR; lia | apply PI_RGT_0]. }
+  assert (Hsqrt : sqrt 2 >= 0) by (apply Rle_ge; apply sqrt_pos).
+  assert (Hinv : / (INR (S n') * PI) > 0) by (apply Rinv_0_lt_compat; lra).
   destruct (Nat.odd (S n')).
-  - rewrite Rabs_mult.
-    rewrite Rabs_right; [| apply sqrt_pos].
-    unfold Rdiv.
-    rewrite Rabs_mult.
-    rewrite Rabs_R1.
-    rewrite Rabs_right.
-    + ring_simplify. lra.
-    + apply Rlt_le. apply Rinv_0_lt_compat.
-      apply Rmult_lt_0_compat.
-      * apply lt_0_INR. lia.
-      * apply PI_RGT_0.
-  - rewrite Rabs_mult.
-    rewrite Rabs_right; [| apply sqrt_pos].
-    unfold Rdiv.
-    rewrite Rabs_mult.
-    rewrite Rabs_Ropp, Rabs_R1.
-    rewrite Rabs_right.
-    + ring_simplify. lra.
-    + apply Rlt_le. apply Rinv_0_lt_compat.
-      apply Rmult_lt_0_compat.
-      * apply lt_0_INR. lia.
-      * apply PI_RGT_0.
+  - (* Odd case: sign = 1 *)
+    replace (sqrt 2 * 1 * / (INR (S n') * PI)) with (sqrt 2 * / (INR (S n') * PI)) by ring.
+    rewrite (Rabs_pos_eq _).
+    + lra.
+    + apply Rmult_le_pos; lra.
+  - (* Even case: sign = -1 *)
+    replace (sqrt 2 * -1 * / (INR (S n') * PI)) with (-(sqrt 2 * / (INR (S n') * PI))) by ring.
+    rewrite Rabs_Ropp.
+    rewrite (Rabs_pos_eq _).
+    + lra.
+    + apply Rmult_le_pos; lra.
 Qed.
 
 (** * Partial Sum Approximant *)
