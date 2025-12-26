@@ -36,6 +36,7 @@ Coq/Stability/CertificateComposition.v
 Coq/Examples/ExpCert.v
 Coq/Examples/FourierCert.v
 Coq/Examples/ChebyshevCert.v
+Coq/Examples/ChebyshevProof.v
 Coq/Examples/SobolevCert.v
 
 # Legacy/compatibility modules
