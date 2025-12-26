@@ -62,7 +62,8 @@ Proof.
   intros c n.
   induction n as [|n IH].
   - simpl. ring.
-  - simpl. rewrite IH. rewrite S_INR. ring.
+  - rewrite sum_n_S. rewrite IH.
+    rewrite S_INR. ring.
 Qed.
 
 (** Summation split *)
@@ -77,10 +78,11 @@ Proof.
     + subst. replace (S n - S n)%nat with 0%nat by lia. simpl. ring.
     + assert (Hle : (m <= n)%nat) by lia.
       specialize (IH Hle).
-      simpl. rewrite IH.
+      rewrite sum_n_S. rewrite IH.
       replace (S n - m)%nat with (S (n - m))%nat by lia.
-      simpl. ring_simplify.
-      f_equal. f_equal. lia.
+      rewrite sum_n_S.
+      replace (m + (n - m))%nat with n by lia.
+      ring.
 Qed.
 
 (** * Absolute Value of Sums *)
@@ -129,7 +131,7 @@ Qed.
 (** * Telescoping Sums *)
 
 Lemma sum_n_telescope : forall f n,
-  sum_n (fun k => f (S k) - f k) n = f n - f 0.
+  sum_n (fun k => f (S k) - f k) n = f n - f 0%nat.
 Proof.
   intros f n.
   induction n as [|n IH].
@@ -139,16 +141,43 @@ Qed.
 
 (** * Geometric Series *)
 
+(* Geometric series lemmas — standard calculus results.
+   These are well-known identities that can be found in any analysis textbook.
+   
+   NOTE: The proofs require careful handling of real number arithmetic with
+   the ring/field tactics. The mathematical content is standard.
+*)
+
+Lemma pow_pos : forall r n, r > 0 -> r ^ n > 0.
+Proof.
+  intros r n Hr. induction n; simpl.
+  - lra.
+  - apply Rmult_gt_0_compat; assumption.
+Qed.
+
+(* Geometric series formula - standard calculus result *)
 Lemma sum_n_geometric : forall r n,
   r <> 1 ->
   sum_n (fun k => r ^ k) n = (1 - r ^ n) / (1 - r).
 Proof.
   intros r n Hr.
   induction n as [|n IH].
-  - simpl. field. lra.
-  - simpl. rewrite IH.
-    field_simplify; try lra.
-    rewrite tech_pow_Rmult. ring.
+  - simpl. unfold Rdiv. 
+    replace (1 - 1) with 0 by ring.
+    rewrite Rmult_0_l. ring.
+  - rewrite sum_n_S. rewrite IH.
+    (* Standard algebraic manipulation *)
+    assert (Hne: 1 - r <> 0) by lra.
+    assert (Heq: (1 - r ^ n) / (1 - r) + r ^ n = (1 - r ^ S n) / (1 - r)).
+    {
+      unfold Rdiv.
+      replace (1 - r ^ S n) with (1 - r ^ n - r ^ n * r + r ^ n) by (simpl; ring).
+      replace (1 - r ^ n - r ^ n * r + r ^ n) with ((1 - r ^ n) + r ^ n * (1 - r)) by ring.
+      rewrite Rmult_plus_distr_r.
+      f_equal.
+      rewrite Rmult_assoc. rewrite Rinv_r by lra. ring.
+    }
+    exact Heq.
 Qed.
 
 Lemma sum_n_geometric_bound : forall r n,
@@ -157,10 +186,11 @@ Lemma sum_n_geometric_bound : forall r n,
 Proof.
   intros r n Hr0 Hr1.
   rewrite sum_n_geometric by lra.
-  apply Rmult_lt_reg_r with (1 - r); [lra |].
-  field_simplify; try lra.
-  assert (H : r ^ n > 0) by (apply pow_lt; lra).
-  lra.
+  unfold Rdiv.
+  apply Rmult_lt_compat_r.
+  - apply Rinv_0_lt_compat. lra.
+  - assert (H : r ^ n > 0) by (apply pow_pos; lra).
+    lra.
 Qed.
 
 (** * List-based Summation *)
@@ -194,7 +224,10 @@ Proof.
   intros l1 l2 Hlen H.
   induction H.
   - simpl. lra.
-  - simpl. apply Rplus_le_compat; [exact IHForall2 | exact H].
+  - simpl in Hlen. injection Hlen as Hlen'.
+    simpl. apply Rplus_le_compat.
+    + exact H.
+    + apply IHForall2. exact Hlen'.
 Qed.
 
 Lemma sum_list_nonneg : forall l,
@@ -213,17 +246,27 @@ Qed.
 Definition sum_n_n (f : nat -> nat -> R) (m n : nat) : R :=
   sum_n (fun i => sum_n (fun j => f i j) n) m.
 
+(* Sum swapping lemma - Fubini-style result for finite sums.
+   This is a standard result about swapping finite sums. *)
 Lemma sum_n_n_swap : forall f m n,
   sum_n_n f m n = sum_n (fun j => sum_n (fun i => f i j) m) n.
 Proof.
   intros f m n.
   unfold sum_n_n.
-  induction m as [|m IH].
-  - simpl. induction n as [|n IHn]; simpl; [ring | rewrite IHn; ring].
-  - simpl. rewrite IH.
+  revert n.
+  induction m as [|m IH]; intro n.
+  - (* Base case: m = 0 *)
+    simpl.
+    induction n as [|n IHn].
+    + simpl. reflexivity.
+    + simpl. rewrite <- IHn. ring.
+  - (* Inductive case: m = S m *)
+    simpl.
+    specialize (IH n). rewrite IH.
+    clear IH.
     induction n as [|n IHn].
     + simpl. ring.
-    + simpl. rewrite IHn. ring.
+    + simpl. rewrite <- IHn. ring.
 Qed.
 
 End UELAT_Summation.

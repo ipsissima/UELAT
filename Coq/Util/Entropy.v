@@ -68,12 +68,22 @@ Lemma entropy_nonneg : forall S eps,
 Proof.
   intros S eps Heps.
   unfold entropy.
-  apply Rle_ge.
-  rewrite <- ln_1.
-  apply Rlt_le.
-  apply ln_increasing.
-  - lra.
-  - apply Rlt_le_trans with 1; [lra | apply Rge_le; apply covering_ge_1; exact Heps].
+  assert (Hcover : covering S eps >= 1) by (apply covering_ge_1; exact Heps).
+  (* ln is increasing on (0, ∞), and covering S eps >= 1 > 0, and ln 1 = 0 *)
+  (* So ln (covering S eps) >= ln 1 = 0 *)
+  set (c := covering S eps) in *.
+  apply Rge_le in Hcover.
+  destruct (Rlt_le_dec 1 c) as [Hlt | Hle].
+  - (* 1 < c *)
+    apply Rle_ge.
+    rewrite <- ln_1.
+    left.
+    apply ln_increasing; lra.
+  - (* c <= 1, but also c >= 1, so c = 1 *)
+    assert (Heq : c = 1) by lra.
+    rewrite Heq.
+    rewrite ln_1.
+    lra.
 Qed.
 
 Lemma entropy_monotone : forall S eps1 eps2,

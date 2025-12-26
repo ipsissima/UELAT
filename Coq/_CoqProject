@@ -1,52 +1,52 @@
--Q Coq UELAT
+-Q . UELAT
 
 # Utility modules
-Coq/Util/Reals_ext.v
-Coq/Util/Summation.v
-Coq/Util/Entropy.v
+Util/Reals_ext.v
+Util/Summation.v
+Util/Entropy.v
 
 # Foundations (Section 3-4)
-Coq/Foundations/Certificate.v
-Coq/Foundations/ProbeTheory.v
-Coq/Foundations/CCP.v
+Foundations/Certificate.v
+Foundations/ProbeTheory.v
+Foundations/CCP.v
 
 # Adjunction (Section 3)
-Coq/Adjunction/Probe.v
-Coq/Adjunction/Model.v
-Coq/Adjunction/Functors.v
-Coq/Adjunction/Adjunction.v
-Coq/Adjunction/Reflection.v
+Adjunction/Probe.v
+Adjunction/Model.v
+Adjunction/Functors.v
+Adjunction/Adjunction.v
+Adjunction/Reflection.v
 
 # Approximation core (Sections 5-9)
-Coq/Approx/Certificate.v
-Coq/Approx/Bernstein.v
-Coq/Approx/Bernstein_Lipschitz.v
-Coq/Approx/Spec.v
-Coq/Approx/UELAT_Internal.v
-Coq/Approx/UELAT_External.v
-Coq/Approx/Incompressibility.v
-Coq/Approx/EffectiveDescent.v
+Approx/Certificate.v
+Approx/Bernstein.v
+Approx/Bernstein_Lipschitz.v
+Approx/Spec.v
+Approx/UELAT_Internal.v
+Approx/UELAT_External.v
+Approx/Incompressibility.v
+Approx/EffectiveDescent.v
 
 # Stability (Section 7)
-Coq/Stability/Modulus.v
-Coq/Stability/UniformStability.v
-Coq/Stability/CertificateComposition.v
+Stability/Modulus.v
+Stability/UniformStability.v
+Stability/CertificateComposition.v
 
 # Examples (Appendix C)
-Coq/Examples/ExpCert.v
-Coq/Examples/FourierCert.v
-Coq/Examples/ChebyshevCert.v
-Coq/Examples/ChebyshevProof.v
-Coq/Examples/SobolevCert.v
+Examples/ExpCert.v
+Examples/FourierCert.v
+Examples/ChebyshevCert.v
+Examples/ChebyshevProof.v
+Examples/SobolevCert.v
 
 # Legacy/compatibility modules
-Coq/PartitionOfUnity.v
-Coq/Certificate.v
-Coq/ErrorBound.v
-Coq/SobolevApprox.v
-Coq/Reconstruct.v
-Coq/Example.v
-Coq/Approx/Weierstrass_Lipschitz.v
+PartitionOfUnity.v
+Certificate.v
+ErrorBound.v
+SobolevApprox.v
+Reconstruct.v
+Example.v
+Approx/Weierstrass_Lipschitz.v
 
 # Main entry point
-Coq/UELAT.v
+UELAT.v
