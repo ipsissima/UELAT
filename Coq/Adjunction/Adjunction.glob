@@ -1,0 +1,240 @@
+DIGEST d24b3d69ab0b941c6fb7d69e1c4c619f
+FUELAT.Adjunction.Adjunction
+R374:378 Stdlib.Reals.Reals <> <> lib
+R380:385 Stdlib.QArith.QArith <> <> lib
+R387:390 Stdlib.Lists.List <> <> lib
+R392:396 Stdlib.Arith.Arith <> <> lib
+R398:400 Stdlib.micromega.Lia <> <> lib
+R402:410 Stdlib.Logic.Classical <> <> lib
+R451:461 UELAT.Foundations.ProbeTheory <> <> lib
+R501:505 UELAT.Adjunction.Probe <> <> lib
+R507:511 UELAT.Adjunction.Model <> <> lib
+R513:520 UELAT.Adjunction.Functors <> <> lib
+R530:542 Stdlib.Lists.List ListNotations <> mod
+mod 579:594 <> UELAT_Adjunction
+R605:615 UELAT.Foundations.ProbeTheory UELAT_Probe <> mod
+R625:638 UELAT.Adjunction.Probe UELAT_ProbeCat <> mod
+R648:658 UELAT.Adjunction.Model UELAT_Model <> mod
+R668:681 UELAT.Adjunction.Functors UELAT_Functors <> mod
+sec 989:998 UELAT_Adjunction Adjunction
+def 1096:1106 UELAT_Adjunction adj_forward
+R1113:1123 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeTheory rec
+binder 1109:1109 <> T:1
+R1131:1144 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 1127:1127 <> W:2
+R1154:1166 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R1169:1173 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R1175:1175 UELAT.Adjunction.Adjunction <> T:1 var
+R1178:1178 UELAT.Adjunction.Adjunction <> W:2 var
+binder 1150:1150 <> f:3
+R1183:1195 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeMorphism rec
+R1197:1197 UELAT.Adjunction.Adjunction <> T:1 var
+R1200:1204 UELAT.Adjunction.Functors UELAT_Functors G_obj def
+R1206:1206 UELAT.Adjunction.Adjunction <> W:2 var
+def 1362:1373 UELAT_Adjunction adj_backward
+R1380:1390 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeTheory rec
+binder 1376:1376 <> T:4
+R1398:1411 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 1394:1394 <> W:5
+R1421:1433 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeMorphism rec
+R1435:1435 UELAT.Adjunction.Adjunction <> T:4 var
+R1438:1442 UELAT.Adjunction.Functors UELAT_Functors G_obj def
+R1444:1444 UELAT.Adjunction.Adjunction <> W:5 var
+binder 1417:1417 <> g:6
+R1450:1462 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R1465:1469 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R1471:1471 UELAT.Adjunction.Adjunction <> T:4 var
+R1474:1474 UELAT.Adjunction.Adjunction <> W:5 var
+prf 1611:1630 UELAT_Adjunction adjunction_bijection
+R1648:1658 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeTheory rec
+binder 1644:1644 <> T:7
+R1666:1679 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 1662:1662 <> W:8
+R1696:1708 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R1711:1715 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R1717:1717 UELAT.Adjunction.Adjunction <> T:7 var
+R1720:1720 UELAT.Adjunction.Adjunction <> W:8 var
+binder 1692:1692 <> f:9
+R1764:1766 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1728:1739 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_backward prfax
+R1741:1741 UELAT.Adjunction.Adjunction <> T:7 var
+R1743:1743 UELAT.Adjunction.Adjunction <> W:8 var
+R1746:1756 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_forward prfax
+R1758:1758 UELAT.Adjunction.Adjunction <> T:7 var
+R1760:1760 UELAT.Adjunction.Adjunction <> W:8 var
+R1762:1762 UELAT.Adjunction.Adjunction <> f:9 var
+R1767:1767 UELAT.Adjunction.Adjunction <> f:9 var
+R1943:1959 Stdlib.Logic.Classical_Prop <> proof_irrelevance thm
+R1943:1959 Stdlib.Logic.Classical_Prop <> proof_irrelevance thm
+prf 1976:1999 UELAT_Adjunction adjunction_bijection_inv
+R2017:2027 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeTheory rec
+binder 2013:2013 <> T:10
+R2035:2048 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 2031:2031 <> W:11
+R2065:2077 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeMorphism rec
+R2079:2079 UELAT.Adjunction.Adjunction <> T:10 var
+R2082:2086 UELAT.Adjunction.Functors UELAT_Functors G_obj def
+R2088:2088 UELAT.Adjunction.Adjunction <> W:11 var
+binder 2061:2061 <> g:12
+binder 2104:2104 <> i:13
+R2123:2132 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2109:2111 Corelib.Init.Peano <> ::nat_scope:x_'<'_x not
+R2108:2108 UELAT.Adjunction.Adjunction <> i:13 var
+R2112:2115 UELAT.Foundations.ProbeTheory UELAT_Probe rank proj
+R2117:2117 UELAT.Adjunction.Adjunction <> T:10 var
+R2183:2185 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2133:2141 UELAT.Foundations.ProbeTheory UELAT_Probe injection proj
+R2182:2182 UELAT.Adjunction.Adjunction <> i:13 var
+R2144:2154 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_forward prfax
+R2156:2156 UELAT.Adjunction.Adjunction <> T:10 var
+R2158:2158 UELAT.Adjunction.Adjunction <> W:11 var
+R2161:2172 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_backward prfax
+R2174:2174 UELAT.Adjunction.Adjunction <> T:10 var
+R2176:2176 UELAT.Adjunction.Adjunction <> W:11 var
+R2178:2178 UELAT.Adjunction.Adjunction <> g:12 var
+R2186:2194 UELAT.Foundations.ProbeTheory UELAT_Probe injection proj
+R2198:2198 UELAT.Adjunction.Adjunction <> i:13 var
+R2196:2196 UELAT.Adjunction.Adjunction <> g:12 var
+prf 2469:2487 UELAT_Adjunction triangle_identity_1
+R2505:2518 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 2501:2501 <> W:14
+binder 2533:2533 <> i:15
+R2555:2564 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2538:2540 Corelib.Init.Peano <> ::nat_scope:x_'<'_x not
+R2537:2537 UELAT.Adjunction.Adjunction <> i:15 var
+R2541:2547 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R2549:2549 UELAT.Adjunction.Adjunction <> W:14 var
+R2628:2630 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2565:2573 UELAT.Foundations.ProbeTheory UELAT_Probe injection proj
+R2627:2627 UELAT.Adjunction.Adjunction <> i:15 var
+R2576:2588 UELAT.Foundations.ProbeTheory UELAT_Probe probe_compose def
+R2607:2611 UELAT.Adjunction.Functors UELAT_Functors G_mor prfax
+R2614:2620 UELAT.Adjunction.Functors UELAT_Functors epsilon def
+R2622:2622 UELAT.Adjunction.Adjunction <> W:14 var
+R2591:2593 UELAT.Adjunction.Functors UELAT_Functors eta prfax
+R2596:2600 UELAT.Adjunction.Functors UELAT_Functors G_obj def
+R2602:2602 UELAT.Adjunction.Adjunction <> W:14 var
+R2631:2631 UELAT.Adjunction.Adjunction <> i:15 var
+prf 2880:2898 UELAT_Adjunction triangle_identity_2
+R2916:2926 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeTheory rec
+binder 2912:2912 <> T:16
+binder 2941:2941 <> i:17
+R2978:2987 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2944:2945 Stdlib.Lists.List <> In def
+R2950:2966 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2969:2973 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R2975:2975 UELAT.Adjunction.Adjunction <> T:16 var
+R2947:2947 UELAT.Adjunction.Adjunction <> i:17 var
+R3049:3051 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2988:2994 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3048:3048 UELAT.Adjunction.Adjunction <> i:17 var
+R2997:3009 UELAT.Adjunction.Model UELAT_Model model_compose def
+R3028:3034 UELAT.Adjunction.Functors UELAT_Functors epsilon def
+R3037:3041 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R3043:3043 UELAT.Adjunction.Adjunction <> T:16 var
+R3012:3016 UELAT.Adjunction.Functors UELAT_Functors F_mor def
+R3019:3021 UELAT.Adjunction.Functors UELAT_Functors eta prfax
+R3023:3023 UELAT.Adjunction.Adjunction <> T:16 var
+R3052:3058 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3081:3081 UELAT.Adjunction.Adjunction <> i:17 var
+R3061:3068 UELAT.Adjunction.Model UELAT_Model model_id def
+R3071:3075 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R3077:3077 UELAT.Adjunction.Adjunction <> T:16 var
+prf 3210:3222 UELAT_Adjunction adj_natural_T
+R3243:3253 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeTheory rec
+binder 3236:3236 <> T:18
+binder 3238:3239 <> T':19
+R3261:3274 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 3257:3257 <> W:20
+R3291:3303 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeMorphism rec
+R3305:3305 UELAT.Adjunction.Adjunction <> T:18 var
+R3307:3308 UELAT.Adjunction.Adjunction <> T':19 var
+binder 3287:3287 <> h:21
+R3316:3328 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R3331:3335 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R3337:3338 UELAT.Adjunction.Adjunction <> T':19 var
+R3341:3341 UELAT.Adjunction.Adjunction <> W:20 var
+binder 3312:3312 <> f:22
+binder 3356:3356 <> i:23
+R3375:3384 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3361:3363 Corelib.Init.Peano <> ::nat_scope:x_'<'_x not
+R3360:3360 UELAT.Adjunction.Adjunction <> i:23 var
+R3364:3367 UELAT.Foundations.ProbeTheory UELAT_Probe rank proj
+R3369:3369 UELAT.Adjunction.Adjunction <> T:18 var
+R3442:3450 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3385:3393 UELAT.Foundations.ProbeTheory UELAT_Probe injection proj
+R3441:3441 UELAT.Adjunction.Adjunction <> i:23 var
+R3396:3406 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_forward prfax
+R3408:3408 UELAT.Adjunction.Adjunction <> T:18 var
+R3410:3410 UELAT.Adjunction.Adjunction <> W:20 var
+R3413:3425 UELAT.Adjunction.Model UELAT_Model model_compose def
+R3437:3437 UELAT.Adjunction.Adjunction <> f:22 var
+R3428:3432 UELAT.Adjunction.Functors UELAT_Functors F_mor def
+R3434:3434 UELAT.Adjunction.Adjunction <> h:21 var
+R3451:3459 UELAT.Foundations.ProbeTheory UELAT_Probe injection proj
+R3500:3500 UELAT.Adjunction.Adjunction <> i:23 var
+R3462:3474 UELAT.Foundations.ProbeTheory UELAT_Probe probe_compose def
+R3479:3489 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_forward prfax
+R3491:3492 UELAT.Adjunction.Adjunction <> T':19 var
+R3494:3494 UELAT.Adjunction.Adjunction <> W:20 var
+R3496:3496 UELAT.Adjunction.Adjunction <> f:22 var
+R3476:3476 UELAT.Adjunction.Adjunction <> h:21 var
+prf 3604:3616 UELAT_Adjunction adj_natural_W
+R3634:3644 UELAT.Foundations.ProbeTheory UELAT_Probe ProbeTheory rec
+binder 3630:3630 <> T:24
+R3655:3668 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 3648:3648 <> W:25
+binder 3650:3651 <> W':26
+R3685:3697 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R3699:3699 UELAT.Adjunction.Adjunction <> W:25 var
+R3701:3702 UELAT.Adjunction.Adjunction <> W':26 var
+binder 3681:3681 <> k:27
+R3710:3722 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R3725:3729 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R3731:3731 UELAT.Adjunction.Adjunction <> T:24 var
+R3734:3734 UELAT.Adjunction.Adjunction <> W:25 var
+binder 3706:3706 <> f:28
+binder 3749:3749 <> i:29
+R3768:3777 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3754:3756 Corelib.Init.Peano <> ::nat_scope:x_'<'_x not
+R3753:3753 UELAT.Adjunction.Adjunction <> i:29 var
+R3757:3760 UELAT.Foundations.ProbeTheory UELAT_Probe rank proj
+R3762:3762 UELAT.Adjunction.Adjunction <> T:24 var
+R3828:3836 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3778:3786 UELAT.Foundations.ProbeTheory UELAT_Probe injection proj
+R3827:3827 UELAT.Adjunction.Adjunction <> i:29 var
+R3789:3799 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_forward prfax
+R3801:3801 UELAT.Adjunction.Adjunction <> T:24 var
+R3803:3804 UELAT.Adjunction.Adjunction <> W':26 var
+R3807:3819 UELAT.Adjunction.Model UELAT_Model model_compose def
+R3823:3823 UELAT.Adjunction.Adjunction <> k:27 var
+R3821:3821 UELAT.Adjunction.Adjunction <> f:28 var
+R3837:3845 UELAT.Foundations.ProbeTheory UELAT_Probe injection proj
+R3893:3893 UELAT.Adjunction.Adjunction <> i:29 var
+R3848:3860 UELAT.Foundations.ProbeTheory UELAT_Probe probe_compose def
+R3883:3887 UELAT.Adjunction.Functors UELAT_Functors G_mor prfax
+R3889:3889 UELAT.Adjunction.Adjunction <> k:27 var
+R3863:3873 UELAT.Adjunction.Adjunction UELAT_Adjunction adj_forward prfax
+R3875:3875 UELAT.Adjunction.Adjunction <> T:24 var
+R3877:3877 UELAT.Adjunction.Adjunction <> W:25 var
+R3879:3879 UELAT.Adjunction.Adjunction <> f:28 var
+R3953:3962 UELAT.Adjunction.Adjunction UELAT_Adjunction.Adjunction <> sec
+prf 4130:4147 UELAT_Adjunction adj_preserves_rank
+binder 4160:4160 <> T:30
+R4180:4182 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4163:4169 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R4172:4176 UELAT.Adjunction.Functors UELAT_Functors F_obj def
+R4178:4178 UELAT.Adjunction.Adjunction <> T:30 var
+R4183:4186 UELAT.Foundations.ProbeTheory UELAT_Probe rank proj
+R4188:4188 UELAT.Adjunction.Adjunction <> T:30 var
+R4215:4223 UELAT.Adjunction.Functors UELAT_Functors F_obj_dim thm
+R4215:4223 UELAT.Adjunction.Functors UELAT_Functors F_obj_dim thm
+prf 4242:4258 UELAT_Adjunction adj_preserves_dim
+binder 4271:4271 <> W:31
+R4288:4290 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4274:4277 UELAT.Foundations.ProbeTheory UELAT_Probe rank proj
+R4280:4284 UELAT.Adjunction.Functors UELAT_Functors G_obj def
+R4286:4286 UELAT.Adjunction.Adjunction <> W:31 var
+R4291:4297 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R4299:4299 UELAT.Adjunction.Adjunction <> W:31 var
+R4458:4473 UELAT.Adjunction.Adjunction UELAT_Adjunction <> mod

@@ -7,8 +7,8 @@
     Reference: UELAT Paper, Section 7, Theorem 7.1
 *)
 
-From Coq Require Import Reals Lra Lia.
-From Coq Require Import QArith Qreals.
+From Stdlib Require Import Reals Lra Lia.
+From Stdlib Require Import QArith.
 From UELAT.Foundations Require Import Certificate.
 From UELAT.Stability Require Import Modulus.
 Local Open Scope R_scope.

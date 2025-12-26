@@ -6,7 +6,7 @@
     Reference: UELAT Paper, various sections
 *)
 
-From Coq Require Import Reals List Arith Lra Lia.
+From Stdlib Require Import Reals List Arith Lra Lia.
 Import ListNotations.
 Local Open Scope R_scope.
 

@@ -1,4 +1,4 @@
-From Coq Require Import Reals List Arith Binomial Psatz.
+From Stdlib Require Import Reals List Arith Binomial Psatz.
 Import ListNotations.
 Local Open Scope R_scope.
 

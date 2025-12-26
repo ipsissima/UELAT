@@ -7,7 +7,7 @@
     Reference: UELAT Paper, Section 9, Theorem 9.3
 *)
 
-From Coq Require Import Reals List Arith Lra Lia.
+From Stdlib Require Import Reals List Arith Lra Lia.
 From UELAT.Foundations Require Import Certificate.
 Import ListNotations.
 Local Open Scope R_scope.

@@ -1,0 +1,354 @@
+DIGEST 4882c17dae872158cd6386ffd775295b
+FUELAT.Adjunction.Model
+R337:341 Stdlib.Reals.Reals <> <> lib
+R343:348 Stdlib.QArith.QArith <> <> lib
+R350:353 Stdlib.Lists.List <> <> lib
+R355:359 Stdlib.Arith.Arith <> <> lib
+R361:363 Stdlib.micromega.Lia <> <> lib
+R404:414 UELAT.Foundations.ProbeTheory <> <> lib
+R424:436 Stdlib.Lists.List ListNotations <> mod
+mod 473:483 <> UELAT_Model
+ax 655:659 UELAT_Model Basis
+ax 679:688 UELAT_Model basis_eval
+R697:700 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R692:696 UELAT.Adjunction.Model UELAT_Model Basis defax
+R704:707 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R701:703 Corelib.Init.Datatypes <> nat ind
+R709:712 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R708:708 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R713:713 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+ax 812:828 UELAT_Model basis_orthonormal
+R837:840 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R832:836 UELAT.Adjunction.Model UELAT_Model Basis defax
+def 1074:1086 UELAT_Model LocallyFinite
+R1093:1097 UELAT.Adjunction.Model UELAT_Model Basis defax
+binder 1089:1089 <> B:7
+R1124:1127 Corelib.Init.Datatypes <> list ind
+R1129:1129 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 1120:1120 <> S:8
+R1139:1139 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 1133:1135 <> tau:9
+R1154:1161 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1150:1152 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R1147:1149 UELAT.Adjunction.Model <> tau:9 var
+R1162:1169 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R1181:1189 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R1178:1180 Corelib.Init.Datatypes <> nat ind
+binder 1170:1174 <> bound:10
+R1204:1206 Corelib.Init.Datatypes <> nat ind
+binder 1198:1200 <> phi:11
+R1214:1214 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 1210:1210 <> x:12
+R1232:1243 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1226:1227 Stdlib.Lists.List <> In def
+R1231:1231 UELAT.Adjunction.Model <> S:8 var
+R1229:1229 UELAT.Adjunction.Model <> x:12 var
+R1261:1272 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1248:1250 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
+R1245:1247 UELAT.Adjunction.Model <> phi:11 var
+R1251:1255 UELAT.Adjunction.Model <> bound:10 var
+R1298:1301 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R1273:1276 Stdlib.Reals.Rbasic_fun <> Rabs def
+R1279:1288 UELAT.Adjunction.Model UELAT_Model basis_eval defax
+R1290:1290 UELAT.Adjunction.Model <> B:7 var
+R1292:1294 UELAT.Adjunction.Model <> phi:11 var
+R1296:1296 UELAT.Adjunction.Model <> x:12 var
+R1302:1304 UELAT.Adjunction.Model <> tau:9 var
+rec 1354:1367 UELAT_Model FinDimSubspace
+proj 1376:1382 UELAT_Model fds_dim
+proj 1393:1409 UELAT_Model fds_basis_indices
+proj 1425:1436 UELAT_Model fds_dim_spec
+R1386:1388 Corelib.Init.Datatypes <> nat ind
+R1413:1416 Corelib.Init.Datatypes <> list ind
+R1418:1420 Corelib.Init.Datatypes <> nat ind
+R1464:1466 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1440:1445 Corelib.Init.Datatypes <> length def
+R1447:1463 UELAT.Adjunction.Model <> fds_basis_indices:15 meth
+R1467:1473 UELAT.Adjunction.Model <> fds_dim:14 meth
+def 1520:1532 UELAT_Model subspace_incl
+R1543:1556 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 1535:1536 <> W1:17
+binder 1538:1539 <> W2:18
+binder 1578:1578 <> i:19
+R1608:1611 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1581:1582 Stdlib.Lists.List <> In def
+R1587:1603 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R1605:1606 UELAT.Adjunction.Model <> W1:17 var
+R1584:1584 UELAT.Adjunction.Model <> i:19 var
+R1612:1613 Stdlib.Lists.List <> In def
+R1618:1634 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R1636:1637 UELAT.Adjunction.Model <> W2:18 var
+R1615:1615 UELAT.Adjunction.Model <> i:19 var
+rec 1736:1748 UELAT_Model ModelMorphism
+proj 1781:1787 UELAT_Model mm_incl
+R1758:1771 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 1751:1751 <> W:20
+binder 1753:1754 <> W':21
+R1791:1803 UELAT.Adjunction.Model UELAT_Model subspace_incl def
+R1805:1805 UELAT.Adjunction.Model <> W:20 var
+R1807:1808 UELAT.Adjunction.Model <> W':21 var
+R1824:1830 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R1824:1830 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+def 1883:1890 UELAT_Model model_id
+R1897:1910 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 1893:1893 <> W:24
+R1915:1927 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R1929:1929 UELAT.Adjunction.Model <> W:24 var
+R1931:1931 UELAT.Adjunction.Model <> W:24 var
+R1953:1959 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R1953:1959 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R1953:1959 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R1953:1959 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R1953:1959 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R1953:1959 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R1979:1991 UELAT.Adjunction.Model UELAT_Model subspace_incl def
+def 2038:2050 UELAT_Model model_compose
+R2064:2077 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 2053:2054 <> W1:25
+binder 2056:2057 <> W2:26
+binder 2059:2060 <> W3:27
+R2087:2099 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R2101:2102 UELAT.Adjunction.Model <> W1:25 var
+R2104:2105 UELAT.Adjunction.Model <> W2:26 var
+binder 2083:2083 <> f:28
+R2113:2125 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R2127:2128 UELAT.Adjunction.Model <> W2:26 var
+R2130:2131 UELAT.Adjunction.Model <> W3:27 var
+binder 2109:2109 <> g:29
+R2136:2148 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R2150:2151 UELAT.Adjunction.Model <> W1:25 var
+R2153:2154 UELAT.Adjunction.Model <> W3:27 var
+R2176:2182 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2176:2182 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2176:2182 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2176:2182 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2176:2182 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2176:2182 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2202:2214 UELAT.Adjunction.Model UELAT_Model subspace_incl def
+R2239:2245 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2239:2245 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2258:2264 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2258:2264 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+def 2405:2408 UELAT_Model span
+R2421:2424 Corelib.Init.Datatypes <> list ind
+R2426:2428 Corelib.Init.Datatypes <> nat ind
+binder 2411:2417 <> indices:30
+R2433:2446 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+R2456:2462 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R2456:2462 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R2456:2462 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R2485:2501 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2485:2501 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2467:2472 Corelib.Init.Datatypes <> length def
+R2474:2480 UELAT.Adjunction.Model <> indices:30 var
+R2506:2512 UELAT.Adjunction.Model <> indices:30 var
+def 2554:2566 UELAT_Model zero_subspace
+R2570:2583 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+R2588:2591 UELAT.Adjunction.Model UELAT_Model span def
+R2593:2594 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+def 2644:2655 UELAT_Model subspace_sum
+R2666:2679 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 2658:2659 <> W1:31
+binder 2661:2662 <> W2:32
+R2684:2697 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+R2707:2713 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R2707:2713 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R2707:2713 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R2775:2791 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2775:2791 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2718:2723 Corelib.Init.Datatypes <> length def
+R2746:2749 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2726:2742 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2744:2745 UELAT.Adjunction.Model <> W1:31 var
+R2750:2766 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2768:2769 UELAT.Adjunction.Model <> W2:32 var
+R2816:2819 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2796:2812 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2814:2815 UELAT.Adjunction.Model <> W1:31 var
+R2820:2836 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R2838:2839 UELAT.Adjunction.Model <> W2:32 var
+def 2885:2891 UELAT_Model sum_inl
+R2902:2915 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 2894:2895 <> W1:33
+binder 2897:2898 <> W2:34
+R2920:2932 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R2934:2935 UELAT.Adjunction.Model <> W1:33 var
+R2938:2949 UELAT.Adjunction.Model UELAT_Model subspace_sum def
+R2951:2952 UELAT.Adjunction.Model <> W1:33 var
+R2954:2955 UELAT.Adjunction.Model <> W2:34 var
+R2978:2984 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2978:2984 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2978:2984 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2978:2984 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2978:2984 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R2978:2984 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3004:3016 UELAT.Adjunction.Model UELAT_Model subspace_incl def
+R3047:3055 Stdlib.Lists.List <> in_or_app thm
+R3047:3055 Stdlib.Lists.List <> in_or_app thm
+def 3095:3101 UELAT_Model sum_inr
+R3112:3125 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 3104:3105 <> W1:35
+binder 3107:3108 <> W2:36
+R3130:3142 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R3144:3145 UELAT.Adjunction.Model <> W2:36 var
+R3148:3159 UELAT.Adjunction.Model UELAT_Model subspace_sum def
+R3161:3162 UELAT.Adjunction.Model <> W1:35 var
+R3164:3165 UELAT.Adjunction.Model <> W2:36 var
+R3188:3194 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3188:3194 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3188:3194 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3188:3194 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3188:3194 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3188:3194 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R3214:3226 UELAT.Adjunction.Model UELAT_Model subspace_incl def
+R3257:3265 Stdlib.Lists.List <> in_or_app thm
+R3257:3265 Stdlib.Lists.List <> in_or_app thm
+def 3340:3349 UELAT_Model list_inter
+R3360:3363 Corelib.Init.Datatypes <> list ind
+R3365:3367 Corelib.Init.Datatypes <> nat ind
+binder 3352:3353 <> l1:37
+binder 3355:3356 <> l2:38
+R3372:3375 Corelib.Init.Datatypes <> list ind
+R3377:3379 Corelib.Init.Datatypes <> nat ind
+R3392:3393 UELAT.Adjunction.Model <> l1:37 var
+R3404:3405 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R3410:3411 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R3418:3421 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3438:3444 Stdlib.Lists.List <> existsb def
+R3458:3459 UELAT.Adjunction.Model <> l2:38 var
+R3447:3453 Stdlib.Arith.PeanoNat Nat eqb def
+R3506:3515 UELAT.Adjunction.Model <> list_inter:39 def
+R3521:3522 UELAT.Adjunction.Model <> l2:38 var
+R3473:3476 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3477:3486 UELAT.Adjunction.Model <> list_inter:39 def
+R3492:3493 UELAT.Adjunction.Model <> l2:38 var
+def 3551:3564 UELAT_Model subspace_inter
+R3575:3588 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 3567:3568 <> W1:41
+binder 3570:3571 <> W2:42
+R3593:3606 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+R3616:3622 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R3616:3622 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R3616:3622 UELAT.Adjunction.Model UELAT_Model fds_dim proj
+R3696:3712 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R3696:3712 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R3627:3632 Corelib.Init.Datatypes <> length def
+R3635:3644 UELAT.Adjunction.Model UELAT_Model list_inter def
+R3647:3663 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R3665:3666 UELAT.Adjunction.Model <> W1:41 var
+R3670:3686 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R3688:3689 UELAT.Adjunction.Model <> W2:42 var
+R3717:3726 UELAT.Adjunction.Model UELAT_Model list_inter def
+R3729:3745 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R3747:3748 UELAT.Adjunction.Model <> W1:41 var
+R3752:3768 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R3770:3771 UELAT.Adjunction.Model <> W2:42 var
+prf 3823:3841 UELAT_Model list_inter_subset_l
+binder 3852:3853 <> l1:43
+binder 3855:3856 <> l2:44
+binder 3858:3858 <> x:45
+R3886:3889 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3863:3864 Stdlib.Lists.List <> In def
+R3869:3878 UELAT.Adjunction.Model UELAT_Model list_inter def
+R3880:3881 UELAT.Adjunction.Model <> l1:43 var
+R3883:3884 UELAT.Adjunction.Model <> l2:44 var
+R3866:3866 UELAT.Adjunction.Model <> x:45 var
+R3890:3891 Stdlib.Lists.List <> In def
+R3895:3896 UELAT.Adjunction.Model <> l1:43 var
+R3893:3893 UELAT.Adjunction.Model <> x:45 var
+R3999:4005 Stdlib.Lists.List <> existsb def
+R4008:4014 Stdlib.Arith.PeanoNat Nat eqb def
+R3999:4005 Stdlib.Lists.List <> existsb def
+R4008:4014 Stdlib.Arith.PeanoNat Nat eqb def
+prf 4186:4204 UELAT_Model list_inter_subset_r
+binder 4215:4216 <> l1:46
+binder 4218:4219 <> l2:47
+binder 4221:4221 <> x:48
+R4249:4252 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4226:4227 Stdlib.Lists.List <> In def
+R4232:4241 UELAT.Adjunction.Model UELAT_Model list_inter def
+R4243:4244 UELAT.Adjunction.Model <> l1:46 var
+R4246:4247 UELAT.Adjunction.Model <> l2:47 var
+R4229:4229 UELAT.Adjunction.Model <> x:48 var
+R4253:4254 Stdlib.Lists.List <> In def
+R4258:4259 UELAT.Adjunction.Model <> l2:47 var
+R4256:4256 UELAT.Adjunction.Model <> x:48 var
+R4362:4368 Stdlib.Lists.List <> existsb def
+R4371:4377 Stdlib.Arith.PeanoNat Nat eqb def
+R4362:4368 Stdlib.Lists.List <> existsb def
+R4371:4377 Stdlib.Arith.PeanoNat Nat eqb def
+R4452:4465 Stdlib.Lists.List <> existsb_exists thm
+R4452:4465 Stdlib.Lists.List <> existsb_exists thm
+R4530:4539 Stdlib.Arith.PeanoNat Nat eqb_eq thm
+R4530:4539 Stdlib.Arith.PeanoNat Nat eqb_eq thm
+def 4643:4654 UELAT_Model inter_proj_l
+R4665:4678 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 4657:4658 <> W1:49
+binder 4660:4661 <> W2:50
+R4685:4697 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R4700:4713 UELAT.Adjunction.Model UELAT_Model subspace_inter def
+R4715:4716 UELAT.Adjunction.Model <> W1:49 var
+R4718:4719 UELAT.Adjunction.Model <> W2:50 var
+R4722:4723 UELAT.Adjunction.Model <> W1:49 var
+R4745:4751 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4745:4751 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4745:4751 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4745:4751 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4745:4751 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4745:4751 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4771:4783 UELAT.Adjunction.Model UELAT_Model subspace_incl def
+R4820:4838 UELAT.Adjunction.Model UELAT_Model list_inter_subset_l thm
+R4820:4838 UELAT.Adjunction.Model UELAT_Model list_inter_subset_l thm
+def 4878:4889 UELAT_Model inter_proj_r
+R4900:4913 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 4892:4893 <> W1:51
+binder 4895:4896 <> W2:52
+R4920:4932 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R4935:4948 UELAT.Adjunction.Model UELAT_Model subspace_inter def
+R4950:4951 UELAT.Adjunction.Model <> W1:51 var
+R4953:4954 UELAT.Adjunction.Model <> W2:52 var
+R4957:4958 UELAT.Adjunction.Model <> W2:52 var
+R4980:4986 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4980:4986 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4980:4986 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4980:4986 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4980:4986 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R4980:4986 UELAT.Adjunction.Model UELAT_Model mm_incl proj
+R5006:5018 UELAT.Adjunction.Model UELAT_Model subspace_incl def
+R5055:5073 UELAT.Adjunction.Model UELAT_Model list_inter_subset_r thm
+R5055:5073 UELAT.Adjunction.Model UELAT_Model list_inter_subset_r thm
+rec 5213:5231 UELAT_Model DirectedSystemModel
+proj 5240:5248 UELAT_Model dsm_index
+proj 5277:5290 UELAT_Model dsm_transition
+R5255:5258 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5252:5254 Corelib.Init.Datatypes <> nat ind
+R5259:5272 UELAT.Adjunction.Model UELAT_Model FinDimSubspace rec
+binder 5301:5301 <> n:55
+R5304:5316 UELAT.Adjunction.Model UELAT_Model ModelMorphism rec
+R5319:5327 UELAT.Adjunction.Model <> dsm_index:54 meth
+R5329:5329 UELAT.Adjunction.Model <> n:55 var
+R5333:5341 UELAT.Adjunction.Model <> dsm_index:54 meth
+R5344:5344 Corelib.Init.Datatypes <> S constr
+R5346:5346 UELAT.Adjunction.Model <> n:55 var
+def 5416:5426 UELAT_Model union_up_to
+R5434:5452 UELAT.Adjunction.Model UELAT_Model DirectedSystemModel rec
+binder 5429:5430 <> ds:57
+R5460:5462 Corelib.Init.Datatypes <> nat ind
+binder 5456:5456 <> n:58
+R5467:5470 Corelib.Init.Datatypes <> list ind
+R5472:5474 Corelib.Init.Datatypes <> nat ind
+R5487:5487 UELAT.Adjunction.Model <> n:58 var
+R5498:5498 Corelib.Init.Datatypes <> O constr
+R5503:5519 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R5522:5530 UELAT.Adjunction.Model UELAT_Model dsm_index proj
+R5532:5533 UELAT.Adjunction.Model <> ds:57 var
+R5535:5535 Corelib.Init.Datatypes <> O constr
+R5542:5542 Corelib.Init.Datatypes <> S constr
+R5589:5592 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5550:5566 UELAT.Adjunction.Model UELAT_Model fds_basis_indices proj
+R5569:5577 UELAT.Adjunction.Model UELAT_Model dsm_index proj
+R5579:5580 UELAT.Adjunction.Model <> ds:57 var
+R5583:5583 Corelib.Init.Datatypes <> S constr
+R5593:5603 UELAT.Adjunction.Model <> union_up_to:59 def
+R5605:5606 UELAT.Adjunction.Model <> ds:57 var
+R5623:5633 UELAT.Adjunction.Model UELAT_Model <> mod

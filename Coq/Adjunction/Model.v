@@ -7,7 +7,7 @@
     Reference: UELAT Paper, Section 3
 *)
 
-From Coq Require Import Reals QArith List Arith Lia.
+From Stdlib Require Import Reals QArith List Arith Lia.
 From UELAT.Foundations Require Import ProbeTheory.
 Import ListNotations.
 Local Open Scope R_scope.
@@ -142,8 +142,8 @@ Proof.
   - destruct (existsb (Nat.eqb a) l2) eqn:Hex.
     + destruct Hin as [Heq | Hin'].
       * left. exact Heq.
-      * right. apply IH. exact Hin'.
-    + right. apply IH. exact Hin.
+      * right. apply (IH l2). exact Hin'.
+    + right. apply (IH l2). exact Hin.
 Qed.
 
 Lemma list_inter_subset_r : forall l1 l2 x,

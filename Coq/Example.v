@@ -1,6 +1,5 @@
 Require Import Coq.Reals.Reals.
 Require Import Coq.QArith.QArith.
-Require Import Coq.QArith.Qreals.
 Require Import Coq.Lists.List.
 Open Scope R_scope.
 Import ListNotations.

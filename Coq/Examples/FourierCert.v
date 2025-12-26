@@ -15,7 +15,7 @@
     Reference: UELAT Paper, Appendix C
 *)
 
-From Coq Require Import Reals Lra Lia List.
+From Stdlib Require Import Reals Lra Lia List.
 From UELAT.Foundations Require Import Certificate.
 Import ListNotations.
 Local Open Scope R_scope.

@@ -1,0 +1,919 @@
+DIGEST f8179125a17b408e18c6f1d95df92bfc
+FUELAT.Util.Entropy
+R719:723 Stdlib.Reals.Reals <> <> lib
+R725:727 Stdlib.micromega.Lra <> <> lib
+R729:731 Stdlib.micromega.Lia <> <> lib
+R733:737 Stdlib.micromega.Psatz <> <> lib
+R767:770 Stdlib.Lists.List <> <> lib
+R800:808 Stdlib.Logic.Classical <> <> lib
+R818:830 Stdlib.Lists.List ListNotations <> mod
+mod 867:879 <> UELAT_Entropy
+prf 929:938 UELAT_Entropy Rpower_pos
+binder 949:949 <> x:1
+binder 951:951 <> y:2
+R964:966 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R954:959 Stdlib.Reals.Rpower <> Rpower def
+R961:961 UELAT.Util.Entropy <> x:1 var
+R963:963 UELAT.Util.Entropy <> y:2 var
+R992:997 Stdlib.Reals.Rpower <> Rpower def
+R1006:1012 Stdlib.Reals.Exp_prop <> exp_pos thm
+R1006:1012 Stdlib.Reals.Exp_prop <> exp_pos thm
+prf 1051:1058 UELAT_Entropy ln_2_pos
+R1066:1068 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R1062:1063 Stdlib.Reals.Rpower <> ln def
+R1092:1095 Stdlib.Reals.Rpower <> ln_1 thm
+R1092:1095 Stdlib.Reals.Rpower <> ln_1 thm
+R1092:1095 Stdlib.Reals.Rpower <> ln_1 thm
+R1106:1118 Stdlib.Reals.Rpower <> ln_increasing thm
+R1106:1118 Stdlib.Reals.Rpower <> ln_increasing thm
+prf 1209:1230 UELAT_Entropy Rpower_neg_exponent_lt
+binder 1241:1241 <> a:3
+binder 1243:1243 <> b:4
+binder 1245:1245 <> c:5
+R1255:1258 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1251:1253 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1254:1254 UELAT.Util.Entropy <> a:3 var
+R1264:1267 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1260:1262 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1263:1263 UELAT.Util.Entropy <> b:4 var
+R1273:1276 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1269:1271 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1268:1268 UELAT.Util.Entropy <> a:3 var
+R1272:1272 UELAT.Util.Entropy <> b:4 var
+R1282:1285 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1278:1280 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1277:1277 UELAT.Util.Entropy <> c:5 var
+R1296:1298 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1286:1291 Stdlib.Reals.Rpower <> Rpower def
+R1293:1293 UELAT.Util.Entropy <> b:4 var
+R1295:1295 UELAT.Util.Entropy <> c:5 var
+R1299:1304 Stdlib.Reals.Rpower <> Rpower def
+R1306:1306 UELAT.Util.Entropy <> a:3 var
+R1308:1308 UELAT.Util.Entropy <> c:5 var
+R1356:1361 Stdlib.Reals.Rpower <> Rpower def
+R1372:1385 Stdlib.Reals.Rpower <> exp_increasing thm
+R1372:1385 Stdlib.Reals.Rpower <> exp_increasing thm
+R1524:1547 Stdlib.Reals.RIneq <> Rmult_lt_gt_compat_neg_l thm
+R1524:1547 Stdlib.Reals.RIneq <> Rmult_lt_gt_compat_neg_l thm
+R1574:1586 Stdlib.Reals.Rpower <> ln_increasing thm
+R1574:1586 Stdlib.Reals.Rpower <> ln_increasing thm
+def 2226:2239 UELAT_Entropy CoveringNumber
+R2245:2248 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2244:2244 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R2250:2253 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2249:2249 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R2254:2254 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+sec 2347:2364 UELAT_Entropy CoveringProperties
+var 2377:2384 UELAT_Entropy.CoveringProperties covering
+R2388:2401 UELAT.Util.Entropy UELAT_Entropy CoveringNumber def
+var 2474:2486 UELAT_Entropy.CoveringProperties covering_ge_1
+binder 2497:2497 <> S:8
+binder 2499:2501 <> eps:9
+R2513:2516 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2509:2511 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R2506:2508 UELAT.Util.Entropy <> eps:9 var
+R2531:2534 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2517:2524 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R2526:2526 UELAT.Util.Entropy <> S:8 var
+R2528:2530 UELAT.Util.Entropy <> eps:9 var
+var 2599:2615 UELAT_Entropy.CoveringProperties covering_monotone
+binder 2626:2626 <> S:12
+binder 2628:2631 <> eps1:13
+binder 2633:2636 <> eps2:14
+R2649:2652 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2642:2644 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R2645:2648 UELAT.Util.Entropy <> eps1:13 var
+R2665:2668 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2657:2660 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R2653:2656 UELAT.Util.Entropy <> eps1:13 var
+R2661:2664 UELAT.Util.Entropy <> eps2:14 var
+R2684:2687 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R2669:2676 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R2678:2678 UELAT.Util.Entropy <> S:12 var
+R2680:2683 UELAT.Util.Entropy <> eps2:14 var
+R2688:2695 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R2697:2697 UELAT.Util.Entropy <> S:12 var
+R2699:2702 UELAT.Util.Entropy <> eps1:13 var
+def 2758:2764 UELAT_Entropy entropy
+R2775:2775 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 2767:2767 <> S:17
+binder 2769:2771 <> eps:18
+R2780:2780 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R2787:2788 Stdlib.Reals.Rpower <> ln def
+R2791:2798 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R2800:2800 UELAT.Util.Entropy <> S:17 var
+R2802:2804 UELAT.Util.Entropy <> eps:18 var
+prf 2815:2828 UELAT_Entropy entropy_nonneg
+binder 2839:2839 <> S:19
+binder 2841:2843 <> eps:20
+R2855:2858 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2851:2853 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R2848:2850 UELAT.Util.Entropy <> eps:20 var
+R2872:2875 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2859:2865 UELAT.Util.Entropy UELAT_Entropy entropy def
+R2867:2867 UELAT.Util.Entropy <> S:19 var
+R2869:2871 UELAT.Util.Entropy <> eps:20 var
+R2916:2922 UELAT.Util.Entropy UELAT_Entropy entropy def
+R2958:2961 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2944:2951 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R2975:2987 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_ge_1 var
+R2958:2961 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2944:2951 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R2975:2987 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_ge_1 var
+R3138:3145 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3138:3145 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3168:3173 Stdlib.Reals.RIneq <> Rge_le thm
+R3168:3173 Stdlib.Reals.RIneq <> Rge_le thm
+R3198:3207 Stdlib.Reals.RIneq <> Rlt_le_dec thm
+R3198:3207 Stdlib.Reals.RIneq <> Rlt_le_dec thm
+R3256:3261 Stdlib.Reals.RIneq <> Rle_ge thm
+R3256:3261 Stdlib.Reals.RIneq <> Rle_ge thm
+R3279:3282 Stdlib.Reals.Rpower <> ln_1 thm
+R3279:3282 Stdlib.Reals.Rpower <> ln_1 thm
+R3279:3282 Stdlib.Reals.Rpower <> ln_1 thm
+R3305:3317 Stdlib.Reals.Rpower <> ln_increasing thm
+R3305:3317 Stdlib.Reals.Rpower <> ln_increasing thm
+R3388:3390 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3388:3390 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3431:3434 Stdlib.Reals.Rpower <> ln_1 thm
+R3431:3434 Stdlib.Reals.Rpower <> ln_1 thm
+R3431:3434 Stdlib.Reals.Rpower <> ln_1 thm
+prf 3458:3473 UELAT_Entropy entropy_monotone
+binder 3484:3484 <> S:21
+binder 3486:3489 <> eps1:22
+binder 3491:3494 <> eps2:23
+R3507:3510 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3500:3502 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3503:3506 UELAT.Util.Entropy <> eps1:22 var
+R3523:3526 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3515:3518 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3511:3514 UELAT.Util.Entropy <> eps1:22 var
+R3519:3522 UELAT.Util.Entropy <> eps2:23 var
+R3541:3544 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3527:3533 UELAT.Util.Entropy UELAT_Entropy entropy def
+R3535:3535 UELAT.Util.Entropy <> S:21 var
+R3537:3540 UELAT.Util.Entropy <> eps2:23 var
+R3545:3551 UELAT.Util.Entropy UELAT_Entropy entropy def
+R3553:3553 UELAT.Util.Entropy <> S:21 var
+R3555:3558 UELAT.Util.Entropy <> eps1:22 var
+R3609:3615 UELAT.Util.Entropy UELAT_Entropy entropy def
+R3727:3730 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3712:3719 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3731:3738 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3727:3730 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3712:3719 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3731:3738 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3759:3775 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_monotone var
+R3759:3775 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_monotone var
+R3872:3874 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3857:3864 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3872:3874 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3857:3864 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3889:3900 Stdlib.Reals.RIneq <> Rge_gt_trans thm
+R3917:3929 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_ge_1 var
+R3889:3900 Stdlib.Reals.RIneq <> Rge_gt_trans thm
+R3917:3929 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_ge_1 var
+R3983:3985 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3968:3975 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R3983:3985 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3968:3975 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4000:4011 Stdlib.Reals.RIneq <> Rge_gt_trans thm
+R4028:4040 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_ge_1 var
+R4000:4011 Stdlib.Reals.RIneq <> Rge_gt_trans thm
+R4028:4040 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering_ge_1 var
+R4133:4142 Stdlib.Reals.RIneq <> Rlt_le_dec thm
+R4145:4152 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4163:4170 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4133:4142 Stdlib.Reals.RIneq <> Rlt_le_dec thm
+R4145:4152 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4163:4170 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4264:4269 Stdlib.Reals.RIneq <> Rlt_le thm
+R4264:4269 Stdlib.Reals.RIneq <> Rlt_le thm
+R4278:4290 Stdlib.Reals.Rpower <> ln_increasing thm
+R4278:4290 Stdlib.Reals.Rpower <> ln_increasing thm
+R4424:4426 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4409:4416 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4427:4434 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4424:4426 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4409:4416 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4427:4434 UELAT.Util.Entropy <> UELAT_Entropy.CoveringProperties.covering var
+R4484:4501 UELAT.Util.Entropy UELAT_Entropy.CoveringProperties <> sec
+sec 4670:4683 UELAT_Entropy SobolevEntropy
+var 4696:4696 UELAT_Entropy.SobolevEntropy d
+R4700:4702 Corelib.Init.Datatypes <> nat ind
+var 4732:4732 UELAT_Entropy.SobolevEntropy s
+R4736:4736 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+var 4769:4769 UELAT_Entropy.SobolevEntropy p
+R4773:4773 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+var 4812:4813 UELAT_Entropy.SobolevEntropy Hd
+R4819:4821 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
+R4818:4818 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.d var
+var 4841:4842 UELAT_Entropy.SobolevEntropy Hs
+R4847:4849 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R4846:4846 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.s var
+var 4864:4865 UELAT_Entropy.SobolevEntropy Hp
+R4870:4873 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R4869:4869 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.p var
+var 4888:4890 UELAT_Entropy.SobolevEntropy Hsp
+R4895:4897 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R4894:4894 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.s var
+R4903:4905 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R4898:4900 Stdlib.Reals.Raxioms <> INR def
+R4902:4902 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.d var
+R4906:4906 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.p var
+def 4977:4997 UELAT_Entropy sobolev_entropy_lower
+R5006:5006 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 5000:5002 <> eps:38
+R5011:5011 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R5018:5023 Stdlib.Reals.Rpower <> Rpower def
+R5025:5027 UELAT.Util.Entropy <> eps:38 var
+R5037:5039 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R5030:5031 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R5032:5034 Stdlib.Reals.Raxioms <> INR def
+R5036:5036 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.d var
+R5040:5040 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.s var
+def 5086:5106 UELAT_Entropy sobolev_entropy_upper
+R5115:5115 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 5109:5111 <> eps:39
+R5120:5120 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R5128:5130 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R5131:5136 Stdlib.Reals.Rpower <> Rpower def
+R5138:5140 UELAT.Util.Entropy <> eps:39 var
+R5150:5152 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R5143:5144 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R5145:5147 Stdlib.Reals.Raxioms <> INR def
+R5149:5149 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.d var
+R5153:5153 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.s var
+prf 5164:5188 UELAT_Entropy sobolev_entropy_lower_pos
+binder 5199:5201 <> eps:40
+R5213:5216 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5209:5211 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R5206:5208 UELAT.Util.Entropy <> eps:40 var
+R5242:5244 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R5217:5237 UELAT.Util.Entropy UELAT_Entropy sobolev_entropy_lower def
+R5239:5241 UELAT.Util.Entropy <> eps:40 var
+R5283:5303 UELAT.Util.Entropy UELAT_Entropy sobolev_entropy_lower def
+R5314:5323 UELAT.Util.Entropy UELAT_Entropy Rpower_pos thm
+R5314:5323 UELAT.Util.Entropy UELAT_Entropy Rpower_pos thm
+prf 5338:5361 UELAT_Entropy sobolev_entropy_monotone
+binder 5372:5375 <> eps1:41
+binder 5377:5380 <> eps2:42
+R5393:5396 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5386:5388 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5389:5392 UELAT.Util.Entropy <> eps1:41 var
+R5408:5411 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5401:5403 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5397:5400 UELAT.Util.Entropy <> eps1:41 var
+R5404:5407 UELAT.Util.Entropy <> eps2:42 var
+R5420:5425 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5416:5418 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5412:5415 UELAT.Util.Entropy <> eps2:42 var
+R5452:5454 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5426:5446 UELAT.Util.Entropy UELAT_Entropy sobolev_entropy_lower def
+R5448:5451 UELAT.Util.Entropy <> eps2:42 var
+R5455:5475 UELAT.Util.Entropy UELAT_Entropy sobolev_entropy_lower def
+R5477:5480 UELAT.Util.Entropy <> eps1:41 var
+R5532:5552 UELAT.Util.Entropy UELAT_Entropy sobolev_entropy_lower def
+R5563:5584 UELAT.Util.Entropy UELAT_Entropy Rpower_neg_exponent_lt thm
+R5563:5584 UELAT.Util.Entropy UELAT_Entropy Rpower_neg_exponent_lt thm
+R5671:5674 Stdlib.Reals.Rdefinitions <> Rdiv def
+R5704:5706 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R5699:5701 Stdlib.Reals.Raxioms <> INR def
+R5703:5703 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.d var
+R5720:5727 Stdlib.Reals.RIneq <> lt_0_INR thm
+R5736:5737 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.Hd var
+R5704:5706 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R5699:5701 Stdlib.Reals.Raxioms <> INR def
+R5703:5703 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.d var
+R5720:5727 Stdlib.Reals.RIneq <> lt_0_INR thm
+R5736:5737 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.Hd var
+R5770:5772 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R5767:5768 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R5769:5769 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.s var
+R5786:5801 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R5810:5811 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.Hs var
+R5770:5772 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R5767:5768 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R5769:5769 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.s var
+R5786:5801 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R5810:5811 UELAT.Util.Entropy <> UELAT_Entropy.SobolevEntropy.Hs var
+R5834:5847 UELAT.Util.Entropy UELAT_Entropy.SobolevEntropy <> sec
+sec 6096:6112 UELAT_Entropy InformationTheory
+def 6181:6195 UELAT_Entropy distinguishable
+R6202:6204 Corelib.Init.Datatypes <> nat ind
+binder 6198:6198 <> S:43
+R6209:6209 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R6214:6219 Stdlib.Reals.Rpower <> Rpower def
+R6224:6226 Stdlib.Reals.Raxioms <> INR def
+R6228:6228 UELAT.Util.Entropy <> S:43 var
+prf 6239:6257 UELAT_Entropy distinguishable_pos
+binder 6268:6268 <> S:44
+R6288:6290 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R6271:6285 UELAT.Util.Entropy UELAT_Entropy distinguishable def
+R6287:6287 UELAT.Util.Entropy <> S:44 var
+R6319:6333 UELAT.Util.Entropy UELAT_Entropy distinguishable def
+R6342:6351 UELAT.Util.Entropy UELAT_Entropy Rpower_pos thm
+R6342:6351 UELAT.Util.Entropy UELAT_Entropy Rpower_pos thm
+prf 6366:6385 UELAT_Entropy distinguishable_ge_1
+binder 6396:6396 <> S:45
+R6416:6419 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R6399:6413 UELAT.Util.Entropy UELAT_Entropy distinguishable def
+R6415:6415 UELAT.Util.Entropy <> S:45 var
+R6450:6464 UELAT.Util.Entropy UELAT_Entropy distinguishable def
+R6475:6480 Stdlib.Reals.RIneq <> Rle_ge thm
+R6475:6480 Stdlib.Reals.RIneq <> Rle_ge thm
+R6501:6506 Stdlib.Reals.Rpower <> Rpower def
+R6501:6506 Stdlib.Reals.Rpower <> Rpower def
+R6528:6533 Stdlib.Reals.Rpower <> Rpower def
+R6544:6552 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R6544:6552 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R6544:6552 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R6561:6565 Stdlib.Reals.Rtrigo_def <> exp_0 thm
+R6561:6565 Stdlib.Reals.Rtrigo_def <> exp_0 thm
+R6627:6636 Stdlib.Reals.Rpower <> Rle_Rpower thm
+R6627:6636 Stdlib.Reals.Rpower <> Rle_Rpower thm
+R6658:6664 Stdlib.Reals.RIneq <> pos_INR thm
+R6658:6664 Stdlib.Reals.RIneq <> pos_INR thm
+prf 6679:6704 UELAT_Entropy distinguishable_increasing
+binder 6715:6716 <> S1:46
+binder 6718:6719 <> S2:47
+R6737:6740 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6727:6729 Corelib.Init.Peano <> ::nat_scope:x_'<'_x not
+R6725:6726 UELAT.Util.Entropy <> S1:46 var
+R6730:6731 UELAT.Util.Entropy <> S2:47 var
+R6759:6761 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R6741:6755 UELAT.Util.Entropy UELAT_Entropy distinguishable def
+R6757:6758 UELAT.Util.Entropy <> S1:46 var
+R6762:6776 UELAT.Util.Entropy UELAT_Entropy distinguishable def
+R6778:6779 UELAT.Util.Entropy <> S2:47 var
+R6817:6831 UELAT.Util.Entropy UELAT_Entropy distinguishable def
+R6842:6850 Stdlib.Reals.Rpower <> Rpower_lt thm
+R6842:6850 Stdlib.Reals.Rpower <> Rpower_lt thm
+R6872:6877 Stdlib.Reals.RIneq <> lt_INR thm
+R6872:6877 Stdlib.Reals.RIneq <> lt_INR thm
+prf 9530:9551 UELAT_Entropy pigeonhole_lower_bound
+R9574:9587 UELAT.Util.Entropy UELAT_Entropy CoveringNumber def
+binder 9563:9570 <> covering:48
+R9595:9595 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 9591:9591 <> S:49
+R9605:9605 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 9599:9601 <> eps:50
+R9618:9623 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R9614:9616 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R9611:9613 UELAT.Util.Entropy <> eps:50 var
+R9630:9668 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R9625:9628 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R9624:9624 UELAT.Util.Entropy <> S:49 var
+R9698:9807 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R9685:9687 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R9669:9676 UELAT.Util.Entropy <> covering:48 var
+R9678:9680 UELAT.Util.Entropy <> eps:50 var
+R9682:9684 UELAT.Util.Entropy <> eps:50 var
+R9688:9693 Stdlib.Reals.Rpower <> Rpower def
+R9697:9697 UELAT.Util.Entropy <> S:49 var
+R9828:9900 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R9824:9826 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R9808:9815 UELAT.Util.Entropy <> covering:48 var
+R9817:9819 UELAT.Util.Entropy <> eps:50 var
+R9821:9823 UELAT.Util.Entropy <> eps:50 var
+R9929:9931 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R9922:9924 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R9901:9902 Stdlib.Reals.Rpower <> ln def
+R9905:9912 UELAT.Util.Entropy <> covering:48 var
+R9914:9916 UELAT.Util.Entropy <> eps:50 var
+R9918:9920 UELAT.Util.Entropy <> eps:50 var
+R9925:9926 Stdlib.Reals.Rpower <> ln def
+R9932:9932 UELAT.Util.Entropy <> S:49 var
+R10388:10393 Stdlib.Reals.Rpower <> Rpower def
+R10369:10380 Stdlib.Reals.RIneq <> Rgt_ge_trans thm
+R10388:10393 Stdlib.Reals.Rpower <> Rpower def
+R10369:10380 Stdlib.Reals.RIneq <> Rgt_ge_trans thm
+R10464:10469 Stdlib.Reals.Rpower <> Rpower def
+R10484:10489 Stdlib.Reals.RIneq <> Rle_ge thm
+R10484:10489 Stdlib.Reals.RIneq <> Rle_ge thm
+R10509:10513 Stdlib.Reals.Rtrigo_def <> exp_0 thm
+R10509:10513 Stdlib.Reals.Rtrigo_def <> exp_0 thm
+R10509:10513 Stdlib.Reals.Rtrigo_def <> exp_0 thm
+R10611:10617 Stdlib.Reals.RIneq <> Req_dec thm
+R10611:10617 Stdlib.Reals.RIneq <> Req_dec thm
+R10722:10730 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R10722:10730 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R10722:10730 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R10813:10818 Stdlib.Reals.RIneq <> Rlt_le thm
+R10813:10818 Stdlib.Reals.RIneq <> Rlt_le thm
+R10835:10848 Stdlib.Reals.Rpower <> exp_increasing thm
+R10835:10848 Stdlib.Reals.Rpower <> exp_increasing thm
+R10877:10879 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R10877:10879 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R10922:10924 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R10918:10919 Stdlib.Reals.Rpower <> ln def
+R10938:10945 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+R10922:10924 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R10918:10919 Stdlib.Reals.Rpower <> ln def
+R10938:10945 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+R11086:11088 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R11082:11083 Stdlib.Reals.Rpower <> ln def
+R11102:11109 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+R11086:11088 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R11082:11083 Stdlib.Reals.Rpower <> ln def
+R11102:11109 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+R11152:11154 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R11152:11154 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R11187:11192 Stdlib.Reals.Rpower <> Rpower def
+R11171:11179 Stdlib.Reals.RIneq <> Rgt_trans thm
+R11220:11229 UELAT.Util.Entropy UELAT_Entropy Rpower_pos thm
+R11187:11192 Stdlib.Reals.Rpower <> Rpower def
+R11171:11179 Stdlib.Reals.RIneq <> Rgt_trans thm
+R11220:11229 UELAT.Util.Entropy UELAT_Entropy Rpower_pos thm
+R11267:11268 Stdlib.Reals.Rpower <> ln def
+R11246:11259 Stdlib.Reals.RIneq <> Rmult_lt_reg_r thm
+R11267:11268 Stdlib.Reals.Rpower <> ln def
+R11246:11259 Stdlib.Reals.RIneq <> Rmult_lt_reg_r thm
+R11310:11319 Stdlib.Reals.Raxioms <> Rmult_comm thm
+R11310:11319 Stdlib.Reals.Raxioms <> Rmult_comm thm
+R11310:11319 Stdlib.Reals.Raxioms <> Rmult_comm thm
+R11335:11338 Stdlib.Reals.Rdefinitions <> Rdiv def
+R11349:11359 Stdlib.Reals.Raxioms <> Rmult_assoc thm
+R11349:11359 Stdlib.Reals.Raxioms <> Rmult_assoc thm
+R11349:11359 Stdlib.Reals.Raxioms <> Rmult_assoc thm
+R11376:11381 Stdlib.Reals.Raxioms <> Rinv_l thm
+R11376:11381 Stdlib.Reals.Raxioms <> Rinv_l thm
+R11376:11381 Stdlib.Reals.Raxioms <> Rinv_l thm
+R11405:11413 Stdlib.Reals.RIneq <> Rmult_1_r thm
+R11405:11413 Stdlib.Reals.RIneq <> Rmult_1_r thm
+R11405:11413 Stdlib.Reals.RIneq <> Rmult_1_r thm
+R11541:11550 Stdlib.Reals.Raxioms <> Rmult_comm thm
+R11541:11550 Stdlib.Reals.Raxioms <> Rmult_comm thm
+R11541:11550 Stdlib.Reals.Raxioms <> Rmult_comm thm
+R11733:11738 Stdlib.Reals.Rpower <> ln_exp thm
+R11742:11744 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R11745:11746 Stdlib.Reals.Rpower <> ln def
+R11733:11738 Stdlib.Reals.Rpower <> ln_exp thm
+R11742:11744 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R11745:11746 Stdlib.Reals.Rpower <> ln def
+R11733:11738 Stdlib.Reals.Rpower <> ln_exp thm
+R11742:11744 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R11745:11746 Stdlib.Reals.Rpower <> ln def
+R11765:11777 Stdlib.Reals.Rpower <> ln_increasing thm
+R11765:11777 Stdlib.Reals.Rpower <> ln_increasing thm
+R11794:11800 Stdlib.Reals.Exp_prop <> exp_pos thm
+R11794:11800 Stdlib.Reals.Exp_prop <> exp_pos thm
+R11818:11823 Stdlib.Reals.Rpower <> Rpower def
+def 14294:14301 UELAT_Entropy pow2_nat
+R14308:14310 Corelib.Init.Datatypes <> nat ind
+binder 14304:14304 <> n:51
+R14315:14317 Corelib.Init.Datatypes <> nat ind
+R14322:14328 Stdlib.Arith.PeanoNat Nat pow def
+R14332:14332 UELAT.Util.Entropy <> n:51 var
+prf 14342:14353 UELAT_Entropy pow2_nat_INR
+binder 14364:14364 <> n:52
+R14385:14387 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R14369:14371 Stdlib.Reals.Raxioms <> INR def
+R14374:14381 UELAT.Util.Entropy UELAT_Entropy pow2_nat def
+R14383:14383 UELAT.Util.Entropy <> n:52 var
+R14388:14393 Stdlib.Reals.Rpower <> Rpower def
+R14398:14400 Stdlib.Reals.Raxioms <> INR def
+R14402:14402 UELAT.Util.Entropy <> n:52 var
+R14433:14440 UELAT.Util.Entropy UELAT_Entropy pow2_nat def
+R14453:14459 Stdlib.Reals.RIneq <> pow_INR thm
+R14453:14459 Stdlib.Reals.RIneq <> pow_INR thm
+R14453:14459 Stdlib.Reals.RIneq <> pow_INR thm
+R14473:14475 Stdlib.Reals.Raxioms <> INR def
+R14473:14475 Stdlib.Reals.Raxioms <> INR def
+R14523:14532 Stdlib.Reals.Rpower <> Rpower_pow thm
+R14523:14532 Stdlib.Reals.Rpower <> Rpower_pow thm
+prf 14860:14889 UELAT_Entropy entropy_to_discrete_pigeonhole
+R14906:14908 Corelib.Init.Datatypes <> nat ind
+binder 14900:14900 <> K:53
+binder 14902:14902 <> S:54
+R14933:15010 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R14915:14917 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
+R14914:14914 UELAT.Util.Entropy <> K:53 var
+R14918:14925 UELAT.Util.Entropy UELAT_Entropy pow2_nat def
+R14927:14927 UELAT.Util.Entropy <> S:54 var
+binder 15019:15019 <> A:55
+binder 15021:15021 <> B:56
+R15042:15045 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15041:15041 UELAT.Util.Entropy <> A:55 var
+R15046:15046 UELAT.Util.Entropy <> B:56 var
+binder 15032:15037 <> encode:57
+R15060:15063 Corelib.Init.Datatypes <> list ind
+R15065:15065 UELAT.Util.Entropy <> A:55 var
+binder 15050:15056 <> configs:58
+R15077:15080 Corelib.Init.Datatypes <> list ind
+R15082:15082 UELAT.Util.Entropy <> B:56 var
+binder 15069:15073 <> codes:59
+R15108:15115 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15104:15106 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R15090:15095 Corelib.Init.Datatypes <> length def
+R15097:15103 UELAT.Util.Entropy <> configs:58 var
+R15107:15107 UELAT.Util.Entropy <> K:53 var
+R15141:15148 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15128:15130 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R15116:15121 Corelib.Init.Datatypes <> length def
+R15123:15127 UELAT.Util.Entropy <> codes:59 var
+R15131:15138 UELAT.Util.Entropy UELAT_Entropy pow2_nat def
+R15140:15140 UELAT.Util.Entropy <> S:54 var
+R15162:15169 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15149:15153 Stdlib.Lists.List <> NoDup ind
+R15155:15161 UELAT.Util.Entropy <> configs:58 var
+R15170:15170 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15216:15224 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+binder 15178:15178 <> a:60
+R15193:15196 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15181:15182 Stdlib.Lists.List <> In def
+R15186:15192 UELAT.Util.Entropy <> configs:58 var
+R15184:15184 UELAT.Util.Entropy <> a:60 var
+R15197:15198 Stdlib.Lists.List <> In def
+R15211:15215 UELAT.Util.Entropy <> codes:59 var
+R15201:15206 UELAT.Util.Entropy <> encode:57 var
+R15208:15208 UELAT.Util.Entropy <> a:60 var
+R15225:15231 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R15237:15238 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 15232:15233 <> a1:61
+binder 15235:15236 <> a2:62
+R15252:15255 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R15239:15240 Stdlib.Lists.List <> In def
+R15245:15251 UELAT.Util.Entropy <> configs:58 var
+R15242:15243 UELAT.Util.Entropy <> a1:61 var
+R15269:15272 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R15256:15257 Stdlib.Lists.List <> In def
+R15262:15268 UELAT.Util.Entropy <> configs:58 var
+R15259:15260 UELAT.Util.Entropy <> a2:62 var
+R15281:15284 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R15275:15278 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R15273:15274 UELAT.Util.Entropy <> a1:61 var
+R15279:15280 UELAT.Util.Entropy <> a2:62 var
+R15294:15296 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R15285:15290 UELAT.Util.Entropy <> encode:57 var
+R15292:15293 UELAT.Util.Entropy <> a1:61 var
+R15297:15302 UELAT.Util.Entropy <> encode:57 var
+R15304:15305 UELAT.Util.Entropy <> a2:62 var
+prf 15714:15744 UELAT_Entropy entropy_bound_implies_collision
+R15769:15782 UELAT.Util.Entropy UELAT_Entropy CoveringNumber def
+binder 15758:15765 <> covering:63
+R15799:15799 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 15786:15791 <> S_bits:64
+binder 15793:15795 <> eps:65
+R15814:15821 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15810:15812 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R15807:15809 UELAT.Util.Entropy <> eps:65 var
+R15833:15840 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15828:15831 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R15822:15827 UELAT.Util.Entropy <> S_bits:64 var
+R15875:15967 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R15857:15859 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R15841:15848 UELAT.Util.Entropy <> covering:63 var
+R15850:15852 UELAT.Util.Entropy <> eps:65 var
+R15854:15856 UELAT.Util.Entropy <> eps:65 var
+R15860:15865 Stdlib.Reals.Rpower <> Rpower def
+R15869:15874 UELAT.Util.Entropy <> S_bits:64 var
+R15996:15998 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R15989:15991 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R15968:15969 Stdlib.Reals.Rpower <> ln def
+R15972:15979 UELAT.Util.Entropy <> covering:63 var
+R15981:15983 UELAT.Util.Entropy <> eps:65 var
+R15985:15987 UELAT.Util.Entropy <> eps:65 var
+R15992:15993 Stdlib.Reals.Rpower <> ln def
+R15999:16004 UELAT.Util.Entropy <> S_bits:64 var
+R16076:16097 UELAT.Util.Entropy UELAT_Entropy pigeonhole_lower_bound thm
+R16076:16097 UELAT.Util.Entropy UELAT_Entropy pigeonhole_lower_bound thm
+def 16246:16253 UELAT_Entropy min_bits
+R16267:16280 UELAT.Util.Entropy UELAT_Entropy CoveringNumber def
+binder 16256:16263 <> covering:66
+R16292:16292 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 16284:16284 <> S:67
+binder 16286:16288 <> eps:68
+R16297:16297 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R16323:16325 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R16304:16305 Stdlib.Reals.Rpower <> ln def
+R16308:16315 UELAT.Util.Entropy <> covering:66 var
+R16317:16317 UELAT.Util.Entropy <> S:67 var
+R16319:16321 UELAT.Util.Entropy <> eps:68 var
+R16326:16327 Stdlib.Reals.Rpower <> ln def
+prf 16339:16352 UELAT_Entropy min_bits_lower
+binder 16363:16370 <> covering:69
+binder 16372:16372 <> S:70
+binder 16374:16376 <> eps:71
+R16388:16393 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R16384:16386 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R16381:16383 UELAT.Util.Entropy <> eps:71 var
+R16413:16418 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R16408:16411 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R16394:16401 UELAT.Util.Entropy <> covering:69 var
+R16403:16403 UELAT.Util.Entropy <> S:70 var
+R16405:16407 UELAT.Util.Entropy <> eps:71 var
+R16442:16445 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R16419:16426 UELAT.Util.Entropy UELAT_Entropy min_bits def
+R16428:16435 UELAT.Util.Entropy <> covering:69 var
+R16437:16437 UELAT.Util.Entropy <> S:70 var
+R16439:16441 UELAT.Util.Entropy <> eps:71 var
+R16500:16507 UELAT.Util.Entropy UELAT_Entropy min_bits def
+R16519:16522 Stdlib.Reals.Rdefinitions <> Rdiv def
+R16533:16538 Stdlib.Reals.RIneq <> Rle_ge thm
+R16533:16538 Stdlib.Reals.RIneq <> Rle_ge thm
+R16549:16560 Stdlib.Reals.RIneq <> Rmult_le_pos thm
+R16549:16560 Stdlib.Reals.RIneq <> Rmult_le_pos thm
+R16636:16641 Stdlib.Reals.RIneq <> Rge_le thm
+R16636:16641 Stdlib.Reals.RIneq <> Rge_le thm
+R16667:16670 Stdlib.Reals.Rpower <> ln_1 thm
+R16667:16670 Stdlib.Reals.Rpower <> ln_1 thm
+R16667:16670 Stdlib.Reals.Rpower <> ln_1 thm
+R16741:16747 Stdlib.Reals.RIneq <> Req_dec thm
+R16741:16747 Stdlib.Reals.RIneq <> Req_dec thm
+R16822:16827 Stdlib.Reals.RIneq <> Rlt_le thm
+R16822:16827 Stdlib.Reals.RIneq <> Rlt_le thm
+R16836:16848 Stdlib.Reals.Rpower <> ln_increasing thm
+R16836:16848 Stdlib.Reals.Rpower <> ln_increasing thm
+R16905:16910 Stdlib.Reals.RIneq <> Rlt_le thm
+R16905:16910 Stdlib.Reals.RIneq <> Rlt_le thm
+R16919:16934 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R16919:16934 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R16943:16950 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+R16943:16950 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+prf 17040:17067 UELAT_Entropy certificate_size_lower_bound
+R17090:17103 UELAT.Util.Entropy UELAT_Entropy CoveringNumber def
+binder 17079:17086 <> covering:72
+R17115:17115 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 17107:17107 <> S:73
+binder 17109:17111 <> eps:74
+R17128:17133 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R17124:17126 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R17121:17123 UELAT.Util.Entropy <> eps:74 var
+R17153:17237 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R17148:17151 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R17134:17141 UELAT.Util.Entropy <> covering:72 var
+R17143:17143 UELAT.Util.Entropy <> S:73 var
+R17145:17147 UELAT.Util.Entropy <> eps:74 var
+R17257:17257 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 17245:17253 <> cert_size:75
+R17299:17364 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R17273:17275 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R17264:17272 UELAT.Util.Entropy <> cert_size:75 var
+R17276:17283 UELAT.Util.Entropy UELAT_Entropy min_bits def
+R17285:17292 UELAT.Util.Entropy <> covering:72 var
+R17294:17294 UELAT.Util.Entropy <> S:73 var
+R17296:17298 UELAT.Util.Entropy <> eps:74 var
+R17383:17385 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R17365:17370 Stdlib.Reals.Rpower <> Rpower def
+R17374:17382 UELAT.Util.Entropy <> cert_size:75 var
+R17386:17393 UELAT.Util.Entropy <> covering:72 var
+R17395:17395 UELAT.Util.Entropy <> S:73 var
+R17397:17399 UELAT.Util.Entropy <> eps:74 var
+R17470:17477 UELAT.Util.Entropy UELAT_Entropy min_bits def
+R17609:17611 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R17605:17606 Stdlib.Reals.Rpower <> ln def
+R17625:17632 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+R17609:17611 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R17605:17606 Stdlib.Reals.Rpower <> ln def
+R17625:17632 UELAT.Util.Entropy UELAT_Entropy ln_2_pos thm
+R17761:17763 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R17754:17756 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R17757:17758 Stdlib.Reals.Rpower <> ln def
+R17764:17765 Stdlib.Reals.Rpower <> ln def
+R17761:17763 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R17754:17756 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R17757:17758 Stdlib.Reals.Rpower <> ln def
+R17764:17765 Stdlib.Reals.Rpower <> ln def
+R17821:17822 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R17823:17824 Stdlib.Reals.Rpower <> ln def
+R17800:17813 Stdlib.Reals.RIneq <> Rmult_lt_reg_r thm
+R17821:17822 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R17823:17824 Stdlib.Reals.Rpower <> ln def
+R17800:17813 Stdlib.Reals.RIneq <> Rmult_lt_reg_r thm
+R17842:17857 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R17842:17857 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R17890:17900 Stdlib.Reals.Raxioms <> Rmult_assoc thm
+R17890:17900 Stdlib.Reals.Raxioms <> Rmult_assoc thm
+R17890:17900 Stdlib.Reals.Raxioms <> Rmult_assoc thm
+R17917:17922 Stdlib.Reals.RIneq <> Rinv_r thm
+R17917:17922 Stdlib.Reals.RIneq <> Rinv_r thm
+R17917:17922 Stdlib.Reals.RIneq <> Rinv_r thm
+R17946:17954 Stdlib.Reals.RIneq <> Rmult_1_r thm
+R17946:17954 Stdlib.Reals.RIneq <> Rmult_1_r thm
+R17946:17954 Stdlib.Reals.RIneq <> Rmult_1_r thm
+R17970:17973 Stdlib.Reals.Rdefinitions <> Rdiv def
+R18081:18086 Stdlib.Reals.Rpower <> Rpower def
+R18097:18110 Stdlib.Reals.Rpower <> exp_increasing thm
+R18097:18110 Stdlib.Reals.Rpower <> exp_increasing thm
+R18129:18134 Stdlib.Reals.Rpower <> exp_ln thm
+R18129:18134 Stdlib.Reals.Rpower <> exp_ln thm
+R18129:18134 Stdlib.Reals.Rpower <> exp_ln thm
+R18172:18188 UELAT.Util.Entropy UELAT_Entropy.InformationTheory <> sec
+def 18330:18342 UELAT_Entropy PackingNumber
+R18348:18351 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R18347:18347 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R18353:18356 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R18352:18352 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R18357:18357 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+sec 19042:19056 UELAT_Entropy PackingCovering
+var 19069:19072 UELAT_Entropy.PackingCovering pack
+R19076:19088 UELAT.Util.Entropy UELAT_Entropy PackingNumber def
+var 19100:19104 UELAT_Entropy.PackingCovering cover
+R19108:19121 UELAT.Util.Entropy UELAT_Entropy CoveringNumber def
+var 19133:19133 UELAT_Entropy.PackingCovering S
+R19137:19137 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+var 19216:19224 UELAT_Entropy.PackingCovering pack_ge_1
+binder 19235:19237 <> eps:82
+R19247:19250 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R19243:19245 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R19240:19242 UELAT.Util.Entropy <> eps:82 var
+R19261:19264 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R19251:19254 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R19256:19256 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R19258:19260 UELAT.Util.Entropy <> eps:82 var
+var 19279:19291 UELAT_Entropy.PackingCovering pack_monotone
+binder 19302:19305 <> eps1:85
+binder 19307:19310 <> eps2:86
+R19323:19326 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R19316:19318 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R19319:19322 UELAT.Util.Entropy <> eps1:85 var
+R19339:19342 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R19331:19334 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R19327:19330 UELAT.Util.Entropy <> eps1:85 var
+R19335:19338 UELAT.Util.Entropy <> eps2:86 var
+R19354:19357 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R19343:19346 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R19348:19348 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R19350:19353 UELAT.Util.Entropy <> eps1:85 var
+R19358:19361 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R19363:19363 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R19365:19368 UELAT.Util.Entropy <> eps2:86 var
+var 19417:19426 UELAT_Entropy.PackingCovering cover_ge_1
+binder 19437:19439 <> eps:89
+R19449:19452 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R19445:19447 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R19442:19444 UELAT.Util.Entropy <> eps:89 var
+R19464:19467 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R19453:19457 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.cover var
+R19459:19459 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R19461:19463 UELAT.Util.Entropy <> eps:89 var
+var 19838:19861 UELAT_Entropy.PackingCovering maximal_packing_is_cover
+binder 19874:19876 <> eps:92
+R19886:19889 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R19882:19884 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R19879:19881 UELAT.Util.Entropy <> eps:92 var
+R19901:19904 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R19890:19894 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.cover var
+R19896:19896 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R19898:19900 UELAT.Util.Entropy <> eps:92 var
+R19905:19908 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R19910:19910 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R19912:19914 UELAT.Util.Entropy <> eps:92 var
+prf 20620:20638 UELAT_Entropy packing_le_covering
+binder 20649:20651 <> eps:95
+R20663:20668 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R20659:20661 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R20656:20658 UELAT.Util.Entropy <> eps:95 var
+R20685:20688 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R20669:20672 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R20674:20674 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R20678:20680 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R20681:20683 UELAT.Util.Entropy <> eps:95 var
+R20689:20693 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.cover var
+R20695:20695 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R20697:20699 UELAT.Util.Entropy <> eps:95 var
+prf 21066:21090 UELAT_Entropy packing_covering_relation
+binder 21101:21103 <> eps:96
+R21115:21180 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R21111:21113 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R21108:21110 UELAT.Util.Entropy <> eps:96 var
+R21212:21215 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R21197:21200 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R21181:21184 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R21186:21186 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21190:21192 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R21193:21195 UELAT.Util.Entropy <> eps:96 var
+R21201:21205 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.cover var
+R21207:21207 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21209:21211 UELAT.Util.Entropy <> eps:96 var
+R21227:21230 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R21216:21220 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.cover var
+R21222:21222 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21224:21226 UELAT.Util.Entropy <> eps:96 var
+R21231:21234 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R21236:21236 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21238:21240 UELAT.Util.Entropy <> eps:96 var
+R21326:21344 UELAT.Util.Entropy UELAT_Entropy packing_le_covering prfax
+R21326:21344 UELAT.Util.Entropy UELAT_Entropy packing_le_covering prfax
+R21406:21429 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.maximal_packing_is_cover var
+R21406:21429 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.maximal_packing_is_cover var
+prf 21538:21564 UELAT_Entropy packing_covering_equivalent
+binder 21575:21577 <> eps:97
+R21589:21594 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R21585:21587 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R21582:21584 UELAT.Util.Entropy <> eps:97 var
+R21611:21614 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x_'<='_x not
+R21626:21629 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x_'<='_x not
+R21595:21598 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R21600:21600 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21604:21606 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R21607:21609 UELAT.Util.Entropy <> eps:97 var
+R21615:21619 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.cover var
+R21621:21621 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21623:21625 UELAT.Util.Entropy <> eps:97 var
+R21615:21619 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.cover var
+R21621:21621 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21623:21625 UELAT.Util.Entropy <> eps:97 var
+R21630:21633 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.pack var
+R21635:21635 UELAT.Util.Entropy <> UELAT_Entropy.PackingCovering.S var
+R21637:21639 UELAT.Util.Entropy <> eps:97 var
+R21680:21704 UELAT.Util.Entropy UELAT_Entropy packing_covering_relation thm
+R21680:21704 UELAT.Util.Entropy UELAT_Entropy packing_covering_relation thm
+R21759:21773 UELAT.Util.Entropy UELAT_Entropy.PackingCovering <> sec
+sec 21838:21857 UELAT_Entropy FunctionClassEntropy
+var 22093:22093 UELAT_Entropy.FunctionClassEntropy L
+R22097:22097 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+var 22138:22139 UELAT_Entropy.FunctionClassEntropy HL
+R22144:22146 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R22143:22143 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.L var
+def 22201:22218 UELAT_Entropy lipschitz_covering
+R22227:22227 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 22221:22223 <> eps:102
+R22232:22232 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R22246:22248 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R22240:22242 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R22239:22239 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.L var
+R22243:22245 UELAT.Util.Entropy <> eps:102 var
+prf 22259:22280 UELAT_Entropy lipschitz_covering_pos
+binder 22291:22293 <> eps:103
+R22305:22308 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R22301:22303 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R22298:22300 UELAT.Util.Entropy <> eps:103 var
+R22331:22333 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R22309:22326 UELAT.Util.Entropy UELAT_Entropy lipschitz_covering def
+R22328:22330 UELAT.Util.Entropy <> eps:103 var
+R22372:22389 UELAT.Util.Entropy UELAT_Entropy lipschitz_covering def
+R22499:22501 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R22493:22495 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R22492:22492 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.L var
+R22499:22501 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R22493:22495 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R22492:22492 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.L var
+R22516:22532 Stdlib.Reals.RIneq <> Rmult_lt_0_compat thm
+R22542:22543 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.HL var
+R22553:22568 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R22516:22532 Stdlib.Reals.RIneq <> Rmult_lt_0_compat thm
+R22542:22543 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.HL var
+R22553:22568 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+prf 22605:22631 UELAT_Entropy lipschitz_covering_monotone
+binder 22642:22645 <> eps1:104
+binder 22647:22650 <> eps2:105
+R22663:22666 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R22656:22658 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R22659:22662 UELAT.Util.Entropy <> eps1:104 var
+R22679:22684 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R22671:22674 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R22667:22670 UELAT.Util.Entropy <> eps1:104 var
+R22675:22678 UELAT.Util.Entropy <> eps2:105 var
+R22708:22711 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R22685:22702 UELAT.Util.Entropy UELAT_Entropy lipschitz_covering def
+R22704:22707 UELAT.Util.Entropy <> eps2:105 var
+R22712:22729 UELAT.Util.Entropy UELAT_Entropy lipschitz_covering def
+R22731:22734 UELAT.Util.Entropy <> eps1:104 var
+R22783:22800 UELAT.Util.Entropy UELAT_Entropy lipschitz_covering def
+R22811:22827 Stdlib.Reals.RIneq <> Rplus_le_compat_r thm
+R22811:22827 Stdlib.Reals.RIneq <> Rplus_le_compat_r thm
+R22838:22854 Stdlib.Reals.RIneq <> Rmult_le_compat_l thm
+R22838:22854 Stdlib.Reals.RIneq <> Rmult_le_compat_l thm
+R22874:22890 Stdlib.Reals.RIneq <> Rinv_le_contravar thm
+R22874:22890 Stdlib.Reals.RIneq <> Rinv_le_contravar thm
+def 22983:22999 UELAT_Entropy lipschitz_entropy
+R23008:23008 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 23002:23004 <> eps:106
+R23013:23013 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R23020:23021 Stdlib.Reals.Rpower <> ln def
+R23024:23041 UELAT.Util.Entropy UELAT_Entropy lipschitz_covering def
+R23043:23045 UELAT.Util.Entropy <> eps:106 var
+prf 23056:23078 UELAT_Entropy lipschitz_entropy_bound
+binder 23089:23091 <> eps:107
+R23103:23106 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R23099:23101 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R23096:23098 UELAT.Util.Entropy <> eps:107 var
+R23114:23119 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R23110:23112 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R23107:23109 UELAT.Util.Entropy <> eps:107 var
+R23113:23113 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.L var
+R23141:23144 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R23120:23136 UELAT.Util.Entropy UELAT_Entropy lipschitz_entropy def
+R23138:23140 UELAT.Util.Entropy <> eps:107 var
+R23145:23146 Stdlib.Reals.Rpower <> ln def
+R23150:23152 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R23149:23149 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.L var
+R23153:23155 UELAT.Util.Entropy <> eps:107 var
+R23200:23216 UELAT.Util.Entropy UELAT_Entropy lipschitz_entropy def
+R23219:23236 UELAT.Util.Entropy UELAT_Entropy lipschitz_covering def
+R23356:23361 Stdlib.Reals.RIneq <> Rle_ge thm
+R23356:23361 Stdlib.Reals.RIneq <> Rle_ge thm
+R23372:23377 Stdlib.Reals.RIneq <> Rlt_le thm
+R23372:23377 Stdlib.Reals.RIneq <> Rlt_le thm
+R23388:23400 Stdlib.Reals.Rpower <> ln_increasing thm
+R23388:23400 Stdlib.Reals.Rpower <> ln_increasing thm
+R23413:23429 Stdlib.Reals.RIneq <> Rmult_lt_0_compat thm
+R23439:23440 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.HL var
+R23450:23465 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R23413:23429 Stdlib.Reals.RIneq <> Rmult_lt_0_compat thm
+R23439:23440 UELAT.Util.Entropy <> UELAT_Entropy.FunctionClassEntropy.HL var
+R23450:23465 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R23500:23519 UELAT.Util.Entropy UELAT_Entropy.FunctionClassEntropy <> sec
+R25190:25202 UELAT.Util.Entropy UELAT_Entropy <> mod

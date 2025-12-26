@@ -7,7 +7,7 @@
     Reference: UELAT Paper, Section 3, Theorem 3.7
 *)
 
-From Coq Require Import Reals QArith List Arith Lia.
+From Stdlib Require Import Reals QArith List Arith Lia.
 From UELAT.Foundations Require Import ProbeTheory.
 From UELAT.Adjunction Require Import Probe Model Functors Adjunction.
 Import ListNotations.

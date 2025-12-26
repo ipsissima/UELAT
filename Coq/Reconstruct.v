@@ -1,7 +1,6 @@
 Require Import Coq.Reals.Reals.
 Require Import Coq.Lists.List.
 Require Import Coq.QArith.QArith.
-Require Import Coq.QArith.Qreals.
 From UELAT.Foundations Require Import Certificate.
 From UELAT.Examples Require Import FourierCert.
 Import ListNotations.
