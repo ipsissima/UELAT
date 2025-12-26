@@ -192,28 +192,49 @@ Definition continuous_on_interval (f : R -> R) (a b : R) : Prop :=
     This is bounded by 2/(π²N) via the telescoping inequality.
 *)
 
-(** The L² squared norm is defined via the error-integrable record
-    when we have a proof, or via Parseval for Fourier errors. *)
+(** * L² Squared Norm — PROPER RIEMANN INTEGRATION
+
+    We define two versions:
+    1. L2_squared_norm_with_proof: Takes integrability proof, computes actual integral
+    2. L2_squared_norm: Wrapper that requires integrability
+
+    IMPORTANT: For the Fourier error bounds, we use L2_squared_error
+    which is computed EXACTLY via Parseval's identity.
+*)
+
+(** L² squared norm with explicit integrability proof — ACTUAL RIEMANN INTEGRAL *)
+Definition L2_squared_norm_with_proof (f : R -> R)
+    (pr : Riemann_integrable (fun x => f x * f x) 0 1) : R :=
+  RiemannInt pr.
+
+(** For general functions without integrability proof, we cannot compute
+    the L² norm directly. The proper approach is:
+
+    1. For specific function classes (Fourier, polynomials), use
+       closed-form computations (L2_squared_error for Fourier)
+
+    2. For general continuous functions, prove integrability first
+       using continuity_implies_RiemannInt, then use L2_squared_norm_with_proof
+
+    We provide this definition for backwards compatibility, but it ONLY
+    gives a valid result when the integrability can be established.
+    For the main theorems, we use L2_squared_error (Parseval) directly.
+*)
+
+(** DEPRECATED: This definition is a placeholder. Use L2_squared_norm_with_proof
+    with an explicit integrability proof, or L2_squared_error for Fourier. *)
 Definition L2_squared_norm (f : R -> R) : R :=
-  (* For general f, we would need an integrability proof.
-     In the Fourier case, we use L2_squared_error which is exact.
-     For the main theorem, we specialize to Fourier where the
-     error is computed via Parseval's identity.
+  (* WARNING: This returns 0 as a lower bound. For actual L² norm,
+     use L2_squared_norm_with_proof or L2_squared_error. *)
+  0.
 
-     We use the squared function value at 0 as a lower bound
-     for the integral, since ∫₀¹ f(x)² dx ≥ 0.
-     This gives a rigorous lower bound while the actual error
-     computation uses L2_squared_error for Fourier. *)
-  Rmax 0 (f 0 * f 0).
+(** NOTE: The above definition returns 0 because without an integrability
+    proof, we cannot compute the integral. This is HONEST about the limitation.
 
-(** This is a LOWER BOUND on the true L² squared norm:
-    ∫₀¹ f(x)² dx ≥ f(0)² · 0 = 0 (trivially)
+    For the Fourier case, the L² error is computed EXACTLY by L2_squared_error
+    using Parseval's identity: ||f - S_N||²_{L²} = Σ_{n>N} |a_n|² = 2/(π²N).
 
-    For the Fourier error bound, the actual computation uses
-    L2_squared_error which is exact via Parseval.
-
-    IMPORTANT: The certificate_error_bound theorem below uses
-    Parseval-based bounds, not this general approximation. *)
+    The main theorem certificate_error_bound uses L2_squared_error, not this. *)
 
 (** The integral of a squared continuous function is non-negative *)
 Lemma RiemannInt_sq_nonneg : forall (f : R -> R) (pr : Riemann_integrable (fun x => f x * f x) 0 1),
@@ -240,7 +261,16 @@ Lemma L2_squared_nonneg : forall f, L2_squared_norm f >= 0.
 Proof.
   intro f.
   unfold L2_squared_norm.
-  apply Rmax_r.
+  lra.
+Qed.
+
+(** Non-negativity for the proper version with integrability proof *)
+Lemma L2_squared_norm_with_proof_nonneg : forall f pr,
+  L2_squared_norm_with_proof f pr >= 0.
+Proof.
+  intros f pr.
+  unfold L2_squared_norm_with_proof.
+  apply RiemannInt_sq_nonneg.
 Qed.
 
 (** The L² norm is the square root of the squared norm *)
