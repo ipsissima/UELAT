@@ -1,576 +1,577 @@
-DIGEST d3a1c415b039ff2f4839afd9e982779c
+DIGEST 4698c86643f7ccb7542fbdcffe94f0f1
 FUELAT.Util.Reals_ext
-R232:236 Coq.Reals.Reals <> <> lib
-R238:240 Coq.micromega.Lra <> <> lib
-R242:244 Coq.micromega.Lia <> <> lib
-R271:274 Coq.Lists.List <> <> lib
-R284:296 Coq.Lists.List ListNotations <> mod
-mod 333:347 <> UELAT_Reals_ext
-prf 380:389 UELAT_Reals_ext Rpower_pos
-binder 400:400 <> x:1
-binder 402:402 <> y:2
-R415:417 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
-R405:410 Coq.Reals.Rpower <> Rpower def
-R412:412 UELAT.Util.Reals_ext <> x:1 var
-R414:414 UELAT.Util.Reals_ext <> y:2 var
-R451:456 Coq.Reals.Rpower <> Rpower def
-R467:473 Coq.Reals.Exp_prop <> exp_pos thm
-R467:473 Coq.Reals.Exp_prop <> exp_pos thm
-prf 488:495 UELAT_Reals_ext Rpower_1
-binder 506:506 <> x:3
-R514:517 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R510:512 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
-R509:509 UELAT.Util.Reals_ext <> x:3 var
-R528:530 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R518:523 Coq.Reals.Rpower <> Rpower def
-R525:525 UELAT.Util.Reals_ext <> x:3 var
-R531:531 UELAT.Util.Reals_ext <> x:3 var
-R565:570 Coq.Reals.Rpower <> Rpower def
-R583:591 Coq.Reals.Raxioms <> Rmult_1_l thm
-R583:591 Coq.Reals.Raxioms <> Rmult_1_l thm
-R583:591 Coq.Reals.Raxioms <> Rmult_1_l thm
-R602:607 Coq.Reals.Rpower <> exp_ln thm
-R602:607 Coq.Reals.Rpower <> exp_ln thm
-prf 634:641 UELAT_Reals_ext Rpower_O
-binder 652:652 <> x:4
-R660:663 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R656:658 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
-R655:655 UELAT.Util.Reals_ext <> x:4 var
-R674:676 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R664:669 Coq.Reals.Rpower <> Rpower def
-R671:671 UELAT.Util.Reals_ext <> x:4 var
-R711:716 Coq.Reals.Rpower <> Rpower def
-R729:737 Coq.Reals.RIneq <> Rmult_0_l thm
-R729:737 Coq.Reals.RIneq <> Rmult_0_l thm
-R729:737 Coq.Reals.RIneq <> Rmult_0_l thm
-R748:752 Coq.Reals.Rtrigo_def <> exp_0 thm
-R748:752 Coq.Reals.Rtrigo_def <> exp_0 thm
-prf 767:777 UELAT_Reals_ext Rpower_mult
-binder 788:788 <> x:5
-binder 790:790 <> y:6
-binder 792:792 <> z:7
-R802:805 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R798:800 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
-R797:797 UELAT.Util.Reals_ext <> x:5 var
-R827:829 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R806:811 Coq.Reals.Rpower <> Rpower def
-R814:819 Coq.Reals.Rpower <> Rpower def
-R821:821 UELAT.Util.Reals_ext <> x:5 var
-R823:823 UELAT.Util.Reals_ext <> y:6 var
-R826:826 UELAT.Util.Reals_ext <> z:7 var
-R830:835 Coq.Reals.Rpower <> Rpower def
-R837:837 UELAT.Util.Reals_ext <> x:5 var
-R841:843 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R840:840 UELAT.Util.Reals_ext <> y:6 var
-R844:844 UELAT.Util.Reals_ext <> z:7 var
-R883:888 Coq.Reals.Rpower <> Rpower def
-R901:906 Coq.Reals.Rpower <> ln_exp thm
-R901:906 Coq.Reals.Rpower <> ln_exp thm
-R901:906 Coq.Reals.Rpower <> ln_exp thm
-prf 938:948 UELAT_Reals_ext Rpower_plus
-binder 959:959 <> x:8
-binder 961:961 <> y:9
-binder 963:963 <> z:10
-R973:976 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R969:971 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
-R968:968 UELAT.Util.Reals_ext <> x:8 var
-R993:995 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R977:982 Coq.Reals.Rpower <> Rpower def
-R984:984 UELAT.Util.Reals_ext <> x:8 var
-R988:990 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R987:987 UELAT.Util.Reals_ext <> y:9 var
-R991:991 UELAT.Util.Reals_ext <> z:10 var
-R1006:1008 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R996:1001 Coq.Reals.Rpower <> Rpower def
-R1003:1003 UELAT.Util.Reals_ext <> x:8 var
-R1005:1005 UELAT.Util.Reals_ext <> y:9 var
-R1009:1014 Coq.Reals.Rpower <> Rpower def
+R235:239 Stdlib.Reals.Reals <> <> lib
+R241:243 Stdlib.micromega.Lra <> <> lib
+R245:247 Stdlib.micromega.Lia <> <> lib
+R249:254 Stdlib.ZArith.ZArith <> <> lib
+R284:287 Stdlib.Lists.List <> <> lib
+R297:309 Stdlib.Lists.List ListNotations <> mod
+mod 346:360 <> UELAT_Reals_ext
+prf 393:402 UELAT_Reals_ext Rpower_pos
+binder 413:413 <> x:1
+binder 415:415 <> y:2
+R428:430 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R418:423 Stdlib.Reals.Rpower <> Rpower def
+R425:425 UELAT.Util.Reals_ext <> x:1 var
+R427:427 UELAT.Util.Reals_ext <> y:2 var
+R464:469 Stdlib.Reals.Rpower <> Rpower def
+R480:486 Stdlib.Reals.Exp_prop <> exp_pos thm
+R480:486 Stdlib.Reals.Exp_prop <> exp_pos thm
+prf 501:508 UELAT_Reals_ext Rpower_1
+binder 519:519 <> x:3
+R527:530 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R523:525 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R522:522 UELAT.Util.Reals_ext <> x:3 var
+R541:543 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R531:536 Stdlib.Reals.Rpower <> Rpower def
+R538:538 UELAT.Util.Reals_ext <> x:3 var
+R544:544 UELAT.Util.Reals_ext <> x:3 var
+R578:583 Stdlib.Reals.Rpower <> Rpower def
+R596:604 Stdlib.Reals.Raxioms <> Rmult_1_l thm
+R596:604 Stdlib.Reals.Raxioms <> Rmult_1_l thm
+R596:604 Stdlib.Reals.Raxioms <> Rmult_1_l thm
+R615:620 Stdlib.Reals.Rpower <> exp_ln thm
+R615:620 Stdlib.Reals.Rpower <> exp_ln thm
+prf 647:654 UELAT_Reals_ext Rpower_O
+binder 665:665 <> x:4
+R673:676 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R669:671 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R668:668 UELAT.Util.Reals_ext <> x:4 var
+R687:689 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R677:682 Stdlib.Reals.Rpower <> Rpower def
+R684:684 UELAT.Util.Reals_ext <> x:4 var
+R724:729 Stdlib.Reals.Rpower <> Rpower def
+R742:750 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R742:750 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R742:750 Stdlib.Reals.RIneq <> Rmult_0_l thm
+R761:765 Stdlib.Reals.Rtrigo_def <> exp_0 thm
+R761:765 Stdlib.Reals.Rtrigo_def <> exp_0 thm
+prf 780:790 UELAT_Reals_ext Rpower_mult
+binder 801:801 <> x:5
+binder 803:803 <> y:6
+binder 805:805 <> z:7
+R815:818 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R811:813 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R810:810 UELAT.Util.Reals_ext <> x:5 var
+R840:842 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R819:824 Stdlib.Reals.Rpower <> Rpower def
+R827:832 Stdlib.Reals.Rpower <> Rpower def
+R834:834 UELAT.Util.Reals_ext <> x:5 var
+R836:836 UELAT.Util.Reals_ext <> y:6 var
+R839:839 UELAT.Util.Reals_ext <> z:7 var
+R843:848 Stdlib.Reals.Rpower <> Rpower def
+R850:850 UELAT.Util.Reals_ext <> x:5 var
+R854:856 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R853:853 UELAT.Util.Reals_ext <> y:6 var
+R857:857 UELAT.Util.Reals_ext <> z:7 var
+R896:901 Stdlib.Reals.Rpower <> Rpower def
+R914:919 Stdlib.Reals.Rpower <> ln_exp thm
+R914:919 Stdlib.Reals.Rpower <> ln_exp thm
+R914:919 Stdlib.Reals.Rpower <> ln_exp thm
+prf 951:961 UELAT_Reals_ext Rpower_plus
+binder 972:972 <> x:8
+binder 974:974 <> y:9
+binder 976:976 <> z:10
+R986:989 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R982:984 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R981:981 UELAT.Util.Reals_ext <> x:8 var
+R1006:1008 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R990:995 Stdlib.Reals.Rpower <> Rpower def
+R997:997 UELAT.Util.Reals_ext <> x:8 var
+R1001:1003 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R1000:1000 UELAT.Util.Reals_ext <> y:9 var
+R1004:1004 UELAT.Util.Reals_ext <> z:10 var
+R1019:1021 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1009:1014 Stdlib.Reals.Rpower <> Rpower def
 R1016:1016 UELAT.Util.Reals_ext <> x:8 var
-R1018:1018 UELAT.Util.Reals_ext <> z:10 var
-R1056:1061 Coq.Reals.Rpower <> Rpower def
-R1075:1075 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1081:1084 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1077:1079 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R1085:1086 Coq.Reals.Rpower <> ln def
-R1105:1107 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R1098:1100 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1101:1102 Coq.Reals.Rpower <> ln def
-R1109:1111 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1112:1113 Coq.Reals.Rpower <> ln def
-R1075:1075 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1081:1084 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1077:1079 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R1085:1086 Coq.Reals.Rpower <> ln def
-R1105:1107 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R1098:1100 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1101:1102 Coq.Reals.Rpower <> ln def
-R1109:1111 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1112:1113 Coq.Reals.Rpower <> ln def
-R1135:1142 Coq.Reals.Exp_prop <> exp_plus thm
-R1135:1142 Coq.Reals.Exp_prop <> exp_plus thm
-prf 1157:1165 UELAT_Reals_ext Rpower_lt
-binder 1176:1176 <> x:11
-binder 1178:1178 <> a:12
-binder 1180:1180 <> b:13
-R1190:1193 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1186:1188 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R1189:1189 UELAT.Util.Reals_ext <> x:11 var
-R1199:1202 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1195:1197 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R1194:1194 UELAT.Util.Reals_ext <> x:11 var
-R1208:1211 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1204:1206 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R1203:1203 UELAT.Util.Reals_ext <> a:12 var
-R1207:1207 UELAT.Util.Reals_ext <> b:13 var
-R1222:1224 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R1212:1217 Coq.Reals.Rpower <> Rpower def
-R1219:1219 UELAT.Util.Reals_ext <> x:11 var
-R1221:1221 UELAT.Util.Reals_ext <> b:13 var
-R1225:1230 Coq.Reals.Rpower <> Rpower def
+R1018:1018 UELAT.Util.Reals_ext <> y:9 var
+R1022:1027 Stdlib.Reals.Rpower <> Rpower def
+R1029:1029 UELAT.Util.Reals_ext <> x:8 var
+R1031:1031 UELAT.Util.Reals_ext <> z:10 var
+R1069:1074 Stdlib.Reals.Rpower <> Rpower def
+R1088:1088 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1094:1097 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1090:1092 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R1098:1099 Stdlib.Reals.Rpower <> ln def
+R1118:1120 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R1111:1113 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1114:1115 Stdlib.Reals.Rpower <> ln def
+R1122:1124 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1125:1126 Stdlib.Reals.Rpower <> ln def
+R1088:1088 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1094:1097 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1090:1092 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R1098:1099 Stdlib.Reals.Rpower <> ln def
+R1118:1120 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R1111:1113 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1114:1115 Stdlib.Reals.Rpower <> ln def
+R1122:1124 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1125:1126 Stdlib.Reals.Rpower <> ln def
+R1148:1155 Stdlib.Reals.Exp_prop <> exp_plus thm
+R1148:1155 Stdlib.Reals.Exp_prop <> exp_plus thm
+prf 1170:1178 UELAT_Reals_ext Rpower_lt
+binder 1189:1189 <> x:11
+binder 1191:1191 <> a:12
+binder 1193:1193 <> b:13
+R1203:1206 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1199:1201 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1202:1202 UELAT.Util.Reals_ext <> x:11 var
+R1212:1215 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1208:1210 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1207:1207 UELAT.Util.Reals_ext <> x:11 var
+R1221:1224 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1217:1219 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1216:1216 UELAT.Util.Reals_ext <> a:12 var
+R1220:1220 UELAT.Util.Reals_ext <> b:13 var
+R1235:1237 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1225:1230 Stdlib.Reals.Rpower <> Rpower def
 R1232:1232 UELAT.Util.Reals_ext <> x:11 var
-R1234:1234 UELAT.Util.Reals_ext <> a:12 var
-R1281:1286 Coq.Reals.Rpower <> Rpower def
-R1297:1310 Coq.Reals.Rpower <> exp_increasing thm
-R1297:1310 Coq.Reals.Rpower <> exp_increasing thm
-R1365:1367 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R1361:1362 Coq.Reals.Rpower <> ln def
-R1365:1367 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R1361:1362 Coq.Reals.Rpower <> ln def
-R1387:1390 Coq.Reals.Rpower <> ln_1 thm
-R1387:1390 Coq.Reals.Rpower <> ln_1 thm
-R1387:1390 Coq.Reals.Rpower <> ln_1 thm
-R1399:1411 Coq.Reals.Rpower <> ln_increasing thm
-R1399:1411 Coq.Reals.Rpower <> ln_increasing thm
-R1484:1497 Coq.Reals.RIneq <> Ropp_lt_cancel thm
-R1484:1497 Coq.Reals.RIneq <> Ropp_lt_cancel thm
-R1511:1513 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1522:1522 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1515:1517 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1518:1519 Coq.Reals.Rpower <> ln def
-R1532:1535 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1542:1542 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1536:1537 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1538:1539 Coq.Reals.Rpower <> ln def
-R1511:1513 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1522:1522 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1515:1517 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1518:1519 Coq.Reals.Rpower <> ln def
-R1532:1535 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1542:1542 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1536:1537 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1538:1539 Coq.Reals.Rpower <> ln def
-R1565:1567 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1576:1576 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1569:1571 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1572:1573 Coq.Reals.Rpower <> ln def
-R1586:1589 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1596:1596 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1590:1591 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1592:1593 Coq.Reals.Rpower <> ln def
-R1565:1567 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1576:1576 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1569:1571 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1572:1573 Coq.Reals.Rpower <> ln def
-R1586:1589 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1596:1596 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R1590:1591 Coq.Reals.Rdefinitions <> ::R_scope:'-'_x not
-R1592:1593 Coq.Reals.Rpower <> ln def
-R1616:1632 Coq.Reals.RIneq <> Rmult_lt_compat_r thm
-R1616:1632 Coq.Reals.RIneq <> Rmult_lt_compat_r thm
-prf 1671:1682 UELAT_Reals_ext Rle_Rpower_l
-binder 1693:1693 <> a:14
-binder 1695:1695 <> x:15
-binder 1697:1697 <> y:16
-R1708:1711 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1703:1706 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
-R1702:1702 UELAT.Util.Reals_ext <> a:14 var
-R1722:1725 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R1713:1715 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<='_x not
-R1717:1720 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<='_x not
-R1716:1716 UELAT.Util.Reals_ext <> x:15 var
-R1716:1716 UELAT.Util.Reals_ext <> x:15 var
-R1721:1721 UELAT.Util.Reals_ext <> y:16 var
-R1736:1739 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R1726:1731 Coq.Reals.Rpower <> Rpower def
-R1733:1733 UELAT.Util.Reals_ext <> x:15 var
-R1735:1735 UELAT.Util.Reals_ext <> a:14 var
-R1740:1745 Coq.Reals.Rpower <> Rpower def
-R1747:1747 UELAT.Util.Reals_ext <> y:16 var
-R1749:1749 UELAT.Util.Reals_ext <> a:14 var
-R1799:1805 Coq.Reals.RIneq <> Req_dec thm
-R1799:1805 Coq.Reals.RIneq <> Req_dec thm
-R1848:1855 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
-R1848:1855 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
-R1848:1855 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
-R1848:1855 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
-R1848:1855 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
-R1848:1855 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
-R1848:1855 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
-R1877:1886 Coq.Reals.RIneq <> Rlt_le_dec thm
-R1877:1886 Coq.Reals.RIneq <> Rlt_le_dec thm
-R1922:1927 Coq.Reals.Rpower <> Rpower def
-R1942:1947 Coq.Reals.RIneq <> Rlt_le thm
-R1942:1947 Coq.Reals.RIneq <> Rlt_le thm
-R1962:1975 Coq.Reals.Rpower <> exp_increasing thm
-R1962:1975 Coq.Reals.Rpower <> exp_increasing thm
-R1990:2006 Coq.Reals.Raxioms <> Rmult_lt_compat_l thm
-R1990:2006 Coq.Reals.Raxioms <> Rmult_lt_compat_l thm
-R2030:2042 Coq.Reals.Rpower <> ln_increasing thm
-R2030:2042 Coq.Reals.Rpower <> ln_increasing thm
-R2065:2067 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R2065:2067 Coq.Init.Logic <> ::type_scope:x_'='_x not
-prf 2135:2145 UELAT_Reals_ext Rabs_triang
-binder 2156:2156 <> x:17
-binder 2158:2158 <> y:18
-binder 2160:2160 <> z:19
-R2177:2180 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R2165:2168 Coq.Reals.Rbasic_fun <> Rabs def
-R2172:2174 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2171:2171 UELAT.Util.Reals_ext <> x:17 var
-R2175:2175 UELAT.Util.Reals_ext <> z:19 var
-R2193:2195 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R2181:2184 Coq.Reals.Rbasic_fun <> Rabs def
-R2188:2190 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2187:2187 UELAT.Util.Reals_ext <> x:17 var
-R2191:2191 UELAT.Util.Reals_ext <> y:18 var
-R2196:2199 Coq.Reals.Rbasic_fun <> Rabs def
-R2203:2205 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2202:2202 UELAT.Util.Reals_ext <> y:18 var
-R2206:2206 UELAT.Util.Reals_ext <> z:19 var
-R2245:2247 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2257:2257 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R2263:2267 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R2273:2273 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R2259:2261 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2269:2271 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2245:2247 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2257:2257 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R2263:2267 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R2273:2273 Coq.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
-R2259:2261 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2269:2271 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2293:2303 Coq.Reals.Rbasic_fun <> Rabs_triang thm
-R2293:2303 Coq.Reals.Rbasic_fun <> Rabs_triang thm
-prf 2318:2331 UELAT_Reals_ext Rabs_minus_sym
-binder 2342:2342 <> x:20
-binder 2344:2344 <> y:21
-R2361:2363 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R2349:2352 Coq.Reals.Rbasic_fun <> Rabs def
-R2356:2358 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2355:2355 UELAT.Util.Reals_ext <> x:20 var
-R2359:2359 UELAT.Util.Reals_ext <> y:21 var
-R2364:2367 Coq.Reals.Rbasic_fun <> Rabs def
-R2371:2373 Coq.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
-R2370:2370 UELAT.Util.Reals_ext <> y:21 var
-R2374:2374 UELAT.Util.Reals_ext <> x:20 var
-R2412:2420 Coq.Reals.Rbasic_fun <> Rabs_Ropp thm
-R2412:2420 Coq.Reals.Rbasic_fun <> Rabs_Ropp thm
-R2412:2420 Coq.Reals.Rbasic_fun <> Rabs_Ropp thm
-prf 2452:2464 UELAT_Reals_ext Rabs_mult_pos
-binder 2475:2475 <> x:22
-binder 2477:2477 <> y:23
-R2488:2491 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R2483:2486 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
-R2482:2482 UELAT.Util.Reals_ext <> y:23 var
-R2504:2506 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R2492:2495 Coq.Reals.Rbasic_fun <> Rabs def
-R2499:2501 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R2498:2498 UELAT.Util.Reals_ext <> x:22 var
-R2502:2502 UELAT.Util.Reals_ext <> y:23 var
-R2513:2515 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R2507:2510 Coq.Reals.Rbasic_fun <> Rabs def
-R2512:2512 UELAT.Util.Reals_ext <> x:22 var
-R2516:2516 UELAT.Util.Reals_ext <> y:23 var
-R2553:2561 Coq.Reals.Rbasic_fun <> Rabs_mult thm
-R2553:2561 Coq.Reals.Rbasic_fun <> Rabs_mult thm
-R2553:2561 Coq.Reals.Rbasic_fun <> Rabs_mult thm
-R2575:2584 Coq.Reals.Rbasic_fun <> Rabs_right thm
-R2575:2584 Coq.Reals.Rbasic_fun <> Rabs_right thm
-R2575:2584 Coq.Reals.Rbasic_fun <> Rabs_right thm
-R2575:2584 Coq.Reals.Rbasic_fun <> Rabs_right thm
-prf 2607:2618 UELAT_Reals_ext Rabs_div_pos
-binder 2629:2629 <> x:24
-binder 2631:2631 <> y:25
-R2641:2644 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R2637:2639 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
-R2636:2636 UELAT.Util.Reals_ext <> y:25 var
-R2657:2659 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R2645:2648 Coq.Reals.Rbasic_fun <> Rabs def
-R2652:2654 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
-R2651:2651 UELAT.Util.Reals_ext <> x:24 var
-R2655:2655 UELAT.Util.Reals_ext <> y:25 var
-R2666:2668 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
-R2660:2663 Coq.Reals.Rbasic_fun <> Rabs def
-R2665:2665 UELAT.Util.Reals_ext <> x:24 var
-R2669:2669 UELAT.Util.Reals_ext <> y:25 var
-R2705:2708 Coq.Reals.Rdefinitions <> Rdiv def
-R2721:2729 Coq.Reals.Rbasic_fun <> Rabs_mult thm
-R2721:2729 Coq.Reals.Rbasic_fun <> Rabs_mult thm
-R2721:2729 Coq.Reals.Rbasic_fun <> Rabs_mult thm
-R2743:2752 Coq.Reals.Rbasic_fun <> Rabs_right thm
-R2755:2756 Coq.Reals.Rdefinitions <> ::R_scope:'/'_x not
-R2743:2752 Coq.Reals.Rbasic_fun <> Rabs_right thm
-R2755:2756 Coq.Reals.Rdefinitions <> ::R_scope:'/'_x not
-R2743:2752 Coq.Reals.Rbasic_fun <> Rabs_right thm
-R2755:2756 Coq.Reals.Rdefinitions <> ::R_scope:'/'_x not
-R2743:2752 Coq.Reals.Rbasic_fun <> Rabs_right thm
-R2755:2756 Coq.Reals.Rdefinitions <> ::R_scope:'/'_x not
-R2789:2794 Coq.Reals.RIneq <> Rle_ge thm
-R2789:2794 Coq.Reals.RIneq <> Rle_ge thm
-R2803:2808 Coq.Reals.RIneq <> Rlt_le thm
-R2803:2808 Coq.Reals.RIneq <> Rlt_le thm
-R2817:2832 Coq.Reals.RIneq <> Rinv_0_lt_compat thm
-R2817:2832 Coq.Reals.RIneq <> Rinv_0_lt_compat thm
-prf 2879:2889 UELAT_Reals_ext sqrt_nonneg
-binder 2900:2900 <> x:26
-R2909:2912 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
-R2903:2906 Coq.Reals.R_sqrt <> sqrt def
-R2908:2908 UELAT.Util.Reals_ext <> x:26 var
-R2942:2947 Coq.Reals.RIneq <> Rle_ge thm
-R2942:2947 Coq.Reals.RIneq <> Rle_ge thm
-R2958:2965 Coq.Reals.R_sqrt <> sqrt_pos thm
-R2958:2965 Coq.Reals.R_sqrt <> sqrt_pos thm
-prf 2980:2993 UELAT_Reals_ext sqrt_le_compat
-binder 3004:3004 <> x:27
-binder 3006:3006 <> y:28
-R3017:3020 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3012:3015 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3016:3016 UELAT.Util.Reals_ext <> x:27 var
-R3027:3030 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3022:3025 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3026:3026 UELAT.Util.Reals_ext <> y:28 var
-R3037:3040 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3032:3035 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3031:3031 UELAT.Util.Reals_ext <> x:27 var
-R3036:3036 UELAT.Util.Reals_ext <> y:28 var
-R3047:3050 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3041:3044 Coq.Reals.R_sqrt <> sqrt def
-R3046:3046 UELAT.Util.Reals_ext <> x:27 var
-R3051:3054 Coq.Reals.R_sqrt <> sqrt def
-R3056:3056 UELAT.Util.Reals_ext <> y:28 var
-R3098:3106 Coq.Reals.R_sqrt <> sqrt_le_1 thm
-R3098:3106 Coq.Reals.R_sqrt <> sqrt_le_1 thm
-prf 3164:3176 UELAT_Reals_ext sqrt_mult_alt
-binder 3187:3187 <> x:29
-binder 3189:3189 <> y:30
-R3200:3203 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3195:3198 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3199:3199 UELAT.Util.Reals_ext <> x:29 var
-R3210:3213 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3205:3208 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3209:3209 UELAT.Util.Reals_ext <> y:30 var
-R3226:3228 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R3214:3217 Coq.Reals.R_sqrt <> sqrt def
-R3221:3223 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R3220:3220 UELAT.Util.Reals_ext <> x:29 var
-R3224:3224 UELAT.Util.Reals_ext <> y:30 var
-R3235:3237 Coq.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
-R3229:3232 Coq.Reals.R_sqrt <> sqrt def
-R3234:3234 UELAT.Util.Reals_ext <> x:29 var
-R3238:3241 Coq.Reals.R_sqrt <> sqrt def
-R3243:3243 UELAT.Util.Reals_ext <> y:30 var
-R3281:3289 Coq.Reals.R_sqrt <> sqrt_mult thm
-R3281:3289 Coq.Reals.R_sqrt <> sqrt_mult thm
-prf 3316:3327 UELAT_Reals_ext sqrt_div_alt
-binder 3338:3338 <> x:31
-binder 3340:3340 <> y:32
-R3351:3354 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3346:3349 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3350:3350 UELAT.Util.Reals_ext <> x:31 var
-R3360:3363 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3356:3358 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R3359:3359 UELAT.Util.Reals_ext <> y:32 var
-R3376:3378 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R3364:3367 Coq.Reals.R_sqrt <> sqrt def
-R3371:3373 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
-R3370:3370 UELAT.Util.Reals_ext <> x:31 var
-R3374:3374 UELAT.Util.Reals_ext <> y:32 var
-R3385:3387 Coq.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
-R3379:3382 Coq.Reals.R_sqrt <> sqrt def
-R3384:3384 UELAT.Util.Reals_ext <> x:31 var
-R3388:3391 Coq.Reals.R_sqrt <> sqrt def
-R3393:3393 UELAT.Util.Reals_ext <> y:32 var
-R3432:3435 Coq.Reals.Rdefinitions <> Rdiv def
-R3448:3460 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
-R3448:3460 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
-R3448:3460 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
-R3448:3460 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
-R3448:3460 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
-R3475:3482 Coq.Reals.R_sqrt <> sqrt_inv thm
-R3475:3482 Coq.Reals.R_sqrt <> sqrt_inv thm
-R3475:3482 Coq.Reals.R_sqrt <> sqrt_inv thm
-R3522:3527 Coq.Reals.RIneq <> Rlt_le thm
-R3522:3527 Coq.Reals.RIneq <> Rlt_le thm
-R3536:3551 Coq.Reals.RIneq <> Rinv_0_lt_compat thm
-R3536:3551 Coq.Reals.RIneq <> Rinv_0_lt_compat thm
-prf 3601:3608 UELAT_Reals_ext Rmin_pos
-binder 3619:3619 <> x:33
-binder 3621:3621 <> y:34
-R3629:3632 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3625:3627 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R3628:3628 UELAT.Util.Reals_ext <> x:33 var
-R3638:3641 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3634:3636 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R3637:3637 UELAT.Util.Reals_ext <> y:34 var
-R3643:3645 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R3646:3649 Coq.Reals.Rbasic_fun <> Rmin def
-R3651:3651 UELAT.Util.Reals_ext <> x:33 var
-R3653:3653 UELAT.Util.Reals_ext <> y:34 var
-R3691:3701 Coq.Reals.Rbasic_fun <> Rmin_glb_lt thm
-R3691:3701 Coq.Reals.Rbasic_fun <> Rmin_glb_lt thm
-prf 3728:3738 UELAT_Reals_ext Rmax_nonneg
-binder 3749:3749 <> x:35
-binder 3751:3751 <> y:36
-R3760:3763 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R3755:3758 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3759:3759 UELAT.Util.Reals_ext <> x:35 var
-R3765:3768 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3769:3772 Coq.Reals.Rbasic_fun <> Rmax def
-R3774:3774 UELAT.Util.Reals_ext <> x:35 var
-R3776:3776 UELAT.Util.Reals_ext <> y:36 var
-R3811:3819 Coq.Reals.RIneq <> Rle_trans thm
-R3847:3852 Coq.Reals.Rbasic_fun <> Rmax_l thm
-R3811:3819 Coq.Reals.RIneq <> Rle_trans thm
-R3847:3852 Coq.Reals.Rbasic_fun <> Rmax_l thm
-prf 3868:3873 UELAT_Reals_ext Rmax_r
-binder 3884:3884 <> x:37
-binder 3886:3886 <> y:38
-R3890:3893 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R3889:3889 UELAT.Util.Reals_ext <> y:38 var
-R3894:3897 Coq.Reals.Rbasic_fun <> Rmax def
-R3899:3899 UELAT.Util.Reals_ext <> x:37 var
-R3901:3901 UELAT.Util.Reals_ext <> y:38 var
-R3934:3937 Coq.Reals.Rbasic_fun <> Rmax def
-R3952:3958 Coq.Reals.RIneq <> Rle_dec thm
-R3952:3958 Coq.Reals.RIneq <> Rle_dec thm
-prf 3983:3996 UELAT_Reals_ext Rmax_le_compat
-binder 4007:4008 <> x1:39
-binder 4010:4011 <> x2:40
-binder 4013:4014 <> y1:41
-binder 4016:4017 <> y2:42
-R4030:4033 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R4024:4027 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R4022:4023 UELAT.Util.Reals_ext <> x1:39 var
-R4028:4029 UELAT.Util.Reals_ext <> y1:41 var
-R4042:4045 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R4036:4039 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R4034:4035 UELAT.Util.Reals_ext <> x2:40 var
-R4040:4041 UELAT.Util.Reals_ext <> y2:42 var
-R4056:4059 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R4046:4049 Coq.Reals.Rbasic_fun <> Rmax def
-R4051:4052 UELAT.Util.Reals_ext <> x1:39 var
-R4054:4055 UELAT.Util.Reals_ext <> x2:40 var
-R4060:4063 Coq.Reals.Rbasic_fun <> Rmax def
-R4065:4066 UELAT.Util.Reals_ext <> y1:41 var
-R4068:4069 UELAT.Util.Reals_ext <> y2:42 var
-R4115:4122 Coq.Reals.Rbasic_fun <> Rmax_lub thm
-R4115:4122 Coq.Reals.Rbasic_fun <> Rmax_lub thm
-R4135:4143 Coq.Reals.RIneq <> Rle_trans thm
-R4172:4177 Coq.Reals.Rbasic_fun <> Rmax_l thm
-R4135:4143 Coq.Reals.RIneq <> Rle_trans thm
-R4172:4177 Coq.Reals.Rbasic_fun <> Rmax_l thm
-R4191:4199 Coq.Reals.RIneq <> Rle_trans thm
-R4228:4233 UELAT.Util.Reals_ext UELAT_Reals_ext Rmax_r thm
-R4191:4199 Coq.Reals.RIneq <> Rle_trans thm
-R4228:4233 UELAT.Util.Reals_ext UELAT_Reals_ext Rmax_r thm
-prf 4249:4264 UELAT_Reals_ext Rle_min_compat_l
-binder 4275:4275 <> x:43
-binder 4277:4277 <> y:44
-binder 4279:4279 <> z:45
-R4290:4293 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R4285:4288 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R4284:4284 UELAT.Util.Reals_ext <> x:43 var
-R4289:4289 UELAT.Util.Reals_ext <> y:44 var
-R4302:4305 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R4294:4297 Coq.Reals.Rbasic_fun <> Rmin def
-R4299:4299 UELAT.Util.Reals_ext <> x:43 var
-R4301:4301 UELAT.Util.Reals_ext <> z:45 var
-R4306:4306 UELAT.Util.Reals_ext <> y:44 var
-R4344:4352 Coq.Reals.RIneq <> Rle_trans thm
-R4369:4374 Coq.Reals.Rbasic_fun <> Rmin_l thm
-R4344:4352 Coq.Reals.RIneq <> Rle_trans thm
-R4369:4374 Coq.Reals.Rbasic_fun <> Rmin_l thm
-prf 4429:4451 UELAT_Reals_ext fold_right_Rplus_nonneg
-R4467:4470 Coq.Init.Datatypes <> list ind
-R4472:4472 Coq.Reals.Rdefinitions RbaseSymbolsImpl R defax
-binder 4463:4463 <> l:46
-R4504:4509 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R4478:4483 Coq.Lists.List <> Forall ind
-R4503:4503 UELAT.Util.Reals_ext <> l:46 var
-binder 4490:4490 <> x:47
-R4496:4499 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
-R4495:4495 UELAT.Util.Reals_ext <> x:47 var
-R4530:4533 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
-R4510:4519 Coq.Lists.List <> fold_right def
-R4529:4529 UELAT.Util.Reals_ext <> l:46 var
-R4521:4525 Coq.Reals.Rdefinitions RbaseSymbolsImpl Rplus defax
-prf 4727:4740 UELAT_Reals_ext archimed_upper
-binder 4751:4751 <> r:48
-R4762:4765 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R4757:4760 Coq.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
-R4761:4761 UELAT.Util.Reals_ext <> r:48 var
-R4787:4790 Coq.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
-R4766:4768 Coq.Reals.Raxioms <> INR def
-R4771:4778 Coq.ZArith.BinInt Z to_nat def
-R4781:4782 Coq.Reals.Rdefinitions <> up def
-R4784:4784 UELAT.Util.Reals_ext <> r:48 var
-R4791:4791 UELAT.Util.Reals_ext <> r:48 var
-R4828:4835 Coq.Reals.Raxioms <> archimed thm
-R4828:4835 Coq.Reals.Raxioms <> archimed thm
-R4871:4874 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x not
-R4875:4876 Coq.Reals.Rdefinitions <> up def
-R4871:4874 Coq.ZArith.BinInt <> ::Z_scope:x_'<='_x not
-R4875:4876 Coq.Reals.Rdefinitions <> up def
-R4895:4900 Coq.Reals.RIneq <> le_IZR thm
-R4895:4900 Coq.Reals.RIneq <> le_IZR thm
-R4920:4928 Coq.Reals.RIneq <> Rle_trans thm
-R4956:4961 Coq.Reals.RIneq <> Rlt_le thm
-R4920:4928 Coq.Reals.RIneq <> Rle_trans thm
-R4956:4961 Coq.Reals.RIneq <> Rlt_le thm
-R4988:4998 Coq.Reals.RIneq <> INR_IZR_INZ thm
-R4988:4998 Coq.Reals.RIneq <> INR_IZR_INZ thm
-R4988:4998 Coq.Reals.RIneq <> INR_IZR_INZ thm
-R5011:5018 Coq.ZArith.Znat Z2Nat id thm
-R5011:5018 Coq.ZArith.Znat Z2Nat id thm
-R5011:5018 Coq.ZArith.Znat Z2Nat id thm
-R5011:5018 Coq.ZArith.Znat Z2Nat id thm
-prf 5092:5099 UELAT_Reals_ext exp_pos'
-binder 5110:5110 <> x:49
-R5118:5120 Coq.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
-R5113:5115 Coq.Reals.Rtrigo_def <> exp def
-R5117:5117 UELAT.Util.Reals_ext <> x:49 var
-R5139:5145 Coq.Reals.Exp_prop <> exp_pos thm
-R5139:5145 Coq.Reals.Exp_prop <> exp_pos thm
-prf 5160:5173 UELAT_Reals_ext ln_increasing'
-binder 5184:5184 <> x:50
-binder 5186:5186 <> y:51
-R5194:5197 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R5190:5192 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R5193:5193 UELAT.Util.Reals_ext <> x:50 var
-R5203:5206 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R5199:5201 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R5198:5198 UELAT.Util.Reals_ext <> x:50 var
-R5202:5202 UELAT.Util.Reals_ext <> y:51 var
-R5211:5213 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R5207:5208 Coq.Reals.Rpower <> ln def
-R5210:5210 UELAT.Util.Reals_ext <> x:50 var
-R5214:5215 Coq.Reals.Rpower <> ln def
-R5217:5217 UELAT.Util.Reals_ext <> y:51 var
-R5256:5268 Coq.Reals.Rpower <> ln_increasing thm
-R5256:5268 Coq.Reals.Rpower <> ln_increasing thm
-prf 5307:5313 UELAT_Reals_ext ln_lt_0
-binder 5324:5324 <> x:52
-R5336:5339 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R5328:5330 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<'_x not
-R5332:5334 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<'_x not
-R5331:5331 UELAT.Util.Reals_ext <> x:52 var
-R5331:5331 UELAT.Util.Reals_ext <> x:52 var
-R5344:5346 Coq.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
-R5340:5341 Coq.Reals.Rpower <> ln def
-R5343:5343 UELAT.Util.Reals_ext <> x:52 var
-R5392:5395 Coq.Reals.Rpower <> ln_1 thm
-R5392:5395 Coq.Reals.Rpower <> ln_1 thm
-R5392:5395 Coq.Reals.Rpower <> ln_1 thm
-R5406:5418 Coq.Reals.Rpower <> ln_increasing thm
-R5406:5418 Coq.Reals.Rpower <> ln_increasing thm
-R5436:5450 UELAT.Util.Reals_ext UELAT_Reals_ext <> mod
+R1234:1234 UELAT.Util.Reals_ext <> b:13 var
+R1238:1243 Stdlib.Reals.Rpower <> Rpower def
+R1245:1245 UELAT.Util.Reals_ext <> x:11 var
+R1247:1247 UELAT.Util.Reals_ext <> a:12 var
+R1294:1299 Stdlib.Reals.Rpower <> Rpower def
+R1310:1323 Stdlib.Reals.Rpower <> exp_increasing thm
+R1310:1323 Stdlib.Reals.Rpower <> exp_increasing thm
+R1378:1380 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1374:1375 Stdlib.Reals.Rpower <> ln def
+R1378:1380 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R1374:1375 Stdlib.Reals.Rpower <> ln def
+R1400:1403 Stdlib.Reals.Rpower <> ln_1 thm
+R1400:1403 Stdlib.Reals.Rpower <> ln_1 thm
+R1400:1403 Stdlib.Reals.Rpower <> ln_1 thm
+R1412:1424 Stdlib.Reals.Rpower <> ln_increasing thm
+R1412:1424 Stdlib.Reals.Rpower <> ln_increasing thm
+R1497:1510 Stdlib.Reals.RIneq <> Ropp_lt_cancel thm
+R1497:1510 Stdlib.Reals.RIneq <> Ropp_lt_cancel thm
+R1524:1526 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1535:1535 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1528:1530 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1531:1532 Stdlib.Reals.Rpower <> ln def
+R1545:1548 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1555:1555 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1549:1550 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1551:1552 Stdlib.Reals.Rpower <> ln def
+R1524:1526 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1535:1535 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1528:1530 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1531:1532 Stdlib.Reals.Rpower <> ln def
+R1545:1548 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1555:1555 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1549:1550 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1551:1552 Stdlib.Reals.Rpower <> ln def
+R1578:1580 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1589:1589 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1582:1584 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1585:1586 Stdlib.Reals.Rpower <> ln def
+R1599:1602 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1609:1609 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1603:1604 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1605:1606 Stdlib.Reals.Rpower <> ln def
+R1578:1580 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1589:1589 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1582:1584 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1585:1586 Stdlib.Reals.Rpower <> ln def
+R1599:1602 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1609:1609 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R1603:1604 Stdlib.Reals.Rdefinitions <> ::R_scope:'-'_x not
+R1605:1606 Stdlib.Reals.Rpower <> ln def
+R1629:1645 Stdlib.Reals.RIneq <> Rmult_lt_compat_r thm
+R1629:1645 Stdlib.Reals.RIneq <> Rmult_lt_compat_r thm
+prf 1684:1695 UELAT_Reals_ext Rle_Rpower_l
+binder 1706:1706 <> a:14
+binder 1708:1708 <> x:15
+binder 1710:1710 <> y:16
+R1721:1724 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1716:1719 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R1715:1715 UELAT.Util.Reals_ext <> a:14 var
+R1735:1738 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1726:1728 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<='_x not
+R1730:1733 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<='_x not
+R1729:1729 UELAT.Util.Reals_ext <> x:15 var
+R1729:1729 UELAT.Util.Reals_ext <> x:15 var
+R1734:1734 UELAT.Util.Reals_ext <> y:16 var
+R1749:1752 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R1739:1744 Stdlib.Reals.Rpower <> Rpower def
+R1746:1746 UELAT.Util.Reals_ext <> x:15 var
+R1748:1748 UELAT.Util.Reals_ext <> a:14 var
+R1753:1758 Stdlib.Reals.Rpower <> Rpower def
+R1760:1760 UELAT.Util.Reals_ext <> y:16 var
+R1762:1762 UELAT.Util.Reals_ext <> a:14 var
+R1812:1818 Stdlib.Reals.RIneq <> Req_dec thm
+R1812:1818 Stdlib.Reals.RIneq <> Req_dec thm
+R1861:1868 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
+R1861:1868 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
+R1861:1868 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
+R1861:1868 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
+R1861:1868 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
+R1861:1868 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
+R1861:1868 UELAT.Util.Reals_ext UELAT_Reals_ext Rpower_O thm
+R1890:1899 Stdlib.Reals.RIneq <> Rlt_le_dec thm
+R1890:1899 Stdlib.Reals.RIneq <> Rlt_le_dec thm
+R1935:1940 Stdlib.Reals.Rpower <> Rpower def
+R1955:1960 Stdlib.Reals.RIneq <> Rlt_le thm
+R1955:1960 Stdlib.Reals.RIneq <> Rlt_le thm
+R1975:1988 Stdlib.Reals.Rpower <> exp_increasing thm
+R1975:1988 Stdlib.Reals.Rpower <> exp_increasing thm
+R2003:2019 Stdlib.Reals.Raxioms <> Rmult_lt_compat_l thm
+R2003:2019 Stdlib.Reals.Raxioms <> Rmult_lt_compat_l thm
+R2043:2055 Stdlib.Reals.Rpower <> ln_increasing thm
+R2043:2055 Stdlib.Reals.Rpower <> ln_increasing thm
+R2078:2080 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2078:2080 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+prf 2148:2158 UELAT_Reals_ext Rabs_triang
+binder 2169:2169 <> x:17
+binder 2171:2171 <> y:18
+binder 2173:2173 <> z:19
+R2190:2193 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R2178:2181 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2185:2187 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2184:2184 UELAT.Util.Reals_ext <> x:17 var
+R2188:2188 UELAT.Util.Reals_ext <> z:19 var
+R2206:2208 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R2194:2197 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2201:2203 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2200:2200 UELAT.Util.Reals_ext <> x:17 var
+R2204:2204 UELAT.Util.Reals_ext <> y:18 var
+R2209:2212 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2216:2218 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2215:2215 UELAT.Util.Reals_ext <> y:18 var
+R2219:2219 UELAT.Util.Reals_ext <> z:19 var
+R2258:2260 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2270:2270 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R2276:2280 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R2286:2286 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R2272:2274 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2282:2284 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2258:2260 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2270:2270 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R2276:2280 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R2286:2286 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'+'_x not
+R2272:2274 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2282:2284 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2306:2316 Stdlib.Reals.Rbasic_fun <> Rabs_triang thm
+R2306:2316 Stdlib.Reals.Rbasic_fun <> Rabs_triang thm
+prf 2331:2344 UELAT_Reals_ext Rabs_minus_sym
+binder 2355:2355 <> x:20
+binder 2357:2357 <> y:21
+R2374:2376 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2362:2365 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2369:2371 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2368:2368 UELAT.Util.Reals_ext <> x:20 var
+R2372:2372 UELAT.Util.Reals_ext <> y:21 var
+R2377:2380 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2384:2386 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R2383:2383 UELAT.Util.Reals_ext <> y:21 var
+R2387:2387 UELAT.Util.Reals_ext <> x:20 var
+R2425:2433 Stdlib.Reals.Rbasic_fun <> Rabs_Ropp thm
+R2425:2433 Stdlib.Reals.Rbasic_fun <> Rabs_Ropp thm
+R2425:2433 Stdlib.Reals.Rbasic_fun <> Rabs_Ropp thm
+prf 2465:2477 UELAT_Reals_ext Rabs_mult_pos
+binder 2488:2488 <> x:22
+binder 2490:2490 <> y:23
+R2501:2504 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2496:2499 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2495:2495 UELAT.Util.Reals_ext <> y:23 var
+R2517:2519 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2505:2508 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2512:2514 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R2511:2511 UELAT.Util.Reals_ext <> x:22 var
+R2515:2515 UELAT.Util.Reals_ext <> y:23 var
+R2526:2528 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R2520:2523 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2525:2525 UELAT.Util.Reals_ext <> x:22 var
+R2529:2529 UELAT.Util.Reals_ext <> y:23 var
+R2566:2574 Stdlib.Reals.Rbasic_fun <> Rabs_mult thm
+R2566:2574 Stdlib.Reals.Rbasic_fun <> Rabs_mult thm
+R2566:2574 Stdlib.Reals.Rbasic_fun <> Rabs_mult thm
+R2588:2597 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+R2588:2597 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+R2588:2597 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+R2588:2597 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+prf 2620:2631 UELAT_Reals_ext Rabs_div_pos
+binder 2642:2642 <> x:24
+binder 2644:2644 <> y:25
+R2654:2657 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2650:2652 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R2649:2649 UELAT.Util.Reals_ext <> y:25 var
+R2670:2672 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2658:2661 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2665:2667 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R2664:2664 UELAT.Util.Reals_ext <> x:24 var
+R2668:2668 UELAT.Util.Reals_ext <> y:25 var
+R2679:2681 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R2673:2676 Stdlib.Reals.Rbasic_fun <> Rabs def
+R2678:2678 UELAT.Util.Reals_ext <> x:24 var
+R2682:2682 UELAT.Util.Reals_ext <> y:25 var
+R2718:2721 Stdlib.Reals.Rdefinitions <> Rdiv def
+R2734:2742 Stdlib.Reals.Rbasic_fun <> Rabs_mult thm
+R2734:2742 Stdlib.Reals.Rbasic_fun <> Rabs_mult thm
+R2734:2742 Stdlib.Reals.Rbasic_fun <> Rabs_mult thm
+R2756:2765 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+R2768:2769 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R2756:2765 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+R2768:2769 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R2756:2765 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+R2768:2769 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R2756:2765 Stdlib.Reals.Rbasic_fun <> Rabs_right thm
+R2768:2769 Stdlib.Reals.Rdefinitions <> ::R_scope:'/'_x not
+R2802:2807 Stdlib.Reals.RIneq <> Rle_ge thm
+R2802:2807 Stdlib.Reals.RIneq <> Rle_ge thm
+R2816:2821 Stdlib.Reals.RIneq <> Rlt_le thm
+R2816:2821 Stdlib.Reals.RIneq <> Rlt_le thm
+R2830:2845 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R2830:2845 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+prf 2892:2902 UELAT_Reals_ext sqrt_nonneg
+binder 2913:2913 <> x:26
+R2922:2925 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R2916:2919 Stdlib.Reals.R_sqrt <> sqrt def
+R2921:2921 UELAT.Util.Reals_ext <> x:26 var
+R2955:2960 Stdlib.Reals.RIneq <> Rle_ge thm
+R2955:2960 Stdlib.Reals.RIneq <> Rle_ge thm
+R2971:2978 Stdlib.Reals.R_sqrt <> sqrt_pos thm
+R2971:2978 Stdlib.Reals.R_sqrt <> sqrt_pos thm
+prf 2993:3006 UELAT_Reals_ext sqrt_le_compat
+binder 3017:3017 <> x:27
+binder 3019:3019 <> y:28
+R3030:3033 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3025:3028 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3029:3029 UELAT.Util.Reals_ext <> x:27 var
+R3040:3043 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3035:3038 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3039:3039 UELAT.Util.Reals_ext <> y:28 var
+R3050:3053 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3045:3048 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3044:3044 UELAT.Util.Reals_ext <> x:27 var
+R3049:3049 UELAT.Util.Reals_ext <> y:28 var
+R3060:3063 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3054:3057 Stdlib.Reals.R_sqrt <> sqrt def
+R3059:3059 UELAT.Util.Reals_ext <> x:27 var
+R3064:3067 Stdlib.Reals.R_sqrt <> sqrt def
+R3069:3069 UELAT.Util.Reals_ext <> y:28 var
+R3111:3119 Stdlib.Reals.R_sqrt <> sqrt_le_1 thm
+R3111:3119 Stdlib.Reals.R_sqrt <> sqrt_le_1 thm
+prf 3177:3189 UELAT_Reals_ext sqrt_mult_alt
+binder 3200:3200 <> x:29
+binder 3202:3202 <> y:30
+R3213:3216 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3208:3211 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3212:3212 UELAT.Util.Reals_ext <> x:29 var
+R3223:3226 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3218:3221 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3222:3222 UELAT.Util.Reals_ext <> y:30 var
+R3239:3241 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3227:3230 Stdlib.Reals.R_sqrt <> sqrt def
+R3234:3236 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R3233:3233 UELAT.Util.Reals_ext <> x:29 var
+R3237:3237 UELAT.Util.Reals_ext <> y:30 var
+R3248:3250 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'*'_x not
+R3242:3245 Stdlib.Reals.R_sqrt <> sqrt def
+R3247:3247 UELAT.Util.Reals_ext <> x:29 var
+R3251:3254 Stdlib.Reals.R_sqrt <> sqrt def
+R3256:3256 UELAT.Util.Reals_ext <> y:30 var
+R3294:3302 Stdlib.Reals.R_sqrt <> sqrt_mult thm
+R3294:3302 Stdlib.Reals.R_sqrt <> sqrt_mult thm
+prf 3329:3340 UELAT_Reals_ext sqrt_div_alt
+binder 3351:3351 <> x:31
+binder 3353:3353 <> y:32
+R3364:3367 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3359:3362 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3363:3363 UELAT.Util.Reals_ext <> x:31 var
+R3373:3376 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3369:3371 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3372:3372 UELAT.Util.Reals_ext <> y:32 var
+R3389:3391 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3377:3380 Stdlib.Reals.R_sqrt <> sqrt def
+R3384:3386 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R3383:3383 UELAT.Util.Reals_ext <> x:31 var
+R3387:3387 UELAT.Util.Reals_ext <> y:32 var
+R3398:3400 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'/'_x not
+R3392:3395 Stdlib.Reals.R_sqrt <> sqrt def
+R3397:3397 UELAT.Util.Reals_ext <> x:31 var
+R3401:3404 Stdlib.Reals.R_sqrt <> sqrt def
+R3406:3406 UELAT.Util.Reals_ext <> y:32 var
+R3445:3448 Stdlib.Reals.Rdefinitions <> Rdiv def
+R3461:3473 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
+R3461:3473 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
+R3461:3473 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
+R3461:3473 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
+R3461:3473 UELAT.Util.Reals_ext UELAT_Reals_ext sqrt_mult_alt thm
+R3488:3495 Stdlib.Reals.R_sqrt <> sqrt_inv thm
+R3488:3495 Stdlib.Reals.R_sqrt <> sqrt_inv thm
+R3488:3495 Stdlib.Reals.R_sqrt <> sqrt_inv thm
+R3535:3540 Stdlib.Reals.RIneq <> Rlt_le thm
+R3535:3540 Stdlib.Reals.RIneq <> Rlt_le thm
+R3549:3564 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+R3549:3564 Stdlib.Reals.RIneq <> Rinv_0_lt_compat thm
+prf 3614:3621 UELAT_Reals_ext Rmin_pos
+binder 3632:3632 <> x:33
+binder 3634:3634 <> y:34
+R3642:3645 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3638:3640 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3641:3641 UELAT.Util.Reals_ext <> x:33 var
+R3651:3654 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3647:3649 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3650:3650 UELAT.Util.Reals_ext <> y:34 var
+R3656:3658 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3659:3662 Stdlib.Reals.Rbasic_fun <> Rmin def
+R3664:3664 UELAT.Util.Reals_ext <> x:33 var
+R3666:3666 UELAT.Util.Reals_ext <> y:34 var
+R3704:3714 Stdlib.Reals.Rbasic_fun <> Rmin_glb_lt thm
+R3704:3714 Stdlib.Reals.Rbasic_fun <> Rmin_glb_lt thm
+prf 3741:3751 UELAT_Reals_ext Rmax_nonneg
+binder 3762:3762 <> x:35
+binder 3764:3764 <> y:36
+R3773:3776 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3768:3771 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3772:3772 UELAT.Util.Reals_ext <> x:35 var
+R3778:3781 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3782:3785 Stdlib.Reals.Rbasic_fun <> Rmax def
+R3787:3787 UELAT.Util.Reals_ext <> x:35 var
+R3789:3789 UELAT.Util.Reals_ext <> y:36 var
+R3824:3832 Stdlib.Reals.RIneq <> Rle_trans thm
+R3860:3865 Stdlib.Reals.Rbasic_fun <> Rmax_l thm
+R3824:3832 Stdlib.Reals.RIneq <> Rle_trans thm
+R3860:3865 Stdlib.Reals.Rbasic_fun <> Rmax_l thm
+prf 3881:3886 UELAT_Reals_ext Rmax_r
+binder 3897:3897 <> x:37
+binder 3899:3899 <> y:38
+R3903:3906 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R3902:3902 UELAT.Util.Reals_ext <> y:38 var
+R3907:3910 Stdlib.Reals.Rbasic_fun <> Rmax def
+R3912:3912 UELAT.Util.Reals_ext <> x:37 var
+R3914:3914 UELAT.Util.Reals_ext <> y:38 var
+R3947:3950 Stdlib.Reals.Rbasic_fun <> Rmax def
+R3965:3971 Stdlib.Reals.RIneq <> Rle_dec thm
+R3965:3971 Stdlib.Reals.RIneq <> Rle_dec thm
+prf 3996:4009 UELAT_Reals_ext Rmax_le_compat
+binder 4020:4021 <> x1:39
+binder 4023:4024 <> x2:40
+binder 4026:4027 <> y1:41
+binder 4029:4030 <> y2:42
+R4043:4046 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4037:4040 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R4035:4036 UELAT.Util.Reals_ext <> x1:39 var
+R4041:4042 UELAT.Util.Reals_ext <> y1:41 var
+R4055:4058 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4049:4052 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R4047:4048 UELAT.Util.Reals_ext <> x2:40 var
+R4053:4054 UELAT.Util.Reals_ext <> y2:42 var
+R4069:4072 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R4059:4062 Stdlib.Reals.Rbasic_fun <> Rmax def
+R4064:4065 UELAT.Util.Reals_ext <> x1:39 var
+R4067:4068 UELAT.Util.Reals_ext <> x2:40 var
+R4073:4076 Stdlib.Reals.Rbasic_fun <> Rmax def
+R4078:4079 UELAT.Util.Reals_ext <> y1:41 var
+R4081:4082 UELAT.Util.Reals_ext <> y2:42 var
+R4128:4135 Stdlib.Reals.Rbasic_fun <> Rmax_lub thm
+R4128:4135 Stdlib.Reals.Rbasic_fun <> Rmax_lub thm
+R4148:4156 Stdlib.Reals.RIneq <> Rle_trans thm
+R4185:4190 Stdlib.Reals.Rbasic_fun <> Rmax_l thm
+R4148:4156 Stdlib.Reals.RIneq <> Rle_trans thm
+R4185:4190 Stdlib.Reals.Rbasic_fun <> Rmax_l thm
+R4204:4212 Stdlib.Reals.RIneq <> Rle_trans thm
+R4241:4246 UELAT.Util.Reals_ext UELAT_Reals_ext Rmax_r thm
+R4204:4212 Stdlib.Reals.RIneq <> Rle_trans thm
+R4241:4246 UELAT.Util.Reals_ext UELAT_Reals_ext Rmax_r thm
+prf 4262:4277 UELAT_Reals_ext Rle_min_compat_l
+binder 4288:4288 <> x:43
+binder 4290:4290 <> y:44
+binder 4292:4292 <> z:45
+R4303:4306 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4298:4301 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R4297:4297 UELAT.Util.Reals_ext <> x:43 var
+R4302:4302 UELAT.Util.Reals_ext <> y:44 var
+R4315:4318 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R4307:4310 Stdlib.Reals.Rbasic_fun <> Rmin def
+R4312:4312 UELAT.Util.Reals_ext <> x:43 var
+R4314:4314 UELAT.Util.Reals_ext <> z:45 var
+R4319:4319 UELAT.Util.Reals_ext <> y:44 var
+R4357:4365 Stdlib.Reals.RIneq <> Rle_trans thm
+R4382:4387 Stdlib.Reals.Rbasic_fun <> Rmin_l thm
+R4357:4365 Stdlib.Reals.RIneq <> Rle_trans thm
+R4382:4387 Stdlib.Reals.Rbasic_fun <> Rmin_l thm
+prf 4442:4464 UELAT_Reals_ext fold_right_Rplus_nonneg
+R4480:4483 Corelib.Init.Datatypes <> list ind
+R4485:4485 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 4476:4476 <> l:46
+R4517:4522 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4491:4496 Corelib.Lists.ListDef <> Forall ind
+R4516:4516 UELAT.Util.Reals_ext <> l:46 var
+binder 4503:4503 <> x:47
+R4509:4512 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R4508:4508 UELAT.Util.Reals_ext <> x:47 var
+R4543:4546 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R4523:4532 Stdlib.Lists.List <> fold_right def
+R4542:4542 UELAT.Util.Reals_ext <> l:46 var
+R4534:4538 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl Rplus defax
+prf 4740:4753 UELAT_Reals_ext archimed_upper
+binder 4764:4764 <> r:48
+R4775:4778 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4770:4773 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<='_x not
+R4774:4774 UELAT.Util.Reals_ext <> r:48 var
+R4800:4803 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>='_x not
+R4779:4781 Stdlib.Reals.Raxioms <> INR def
+R4784:4791 Stdlib.ZArith.BinInt Z to_nat def
+R4794:4795 Stdlib.Reals.Rdefinitions <> up def
+R4797:4797 UELAT.Util.Reals_ext <> r:48 var
+R4804:4804 UELAT.Util.Reals_ext <> r:48 var
+R4841:4848 Stdlib.Reals.Raxioms <> archimed thm
+R4841:4848 Stdlib.Reals.Raxioms <> archimed thm
+R4884:4887 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<='_x not
+R4888:4889 Stdlib.Reals.Rdefinitions <> up def
+R4884:4887 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<='_x not
+R4888:4889 Stdlib.Reals.Rdefinitions <> up def
+R4908:4913 Stdlib.Reals.RIneq <> le_IZR thm
+R4908:4913 Stdlib.Reals.RIneq <> le_IZR thm
+R4933:4941 Stdlib.Reals.RIneq <> Rle_trans thm
+R4969:4974 Stdlib.Reals.RIneq <> Rlt_le thm
+R4933:4941 Stdlib.Reals.RIneq <> Rle_trans thm
+R4969:4974 Stdlib.Reals.RIneq <> Rlt_le thm
+R5001:5011 Stdlib.Reals.RIneq <> INR_IZR_INZ thm
+R5001:5011 Stdlib.Reals.RIneq <> INR_IZR_INZ thm
+R5001:5011 Stdlib.Reals.RIneq <> INR_IZR_INZ thm
+R5024:5031 Stdlib.ZArith.Znat Z2Nat id thm
+R5024:5031 Stdlib.ZArith.Znat Z2Nat id thm
+R5024:5031 Stdlib.ZArith.Znat Z2Nat id thm
+R5024:5031 Stdlib.ZArith.Znat Z2Nat id thm
+prf 5105:5112 UELAT_Reals_ext exp_pos'
+binder 5123:5123 <> x:49
+R5131:5133 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R5126:5128 Stdlib.Reals.Rtrigo_def <> exp def
+R5130:5130 UELAT.Util.Reals_ext <> x:49 var
+R5152:5158 Stdlib.Reals.Exp_prop <> exp_pos thm
+R5152:5158 Stdlib.Reals.Exp_prop <> exp_pos thm
+prf 5173:5186 UELAT_Reals_ext ln_increasing'
+binder 5197:5197 <> x:50
+binder 5199:5199 <> y:51
+R5207:5210 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5203:5205 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5206:5206 UELAT.Util.Reals_ext <> x:50 var
+R5216:5219 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5212:5214 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5211:5211 UELAT.Util.Reals_ext <> x:50 var
+R5215:5215 UELAT.Util.Reals_ext <> y:51 var
+R5224:5226 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5220:5221 Stdlib.Reals.Rpower <> ln def
+R5223:5223 UELAT.Util.Reals_ext <> x:50 var
+R5227:5228 Stdlib.Reals.Rpower <> ln def
+R5230:5230 UELAT.Util.Reals_ext <> y:51 var
+R5269:5281 Stdlib.Reals.Rpower <> ln_increasing thm
+R5269:5281 Stdlib.Reals.Rpower <> ln_increasing thm
+prf 5320:5326 UELAT_Reals_ext ln_lt_0
+binder 5337:5337 <> x:52
+R5349:5352 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5341:5343 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<'_x not
+R5345:5347 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x_'<'_x not
+R5344:5344 UELAT.Util.Reals_ext <> x:52 var
+R5344:5344 UELAT.Util.Reals_ext <> x:52 var
+R5357:5359 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R5353:5354 Stdlib.Reals.Rpower <> ln def
+R5356:5356 UELAT.Util.Reals_ext <> x:52 var
+R5405:5408 Stdlib.Reals.Rpower <> ln_1 thm
+R5405:5408 Stdlib.Reals.Rpower <> ln_1 thm
+R5405:5408 Stdlib.Reals.Rpower <> ln_1 thm
+R5419:5431 Stdlib.Reals.Rpower <> ln_increasing thm
+R5419:5431 Stdlib.Reals.Rpower <> ln_increasing thm
+R5449:5463 UELAT.Util.Reals_ext UELAT_Reals_ext <> mod

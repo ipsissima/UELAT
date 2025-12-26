@@ -1,4 +1,4 @@
-From Coq Require Import Reals Binomial Psatz.
+From Stdlib Require Import Reals Binomial Psatz.
 From UELAT.Approx Require Import Certificate.
 Local Open Scope R_scope.
 

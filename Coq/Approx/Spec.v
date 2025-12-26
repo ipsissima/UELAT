@@ -1,4 +1,4 @@
-From Coq Require Import Reals.
+From Stdlib Require Import Reals.
 From UELAT.Util   Require Import Modulus.
 From UELAT.Approx Require Import Certificate Bernstein.
 Local Open Scope R_scope.

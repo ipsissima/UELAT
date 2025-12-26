@@ -7,7 +7,7 @@
     Reference: UELAT Paper, Section 3.2
 *)
 
-From Coq Require Import Reals QArith List Arith Lia.
+From Stdlib Require Import Reals QArith List Arith Lia.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -129,10 +129,10 @@ Program Definition extend_theory (T : ProbeTheory) (p : nat) (a : Q) : ProbeTheo
   answers := answers T ++ [a]
 |}.
 Next Obligation.
-  rewrite app_length. simpl. rewrite rank_probes. lia.
+  rewrite length_app. simpl. rewrite rank_probes. lia.
 Qed.
 Next Obligation.
-  rewrite app_length. simpl. rewrite rank_answers. lia.
+  rewrite length_app. simpl. rewrite rank_answers. lia.
 Qed.
 
 (** * Inclusion morphism for extension *)
@@ -159,10 +159,10 @@ Program Definition union_theory (T1 T2 : ProbeTheory) : ProbeTheory := {|
   answers := answers T1 ++ answers T2
 |}.
 Next Obligation.
-  rewrite app_length. rewrite rank_probes. rewrite rank_probes. lia.
+  rewrite length_app. rewrite rank_probes. rewrite rank_probes. lia.
 Qed.
 Next Obligation.
-  rewrite app_length. rewrite rank_answers. rewrite rank_answers. lia.
+  rewrite length_app. rewrite rank_answers. rewrite rank_answers. lia.
 Qed.
 
 (** * Left injection into union *)
@@ -182,7 +182,7 @@ Defined.
 
 Definition union_inr (T1 T2 : ProbeTheory) : ProbeMorphism T2 (union_theory T1 T2).
 Proof.
-  refine {| injection := fun i => rank T1 + i |}.
+  refine {| injection := fun i => (rank T1 + i)%nat |}.
   - intros i j Hij; lia.
   - intros i Hi; simpl; lia.
   - intros i Hi.

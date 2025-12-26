@@ -20,10 +20,10 @@
     or similar).
 *)
 
-From Coq Require Import Reals Lra Lia.
-From Coq Require Import Rtrigo Rtrigo1 Rpower Ranalysis1.
-From Coq Require Import Arith List Factorial.
-From Coq Require Import Wf_nat.
+From Stdlib Require Import Reals Lra Lia.
+From Stdlib Require Import Rtrigo Rtrigo1 Rpower Ranalysis1.
+From Stdlib Require Import Arith List Factorial.
+From Stdlib Require Import Wf_nat.
 From UELAT.Foundations Require Import Certificate.
 Import ListNotations.
 Local Open Scope R_scope.

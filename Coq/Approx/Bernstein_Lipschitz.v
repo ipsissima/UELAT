@@ -1,7 +1,7 @@
 From mathcomp Require Import all_ssreflect all_algebra bigop.
 From mathcomp.analysis Require Import reals normedtype.
 Require Import Coq.Reals.Reals Coq.micromega.Lra Coq.Arith.Binomial.
-From Coq Require Import Lia.
+From Stdlib Require Import Lia.
 From UELAT.Approx Require Import Certificate.
 
 Set Implicit Arguments.

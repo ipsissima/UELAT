@@ -19,10 +19,10 @@
     Reference: UELAT Paper, Section 2 (Chebyshev Approximation)
 *)
 
-From Coq Require Import Reals Lra Lia.
-From Coq Require Import List.
-From Coq Require Import ClassicalChoice.  (* For existence proofs *)
-From Coq Require Import Wf_nat.
+From Stdlib Require Import Reals Lra Lia.
+From Stdlib Require Import List.
+From Stdlib Require Import ClassicalChoice.  (* For existence proofs *)
+From Stdlib Require Import Wf_nat.
 Import ListNotations.
 Local Open Scope R_scope.
 

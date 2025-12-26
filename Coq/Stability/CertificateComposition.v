@@ -6,7 +6,7 @@
     Reference: UELAT Paper, Section 5 (Lemma 5.2)
 *)
 
-From Coq Require Import Reals Lra Lia.
+From Stdlib Require Import Reals Lra Lia.
 From UELAT.Foundations Require Import Certificate.
 Import ListNotations.
 Local Open Scope R_scope.

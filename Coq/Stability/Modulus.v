@@ -8,7 +8,7 @@
     Note: This extends the original Util/Modulus.v with additional lemmas.
 *)
 
-From Coq Require Import Reals Psatz.
+From Stdlib Require Import Reals Psatz.
 Set Implicit Arguments.
 Local Open Scope R_scope.
 

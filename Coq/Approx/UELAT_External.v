@@ -7,7 +7,7 @@
     Reference: UELAT Paper, Section 6
 *)
 
-From Coq Require Import Reals QArith List Arith Lia Lra.
+From Stdlib Require Import Reals QArith List Arith Lia Lra.
 From UELAT.Foundations Require Import Certificate ProbeTheory CCP.
 From UELAT.Approx Require Import Certificate Bernstein Spec UELAT_Internal.
 Import ListNotations.

@@ -11,8 +11,8 @@
 *)
 
 From mathcomp Require Import all_ssreflect all_algebra.
-From Coq Require Import Reals Lra Lia.
-From Coq Require Import List.
+From Stdlib Require Import Reals Lra Lia.
+From Stdlib Require Import List.
 Import ListNotations.
 Local Open Scope R_scope.
 

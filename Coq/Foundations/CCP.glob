@@ -1,0 +1,376 @@
+DIGEST 0e66c9cd32376ffdd7a9dd2e79cacf90
+FUELAT.Foundations.CCP
+R370:374 Stdlib.Reals.Reals <> <> lib
+R376:381 Stdlib.QArith.QArith <> <> lib
+R383:386 Stdlib.Lists.List <> <> lib
+R388:392 Stdlib.Arith.Arith <> <> lib
+R394:396 Stdlib.micromega.Lia <> <> lib
+R406:418 Stdlib.Lists.List ListNotations <> mod
+mod 455:463 <> UELAT_CCP
+def 630:639 UELAT_CCP Contextual
+binder 642:642 <> A:1
+R658:661 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R657:657 UELAT.Foundations.CCP <> A:1 var
+binder 653:653 <> P:2
+R680:681 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R689:691 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R693:695 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R705:706 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R692:692 UELAT.Foundations.CCP <> A:1 var
+binder 682:688 <> witness:3
+R696:696 UELAT.Foundations.CCP <> P:2 var
+R698:704 UELAT.Foundations.CCP <> witness:3 var
+def 842:855 UELAT_CCP bounded_search
+R865:868 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R862:864 Corelib.Init.Datatypes <> nat ind
+R869:872 Corelib.Init.Datatypes <> bool ind
+binder 858:858 <> P:4
+R884:886 Corelib.Init.Datatypes <> nat ind
+binder 876:880 <> bound:5
+R891:896 Corelib.Init.Datatypes <> option ind
+R898:900 Corelib.Init.Datatypes <> nat ind
+binder 919:919 <> n:6
+R934:934 UELAT.Foundations.CCP <> n:6 var
+R947:947 Corelib.Init.Datatypes <> O constr
+R955:955 UELAT.Foundations.CCP <> P:4 var
+R957:957 Corelib.Init.Datatypes <> O constr
+R976:979 Corelib.Init.Datatypes <> None constr
+R964:967 Corelib.Init.Datatypes <> Some constr
+R969:969 Corelib.Init.Datatypes <> O constr
+R987:987 Corelib.Init.Datatypes <> S constr
+R998:998 UELAT.Foundations.CCP <> P:4 var
+R1001:1001 Corelib.Init.Datatypes <> S constr
+R1029:1034 UELAT.Foundations.CCP <> search:7 var
+R1012:1015 Corelib.Init.Datatypes <> Some constr
+R1018:1018 Corelib.Init.Datatypes <> S constr
+R1048:1052 UELAT.Foundations.CCP <> bound:5 var
+prf 1062:1080 UELAT_CCP bounded_search_spec
+binder 1091:1091 <> P:9
+binder 1093:1097 <> bound:10
+binder 1099:1099 <> n:11
+R1135:1140 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1126:1128 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1104:1117 UELAT.Foundations.CCP UELAT_CCP bounded_search def
+R1119:1119 UELAT.Foundations.CCP <> P:9 var
+R1121:1125 UELAT.Foundations.CCP <> bound:10 var
+R1129:1132 Corelib.Init.Datatypes <> Some constr
+R1134:1134 UELAT.Foundations.CCP <> n:11 var
+R1151:1154 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R1144:1146 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1141:1141 UELAT.Foundations.CCP <> P:9 var
+R1143:1143 UELAT.Foundations.CCP <> n:11 var
+R1147:1150 Corelib.Init.Datatypes <> true constr
+R1157:1160 Corelib.Init.Peano <> ::nat_scope:x_'<='_x not
+R1156:1156 UELAT.Foundations.CCP <> n:11 var
+R1161:1165 UELAT.Foundations.CCP <> bound:10 var
+R1354:1354 Corelib.Init.Datatypes <> S constr
+R1354:1354 Corelib.Init.Datatypes <> S constr
+rec 1665:1677 UELAT_CCP ModulusChoice
+proj 1697:1703 UELAT_CCP modulus
+proj 1719:1729 UELAT_CCP modulus_pos
+proj 1779:1788 UELAT_CCP witness_at
+binder 1680:1680 <> A:12
+R1708:1711 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1707:1707 Stdlib.QArith.QArith_base <> Q rec
+R1712:1714 Corelib.Init.Datatypes <> nat ind
+binder 1740:1740 <> q:15
+R1752:1755 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1745:1747 Stdlib.QArith.QArith_base <> ::Q_scope:x_'<'_x not
+R1748:1748 UELAT.Foundations.CCP <> q:15 var
+R1766:1768 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
+R1757:1763 UELAT.Foundations.CCP <> modulus:14 meth
+R1765:1765 UELAT.Foundations.CCP <> q:15 var
+binder 1799:1799 <> q:17
+R1811:1814 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R1804:1806 Stdlib.QArith.QArith_base <> ::Q_scope:x_'<'_x not
+R1807:1807 UELAT.Foundations.CCP <> q:17 var
+R1815:1815 UELAT.Foundations.CCP <> A:12 var
+def 2146:2157 UELAT_CCP CCP_instance
+binder 2160:2160 <> A:19
+R2176:2179 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2175:2175 Stdlib.QArith.QArith_base <> Q rec
+R2181:2184 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2180:2180 UELAT.Foundations.CCP <> A:19 var
+binder 2171:2171 <> P:20
+R2205:2208 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2204:2204 Stdlib.QArith.QArith_base <> Q rec
+R2209:2211 Corelib.Init.Datatypes <> nat ind
+binder 2194:2200 <> modulus:21
+binder 2236:2236 <> q:22
+R2248:2251 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2241:2243 Stdlib.QArith.QArith_base <> ::Q_scope:x_'<'_x not
+R2244:2244 UELAT.Foundations.CCP <> q:22 var
+R2252:2252 UELAT.Foundations.CCP <> A:19 var
+binder 2217:2225 <> construct:23
+binder 2282:2282 <> q:24
+R2292:2294 Stdlib.QArith.QArith_base <> ::Q_scope:x_'<'_x not
+R2295:2295 UELAT.Foundations.CCP <> q:24 var
+binder 2285:2286 <> Hq:25
+R2302:2302 UELAT.Foundations.CCP <> P:20 var
+R2307:2315 UELAT.Foundations.CCP <> construct:23 var
+R2319:2320 UELAT.Foundations.CCP <> Hq:25 var
+R2317:2317 UELAT.Foundations.CCP <> q:24 var
+R2304:2304 UELAT.Foundations.CCP <> q:24 var
+binder 2258:2271 <> construct_spec:26
+binder 2335:2335 <> q:27
+R2347:2350 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2340:2342 Stdlib.QArith.QArith_base <> ::Q_scope:x_'<'_x not
+R2343:2343 UELAT.Foundations.CCP <> q:27 var
+R2351:2352 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2354:2356 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2358:2360 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2366:2367 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2357:2357 UELAT.Foundations.CCP <> A:19 var
+binder 2353:2353 <> a:28
+R2361:2361 UELAT.Foundations.CCP <> P:20 var
+R2365:2365 UELAT.Foundations.CCP <> a:28 var
+R2363:2363 UELAT.Foundations.CCP <> q:27 var
+def 2603:2617 UELAT_CCP EffectiveExists
+binder 2620:2620 <> A:29
+R2636:2639 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2635:2635 UELAT.Foundations.CCP <> A:29 var
+binder 2631:2631 <> P:30
+R2649:2650 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2652:2654 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2656:2658 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2662:2663 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R2655:2655 UELAT.Foundations.CCP <> A:29 var
+binder 2651:2651 <> x:31
+R2659:2659 UELAT.Foundations.CCP <> P:30 var
+R2661:2661 UELAT.Foundations.CCP <> x:31 var
+sec 2855:2871 UELAT_CCP CCP_Approximation
+var 2884:2884 UELAT_CCP.CCP_Approximation f
+R2889:2892 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2888:2888 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R2893:2893 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+var 2905:2907 UELAT_CCP.CCP_Approximation dom
+R2912:2915 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2911:2911 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+var 2956:2962 UELAT_CCP.CCP_Approximation modulus
+R2967:2970 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2966:2966 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R2971:2971 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+var 3015:3025 UELAT_CCP.CCP_Approximation modulus_pos
+binder 3036:3038 <> eps:38
+R3048:3051 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3044:3046 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3041:3043 UELAT.Foundations.CCP <> eps:38 var
+R3063:3065 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3052:3058 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.modulus var
+R3060:3062 UELAT.Foundations.CCP <> eps:38 var
+var 3080:3091 UELAT_CCP.CCP_Approximation modulus_spec
+binder 3102:3104 <> eps:41
+binder 3106:3106 <> x:42
+binder 3108:3108 <> y:43
+R3120:3123 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3116:3118 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3113:3115 UELAT.Foundations.CCP <> eps:41 var
+R3129:3132 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3124:3126 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.dom var
+R3128:3128 UELAT.Foundations.CCP <> x:42 var
+R3138:3143 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3133:3135 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.dom var
+R3137:3137 UELAT.Foundations.CCP <> y:43 var
+R3170:3175 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3156:3158 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3144:3147 Stdlib.Reals.Rbasic_fun <> Rabs def
+R3151:3153 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3150:3150 UELAT.Foundations.CCP <> x:42 var
+R3154:3154 UELAT.Foundations.CCP <> y:43 var
+R3159:3165 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.modulus var
+R3167:3169 UELAT.Foundations.CCP <> eps:41 var
+R3192:3194 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3176:3179 Stdlib.Reals.Rbasic_fun <> Rabs def
+R3185:3187 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3182:3182 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.f var
+R3184:3184 UELAT.Foundations.CCP <> x:42 var
+R3188:3188 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.f var
+R3190:3190 UELAT.Foundations.CCP <> y:43 var
+R3195:3197 UELAT.Foundations.CCP <> eps:41 var
+def 3267:3276 UELAT_CCP ApproxCert
+R3285:3285 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 3279:3281 <> eps:46
+R3293:3294 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R3296:3298 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R3305:3307 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R3349:3350 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R3300:3303 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3299:3299 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+R3304:3304 Stdlib.Reals.Rdefinitions RbaseSymbolsImpl R defax
+binder 3295:3295 <> g:47
+binder 3315:3315 <> x:48
+R3323:3326 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3318:3320 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.dom var
+R3322:3322 UELAT.Foundations.CCP <> x:48 var
+R3343:3345 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'<'_x not
+R3327:3330 Stdlib.Reals.Rbasic_fun <> Rabs def
+R3336:3338 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'-'_x not
+R3333:3333 UELAT.Foundations.CCP <> UELAT_CCP.CCP_Approximation.f var
+R3335:3335 UELAT.Foundations.CCP <> x:48 var
+R3339:3339 UELAT.Foundations.CCP <> g:47 var
+R3341:3341 UELAT.Foundations.CCP <> x:48 var
+R3346:3348 UELAT.Foundations.CCP <> eps:46 var
+def 3429:3438 UELAT_CCP CCP_Approx
+binder 3450:3452 <> eps:49
+R3462:3465 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3458:3460 Stdlib.Reals.Rdefinitions <> ::R_scope:x_'>'_x not
+R3455:3457 UELAT.Foundations.CCP <> eps:49 var
+R3466:3475 UELAT.Foundations.CCP UELAT_CCP ApproxCert def
+R3477:3479 UELAT.Foundations.CCP <> eps:49 var
+R3627:3643 UELAT.Foundations.CCP UELAT_CCP.CCP_Approximation <> sec
+def 3739:3753 UELAT_CCP CountableChoice
+R3773:3776 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3770:3772 Corelib.Init.Datatypes <> nat ind
+binder 3766:3766 <> P:50
+R3786:3786 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3800:3804 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+binder 3794:3794 <> n:51
+R3797:3797 UELAT.Foundations.CCP <> P:50 var
+R3799:3799 UELAT.Foundations.CCP <> n:51 var
+R3805:3806 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R3808:3810 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R3824:3826 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R3831:3832 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+binder 3818:3818 <> n:52
+R3821:3821 UELAT.Foundations.CCP <> P:50 var
+R3823:3823 UELAT.Foundations.CCP <> n:52 var
+binder 3807:3807 <> f:53
+R3827:3830 Corelib.Init.Logic <> True ind
+prf 3899:3923 UELAT_CCP countable_choice_provable
+R3927:3941 UELAT.Foundations.CCP UELAT_CCP CountableChoice def
+R3960:3974 UELAT.Foundations.CCP UELAT_CCP CountableChoice def
+def 4161:4175 UELAT_CCP DependentChoice
+binder 4178:4178 <> A:54
+R4194:4197 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4193:4193 UELAT.Foundations.CCP <> A:54 var
+R4199:4202 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4198:4198 UELAT.Foundations.CCP <> A:54 var
+binder 4189:4189 <> R:55
+R4227:4227 UELAT.Foundations.CCP <> A:54 var
+binder 4222:4223 <> a0:56
+R4233:4233 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4263:4269 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+binder 4241:4241 <> a:57
+R4244:4245 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4248:4250 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4252:4254 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4261:4262 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4251:4251 UELAT.Foundations.CCP <> A:54 var
+binder 4246:4247 <> a':58
+R4255:4255 UELAT.Foundations.CCP <> R:55 var
+R4259:4260 UELAT.Foundations.CCP <> a':58 var
+R4257:4257 UELAT.Foundations.CCP <> a:57 var
+R4270:4271 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4273:4275 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4284:4286 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4330:4331 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4279:4282 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4276:4278 Corelib.Init.Datatypes <> nat ind
+R4283:4283 UELAT.Foundations.CCP <> A:54 var
+binder 4272:4272 <> f:59
+R4299:4302 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4294:4296 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4287:4287 UELAT.Foundations.CCP <> f:59 var
+R4297:4298 UELAT.Foundations.CCP <> a0:56 var
+binder 4310:4310 <> n:60
+R4313:4313 UELAT.Foundations.CCP <> R:55 var
+R4322:4322 UELAT.Foundations.CCP <> f:59 var
+R4325:4325 Corelib.Init.Datatypes <> S constr
+R4327:4327 UELAT.Foundations.CCP <> n:60 var
+R4316:4316 UELAT.Foundations.CCP <> f:59 var
+R4318:4318 UELAT.Foundations.CCP <> n:60 var
+prf 4398:4422 UELAT_CCP dependent_choice_provable
+binder 4434:4434 <> A:61
+R4450:4453 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4449:4449 UELAT.Foundations.CCP <> A:61 var
+R4455:4458 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4454:4454 UELAT.Foundations.CCP <> A:61 var
+binder 4445:4445 <> R:62
+R4468:4482 UELAT.Foundations.CCP UELAT_CCP DependentChoice def
+R4484:4484 UELAT.Foundations.CCP <> R:62 var
+R4530:4531 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4533:4535 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4544:4546 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4590:4591 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4539:4542 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4536:4538 Corelib.Init.Datatypes <> nat ind
+binder 4532:4532 <> f:63
+R4559:4562 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4554:4556 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4547:4547 UELAT.Foundations.CCP <> f:63 var
+binder 4570:4570 <> n:64
+R4576:4576 UELAT.Foundations.CCP <> f:63 var
+R4578:4578 UELAT.Foundations.CCP <> n:64 var
+R4582:4582 UELAT.Foundations.CCP <> f:63 var
+R4585:4585 Corelib.Init.Datatypes <> S constr
+R4587:4587 UELAT.Foundations.CCP <> n:64 var
+R4530:4531 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4533:4535 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4544:4546 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4590:4591 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R4539:4542 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4536:4538 Corelib.Init.Datatypes <> nat ind
+binder 4532:4532 <> f:65
+R4559:4562 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4554:4556 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4547:4547 UELAT.Foundations.CCP <> f:65 var
+binder 4570:4570 <> n:66
+R4576:4576 UELAT.Foundations.CCP <> f:65 var
+R4578:4578 UELAT.Foundations.CCP <> n:66 var
+R4582:4582 UELAT.Foundations.CCP <> f:65 var
+R4585:4585 Corelib.Init.Datatypes <> S constr
+R4587:4587 UELAT.Foundations.CCP <> n:66 var
+binder 4617:4617 <> n:67
+R4628:4628 UELAT.Foundations.CCP <> n:67 var
+R4660:4660 Corelib.Init.Datatypes <> O constr
+R4693:4693 Corelib.Init.Datatypes <> S constr
+R4701:4709 Corelib.Init.Specif <> proj1_sig def
+R4718:4718 UELAT.Foundations.CCP <> f:68 var
+binder 4617:4617 <> n:70
+R4628:4628 UELAT.Foundations.CCP <> n:70 var
+R4660:4660 Corelib.Init.Datatypes <> O constr
+R4693:4693 Corelib.Init.Datatypes <> S constr
+R4701:4709 Corelib.Init.Specif <> proj1_sig def
+R4718:4718 UELAT.Foundations.CCP <> f:71 var
+def 5062:5071 UELAT_CCP MarkovWeak
+R5091:5094 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5088:5090 Corelib.Init.Datatypes <> nat ind
+R5095:5098 Corelib.Init.Datatypes <> bool ind
+binder 5084:5084 <> P:73
+R5110:5112 Corelib.Init.Datatypes <> nat ind
+binder 5102:5106 <> bound:74
+R5118:5118 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5159:5165 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5119:5125 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R5127:5128 Corelib.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 5126:5126 <> n:75
+R5145:5148 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R5131:5134 Corelib.Init.Peano <> ::nat_scope:x_'<='_x not
+R5130:5130 UELAT.Foundations.CCP <> n:75 var
+R5135:5139 UELAT.Foundations.CCP <> bound:74 var
+R5152:5154 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5149:5149 UELAT.Foundations.CCP <> P:73 var
+R5151:5151 UELAT.Foundations.CCP <> n:75 var
+R5155:5158 Corelib.Init.Datatypes <> true constr
+R5166:5167 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R5169:5171 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R5175:5177 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R5208:5209 Corelib.Init.Specif <> ::type_scope:'{'_x_':'_x_'|'_x_'}' not
+R5172:5174 Corelib.Init.Datatypes <> nat ind
+binder 5168:5168 <> n:76
+R5194:5197 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R5180:5183 Corelib.Init.Peano <> ::nat_scope:x_'<='_x not
+R5179:5179 UELAT.Foundations.CCP <> n:76 var
+R5184:5188 UELAT.Foundations.CCP <> bound:74 var
+R5201:5203 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5198:5198 UELAT.Foundations.CCP <> P:73 var
+R5200:5200 UELAT.Foundations.CCP <> n:76 var
+R5204:5207 Corelib.Init.Datatypes <> true constr
+prf 5219:5237 UELAT_CCP markov_weak_bounded
+R5241:5250 UELAT.Foundations.CCP UELAT_CCP MarkovWeak def
+R5269:5278 UELAT.Foundations.CCP UELAT_CCP MarkovWeak def
+R5390:5403 UELAT.Foundations.CCP UELAT_CCP bounded_search def
+R5390:5403 UELAT.Foundations.CCP UELAT_CCP bounded_search def
+R5463:5481 UELAT.Foundations.CCP UELAT_CCP bounded_search_spec thm
+R5463:5481 UELAT.Foundations.CCP UELAT_CCP bounded_search_spec thm
+R5915:5923 UELAT.Foundations.CCP UELAT_CCP <> mod

@@ -1,4 +1,4 @@
-From Coq Require Import Reals Psatz.
+From Stdlib Require Import Reals Psatz.
 Set Implicit Arguments.
 Local Open Scope R_scope.
 
