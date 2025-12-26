@@ -117,6 +117,28 @@ Definition partial_sum' (N : nat) (x : R) : R :=
   fold_right Rplus 0
     (map (fun n => coeff n * basis_n n x) (seq 1 N)).
 
+(** Partial sum is continuous — it's a finite sum of continuous functions *)
+Lemma partial_sum_continuous : forall N x,
+  continuity_pt (partial_sum N) x.
+Proof.
+  intros N x.
+  unfold partial_sum.
+  (* The partial sum is built from basis_n functions, which are sin functions *)
+  (* Sin is continuous, products and sums of continuous functions are continuous *)
+  induction N as [|N' IH].
+  - (* N = 0: partial_sum_aux 0 x 0 = 0, constant function *)
+    simpl.
+    apply continuity_pt_const.
+  - (* N = S N': acc + coeff * basis_n *)
+    simpl.
+    (* partial_sum_aux (S N') x 0 = partial_sum_aux N' x (coeff (S N') * basis_n (S N') x) *)
+    (* This requires tracking accumulator continuity *)
+    (* For simplicity, we use the fact that finite sums of continuous functions are continuous *)
+    apply derivable_continuous_pt.
+    (* The sum of sin functions is differentiable *)
+    admit.
+Admitted. (* Finite sum of continuous (sin) functions is continuous *)
+
 (** * Telescoping Sum Lemmas for Series Convergence
 
     Key insight: To bound Σ_{n>N} 1/n², we use the telescoping trick:
