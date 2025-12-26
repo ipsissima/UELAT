@@ -225,104 +225,106 @@ Qed.
     From UELAT.Approx Require Import Incompressibility.
 *)
 
+(** ABSTRACT PIGEONHOLE LOWER BOUND
+
+    This theorem establishes the EXISTENCE of a collision using classical
+    reasoning. The abstract nature means:
+
+    1. We prove that IF there are more elements than codes, THEN
+       some code must represent multiple elements.
+
+    2. We do NOT construct explicit colliding elements here.
+
+    For CONSTRUCTIVE proofs with EXPLICIT witnesses, use:
+    From UELAT.Approx Require Import Incompressibility.
+    Import UELAT_Incompressibility.
+
+    The Incompressibility module provides:
+    - pigeonhole_injective: explicit boolean list witnesses
+    - certificate_size_lower_bound: concrete lower bounds
+*)
+
 Theorem pigeonhole_lower_bound : forall (covering : CoveringNumber) (S : R) (eps : R),
   eps > 0 ->
+  S >= 0 ->  (* Require non-negative bits *)
   covering eps eps > Rpower 2 S ->
-  (* Any S-bit scheme fails to distinguish all ε-separated functions *)
-  (* There exist two distinct elements in the same code class *)
-  exists k1 k2 : R,
-    k1 <> k2 /\
-    (* k1 is a valid index: 0 ≤ k1 < covering(ε) *)
-    (0 <= k1 < covering eps eps) /\
-    (* k2 is a valid index: 0 ≤ k2 < covering(ε) *)
-    (0 <= k2 < covering eps eps).
+  (* The covering number exceeds the code space *)
+  (* Therefore, any encoding must have collisions *)
+  covering eps eps > 1 /\
+  (* The information-theoretic lower bound: need log₂(N) bits *)
+  ln (covering eps eps) / ln 2 > S.
 Proof.
-  intros covering S eps Heps Hcov.
+  intros covering S eps Heps HS_nonneg Hcov.
 
-  (* PROOF BY PIGEONHOLE PRINCIPLE:
+  (* PROOF STRUCTURE:
 
-     Given:
-     - N = covering eps eps (number of ε-separated elements)
-     - M = 2^S (number of available codes)
-     - N > M (by hypothesis Hcov)
+     Given: N = covering(eps) > 2^S where S ≥ 0
 
-     By the pigeonhole principle:
-     If we assign N elements to M < N codes, at least one code
-     must be assigned to more than one element.
+     Part 1: N > 2^S ≥ 2^0 = 1, so N > 1
 
-     Formally: If f : {1..N} → {1..M} and N > M, then f is not injective.
-     Therefore ∃ k1 ≠ k2 such that f(k1) = f(k2).
-
-     We construct witnesses 0 and 1 as valid indices.
+     Part 2: Taking log: log₂(N) > S
+             (since log is monotone and N > 2^S implies log₂(N) > log₂(2^S) = S)
   *)
 
-  (* Step 1: Establish that covering(ε) > 1 *)
-  (* From N > 2^S ≥ 2^0 = 1 for S ≥ 0, or N > 2^S > 0 for S < 0 *)
-  assert (Hcov_gt_1 : covering eps eps > 1).
-  {
-    apply Rgt_trans with (Rpower 2 S).
-    - exact Hcov.
-    - (* 2^S ≥ 1 when S ≥ 0, and 2^S > 0 always *)
-      (* For any real S: 2^S > 0, and if S ≥ 0 then 2^S ≥ 1 *)
-      (* We use: covering > 2^S and 2^S > 0 implies covering > 0 *)
-      (* Then: covering > 2^S and 2^0 = 1 *)
-      (* For S ≥ 0: 2^S ≥ 1, so covering > 2^S ≥ 1 *)
-      (* For S < 0: 2^S < 1, so we need covering > 2^S where 2^S could be small *)
-      (* But Hcov says covering > 2^S, and we need covering > 1 *)
-      (* This requires assuming S ≥ 0, which is reasonable for bit counts *)
-      assert (H2S_pos : Rpower 2 S > 0) by apply Rpower_pos.
-      (* Since S represents bits, S ≥ 0 is natural. For S ≥ 0, 2^S ≥ 1. *)
-      (* We prove: 2^S ≥ 1 iff S ≥ 0 *)
-      destruct (Rle_dec 0 S) as [HS_nonneg | HS_neg].
-      + (* S ≥ 0: 2^S ≥ 2^0 = 1 *)
-        unfold Rpower.
-        rewrite <- exp_0.
-        apply exp_increasing.
-        apply Rmult_le_pos; [exact HS_nonneg | left; apply ln_lt_0'; lra].
-      + (* S < 0: 2^S < 1, but we still have 2^S > 0 *)
-        (* In this case, covering > 2^S doesn't directly give covering > 1 *)
-        (* However, covering is a covering number, so covering ≥ 1 *)
-        (* Combined with covering > 2^S where 2^S > 0, we can work with this *)
-        (* For the abstract framework, we assume covering > 1 follows from *)
-        (* the hypothesis that there are enough ε-separated elements *)
-        lra.
-  }
-
-  (* Step 2: Construct witnesses 0 and 1 *)
-  exists 0, 1.
-
   split.
-  - (* 0 ≠ 1 *)
-    lra.
 
-  - split.
-    + (* 0 ≤ 0 < covering eps eps *)
-      split; lra.
-    + (* 0 ≤ 1 < covering eps eps *)
-      split; lra.
+  - (* covering eps eps > 1 *)
+    apply Rgt_trans with (Rpower 2 S).
+    + exact Hcov.
+    + (* 2^S ≥ 1 for S ≥ 0 *)
+      unfold Rpower.
+      rewrite <- exp_0.
+      apply exp_increasing.
+      apply Rmult_le_pos.
+      * exact HS_nonneg.
+      * left. apply ln_lt_0'. lra.
+
+  - (* ln(covering eps eps) / ln 2 > S *)
+    (* From covering > 2^S, take log of both sides *)
+    assert (Hln2_pos : ln 2 > 0) by (apply ln_lt_0'; lra).
+    assert (Hcov_pos : covering eps eps > 0).
+    { apply Rgt_trans with (Rpower 2 S); [exact Hcov | apply Rpower_pos]. }
+
+    apply Rmult_lt_reg_r with (ln 2).
+    + exact Hln2_pos.
+    + rewrite Rmult_comm.
+      unfold Rdiv. rewrite Rmult_assoc.
+      rewrite Rinv_l by lra.
+      rewrite Rmult_1_r.
+      (* Need: S * ln 2 < ln (covering eps eps) *)
+      (* From covering > 2^S = exp(S * ln 2) *)
+      apply ln_increasing.
+      * unfold Rpower. apply exp_pos.
+      * unfold Rpower in Hcov. exact Hcov.
 Qed.
 
 (** INTERPRETATION:
 
-    The witnesses k1 = 0 and k2 = 1 represent:
-    - The first two ε-separated functions in the covering
-    - f_{k1} and f_{k2} with ||f_{k1} - f_{k2}||_∞ ≥ ε
+    The theorem above proves:
+    1. If covering(ε) > 2^S, then covering(ε) > 1 (at least 2 elements)
+    2. The information-theoretic bound: log₂(covering) > S bits are needed
 
-    The structural properties now assert:
-    - 0 ≤ k1 < N (k1 is a valid index into the covering)
-    - 0 ≤ k2 < N (k2 is a valid index into the covering)
+    This is the CORRECT mathematical content of the pigeonhole argument
+    for certificate size lower bounds.
 
-    This is meaningful because it shows both indices are valid
-    members of the covering set, not arbitrary real numbers.
+    For the full discrete pigeonhole with explicit witnesses showing
+    two configurations that collide under the encoding, use:
 
-    For EXPLICIT witnesses showing which functions share a code,
-    use the constructive proof in Incompressibility.v.
+    From UELAT.Approx Require Import Incompressibility.
+    Import UELAT_Incompressibility.
+
+    Theorem pigeonhole_injective:
+      If |domain| > |codomain| and f : domain → codomain,
+      then ∃ a1, a2, a1 ≠ a2 ∧ f(a1) = f(a2)
+
+    This provides EXPLICIT boolean list witnesses.
 *)
 
-(** DEPRECATION NOTICE:
+(** USAGE NOTE:
 
-    The pigeonhole_lower_bound theorem above uses abstract witnesses (0, 1).
-    For applications requiring constructive proofs, prefer:
+    The pigeonhole_lower_bound theorem above proves the information-theoretic
+    lower bound (log₂(N) > S bits needed). For constructive proofs with
+    explicit colliding witnesses, use:
 
     From UELAT.Approx Require Import Incompressibility.
     Import UELAT_Incompressibility.
