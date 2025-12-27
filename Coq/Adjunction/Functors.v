@@ -86,9 +86,6 @@ Qed.
     Takes a subspace and returns a probe theory with probes
     corresponding to the basis elements spanning W. *)
 
-(** For G, we need a way to compute "answers" from a subspace.
-    This requires evaluation data. For now, we use a placeholder. *)
-
 (** Helper function: find the index of an element in a list.
     Returns 0 if not found (default case that shouldn't occur
     when preconditions are satisfied). *)
@@ -135,23 +132,30 @@ Axiom find_index_preserves_order : forall (l1 l2 : list nat) (i j : nat),
 Axiom find_index_nth_self : forall (l : list nat) (k : nat),
   (k < length l)%nat -> find_index (nth k l 0) l = k.
 
-Program Definition G_obj (W : FinDimSubspace) : ProbeTheory := {|
+(** G_obj is parameterized by answers. When ans has the correct length,
+    it produces a probe theory with those answers. *)
+Program Definition G_obj (W : FinDimSubspace) (ans : list Q)
+  (Hans : length ans = fds_dim W) : ProbeTheory := {|
   rank := fds_dim W;
   probes := fds_basis_indices W;
-  answers := repeat 0%Q (fds_dim W)
+  answers := ans
 |}.
 Next Obligation.
   (* Length of basis indices equals dimension *)
-  (* This is exactly the fds_dim_spec field of the FinDimSubspace record *)
   apply fds_dim_spec.
 Qed.
 Next Obligation.
   (* Length of answers equals dimension *)
-  apply repeat_length.
+  exact Hans.
 Qed.
 
+(** Default G_obj with zero answers (for backward compatibility) *)
+Definition G_obj_zero (W : FinDimSubspace) : ProbeTheory :=
+  G_obj W (repeat 0%Q (fds_dim W)) (repeat_length 0%Q (fds_dim W)).
+
+(** G_mor for zero-answer probe theories *)
 Definition G_mor {W W' : FinDimSubspace} (f : ModelMorphism W W') :
-  ProbeMorphism (G_obj W) (G_obj W').
+  ProbeMorphism (G_obj_zero W) (G_obj_zero W').
 Proof.
   (* The injection maps index i in G_obj W to the position of the i-th
      basis element of W in the basis of W'. *)
@@ -162,7 +166,8 @@ Proof.
     intros i j Hij.
     apply find_index_preserves_order.
     + exact Hij.
-    + rewrite fds_dim_spec. simpl. exact (inj_preserves_order (probe_id (G_obj W)) i j Hij).
+    + rewrite fds_dim_spec. simpl.
+      exact (inj_preserves_order (probe_id (G_obj_zero W)) i j Hij).
     + intros k Hk. simpl. rewrite <- fds_dim_spec in Hk.
       apply (mm_incl f). apply nth_In. rewrite fds_dim_spec. exact Hk.
   - (* In range *)
@@ -174,8 +179,9 @@ Proof.
     intros i Hi. simpl. simpl in Hi.
     apply find_index_correct.
     apply (mm_incl f). apply nth_In. rewrite fds_dim_spec. exact Hi.
-  - (* Preserves answers - all answers in G_obj are 0 *)
+  - (* Preserves answers - all answers in G_obj_zero are 0 *)
     intros i Hi. simpl. simpl in Hi.
+    unfold G_obj_zero. simpl.
     (* Both sides are nth of a repeat list, so both are 0%Q *)
     rewrite !nth_repeat.
     + reflexivity.
@@ -184,73 +190,154 @@ Proof.
     + exact Hi.
 Defined.
 
+(** G_mor generalized for matching answers.
+    Given f : W → W' and answer lists that are coherent under f,
+    this produces a probe morphism. *)
+Definition G_mor_gen {W W' : FinDimSubspace}
+  (ans : list Q) (ans' : list Q)
+  (Hans : length ans = fds_dim W) (Hans' : length ans' = fds_dim W')
+  (f : ModelMorphism W W')
+  (Hcoh : forall i, (i < fds_dim W)%nat ->
+    nth i ans 0%Q = nth (find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')) ans' 0%Q) :
+  ProbeMorphism (G_obj W ans Hans) (G_obj W' ans' Hans').
+Proof.
+  refine {|
+    injection := fun i => find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')
+  |}.
+  - (* Order preservation *)
+    intros i j Hij.
+    apply find_index_preserves_order.
+    + exact Hij.
+    + rewrite fds_dim_spec. simpl.
+      exact (inj_preserves_order (probe_id (G_obj W ans Hans)) i j Hij).
+    + intros k Hk. simpl. rewrite <- fds_dim_spec in Hk.
+      apply (mm_incl f). apply nth_In. rewrite fds_dim_spec. exact Hk.
+  - (* In range *)
+    intros i Hi. simpl. simpl in Hi.
+    rewrite <- fds_dim_spec.
+    apply find_index_in_range.
+    apply (mm_incl f). apply nth_In. rewrite fds_dim_spec. exact Hi.
+  - (* Preserves probes *)
+    intros i Hi. simpl. simpl in Hi.
+    apply find_index_correct.
+    apply (mm_incl f). apply nth_In. rewrite fds_dim_spec. exact Hi.
+  - (* Preserves answers - uses coherence condition *)
+    intros i Hi. simpl. simpl in Hi.
+    apply Hcoh. exact Hi.
+Defined.
+
 (** * Adjunction Unit η : Id → G ∘ F
 
     For a probe theory T, η_T : T → G(F(T))
 
-    Note: The construction of eta requires answer preservation:
-      nth i (answers T) = nth i (answers (G_obj (F_obj T)))
-    But G_obj uses placeholder zeros for answers, so this only holds
-    when T has all-zero answers. For the general case, we would need
-    to parameterize G_obj by evaluation data.
+    With parameterized G_obj, we can now construct eta directly:
+    we use T's answers to build G_obj(F_obj(T)) with matching answers. *)
 
-    We axiomatize eta's existence to complete the adjunction structure. *)
+(** Length proof for eta: answers T has the right length for G_obj (F_obj T) *)
+Lemma eta_answers_length : forall T, length (answers T) = fds_dim (F_obj T).
+Proof.
+  intro T. rewrite F_obj_dim. apply rank_answers.
+Qed.
 
-Axiom eta : forall (T : ProbeTheory), ProbeMorphism T (G_obj (F_obj T)).
+(** The unit η is now a definition, not an axiom. *)
+Definition eta (T : ProbeTheory) : ProbeMorphism T (G_obj (F_obj T) (answers T) (eta_answers_length T)).
+Proof.
+  refine {| injection := fun i => i |}.
+  - (* Order preservation - identity preserves order *)
+    intros i j Hij. exact Hij.
+  - (* In range: i < rank T implies i < rank (G_obj ...) = fds_dim (F_obj T) = rank T *)
+    intros i Hi. simpl. rewrite F_obj_dim. exact Hi.
+  - (* Preserves probes: nth i (probes T) = nth i (probes (G_obj (F_obj T) ...))
+                        = nth i (fds_basis_indices (F_obj T)) = nth i (probes T) *)
+    intros i Hi. simpl. unfold F_obj. simpl. reflexivity.
+  - (* Preserves answers: nth i (answers T) = nth i (answers (G_obj ... (answers T) ...))
+                         = nth i (answers T) *)
+    intros i Hi. simpl. reflexivity.
+Defined.
 
-(** Properties of eta that hold by construction when answers match *)
-Axiom eta_injection_id : forall T i, (i < rank T)%nat -> injection (eta T) i = i.
+(** Property of eta: injection is identity *)
+Lemma eta_injection_id : forall T i, (i < rank T)%nat -> injection (eta T) i = i.
+Proof.
+  intros T i Hi. reflexivity.
+Qed.
 
 (** * Adjunction Counit ε : F ∘ G → Id
 
-    For a subspace W, ε_W : F(G(W)) → W *)
+    For a subspace W, ε_W : F(G(W)) → W
 
-Definition epsilon (W : FinDimSubspace) : ModelMorphism (F_obj (G_obj W)) W.
+    This is parameterized by any answers list. *)
+
+Definition epsilon (W : FinDimSubspace) (ans : list Q) (Hans : length ans = fds_dim W) :
+  ModelMorphism (F_obj (G_obj W ans Hans)) W.
 Proof.
   refine {| mm_incl := _ |}.
   unfold subspace_incl, F_obj, G_obj. simpl.
   intros i Hi. exact Hi.
 Defined.
 
-(** * Naturality of η *)
+(** Epsilon with zero answers (for backward compatibility with G_mor) *)
+Definition epsilon_zero (W : FinDimSubspace) : ModelMorphism (F_obj (G_obj_zero W)) W.
+Proof.
+  refine {| mm_incl := _ |}.
+  unfold subspace_incl, F_obj, G_obj_zero, G_obj. simpl.
+  intros i Hi. exact Hi.
+Defined.
 
-Lemma eta_natural : forall T T' (f : ProbeMorphism T T'),
+(** * Naturality of η
+
+    Note: η now produces G_obj with T's answers, but G_mor works on G_obj_zero.
+    For full naturality, we need to use G_mor_gen or show a compatibility result.
+    Here we state a simplified version using the identity property of eta. *)
+
+Lemma eta_natural_pointwise : forall T T' (f : ProbeMorphism T T'),
   forall i, (i < rank T)%nat ->
-    injection (probe_compose (eta T) (G_mor (F_mor f))) i =
+    (* The injections compose correctly: f applied then id = id then f *)
+    injection (probe_compose (eta T)
+      (G_mor_gen (answers T) (answers T')
+        (eta_answers_length T) (eta_answers_length T')
+        (F_mor f)
+        (fun j Hj => inj_preserves_answers f j Hj))) i =
     injection (probe_compose f (eta T')) i.
 Proof.
   intros T T' f i Hi.
-  (* Unfold composition: LHS = G_mor (F_mor f) (eta T i), RHS = eta T' (f i) *)
   simpl.
-  (* Use the axiom that eta's injection is the identity *)
+  (* eta's injection is identity *)
   rewrite eta_injection_id; [| exact Hi].
   rewrite eta_injection_id; [| apply inj_in_range; exact Hi].
-  (* Now we need: injection (G_mor (F_mor f)) i = injection f i
-     This follows from how G_mor and F_mor preserve probe indices *)
-  simpl.
-  (* The result follows from find_index_correct and inj_preserves_probes *)
-  unfold G_mor, F_mor. simpl.
-  (* Both sides compute to the injection that preserves probe indices.
-     Since probe indices are preserved, find_index returns the same position. *)
-  symmetry.
-  apply find_index_correct.
-  (* Need to show nth (injection f i) (probes T') 0 is in fds_basis_indices (F_obj T') *)
-  unfold F_obj. simpl.
-  apply nth_In.
+  (* Now show: find_index (nth i (probes T) 0) (probes T') = injection f i *)
+  simpl. unfold F_obj. simpl.
+  (* By inj_preserves_probes: nth i (probes T) 0 = nth (injection f i) (probes T') 0 *)
+  rewrite (inj_preserves_probes f i Hi).
+  apply find_index_nth_self.
   rewrite rank_probes.
   apply inj_in_range. exact Hi.
 Qed.
 
 (** * Naturality of ε *)
 
-Lemma epsilon_natural : forall W W' (f : ModelMorphism W W'),
-  forall i, In i (fds_basis_indices (F_obj (G_obj W))) ->
-    mm_incl (model_compose (F_mor (G_mor f)) (epsilon W')) i =
-    mm_incl (model_compose (epsilon W) f) i.
+Lemma epsilon_natural : forall W W' (f : ModelMorphism W W')
+  (ans : list Q) (ans' : list Q) (Hans : length ans = fds_dim W) (Hans' : length ans' = fds_dim W'),
+  forall i, In i (fds_basis_indices (F_obj (G_obj W ans Hans))) ->
+    mm_incl (model_compose (F_mor (G_mor_gen ans ans' Hans Hans' f
+      (fun j Hj => nth_repeat 0%Q j (fds_dim W') (find_index_in_range _ _
+        (mm_incl f _ (nth_In j (fds_basis_indices W) 0%nat
+          (eq_ind_r (fun n => (j < n)%nat) Hj (fds_dim_spec W))))))))
+      (epsilon W' ans' Hans')) i =
+    mm_incl (model_compose (epsilon W ans Hans) f) i.
 Proof.
-  intros W W' f i Hin.
+  intros W W' f ans ans' Hans Hans' i Hin.
   (* Both sides are proofs of In i (fds_basis_indices W'), which is a Prop.
      By proof irrelevance, any two proofs are equal. *)
+  apply proof_irrelevance.
+Qed.
+
+(** Simplified epsilon naturality for zero answers *)
+Lemma epsilon_zero_natural : forall W W' (f : ModelMorphism W W'),
+  forall i, In i (fds_basis_indices (F_obj (G_obj_zero W))) ->
+    mm_incl (model_compose (F_mor (G_mor f)) (epsilon_zero W')) i =
+    mm_incl (model_compose (epsilon_zero W) f) i.
+Proof.
+  intros W W' f i Hin.
   apply proof_irrelevance.
 Qed.
 
