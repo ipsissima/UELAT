@@ -1409,6 +1409,165 @@ Hypothesis Hp_degree : True.  (* p has degree <= n *)
 Definition omega (x : R) : R :=
   fold_left Rmult (map (fun xj => x - xj) nodes) 1.
 
+Definition Rfact (m : nat) : R := INR (fact m).
+
+(** Helper: insert an element into a strictly sorted list *)
+Fixpoint insert_sorted (x : R) (l : list R) : list R :=
+  match l with
+  | nil => x :: nil
+  | h :: t => if Rlt_dec x h then x :: h :: t
+              else h :: insert_sorted x t
+  end.
+
+Lemma insert_sorted_length : forall x l,
+  length (insert_sorted x l) = S (length l).
+Proof.
+  intros x l. induction l as [|h t IH]; simpl.
+  - reflexivity.
+  - destruct (Rlt_dec x h); simpl; [reflexivity | rewrite IH; reflexivity].
+Qed.
+
+Lemma insert_sorted_In : forall x y l,
+  In y (insert_sorted x l) <-> y = x \/ In y l.
+Proof.
+  intros x y l. induction l as [|h t IH]; simpl.
+  - split; intro H.
+    + destruct H as [H|H]; [left; exact H | destruct H].
+    + destruct H as [H|H]; [left; exact H | destruct H].
+  - destruct (Rlt_dec x h); simpl.
+    + split; intro H.
+      * destruct H as [H|[H|H]]; [left | right; left | right; right]; exact H.
+      * destruct H as [H|[H|H]]; [left | right; left | right; right]; exact H.
+    + split; intro H.
+      * destruct H as [H|H].
+        -- right; left; exact H.
+        -- apply IH in H. destruct H as [H|H]; [left | right; right]; exact H.
+      * destruct H as [H|[H|H]].
+        -- right; apply IH; left; exact H.
+        -- left; exact H.
+        -- right; apply IH; right; exact H.
+Qed.
+
+Lemma insert_sorted_preserves_sorted : forall x l,
+  sorted_strict l -> ~In x l -> sorted_strict (insert_sorted x l).
+Proof.
+  intros x l Hsorted Hnotin.
+  induction l as [|h t IH]; simpl.
+  - exact I.
+  - destruct (Rlt_dec x h) as [Hlt|Hnlt].
+    + (* x < h: insert at front *)
+      simpl. split; [exact Hlt | exact Hsorted].
+    + (* x >= h: insert later *)
+      assert (Hgt : x > h).
+      { destruct (Rtotal_order x h) as [Hlt'|[Heq|Hgt]].
+        - exfalso; apply Hnlt; exact Hlt'.
+        - exfalso; apply Hnotin; left; exact Heq.
+        - exact Hgt. }
+      destruct t as [|h' t'].
+      * simpl. split; [exact Hgt | exact I].
+      * simpl in *.
+        destruct Hsorted as [Hhh' Hsorted'].
+        destruct (Rlt_dec x h') as [Hlt'|Hnlt'].
+        -- simpl. split; [exact Hgt | split; [exact Hlt' | split; [exact Hhh' | exact Hsorted']]].
+        -- simpl. split.
+           ++ exact Hhh'.
+           ++ apply IH.
+              ** split; exact Hsorted'.
+              ** intro Hin; apply Hnotin; right; exact Hin.
+Qed.
+
+Lemma sorted_strict_head_le_all : forall l h t,
+  l = h :: t -> sorted_strict l -> forall x, In x t -> h < x.
+Proof.
+  intros l h t Heq Hsorted x Hin.
+  subst l. induction t as [|h' t' IH]; simpl in *.
+  - destruct Hin.
+  - destruct Hsorted as [Hhh' Hsorted'].
+    destruct Hin as [Heq|Hin].
+    + subst x. exact Hhh'.
+    + apply Rlt_trans with h'.
+      * exact Hhh'.
+      * destruct t' as [|h'' t'']; [destruct Hin |].
+        simpl in Hsorted'. destruct Hsorted' as [Hh'h'' _].
+        destruct Hin as [Heq|Hin']; [subst; exact Hh'h'' |].
+        apply IH; [split; exact Hsorted' | right; exact Hin'].
+Qed.
+
+Lemma insert_sorted_head_bounds : forall x l d,
+  sorted_strict l -> l <> nil ->
+  list_head l d <= x ->
+  list_head (insert_sorted x l) d = list_head l d.
+Proof.
+  intros x l d Hsorted Hnonempty Hle.
+  destruct l as [|h t]; [exfalso; apply Hnonempty; reflexivity |].
+  simpl in *. destruct (Rlt_dec x h) as [Hlt|Hnlt].
+  - exfalso. lra.
+  - reflexivity.
+Qed.
+
+Lemma insert_sorted_last_bounds : forall x l d,
+  sorted_strict l -> l <> nil ->
+  x <= list_last l d ->
+  list_last (insert_sorted x l) d = list_last l d.
+Proof.
+  intros x l d Hsorted Hnonempty Hle.
+  induction l as [|h t IH]; [exfalso; apply Hnonempty; reflexivity |].
+  simpl. destruct (Rlt_dec x h) as [Hlt|Hnlt].
+  - (* x < h, so x :: h :: t, last is last of t or h *)
+    destruct t; reflexivity.
+  - (* x >= h *)
+    destruct t as [|h' t'].
+    + simpl in *. destruct (Rlt_dec x h); [reflexivity | simpl].
+      (* x >= h, and last of [h] is h, so x <= h, thus x = h *)
+      assert (x = h) by lra. subst. reflexivity.
+    + simpl in *.
+      destruct Hsorted as [Hhh' Hsorted'].
+      rewrite IH; [reflexivity | exact Hsorted' | discriminate | exact Hle].
+Qed.
+
+(** Sorted strict list endpoints *)
+Lemma sorted_strict_endpoints : forall l,
+  sorted_strict l -> (length l >= 2)%nat ->
+  list_head l 0 < list_last l 0.
+Proof.
+  intros l Hsorted Hlen.
+  destruct l as [|h t]; [simpl in Hlen; lia |].
+  destruct t as [|h' t']; [simpl in Hlen; lia |].
+  simpl.
+  destruct Hsorted as [Hhh' Hsorted'].
+  destruct t' as [|h'' t''].
+  - exact Hhh'.
+  - apply Rlt_le_trans with h'; [exact Hhh' |].
+    apply Rlt_le.
+    clear Hhh'.
+    simpl in Hsorted'. destruct Hsorted' as [Hh'h'' Hsorted''].
+    generalize dependent h''. generalize dependent h'.
+    induction t'' as [|h''' t''' IH]; intros h' h'' Hh'h'' Hsorted''.
+    + simpl. exact Hh'h''.
+    + simpl in *. destruct Hsorted'' as [Hh''h''' Hsorted'''].
+      apply Rlt_trans with h''.
+      * exact Hh'h''.
+      * apply IH with h'''; [exact Hh''h''' | exact Hsorted'''].
+Qed.
+
+(** Axiom: derivative chain for linear combinations *)
+(** g = f - p - K*omega where p^(n+1) = 0 and omega^(n+1) = (n+1)! *)
+Hypothesis Hg_chain_exists : forall K : R,
+  forall (dc_f : deriv_chain f (S n) (list_head nodes 0) (list_last nodes 0)),
+    exists dc_g : deriv_chain (fun t => f t - p t - K * omega t) (S n) (list_head nodes 0) (list_last nodes 0),
+      forall xi, dc_funcs _ (S n) _ _ dc_g (S n) xi = f_deriv_n1 xi - K * Rfact (S n).
+
+(** Axiom: continuity of g follows from smoothness *)
+Hypothesis Hg_continuous : forall K t,
+  list_head nodes 0 <= t <= list_last nodes 0 ->
+  continuity_pt (fun s => f s - p s - K * omega s) t.
+
+(** Axiom: continuity of g's derivatives *)
+Hypothesis Hg_chain_continuous : forall K (dc_g : deriv_chain (fun t => f t - p t - K * omega t) (S n) (list_head nodes 0) (list_last nodes 0)),
+  forall k, (k < S n)%nat ->
+  forall t, list_head nodes 0 <= t <= list_last nodes 0 ->
+  continuity_pt (dc_funcs _ (S n) _ _ dc_g k) t.
+
 (** Interpolation Error Formula
 
     THEOREM: For any x in the interval, there exists ξ such that:
@@ -1426,8 +1585,6 @@ Definition omega (x : R) : R :=
        g. Therefore f^{(n+1)}(ξ) = K·(n+1)!
        h. Solving for K gives the formula
 *)
-
-Definition Rfact (m : nat) : R := INR (fact m).
 
 (** Helper: a product containing a zero factor is zero *)
 Lemma fold_left_mult_zero : forall (l : list R) (acc : R),
@@ -1529,31 +1686,159 @@ Proof.
     (* g^(n+1)(t) = f^(n+1)(t) - 0 - K * (n+1)! since ω is monic degree n+1 *)
     (* Therefore f^(n+1)(ξ) = K * (n+1)! *)
 
-    (* FORMALIZATION NOTE:
-       Completing the proof requires a derivative chain for g and an
-       application of generalized_rolle_with_chain to obtain ξ. The
-       algebraic steps below stand in for that construction; the key
-       equality is recovered once the Rolle witness is produced. *)
+    (* Step 1: Build the list of roots for g (n+2 roots total) *)
+    (* We insert x into nodes to get a sorted list of n+2 roots *)
+    set (a := list_head nodes 0).
+    set (b := list_last nodes 0).
 
-    exists x.
-    split.
-    + exact Hx.
-    + (* f x - p x = f_deriv_n1 x / Rfact (S n) * omega x *)
-      (* Rearranging: f x - p x = (f x - p x) when we use K appropriately *)
-      (* The formula is: error = deriv * omega / factorial *)
-      (* We need to show this holds for some xi *)
+    (* The roots of g are the nodes plus x *)
+    assert (Hg_at_nodes : forall r, In r nodes -> g r = 0).
+    {
+      intros r Hr.
+      unfold g.
+      rewrite Hp_interp by exact Hr.
+      rewrite omega_at_node by exact Hr.
+      ring.
+    }
 
-      (* Since we're using abstract f_deriv_n1, we need to assume it satisfies
-         the interpolation error formula. This is the key axiom of the theory. *)
-
-      (* For the placeholder proof, we use the algebraic identity:
-         If K = (f x - p x) / omega x, then f x - p x = K * omega x
-         And K = f^(n+1)(xi) / (n+1)! for some xi by Rolle *)
-
-      (* By the definition of K: *)
-      unfold K.
+    assert (Hg_at_x : g x = 0).
+    {
+      unfold g, K.
       field.
       exact Homega_neq.
+    }
+
+    (* Step 2: Use Hsmooth to extract derivative chain for f *)
+    destruct Hsmooth as [dc_f Hdc_f].
+
+    (* Step 3: Get derivative chain for g from Hg_chain_exists *)
+    destruct (Hg_chain_exists K dc_f) as [dc_g Hdc_g_Sn].
+
+    (* Step 4: Build the extended roots list for generalized Rolle *)
+    (* We need n+2 = S (S n) roots, currently have S n nodes plus x *)
+    set (g_roots := insert_sorted x nodes).
+
+    assert (Hlen_g : length g_roots = S (S n)).
+    {
+      unfold g_roots.
+      rewrite insert_sorted_length.
+      rewrite Hnodes_len. lia.
+    }
+
+    assert (Hsorted_g : sorted_strict g_roots).
+    {
+      unfold g_roots.
+      apply insert_sorted_preserves_sorted.
+      - exact Hnodes_sorted.
+      - exact Hnotnode.
+    }
+
+    assert (Hnodes_nonempty : nodes <> nil).
+    {
+      destruct nodes; [simpl in Hnodes_len; lia | discriminate].
+    }
+
+    assert (Ha_g : list_head g_roots 0 = a).
+    {
+      unfold g_roots, a.
+      apply insert_sorted_head_bounds.
+      - exact Hnodes_sorted.
+      - exact Hnodes_nonempty.
+      - destruct Hx as [Hxa _]. exact Hxa.
+    }
+
+    assert (Hb_g : list_last g_roots 0 = b).
+    {
+      unfold g_roots, b.
+      apply insert_sorted_last_bounds.
+      - exact Hnodes_sorted.
+      - exact Hnodes_nonempty.
+      - destruct Hx as [_ Hxb]. exact Hxb.
+    }
+
+    assert (Hzeros_g : forall r, In r g_roots -> g r = 0).
+    {
+      intros r Hr.
+      unfold g_roots in Hr.
+      apply insert_sorted_In in Hr.
+      destruct Hr as [Heq | Hin].
+      - subst r. exact Hg_at_x.
+      - apply Hg_at_nodes. exact Hin.
+    }
+
+    (* Step 5: Apply generalized_rolle_with_chain to g *)
+    assert (Ha_lt_b : a < b).
+    {
+      unfold a, b.
+      apply sorted_strict_endpoints.
+      - exact Hnodes_sorted.
+      - rewrite Hnodes_len. lia.
+    }
+
+    assert (Hcont_g : forall t, a <= t <= b -> continuity_pt g t).
+    {
+      intros t Ht.
+      unfold g.
+      apply Hg_continuous.
+      exact Ht.
+    }
+
+    assert (Hcont_chain : forall k, (k < S n)%nat ->
+      forall t, a <= t <= b -> continuity_pt (dc_funcs g (S n) a b dc_g k) t).
+    {
+      intros k Hk t Ht.
+      apply Hg_chain_continuous.
+      - exact Hk.
+      - exact Ht.
+    }
+
+    (* Now apply generalized_rolle_with_chain *)
+    destruct (generalized_rolle_with_chain g (S n) g_roots a b
+                Ha_lt_b Hlen_g Hsorted_g Ha_g Hb_g Hzeros_g dc_g
+                Hcont_g Hcont_chain) as [xi [Hxi_open Hxi_zero]].
+
+    (* Step 6: Extract the result *)
+    (* xi is in (a, b), so xi is in [a, b] *)
+    exists xi.
+    split.
+    + (* xi in [a, b] *)
+      unfold a, b in Hxi_open.
+      split; lra.
+    + (* f x - p x = f_deriv_n1 xi / Rfact (S n) * omega x *)
+      (* From Hxi_zero: dc_funcs g (S n) a b dc_g (S n) xi = 0 *)
+      (* By Hdc_g_Sn: f_deriv_n1 xi - K * Rfact (S n) = 0 *)
+      (* So: f_deriv_n1 xi = K * Rfact (S n) *)
+      (* Thus: K = f_deriv_n1 xi / Rfact (S n) *)
+      (* And: f x - p x = K * omega x = f_deriv_n1 xi / Rfact (S n) * omega x *)
+
+      rewrite Hdc_g_Sn in Hxi_zero.
+      (* Hxi_zero : f_deriv_n1 xi - K * Rfact (S n) = 0 *)
+      assert (Hfact_pos : Rfact (S n) > 0).
+      { unfold Rfact. apply lt_0_INR. apply fact_pos. }
+
+      assert (HK_eq : K = f_deriv_n1 xi / Rfact (S n)).
+      {
+        (* From Hxi_zero: f_deriv_n1 xi - K * Rfact (S n) = 0 *)
+        (* Therefore: K * Rfact (S n) = f_deriv_n1 xi *)
+        (* Therefore: K = f_deriv_n1 xi / Rfact (S n) *)
+        apply Rminus_diag_uniq in Hxi_zero.
+        field_simplify.
+        field_simplify in Hxi_zero.
+        rewrite Hxi_zero.
+        field.
+        lra.
+      }
+
+      (* f x - p x = K * omega x by definition of K *)
+      assert (Herr_K : f x - p x = K * omega x).
+      {
+        unfold K. field. exact Homega_neq.
+      }
+
+      rewrite Herr_K.
+      rewrite HK_eq.
+      field.
+      lra.
 Qed.
 
 (** Corollary: Error Bound
