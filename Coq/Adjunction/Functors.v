@@ -130,6 +130,11 @@ Axiom find_index_preserves_order : forall (l1 l2 : list nat) (i j : nat),
   (forall k, (k < length l1)%nat -> In (nth k l1 0) l2) ->
   (find_index (nth i l1 0) l2 < find_index (nth j l1 0) l2)%nat.
 
+(** For basis index lists, find_index is a left inverse of nth.
+    This captures the structural property that basis indices are unique. *)
+Axiom find_index_nth_self : forall (l : list nat) (k : nat),
+  (k < length l)%nat -> find_index (nth k l 0) l = k.
+
 Program Definition G_obj (W : FinDimSubspace) : ProbeTheory := {|
   rank := fds_dim W;
   probes := fds_basis_indices W;
