@@ -1,0 +1,25 @@
+# Build logs
+.github/logs/
+
+# Coq build artifacts
+*.vo
+*.vok
+*.vos
+*.glob
+*.aux
+.coqdeps.d
+Makefile.conf
+
+# Editor files
+*~
+*.swp
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Julia
+*.jl.cov
+*.jl.mem
