@@ -44,6 +44,22 @@ Proof.
     + specialize (IH n Hsearch). destruct IH as [H1 H2]. split; [exact H1 | lia].
 Qed.
 
+(** Completeness: if bounded_search returns None, no witness exists *)
+Lemma bounded_search_complete : forall P bound,
+  bounded_search P bound = None ->
+  forall n, (n <= bound)%nat -> P n = false.
+Proof.
+  intros P bound. induction bound as [|b IH]; intros Hnone n Hle; simpl in Hnone.
+  - (* Base case: bound = 0 *)
+    assert (n = 0)%nat by lia. subst.
+    destruct (P 0%nat) eqn:Hp0; [discriminate | exact Hp0].
+  - (* Inductive case: bound = S b *)
+    destruct (P (S b)) eqn:HpSb; [discriminate |].
+    destruct (Nat.eq_dec n (S b)) as [Heq | Hneq].
+    + subst. exact HpSb.
+    + apply IH; [exact Hnone | lia].
+Qed.
+
 (** * Modulus-Based Choice
 
     Given a modulus N : Q_{>0} → ℕ and a family of witnesses, we can
@@ -173,11 +189,13 @@ Proof.
     destruct (bounded_search_spec P bound m Hsearch) as [Htrue Hle].
     split; assumption.
   - (* When bounded_search returns None but witness exists, contradiction *)
-    (* This requires a separate lemma about bounded_search completeness *)
     exfalso.
     destruct Hex as [n [Hle Htrue]].
-    (* Proof that bounded_search finds all witnesses within bound is complex
-       and involves case analysis on the search structure. Admitted for now. *)
-Admitted.
+    (* By completeness lemma, if bounded_search returns None, P n = false *)
+    pose proof (bounded_search_complete P bound Hsearch n Hle) as Hfalse.
+    (* But we have P n = true from the hypothesis *)
+    rewrite Htrue in Hfalse.
+    discriminate.
+Qed.
 
 End UELAT_CCP.

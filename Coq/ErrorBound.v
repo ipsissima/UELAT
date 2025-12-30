@@ -695,6 +695,21 @@ Qed.
       ∫₀¹ (x - S_N(x))² dx = (2/π²) · Σ_{n>N} 1/n² = L2_squared_error N
 
     This equality follows from orthonormality of the sine basis.
+
+    AXIOM JUSTIFICATION: Classical result from Fourier analysis.
+
+    Standard references:
+    - Stein & Shakarchi (2003): Fourier Analysis, Ch. 2, Theorem 2.3
+    - Katznelson (2004): An Introduction to Harmonic Analysis, §I.2
+    - Rudin (1987): Real and Complex Analysis, Ch. 3
+
+    This axiom is used ONLY in ErrorBound.v for pedagogical demonstration.
+    NOT used in any main UELAT theorems.
+
+    Could be proven from:
+    - Orthonormality of sine basis
+    - Lebesgue dominated convergence theorem
+    - Requires full measure theory infrastructure
 *)
 Axiom parseval_identity_integration : forall N,
   (N >= 1)%nat ->
