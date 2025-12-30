@@ -12,7 +12,7 @@
     4. Certificate Incompressibility — Lower bounds (Theorem 8.2)
     5. Effective Descent — Gluing with size bounds (Theorem 9.3)
 
-    Reference: https://arxiv.org/abs/XXXX.XXXXX
+    Reference: https://arxiv.org/abs/2506.22693
 *)
 
 (** * Utility Modules *)
