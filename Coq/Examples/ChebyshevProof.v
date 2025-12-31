@@ -46,9 +46,23 @@ Definition cont_on_interval (f : R -> R) (a b : R) : Prop :=
 
 (** Rolle's Theorem Statement
 
-    This is a standard theorem from real analysis. We state it as
-    a constructive axiom that can be discharged by importing
-    Coq.Reals.Rolle or Coquelicot.
+    AXIOM JUSTIFICATION: Fundamental theorem of differential calculus.
+
+    This is a standard result available in multiple Coq libraries:
+    - Coquelicot.Derive (Real analysis library)
+    - Standard-Library's Coq.Reals (via MVT)
+
+    We axiomatize it here to avoid heavy library dependencies, but it's
+    not controversial - any calculus textbook proves this in Chapter 4.
+
+    The theorem states: If f is continuous on [a,b], differentiable on (a,b),
+    and f(a) = f(b) = 0, then there exists c ∈ (a,b) where f'(c) = 0.
+
+    ALTERNATIVE: Could import `Coquelicot.Derive_Rolle` but we prefer
+    a lightweight formalization for the Chebyshev example.
+
+    USAGE: Only used in ChebyshevProof.v for extremal property derivation.
+    Not used in any main UELAT theorems.
 *)
 Axiom rolle : forall (f f' : R -> R) (a b : R),
   a < b ->

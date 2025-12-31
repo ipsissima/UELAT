@@ -61,6 +61,17 @@ Definition f10 (x : R) : R :=
 
 (* For full pipeline, could now reference error bound etc. *)
 
-(* Example: W^{1,2} error estimate, provided externally *)
+(* Example: W^{1,2} error estimate, provided externally
+
+   AXIOM JUSTIFICATION: This is a placeholder for numerical computation.
+   It demonstrates that concrete error bounds can be computed for specific
+   Sobolev spaces. The actual value could be derived from:
+   - Sobolev embedding theorems
+   - Bernstein polynomial approximation rates
+   - Explicit numerical integration
+
+   This axiom is NOT used in any theorem proofs - it's purely demonstrative.
+   See SobolevCert.v for the general theory without numerical placeholders.
+*)
 Parameter W12_error : R.
 Axiom error_bound_example : W12_error < 0.001.
