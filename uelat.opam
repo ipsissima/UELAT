@@ -6,11 +6,10 @@ maintainer: "ipsissima"
 license: "MIT"
 depends: [
   "ocaml" {>= "4.14.0"}
-  "coq" {>= "8.18" & < "8.20"}
+  "rocq-prover" {>= "9.0.0"}
   "coq-mathcomp-ssreflect"
   "coq-mathcomp-algebra"
   "coq-mathcomp-analysis"
-  "coq-coquelicot"
   "dune" {>= "3.10"}
 ]
 build: [ "dune" "build" "-p" "uelat" "-j" jobs ]
