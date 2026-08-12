@@ -88,8 +88,29 @@ The 3 Admitted are exactly:
 
 ## Iteration log
 
-- **Round 1** (this commit): switch opam pin only. Expected
+- **Round 1** (commit 76cdbc6): switch opam pin only. Expected
   outcome: opam resolves Rocq 9, mathcomp stack builds against it,
   `coq_makefile … && make` builds all 36 files without source
   edits. If any file breaks, its error goes in a new "Round 2"
   subsection with file/line/cause/fix.
+
+  Actual outcome: **opam resolution succeeded** —
+  `rocq-prover.meta.1`, `rocq-core.9.2.0`, `rocq-stdlib.9.2.0`,
+  `rocq-mathcomp-ssreflect/algebra/analysis` 2.6.0 / 1.16.0, and
+  `rocq-hierarchy-builder.1.10.3` all installed cleanly (CI run
+  31605309879, `Setup opam switch safely` completed at 14:43:56).
+  The `Build Coq` step then failed at `coq_makefile`, not on any
+  `.v` file:
+  ```
+  + coq_makefile -f Coq/_CoqProject Coq/Adjunction/Adjunction.v … -o Coq/Makefile
+  Error: Output file must be in the current directory.
+  ```
+  Cause: under Rocq 9, `coq_makefile` rejects an `-o` path outside
+  the current directory. Not a source-level regression.
+
+- **Round 2** (this commit): patch `.github/workflows/ci.yml` only —
+  run `coq_makefile` from inside `Coq/` with file paths stripped of
+  the leading `Coq/`, then `make -C Coq -j2` as before. No opam or
+  `.v` change. Expected outcome: `Build Coq` reaches actual source
+  compilation. Any file that fails to build under Rocq 9 lands in a
+  new "Round 3" subsection with file/line/cause/fix.
