@@ -45,8 +45,8 @@ Definition bernstein_basis (N k : nat) (x : R) : R :=
 
 Definition decode_index (j : nat) : nat * nat :=
   let fix find_N n acc :=
-    if (acc + n <=? j)%nat then find_N (S n) (acc + n)
-    else (n - 1, j - (acc - (n - 1)))
+    if (acc + n <=? j)%nat then find_N (S n) (acc + n)%nat
+    else ((n - 1)%nat, (j - (acc - (n - 1)))%nat)
   in find_N 1 0.
 
 Definition basis (j : nat) (x : R) : R :=

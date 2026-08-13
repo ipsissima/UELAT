@@ -30,7 +30,7 @@ Proof.
 Qed.
 
 Lemma cert_add_size : forall Cf Cg,
-  cert_size (cert_add Cf Cg) = cert_size Cf + cert_size Cg.
+  cert_size (cert_add Cf Cg) = (cert_size Cf + cert_size Cg)%nat.
 Proof.
   intros Cf Cg. reflexivity.
 Qed.

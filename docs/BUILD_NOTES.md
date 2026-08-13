@@ -530,3 +530,80 @@ The 3 Admitted are exactly:
     interaction happened to produce a matching IH; under Rocq 9 it
     doesn't. Needs a rewrite of the inner induction, which I want
     to do carefully — deferring.
+
+- **Round 15** (this commit): Round-14 unblocked several files but
+  exposed a second layer of breaks behind them. Nine sites patched:
+
+  **15a. `Coq/Approx/EffectiveDescent.v:92`** — `deltas: Not a projection.`
+  Record-notation projection lookup under Rocq 9's stricter parser
+  chokes on `{| … deltas := deltas … |}` because the field name
+  `deltas` shadows the Variable `deltas` in scope. Swap to the
+  positional constructor `Build_CompatData overlaps deltas
+  (seq 0 (length overlaps))` — same value, no name-lookup ambiguity.
+
+  **15b. `Coq/Stability/Modulus.v:60`** — `Rpower_pos not found.`
+  Round 14 rewrote `holder_modulus` and reused the original proof's
+  `apply Rpower_pos`, but that name isn't exported in Rocq 9's
+  `Stdlib.Reals.Rpower`. Replace with the equivalent chain through
+  `exp`: `unfold f, Rpower. apply exp_pos.` (`Rpower x y := exp (y * ln x)`,
+  and `exp` is always positive). Same proved fact.
+
+  **15c. `Coq/Stability/CertificateComposition.v:33`** —
+  `The term "cert_size Cf" has type "nat" while it is expected to have
+  type "R".` `cert_add_size`'s RHS `cert_size Cf + cert_size Cg` under
+  `R_scope` binds `+` to `Rplus`. Both operands are `nat`, so annotate
+  the RHS with `%nat` to select `Nat.add`. Lemma statement's mathematical
+  content unchanged (both sides remain `nat`; both `+` operators do the
+  same thing on nat values, we're just telling the parser which one).
+
+  **15d. `Coq/Examples/FourierCert.v:144`** — `continuity_pt_id not
+  found.` Rocq 9's `Stdlib.Reals.Ranalysis1` no longer exports that
+  name. Substitute the equivalent derivation via a lemma pair that
+  is still there: `apply derivable_continuous_pt; apply derivable_pt_id.`
+
+  **15e. `Coq/Certificate.v:48`** — `The term "acc" has type "nat" while
+  it is expected to have type "R".` Inside `decode_index`'s `find_N`
+  recursion, arithmetic on `nat` was relying on the surrounding
+  `R_scope` to bind unqualified `+`/`-` to nat operators via a coercion
+  Rocq 9 doesn't insert. Annotate every nat expression in the two
+  branches with `%nat`. Definition semantics identical.
+
+  **15f. `Coq/SobolevApprox.v:74`** — `Tactic failure: Cannot find witness.`
+  Digging in, the failing `- lra.` is trying to close `0 < h` from just
+  `Hh : h >= 0`. The lemma statement is **`midpoint_sample_upper : forall
+  a h n k, h >= 0 -> … -> midpoint_sample a h k < a + INR n * h`**, which
+  is **mathematically false at h = 0** — both sides collapse to `a`,
+  making `a < a`. This is another pseudo-proof, analogous to Round 9
+  (`pigeonhole_injective`), but the silent bug is in the *statement*,
+  not the tactic script: old Coq's lra apparently let it through by
+  accident. Weakening the conclusion `<` → `<=` makes the lemma
+  provably true under the existing `h >= 0` hypothesis and is exactly
+  what the sole caller (`midpoint_in_interval`, which passes through
+  `Rle_trans`) actually needs — the caller's `left. apply
+  midpoint_sample_upper` drops to just `apply midpoint_sample_upper`.
+  **Explicitly reporting** per the non-negotiables: this changes the
+  lemma statement (conclusion `<` → `<=`), but it *corrects* a
+  false claim rather than *weakens* a true one. No `Axiom` /
+  `Parameter` / `Admitted` / `admit.` added; the corrected lemma
+  supports every use of it in the tree.
+
+  **15g. `Coq/Approx/Bernstein.v:36`** — `IH : 0 <= x^n` while expected
+  `0 <= x`. `pow_nonneg_01` calls `apply Rmult_le_pos; [exact IH|]. exact
+  Hx0.` but `Rmult_le_pos : 0 <= r1 -> 0 <= r2 -> 0 <= r1 * r2` takes the
+  first factor first; the goal `0 <= x * x^n` needs `[exact Hx0 | exact IH]`.
+  A latent bug that happened to work in a different old-stdlib arg order.
+  Trivial swap.
+
+  **15h. `Coq/Approx/Incompressibility.v:249`** — mathcomp/Peano
+  scope collision on `Nat.pow`. `(Nat.pow 2 K >= 1)%nat` under
+  `all_ssreflect` is ssrnat `leq` (bool), while `Nat.pow_le_mono_r`
+  produces `Peano.le`. Same shape as Round 10. Change `%nat` → `%coq_nat`
+  on that assertion so `apply Nat.pow_le_mono_r` unifies.
+
+  **15i. `Coq/Adjunction/Functors.v:126`** — sibling of Round-14e's fix
+  on line 99, same shape: `nth k l 0` inside `find_index_nth_self_nodup`
+  needs `0%nat`. Missed in Round 14; annotated now.
+
+  **Still deferred**: `Bernstein_Lipschitz.v` (mathcomp-analysis path
+  reorg + missing binom lemmas), `ChebyshevProof.v:123` (proof
+  context slip).

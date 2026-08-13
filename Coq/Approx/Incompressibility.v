@@ -246,7 +246,7 @@ Proof.
     (* And we have 2^K valid configs, so pigeonhole gives collision *)
     (* This contradicts Hinj *)
 
-    assert (Hpow: (Nat.pow 2 K >= 1)%nat) by (apply Nat.pow_le_mono_r; lia).
+    assert (Hpow: (Nat.pow 2 K >= 1)%coq_nat) by (apply Nat.pow_le_mono_r; lia).
 
     (* We use the fact that:
        - There are 2^K valid configurations

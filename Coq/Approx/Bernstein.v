@@ -33,8 +33,8 @@ Proof.
   intros x n [Hx0 Hx1].
   induction n as [|n IH]; simpl.
   - lra.
-  - apply Rmult_le_pos; [exact IH|].
-    exact Hx0.
+  - (* goal: 0 <= x * x^n; Rmult_le_pos wants 0<=x first, 0<=x^n second *)
+    apply Rmult_le_pos; [exact Hx0 | exact IH].
 Qed.
 
 End UELAT_Bernstein.

@@ -141,7 +141,9 @@ Proof.
     + (* n * PI * x is continuous *)
       apply continuity_pt_mult.
       * apply continuity_pt_const; intros a b; reflexivity.
-      * apply continuity_pt_id.
+      * (* continuity_pt_id was removed from Rocq 9's Ranalysis1;
+           derive it from derivable_pt_id via derivable_continuous_pt. *)
+        apply derivable_continuous_pt; apply derivable_pt_id.
     + apply sin_continuous.
 Qed.
 

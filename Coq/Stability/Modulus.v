@@ -57,7 +57,7 @@ Proof.
   intros C alpha HC Halpha Halpha1.
   pose (f := fun eps : R => Rpower (eps / C) (/ alpha)).
   assert (Hpos : forall eps, 0 < eps -> 0 < f eps).
-  { intros eps _. unfold f. apply Rpower_pos. }
+  { intros eps _. unfold f, Rpower. apply exp_pos. }
   assert (Hmono : forall e1 e2, 0 < e1 -> e1 <= e2 -> f e1 <= f e2).
   { intros e1 e2 He1 Hle. unfold f.
     apply Rle_Rpower_l.

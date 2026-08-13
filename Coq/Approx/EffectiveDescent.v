@@ -87,11 +87,11 @@ Definition partition_encoding_size : nat :=
 
 (** * Glued Certificate Construction *)
 
-Definition glue_compat_data : CompatData := {|
-  overlap_indices := overlaps;
-  deltas := deltas;
-  compat_witness := seq 0 (length overlaps)
-|}.
+(* Positional constructor sidesteps Rocq 9's stricter record-notation
+   projection lookup, which chokes when a field name shadows a Variable
+   in scope (here: `deltas`). *)
+Definition glue_compat_data : CompatData :=
+  Build_CompatData overlaps deltas (seq 0 (length overlaps)).
 
 Definition glue_partition_data : PartitionData := {|
   num_patches := M;

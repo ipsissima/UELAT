@@ -63,20 +63,25 @@ Proof.
     + lra.
 Qed.
 
+(* Corrected relative to the pre-Rocq-9 source: the original conclusion
+   was `midpoint_sample a h k < a + INR n * h`, which is FALSE at h = 0
+   (both sides collapse to `a`). Old Coq's lra apparently let the proof
+   through by accident, but the claim itself was wrong. The mathematical
+   fact that's actually true — and what the sole caller
+   `midpoint_in_interval` needs, via `Rle_trans` — is `<=`, so weaken the
+   conclusion. Hypothesis h >= 0 is retained. No Axiom / Admitted added. *)
 Lemma midpoint_sample_upper : forall a h n k,
   h >= 0 -> (k < n)%nat -> (n > 0)%nat ->
-  midpoint_sample a h k < a + INR n * h.
+  midpoint_sample a h k <= a + INR n * h.
 Proof.
   intros a h n k Hh Hk Hn.
   unfold midpoint_sample.
-  apply Rplus_lt_compat_l.
-  apply Rmult_lt_compat_r.
+  apply Rplus_le_compat_l.
+  apply Rmult_le_compat_r; [lra|].
+  (* INR k + /2 <= INR n *)
+  apply Rle_trans with (INR k + 1).
   - lra.
-  - (* INR k + /2 < INR n *)
-    apply Rlt_le_trans with (INR k + 1).
-    + lra.
-    + rewrite <- S_INR.
-      apply le_INR. lia.
+  - rewrite <- S_INR. apply le_INR. lia.
 Qed.
 
 Lemma midpoint_in_interval : forall a b n k,
@@ -92,7 +97,7 @@ Proof.
   split.
   - apply midpoint_sample_lower. exact Hh.
   - apply Rle_trans with (a + INR n * h).
-    + left. apply midpoint_sample_upper; [exact Hh | exact Hk | lia].
+    + apply midpoint_sample_upper; [exact Hh | exact Hk | lia].
     + unfold h. field_simplify.
       * lra.
       * apply not_0_INR. lia.

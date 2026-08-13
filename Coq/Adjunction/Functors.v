@@ -123,7 +123,7 @@ Qed.
 Lemma find_index_nth_self_nodup : forall (l : list nat) (k : nat),
   NoDup l ->
   (k < length l)%nat ->
-  find_index (nth k l 0) l = k.
+  find_index (nth k l 0%nat) l = k.
 Proof.
   intros l k Hnodup Hk.
   generalize dependent k.
