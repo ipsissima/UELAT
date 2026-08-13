@@ -131,7 +131,7 @@ Proof.
   - simpl in Hk. lia.
   - destruct k as [| k'].
     + simpl. rewrite Nat.eqb_refl. reflexivity.
-    + simpl. destruct (Nat.eqb (nth k' l' 0) x) eqn:Heq.
+    + simpl. destruct (Nat.eqb (nth k' l' 0%nat) x) eqn:Heq.
       * apply Nat.eqb_eq in Heq.
         inversion Hnodup; subst.
         exfalso. apply H1.

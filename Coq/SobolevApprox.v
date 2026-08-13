@@ -91,9 +91,12 @@ Lemma midpoint_in_interval : forall a b n k,
 Proof.
   intros a b n k Hab Hn Hk h.
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat.
+  { unfold h. apply Rle_ge. unfold Rdiv.
+    (* Rocq 9's Stdlib.Reals no longer exports Rdiv_le_0_compat; unfold
+       Rdiv and prove `0 <= (b - a) * / INR n` via Rmult_le_pos. *)
+    apply Rmult_le_pos.
     - lra.
-    - apply lt_0_INR. lia. }
+    - apply Rlt_le. apply Rinv_0_lt_compat. apply lt_0_INR. lia. }
   split.
   - apply midpoint_sample_lower. exact Hh.
   - apply Rle_trans with (a + INR n * h).

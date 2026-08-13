@@ -111,7 +111,10 @@ Theorem glued_cert_size_bound :
 Proof.
   unfold glued_certificate, cert_size.
   unfold total_local_size.
-  lia.
+  (* GlueCert's cert_size folds with Nat.add; total_local_size folds with
+     `plus`. Same operator; give Rocq 9's stricter lia an explicit `simpl`
+     so both sides reduce to the same folded expression before the compare. *)
+  simpl. lia.
 Qed.
 
 (** The glued certificate is well-formed *)

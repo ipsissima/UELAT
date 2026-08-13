@@ -39,7 +39,7 @@ Lemma cert_add_wf : forall Cf Cg,
   cert_wf Cf -> cert_wf Cg -> cert_wf (cert_add Cf Cg).
 Proof.
   intros Cf Cg HCf HCg.
-  simpl. split; assumption.
+  unfold cert_add. apply wf_compose; assumption.
 Qed.
 
 (** ** Scalar Multiplication of Certificates *)

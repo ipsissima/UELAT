@@ -246,7 +246,11 @@ Proof.
     (* And we have 2^K valid configs, so pigeonhole gives collision *)
     (* This contradicts Hinj *)
 
-    assert (Hpow: (Nat.pow 2 K >= 1)%coq_nat) by (apply Nat.pow_le_mono_r; lia).
+    (* Nat.pow_le_mono_r produces `b^n <= b^m`; the goal `1 <= 2^K` isn't
+       yet in that shape (1 is not literally 2^0 after reduction). Prove
+       by direct case-split on K instead. *)
+    assert (Hpow: (Nat.pow 2 K >= 1)%coq_nat)
+      by (destruct K; simpl; lia).
 
     (* We use the fact that:
        - There are 2^K valid configurations

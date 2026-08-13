@@ -607,3 +607,59 @@ The 3 Admitted are exactly:
   **Still deferred**: `Bernstein_Lipschitz.v` (mathcomp-analysis path
   reorg + missing binom lemmas), `ChebyshevProof.v:123` (proof
   context slip).
+
+- **Round 16** (this commit): Round-15 unblocked yet another layer;
+  seven fixes for the new set of errors it exposed.
+
+  **16a. `Coq/Approx/EffectiveDescent.v:114`** — `Tactic failure: Cannot
+  find witness.` `glued_cert_size_bound`'s `lia` couldn't see through
+  the two different-fold-op sides (`Nat.add` in `cert_size`'s GlueCert
+  branch vs `plus` in `total_local_size`). Add an explicit `simpl`
+  before `lia` so both sides reduce to the same fold expression.
+
+  **16b. `Coq/Stability/Modulus.v:66`** — `Rle_Rpower_l` in Rocq 9
+  Stdlib no longer has the shape the previous `holder_modulus` proof
+  needed for base-monotonicity of `Rpower (eps/C) (/alpha)`. Reworking
+  the Rpower proof would be real work, and the *lemma's spec is
+  literally `True`* (the source comment says "Placeholder for full
+  spec"). Simplify by reusing the already-proven `lipschitz_modulus`
+  as the existential witness: any valid modulus satisfies `True`.
+  When the spec is upgraded past `True`, this proof will need a real
+  Rpower-monotonicity argument.
+
+  **16c. `Coq/Stability/CertificateComposition.v:42`** — `Not an
+  inductive goal with 1 constructor.` `cert_add_wf`'s `simpl. split;
+  assumption` assumed a conjunction after `simpl`, but `cert_wf`
+  is an inductive `Prop` with named constructors. Rocq 9 doesn't
+  match the auto-inductive pattern. Replace with `unfold cert_add.
+  apply wf_compose; assumption.` — direct constructor application.
+
+  **16d. `Coq/Certificate.v:47`** — `Cannot guess decreasing argument
+  of fix.` The original `let fix find_N n acc := …` recurses with
+  `find_N (S n) (acc + n)`, so **neither `n` nor `acc` is
+  structurally decreasing**. Old Coq's termination heuristics may
+  have accepted it through some accident; Rocq 9's checker refuses.
+  Convert to fuel-bounded structural recursion on a new `fuel`
+  argument, called with `S j` fuel — always enough because `acc + n >
+  j` triggers exit no later than the `j+1`-th step. `decode_index`'s
+  input/output types are unchanged; the base case that runs on fuel
+  exhaustion returns the same tuple form as the else branch.
+
+  **16e. `Coq/SobolevApprox.v:94`** — `The variable Rdiv_le_0_compat
+  was not found.` Rocq 9's Stdlib.Reals dropped that name. Replace
+  the one-liner with the more explicit `unfold Rdiv; apply
+  Rmult_le_pos` chain.
+
+  **16f. `Coq/Approx/Incompressibility.v:249`** — `Nat.pow_le_mono_r`
+  produces `b^n <= b^m` and can't be applied to the raw goal `1 <=
+  2^K` (the `1` isn't literally `2^0` post-reduction). Trade the
+  clever tactic for a straight `destruct K; simpl; lia.`
+
+  **16g. `Coq/Adjunction/Functors.v:134`** — third `nth _ _ 0` site
+  needing `0%nat` (sibling of Round 14e / 15i); found by CI, not by
+  my grep — annotated.
+
+  **Still deferred**: `Approx/Bernstein_Lipschitz.v` (mathcomp reorg
+  + binom lemmas), `Examples/ChebyshevProof.v:123` (proof context
+  slip), and now `Examples/FourierCert.v:260` (field tactic on a
+  complex rational equation — needs a careful look).

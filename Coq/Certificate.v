@@ -43,11 +43,21 @@ Definition binomial_R (n k : nat) : R := IZR (Z.of_nat (binomial n k)).
 Definition bernstein_basis (N k : nat) (x : R) : R :=
   binomial_R N k * pow x k * pow (1 - x) (N - k).
 
+(* The original `find_N` is not structurally recursive on any of its
+   arguments (it grows `n` and `acc` each call, bounded implicitly by
+   `<=? j`). Rocq 9's stricter termination checker rejects it. Convert
+   to a fuel-bounded structural recursion on `fuel`; `S j` fuel steps
+   are always enough because acc grows by n >= 1 each iteration and
+   the loop exits as soon as acc + n > j <= j. *)
 Definition decode_index (j : nat) : nat * nat :=
-  let fix find_N n acc :=
-    if (acc + n <=? j)%nat then find_N (S n) (acc + n)%nat
-    else ((n - 1)%nat, (j - (acc - (n - 1)))%nat)
-  in find_N 1 0.
+  let fix find_N (fuel n acc : nat) : nat * nat :=
+    match fuel with
+    | O => ((n - 1)%nat, (j - (acc - (n - 1)))%nat)
+    | S fuel' =>
+        if (acc + n <=? j)%nat then find_N fuel' (S n) (acc + n)%nat
+        else ((n - 1)%nat, (j - (acc - (n - 1)))%nat)
+    end
+  in find_N (S j) 1 0.
 
 Definition basis (j : nat) (x : R) : R :=
   let '(N, k) := decode_index j in
