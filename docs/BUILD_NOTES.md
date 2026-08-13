@@ -427,3 +427,17 @@ The 3 Admitted are exactly:
   `Hlen' : (length lb < length la)%coq_nat`, both in Peano — the
   contradiction is closed. Statement of `pigeonhole_injective`
   unchanged; no `Axiom` / `Parameter` / `Admitted` / `admit.` added.
+
+- **Round 12** (this commit): `Approx/Incompressibility.v:224` —
+  `Error: The variable le_lt_dec was not found in the current environment.`
+
+  Same shape as Round 8 (`classic`): Rocq 9 stopped transitively
+  re-exporting `Stdlib.Arith.Compare_dec` through the meta-modules
+  the file was leaning on. `le_lt_dec : forall n m : nat, {n<=m}+{m<n}`
+  is used in `certificate_size_lower_bound` to case-split on
+  `K` vs `cert_size (encode (repeat true K))`.
+
+  Fix: add `From Stdlib Require Import Compare_dec.` to the imports.
+  Same disposition as the Classical import: pre-existing use of the
+  same identifier, made explicit; no new logical dependency, no
+  `Axiom` / `Parameter` / `Admitted` / `admit.` declared.

@@ -18,6 +18,10 @@ From Stdlib Require Import List.
    their module imported explicitly. Not a new logical dependency — the
    proofs below already invoke these classical helpers. *)
 From Stdlib Require Import Classical.
+(* Same reason for Compare_dec: `le_lt_dec` used in
+   certificate_size_lower_bound was previously visible via an implicit
+   re-export that Rocq 9 dropped. *)
+From Stdlib Require Import Compare_dec.
 Import ListNotations.
 Local Open Scope R_scope.
 
