@@ -141,8 +141,8 @@ Proof.
          NoDup_incl_length + length_map              ⇒  |la| ≤ |lb|. *)
     (* %coq_nat, not %nat: mathcomp's all_ssreflect remaps %nat to ssrnat's
        bool-returning leq, but NoDup_incl_length is a stdlib lemma returning
-       Peano.le. Match its type here; the outer `lia` (Zify-aware in Rocq 9)
-       still bridges Hle (Peano.le) and Hlen (ssrnat leq bool) into False. *)
+       Peano.le. Match its type here; we then bridge Hlen (ssrnat %N) into
+       Peano so a single `lia` closes False. *)
     assert (Hle: (length la <= length lb)%coq_nat).
     { clear Hlen.
       rewrite <- (length_map f la).
@@ -150,6 +150,7 @@ Proof.
       - apply NoDup_map_local; [exact Hinj | exact Hnodup].
       - intros b Hin. apply in_map_iff in Hin.
         destruct Hin as [a [Heq Ha]]. subst b. apply Himg. exact Ha. }
+    assert (Hlen' : (length lb < length la)%coq_nat) by (apply/ltP; exact Hlen).
     lia.
   - (* f is not injective, extract witnesses *)
     apply not_all_ex_not in Hnotinj.

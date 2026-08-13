@@ -405,3 +405,25 @@ The 3 Admitted are exactly:
   scope changed inside the proof body; the *lemma statement*'s
   `%nat` hypothesis on `length la > length lb` is unchanged.
   No `Axiom` / `Parameter` / `Admitted` / `admit.` added.
+
+- **Round 11** (this commit): Round-10's assumption that `lia`
+  alone would bridge Peano.le (from stdlib) and ssrnat.leq (from
+  mathcomp) was optimistic. In practice Rocq 9's `lia` under Zify
+  handles each side individually but not a mixed contradiction
+  between them:
+  ```
+  File "./Approx/Incompressibility.v", line 153, characters 4-7:
+  Error: Tactic failure:  Cannot find witness.
+  ```
+  Fix: explicitly convert `Hlen : (length la > length lb)%nat`
+  (ssrnat `leq` = true) into `Hlen' : (length lb < length la)%coq_nat`
+  (Peano.lt) using ssreflect's `/ltP` reflect view:
+  ```
+  assert (Hlen' : (length lb < length la)%coq_nat)
+    by (apply/ltP; exact Hlen).
+  lia.
+  ```
+  Now `lia` has `Hle : (length la <= length lb)%coq_nat` and
+  `Hlen' : (length lb < length la)%coq_nat`, both in Peano — the
+  contradiction is closed. Statement of `pigeonhole_injective`
+  unchanged; no `Axiom` / `Parameter` / `Admitted` / `admit.` added.
