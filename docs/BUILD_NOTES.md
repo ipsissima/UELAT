@@ -163,3 +163,65 @@ The 3 Admitted are exactly:
   Expected outcome: `Foundations/CCP.v` compiles; build advances past
   it and either goes green or reveals the next real Rocq 9 source
   break, logged as Round 4.
+
+  Actual outcome: **CCP.v compiled** (CI run 31654569651, Coq job
+  94306064969). Build advanced into parallel compilation of
+  `Approx/Certificate.v` and `Util/Modulus.v`, each with its own
+  Rocq 9 break (logged as Round 4).
+
+- **Round 4** (this commit): two independent source-level fixes,
+  both proof-side only. No statement, `Axiom`, `Parameter`,
+  `Admitted`, or `admit.` added, deleted, or altered anywhere.
+
+  **4a. `Coq/Approx/Certificate.v:18`** — `bernstein` definition.
+
+  Error:
+  ```
+  File "./Approx/Certificate.v", line 18, characters 16-17:
+  Error:
+  In environment
+  N : nat
+  k : nat
+  x : R
+  The term "N" has type "nat" while it is expected to have type "R".
+  ```
+
+  Cause: file imported `From Stdlib Require Import … Binomial …`.
+  In Rocq 9's namespace, the unqualified `Binomial` module resolves
+  to an R-typed `binomial` rather than the nat-typed one, so
+  `binomial N k` with `N k : nat` no longer type-checks. Also, the
+  previous body `IZR (binomial N k)` implicitly relied on
+  now-removed nat→Z coercion.
+
+  Fix: swap the ambiguous `Binomial` import for the qualified
+  `Coq.Arith.Binomial` (matching the pattern already used and
+  known to build in `Coq/Certificate.v:17`), and make the
+  nat→Z→R chain explicit:
+  ```
+  Definition bernstein (N k:nat) (x:R) : R :=
+    IZR (Z.of_nat (binomial N k)) * (x ^ k) * ((1 - x) ^ (N - k)).
+  ```
+  Definition semantics are identical: `bernstein N k x =
+  C(N,k) · x^k · (1-x)^(N-k)`. No downstream call site changes.
+
+  **4b. `Coq/Util/Modulus.v:22`** — `lipschitz_modulus` proof.
+
+  Error:
+  ```
+  File "./Util/Modulus.v", line 22, characters 2-3:
+  Error: [Focus] Wrong bullet -: No more goals.
+  ```
+
+  Cause: proof used `refine (ex_intro _ {| mu := … |} _)` with a
+  record literal missing the `mu_pos` and `mu_mono` fields, then
+  interleaved `split` calls and `-` bullets. Under Rocq 9 the
+  resulting obligation order / focusing behavior differs from the
+  older Coq, and the first `-` fires when its goal has already been
+  discharged.
+
+  Fix: build the record fully (`Hpos`, `Hmono` proved as separate
+  `assert`s first), then instantiate the existential with the
+  complete record and dispatch the equality body directly. No
+  `refine`, no bullets, no order-dependence. Statement of
+  `lipschitz_modulus` unchanged; witness function `mu(eps) = eps/(1+L)`
+  and its two properties unchanged.

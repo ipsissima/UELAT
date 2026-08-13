@@ -1,4 +1,7 @@
-From Stdlib Require Import Reals List Arith Binomial Psatz.
+From Stdlib Require Import Reals List Arith Psatz.
+(* Force nat-typed [binomial n k : nat] rather than any R-typed [binomial]
+   that unqualified [Binomial] can resolve to under Rocq 9's namespace. *)
+Require Import Coq.Arith.Binomial.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -15,7 +18,7 @@ Record cert := {
 
 (* Standard Bernstein basis on [0,1] using nat binomial *)
 Definition bernstein (N k:nat) (x:R) : R :=
-  IZR (binomial N k) * (x ^ k) * ((1 - x) ^ (N - k)).
+  IZR (Z.of_nat (binomial N k)) * (x ^ k) * ((1 - x) ^ (N - k)).
 
 Fixpoint nth_default (d:R) (l:list R) (k:nat) : R :=
   match l, k with
