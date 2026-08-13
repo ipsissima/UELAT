@@ -116,7 +116,7 @@ Qed.
 Lemma pigeonhole_injective : forall (A B : Type) (f : A -> B) (la : list A) (lb : list B),
   NoDup la ->
   (forall a, In a la -> In (f a) lb) ->
-  length la > length lb ->
+  (length la > length lb)%nat ->
   exists a1 a2, In a1 la /\ In a2 la /\ a1 <> a2 /\ f a1 = f a2.
 Proof.
   intros A B f la lb Hnodup Himg Hlen.
@@ -125,7 +125,7 @@ Proof.
   destruct (classic (forall a1 a2, In a1 la -> In a2 la -> f a1 = f a2 -> a1 = a2)) as [Hinj | Hnotinj].
   - (* f is injective, contradiction with Hlen *)
     exfalso.
-    assert (Hle: length la <= length lb).
+    assert (Hle: (length la <= length lb)%nat).
     { (* Injective image has same size as domain, and image ⊆ lb *)
       clear Hlen.
       induction la as [|a la' IH]; simpl.
@@ -199,7 +199,7 @@ Definition encoding_injective : Prop :=
 (** Key theorem: if encoding is injective, some certificate has size >= K *)
 Theorem certificate_size_lower_bound :
   encoding_injective ->
-  exists cfg, valid_config cfg /\ cert_size (encode cfg) >= K.
+  exists cfg, valid_config cfg /\ (cert_size (encode cfg) >= K)%nat.
 Proof.
   intros Hinj.
   (* Strategy: If all certs have size < K, then there are < 2^K distinct certs.
@@ -229,7 +229,7 @@ Proof.
     (* And we have 2^K valid configs, so pigeonhole gives collision *)
     (* This contradicts Hinj *)
 
-    assert (Hpow: Nat.pow 2 K >= 1) by (apply Nat.pow_le_mono_r; lia).
+    assert (Hpow: (Nat.pow 2 K >= 1)%nat) by (apply Nat.pow_le_mono_r; lia).
 
     (* We use the fact that:
        - There are 2^K valid configurations
@@ -351,7 +351,7 @@ Theorem lipschitz_incompressibility :
        cfg1 = cfg2) ->
     exists cfg,
       length cfg = K_lipschitz /\
-      cert_size (encode cfg) >= K_lipschitz.
+      (cert_size (encode cfg) >= K_lipschitz)%nat.
 Proof.
   intros encode Hinj.
   apply (certificate_size_lower_bound K_lipschitz K_lipschitz_pos encode).

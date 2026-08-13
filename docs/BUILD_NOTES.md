@@ -296,3 +296,23 @@ The 3 Admitted are exactly:
   UELAT_{External,Internal},Spec,Weierstrass_Lipschitz,
   Bernstein_Lipschitz}, and the legacy root files). If any of them
   hit further Rocq 9 breaks, each gets its own round.
+
+  Actual outcome: `all_bool_lists_nodup` compiled. Next break was
+  `pigeonhole_injective`'s statement on line 119 —
+  `length la > length lb` with `Local Open Scope R_scope.` in
+  effect resolves `>` to R-comparison, and `length la : nat` no
+  longer matches (Rocq 9 stopped inserting an implicit nat→R
+  coercion here). Same shape recurs at a handful of nearby sites.
+
+- **Round 7** (this commit): scope-annotate every unscoped nat
+  comparison inside `Approx/Incompressibility.v`. Sites patched:
+  - line 119: `length la > length lb` → `(length la > length lb)%nat`
+  - line 128: `length la <= length lb` → `(length la <= length lb)%nat`
+  - line 202: `cert_size (encode cfg) >= K` → same with `%nat`
+  - line 232: `Nat.pow 2 K >= 1` → same with `%nat`
+  - line 354: `cert_size (encode cfg) >= K_lipschitz` → same with `%nat`
+
+  Purely notational; each `%nat`-scoped expression means exactly
+  what the unscoped expression meant under the older Coq (nat
+  comparison). No lemma / theorem statement semantically changed,
+  no `Axiom` / `Parameter` / `Admitted` / `admit.` added.
