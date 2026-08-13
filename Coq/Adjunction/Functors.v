@@ -134,8 +134,12 @@ Proof.
     + simpl. destruct (Nat.eqb (nth k' l' 0%nat) x) eqn:Heq.
       * apply Nat.eqb_eq in Heq.
         inversion Hnodup; subst.
+        (* Rocq 9's `subst` after `inversion Hnodup` uses `Heq :
+           nth k' l' 0%nat = x` to substitute `x` throughout and then
+           consumes Heq, so H1's `~ In x l'` becomes `~ In (nth k' l'
+           0%nat) l'` directly — no `rewrite <- Heq` needed here. *)
         exfalso. apply H1.
-        rewrite <- Heq. apply nth_In. simpl in Hk. lia.
+        apply nth_In. simpl in Hk. lia.
       * f_equal. inversion Hnodup; subst.
         apply IH; [exact H2 | simpl in Hk; lia].
 Qed.

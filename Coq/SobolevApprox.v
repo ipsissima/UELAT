@@ -126,9 +126,10 @@ Proof.
   induction n.
   - simpl. lra.
   - simpl.
-    apply Rplus_ge_compat.
-    + apply Hf.
-    + exact IHn.
+    (* Rocq 9's Rplus_ge_compat expects `x1 + y1 >= x2 + y2` shaped goals;
+       the goal here is `... + ... >= 0`, so specialize Hf at the sample
+       point and let lra combine with IHn. *)
+    specialize (Hf (midpoint_sample a h n)). lra.
 Qed.
 
 (** Riemann sum aux is non-negative when f is non-negative at sample points *)

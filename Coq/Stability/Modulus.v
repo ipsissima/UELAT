@@ -63,7 +63,10 @@ Proof.
      modulus witness satisfies the (trivial) spec. When the spec is
      upgraded past `True`, this proof will need real Rpower monotonicity. *)
   intros C alpha _ _ _.
-  destruct (lipschitz_modulus 0 (Rle_refl 0)) as [M _].
+  (* Set Implicit Arguments in this file makes lipschitz_modulus's L
+     argument implicit (Coq infers L from the type of the proof); pass
+     L=0 via @ to disambiguate. *)
+  destruct (@lipschitz_modulus 0 (Rle_refl 0)) as [M _].
   exists M. trivial.
 Qed.
 

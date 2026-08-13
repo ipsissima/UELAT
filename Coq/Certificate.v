@@ -57,7 +57,7 @@ Definition decode_index (j : nat) : nat * nat :=
         if (acc + n <=? j)%nat then find_N fuel' (S n) (acc + n)%nat
         else ((n - 1)%nat, (j - (acc - (n - 1)))%nat)
     end
-  in find_N (S j) 1 0.
+  in find_N (S j) 1%nat 0%nat.
 
 Definition basis (j : nat) (x : R) : R :=
   let '(N, k) := decode_index j in

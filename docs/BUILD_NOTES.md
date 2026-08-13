@@ -663,3 +663,47 @@ The 3 Admitted are exactly:
   + binom lemmas), `Examples/ChebyshevProof.v:123` (proof context
   slip), and now `Examples/FourierCert.v:260` (field tactic on a
   complex rational equation — needs a careful look).
+
+- **Round 17** (this commit): Round-16 patches partially worked;
+  seven follow-ups for either regressed sites or fresh breaks.
+
+  **17a. `Coq/Approx/Incompressibility.v:253`** — Round 16's
+  `destruct K; simpl; lia.` handles K=0 but fails at K = S k because
+  the S-case needs `2^k >= 1` as a hypothesis. Change to
+  `induction K; simpl; lia.` so IHK carries the invariant.
+
+  **17b. `Coq/Adjunction/Functors.v:138`** — `The variable Heq was
+  not found.` Rocq 9's `subst` after `inversion Hnodup` consumes
+  `Heq : nth k' l' 0%nat = x` (it substitutes `x` throughout and
+  drops the now-trivial equation). The old `rewrite <- Heq` then
+  fires against a missing name. Remove the dead `rewrite`; H1's
+  goal was already rewritten in place by subst.
+
+  **17c. `Coq/Stability/Modulus.v:66`** — `The term "0" has type
+  "R" while it is expected to have type "0 <= ?L".` Round-16's
+  `lipschitz_modulus 0 (Rle_refl 0)` mis-fed the arguments under
+  the file's `Set Implicit Arguments`, which makes lipschitz_modulus's
+  `L` implicit. Force explicit arg mode with `@lipschitz_modulus 0`.
+
+  **17d. `Coq/Stability/CertificateComposition.v:85`** — `Found no
+  subterm matching "Rabs (- ?M)"`. Rocq 9's numeric literal `-1`
+  isn't syntactically `Ropp 1`, so `rewrite Rabs_Ropp` can't match.
+  Replace with `rewrite Rabs_left by lra; lra.` after
+  `replace (Rabs (-1)) with 1%R` — direct evaluation, same value.
+
+  **17e. `Coq/Certificate.v:60`** — the fuel-based fix passed
+  `find_N (S j) 1 0`. Under `R_scope`, `1` and `0` are R literals;
+  `find_N` needs nat args. Annotate: `find_N (S j) 1%nat 0%nat`.
+
+  **17f. `Coq/SobolevApprox.v:129`** — Rplus_ge_compat expects
+  `x1 + y1 >= x2 + y2`; the goal `f (...) + rsum >= 0` doesn't
+  match. Specialize `Hf` at the sample point and let `lra` combine
+  with `IHn`.
+
+  **17g. `Coq/Approx/EffectiveDescent.v:117`** — Round-16's `simpl;
+  lia` didn't reconcile `fold_right Nat.add O …` (from GlueCert's
+  cert_size) with `fold_right plus 0%nat …` (from total_local_size).
+  Definitionally the same folded function, but Rocq 9's lia doesn't
+  see through the syntactic mismatch. Use `change Nat.add with
+  Init.Nat.add`, `set` the fold to a variable `S`, and let lia
+  discharge `M + S <= S + M`.

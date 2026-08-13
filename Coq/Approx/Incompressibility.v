@@ -247,10 +247,12 @@ Proof.
     (* This contradicts Hinj *)
 
     (* Nat.pow_le_mono_r produces `b^n <= b^m`; the goal `1 <= 2^K` isn't
-       yet in that shape (1 is not literally 2^0 after reduction). Prove
-       by direct case-split on K instead. *)
-    assert (Hpow: (Nat.pow 2 K >= 1)%coq_nat)
-      by (destruct K; simpl; lia).
+       yet in that shape (1 is not literally 2^0 after reduction). Round-16
+       tried `destruct K` but that fails for K = S k because the S branch
+       needs `2^k >= 1` as an inductive hypothesis. Use `induction K`
+       instead — base K=0 gives `1 >= 1`, step case reuses IHK. *)
+    assert (Hpow: (Nat.pow 2 K >= 1)%coq_nat).
+    { clear -HK. induction K; simpl; lia. }
 
     (* We use the fact that:
        - There are 2^K valid configurations

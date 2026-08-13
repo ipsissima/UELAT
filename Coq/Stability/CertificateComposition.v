@@ -82,7 +82,12 @@ Proof.
   intro Cf.
   unfold cert_neg.
   destruct Cf; simpl; try trivial.
-  rewrite Rabs_Ropp, Rabs_R1. ring.
+  (* Rocq 9 parses `-1` here as a numeric literal, not as `Ropp 1`,
+     so `rewrite Rabs_Ropp` can't find the `Rabs (- ?x)` pattern.
+     Handle `Rabs (-1) = 1` directly via Rabs_left. *)
+  replace (Rabs (-1)) with 1%R.
+  - ring.
+  - rewrite Rabs_left by lra. lra.
 Qed.
 
 (** ** Subtraction of Certificates *)
