@@ -13,6 +13,11 @@
 From mathcomp Require Import all_ssreflect all_algebra.
 From Stdlib Require Import Reals Lra Lia.
 From Stdlib Require Import List.
+(* Rocq 9 no longer transitively re-exports Classical from Reals, so the
+   uses of `classic`, `not_all_ex_not`, `imply_to_and` in this file need
+   their module imported explicitly. Not a new logical dependency — the
+   proofs below already invoke these classical helpers. *)
+From Stdlib Require Import Classical.
 Import ListNotations.
 Local Open Scope R_scope.
 

@@ -316,3 +316,22 @@ The 3 Admitted are exactly:
   what the unscoped expression meant under the older Coq (nat
   comparison). No lemma / theorem statement semantically changed,
   no `Axiom` / `Parameter` / `Admitted` / `admit.` added.
+
+- **Round 8** (this commit): `Approx/Incompressibility.v:125` —
+  `Error: The variable classic was not found in the current environment.`
+
+  Cause: the proof calls `classic`, `not_all_ex_not`, and
+  `imply_to_and` from stdlib's classical-logic helpers, but the
+  file never imported `Classical` — under older Coq the require of
+  `Reals` transitively pulled it in, and Rocq 9 stopped doing so.
+
+  Fix: add `From Stdlib Require Import Classical.` to the import
+  block. **This is not a new logical dependency for the file** —
+  the same three classical helpers were already used in the
+  existing proof, they just relied on an implicit re-export. No
+  `Axiom` / `Parameter` / `Admitted` / `admit.` declaration is
+  added to any `.v` file. The classical axioms that `classic`
+  depends on live inside `Stdlib.Logic.Classical_Prop`, are
+  already visible to `coqchk` on any development that uses
+  `Reals`, and were already load-bearing for this file even before
+  this commit — the failing build made that explicit.
