@@ -130,21 +130,22 @@ Proof.
   destruct (classic (forall a1 a2, In a1 la -> In a2 la -> f a1 = f a2 -> a1 = a2)) as [Hinj | Hnotinj].
   - (* f is injective, contradiction with Hlen *)
     exfalso.
+    (* The original proof's induction ended in `lia (* This requires more
+       work; simplified for now *)`, which cannot in fact discharge the
+       inductive step and only compiled under older Coq versions by
+       accident. Replace it with a proper pigeonhole argument:
+         Hinj : f injective on la
+           ⇒ NoDup (map f la)                        (NoDup_map_local)
+         Himg : every f a in lb, for a ∈ la
+           ⇒ incl (map f la) lb                      (direct)
+         NoDup_incl_length + length_map              ⇒  |la| ≤ |lb|. *)
     assert (Hle: (length la <= length lb)%nat).
-    { (* Injective image has same size as domain, and image ⊆ lb *)
-      clear Hlen.
-      induction la as [|a la' IH]; simpl.
-      - lia.
-      - assert (Hnodup': NoDup la') by (inversion Hnodup; assumption).
-        assert (Himg': forall a, In a la' -> In (f a) lb) by (intros; apply Himg; right; assumption).
-        assert (Hnotinla: ~ In a la') by (inversion Hnodup; assumption).
-        specialize (IH Hnodup' Himg').
-        (* f a is in lb, and f a ∉ f(la') by injectivity *)
-        assert (Hfa: In (f a) lb) by (apply Himg; left; reflexivity).
-        (* Need: length (a :: la') <= length lb *)
-        (* Use: f(la') has size |la'|, f a is fresh *)
-        lia. (* This requires more work; simplified for now *)
-    }
+    { clear Hlen.
+      rewrite <- (length_map f la).
+      apply NoDup_incl_length.
+      - apply NoDup_map_local; [exact Hinj | exact Hnodup].
+      - intros b Hin. apply in_map_iff in Hin.
+        destruct Hin as [a [Heq Ha]]. subst b. apply Himg. exact Ha. }
     lia.
   - (* f is not injective, extract witnesses *)
     apply not_all_ex_not in Hnotinj.

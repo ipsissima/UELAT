@@ -335,3 +335,51 @@ The 3 Admitted are exactly:
   already visible to `coqchk` on any development that uses
   `Reals`, and were already load-bearing for this file even before
   this commit — the failing build made that explicit.
+
+- **Round 9** (this commit): `Approx/Incompressibility.v:137` —
+  `Error: Tactic failure: Cannot find witness.`
+
+  Cause — bigger than the surface `lia` failure suggests. Looking
+  at the assert block that starts `Hle: length la <= length lb`
+  in `pigeonhole_injective`: the second bullet of its induction
+  ended in
+
+      lia. (* This requires more work; simplified for now *)
+
+  and *cannot* be proved by `lia` alone — the inductive step needs
+  the standard freshness argument (`f a ∉ f(la')` by injectivity,
+  and `f a ∈ lb`, so `|la'|+1 ≤ |lb|`). The comment even admits
+  the incompleteness. This whole assertion has been a
+  **pseudo-proof** in the repo the entire time — it only compiled
+  under older Coq via lucky behaviour of the `lia` decision
+  procedure on evaluations that happened not to reduce to a
+  concrete-numeric contradiction. Rocq 9's `lia` correctly refuses
+  it and reports `Cannot find witness.` on the base case's
+  invocation first because parallel checking hits that error site
+  before the inductive-case one.
+
+  Fix — proper proof of the same statement:
+  ```
+  assert (Hle: (length la <= length lb)%nat).
+  { clear Hlen.
+    rewrite <- (length_map f la).
+    apply NoDup_incl_length.
+    - apply NoDup_map_local; [exact Hinj | exact Hnodup].
+    - intros b Hin. apply in_map_iff in Hin.
+      destruct Hin as [a [Heq Ha]]. subst b. apply Himg. exact Ha. }
+  ```
+  Chain of reasoning: `Hinj` gives `f` injective on `la`, so
+  `NoDup_map_local` from Round 6 lifts `NoDup la` to
+  `NoDup (map f la)`. `Himg` gives `map f la ⊆ lb` directly.
+  `NoDup_incl_length` (Stdlib.Lists.List) turns that into
+  `length (map f la) ≤ length lb`, and `length_map` rewrites the
+  LHS to `length la`. Then the outer `lia` closes `False` from
+  `Hle` + `Hlen`.
+
+  **This is a substantive change to a proof body**, but zero
+  change to any statement: `pigeonhole_injective`'s theorem line
+  is byte-identical, and every proof step is now discharged
+  legitimately, no `Admitted` / `admit.` / `Axiom` / `Parameter`
+  introduced. Explicitly reporting per the non-negotiables: I
+  found and closed a pseudo-proof that was silently smuggling an
+  unproven inductive step, without altering what the lemma claims.
