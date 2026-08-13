@@ -108,9 +108,58 @@ The 3 Admitted are exactly:
   Cause: under Rocq 9, `coq_makefile` rejects an `-o` path outside
   the current directory. Not a source-level regression.
 
-- **Round 2** (this commit): patch `.github/workflows/ci.yml` only —
+- **Round 2** (commit e68bc7a): patch `.github/workflows/ci.yml` only —
   run `coq_makefile` from inside `Coq/` with file paths stripped of
   the leading `Coq/`, then `make -C Coq -j2` as before. No opam or
   `.v` change. Expected outcome: `Build Coq` reaches actual source
   compilation. Any file that fails to build under Rocq 9 lands in a
   new "Round 3" subsection with file/line/cause/fix.
+
+  Actual outcome: **workflow patch verified** — CI run 31631533078
+  (Coq job 94231230154) got past `coq_makefile` and started
+  compiling. `ROCQ compile Foundations/Certificate.v` finished (with
+  benign `Scheme All` register-all warnings only), `ROCQ compile
+  Foundations/ProbeTheory.v` finished, and the build stopped in
+  `Foundations/CCP.v` on the first real Rocq 9 tactic-behavior
+  change. Setup succeeded via a cached `~/.opam` (that's why the
+  step took seconds, not the 25 min the earlier run took). Two
+  further empty-commit retriggers were spent on unrelated GitHub
+  Actions network transients (`ocaml/setup-ocaml@v3` socket-hang-up
+  from 19:10-19:13 UTC on 2026-08-12) that never touched our patch.
+
+- **Round 3** (this commit): fix `Coq/Foundations/CCP.v:55`. No
+  toolchain change; no statement change.
+
+  Error:
+  ```
+  File "./Foundations/CCP.v", line 55, characters 54-57:
+  Error:
+  In environment
+  P : nat -> bool
+  Hp0 : P 0%nat = false
+  Hnone : None = None
+  Hle : (0 <= 0)%nat
+  The term "Hp0" has type "P 0%nat = false" while it is expected to
+  have type "false = false".
+  ```
+
+  Cause: `bounded_search_complete`'s base case ran
+  `destruct (P 0%nat) eqn:Hp0; [discriminate | exact Hp0]`.
+  Under Rocq 9, `destruct <non-variable term> eqn:H` substitutes
+  the term in the goal (in the `false` branch, the goal `P 0 = false`
+  becomes `false = false`) rather than leaving the goal untouched.
+  So the old `exact Hp0` — where `Hp0 : P 0 = false` — no longer
+  type-checks against the rewritten goal `false = false`.
+
+  Fix: replace `exact Hp0` with `reflexivity`. The statement
+  `bounded_search_complete : forall P bound, bounded_search P bound = None
+  -> forall n, (n <= bound)%nat -> P n = false` is unchanged, and no
+  new `Admitted` / `admit.` / `Axiom` / `Parameter` was introduced.
+  The inductive-case sub-proof already uses `subst; exact HpSb` where
+  `HpSb : P (S b) = false` matches the goal directly (no goal-side
+  substitution because `P (S b)` didn't occur in the goal at the
+  destruct site), so it is untouched.
+
+  Expected outcome: `Foundations/CCP.v` compiles; build advances past
+  it and either goes green or reveals the next real Rocq 9 source
+  break, logged as Round 4.
