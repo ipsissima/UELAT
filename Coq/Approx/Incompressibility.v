@@ -139,7 +139,11 @@ Proof.
          Himg : every f a in lb, for a ∈ la
            ⇒ incl (map f la) lb                      (direct)
          NoDup_incl_length + length_map              ⇒  |la| ≤ |lb|. *)
-    assert (Hle: (length la <= length lb)%nat).
+    (* %coq_nat, not %nat: mathcomp's all_ssreflect remaps %nat to ssrnat's
+       bool-returning leq, but NoDup_incl_length is a stdlib lemma returning
+       Peano.le. Match its type here; the outer `lia` (Zify-aware in Rocq 9)
+       still bridges Hle (Peano.le) and Hlen (ssrnat leq bool) into False. *)
+    assert (Hle: (length la <= length lb)%coq_nat).
     { clear Hlen.
       rewrite <- (length_map f la).
       apply NoDup_incl_length.

@@ -383,3 +383,25 @@ The 3 Admitted are exactly:
   introduced. Explicitly reporting per the non-negotiables: I
   found and closed a pseudo-proof that was silently smuggling an
   unproven inductive step, without altering what the lemma claims.
+
+- **Round 10** (this commit): the Round-9 fix hit a mathcomp /
+  stdlib scope collision on the new local assertion. Error:
+  ```
+  Unable to unify "(length ?l <= length ?l')%coq_nat" with
+   "(length (map f la) <= length lb)%N = true".
+  ```
+  Cause: under `From mathcomp Require Import all_ssreflect`, `%nat`
+  now names *ssrnat's* `%N` scope, in which `<=` is the
+  bool-returning `leq` (used through the `_ = true` coercion),
+  not stdlib's Prop-valued `Peano.le`. `NoDup_incl_length` is a
+  stdlib lemma returning `Peano.le`, so its conclusion couldn't
+  unify with the `%nat`-typed assertion.
+
+  Fix: annotate the local `Hle` assertion with `%coq_nat` so its
+  type matches the stdlib lemma. The outer `lia` — which under
+  Rocq 9 speaks both `Peano` and `ssrnat.leq` through the Zify
+  extension — still bridges `Hle` (`Peano.le`) and `Hlen`
+  (ssrnat `leq` bool) into `False`. Only the *local* assertion
+  scope changed inside the proof body; the *lemma statement*'s
+  `%nat` hypothesis on `length la > length lb` is unchanged.
+  No `Axiom` / `Parameter` / `Admitted` / `admit.` added.
