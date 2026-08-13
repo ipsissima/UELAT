@@ -96,7 +96,7 @@ Fixpoint find_index (x : nat) (l : list nat) : nat :=
   end.
 
 Lemma find_index_correct : forall x l,
-  In x l -> nth (find_index x l) l 0 = x.
+  In x l -> nth (find_index x l) l 0%nat = x.
 Proof.
   intros x l Hin. induction l as [| y l' IH].
   - destruct Hin.

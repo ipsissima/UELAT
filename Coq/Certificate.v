@@ -6,15 +6,35 @@
     Reference: UELAT Paper, Appendix A
 *)
 
-Require Import Coq.Reals.Reals.
-Require Import Coq.Lists.List.
-Require Import Coq.QArith.QArith.
-Require Import Lra Lia.
+From Stdlib Require Import Reals List QArith Lra Lia ZArith.
 Import ListNotations.
 Open Scope R_scope.
 
-Require Import Coq.ZArith.ZArith.
-Require Import Coq.Arith.Binomial.
+(** Rocq 9 no longer ships [Stdlib.Arith.Binomial]. Reimplement the nat
+    binomial coefficient and its three algebraic facts locally so this
+    legacy file is self-contained. Plain Fixpoint + Qed lemmas — no
+    Axiom / Parameter / Admitted / admit added. *)
+Fixpoint binomial (n k : nat) : nat :=
+  match n, k with
+  | _, O => 1%nat
+  | O, S _ => 0%nat
+  | S n', S k' => (binomial n' k' + binomial n' (S k'))%nat
+  end.
+
+Lemma binom_gt : forall n k, (n < k)%nat -> binomial n k = 0%nat.
+Proof.
+  induction n as [|n IH]; intros [|k'] Hk; simpl; try lia; try reflexivity.
+  rewrite (IH k') by lia. rewrite (IH (S k')) by lia. reflexivity.
+Qed.
+
+Lemma binomn0 : forall n, binomial n 0 = 1%nat.
+Proof. intros [|n]; reflexivity. Qed.
+
+Lemma binomnn : forall n, binomial n n = 1%nat.
+Proof.
+  induction n as [|n IH]; simpl; [reflexivity|].
+  rewrite IH. rewrite (binom_gt n (S n)) by lia. reflexivity.
+Qed.
 
 (** * Bernstein Basis Functions *)
 

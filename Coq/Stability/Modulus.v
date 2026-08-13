@@ -31,20 +31,18 @@ Lemma lipschitz_modulus :
     (forall eps, 0 < eps -> mu M eps = eps / (1 + L)).
 Proof.
   intros L HL.
-  refine (ex_intro _ {| mu := fun eps => eps / (1 + L) |} _).
-  split.
-  - intros eps Heps.
-    assert (Hden : 0 < 1 + L) by lra.
-    unfold Rdiv.
+  assert (Hden : 0 < 1 + L) by lra.
+  pose (f := fun eps : R => eps / (1 + L)).
+  assert (Hpos : forall eps, 0 < eps -> 0 < f eps).
+  { intros eps Heps. unfold f, Rdiv.
     apply Rmult_lt_0_compat; [exact Heps|].
-    apply Rinv_0_lt_compat; exact Hden.
-  split.
-  - intros e1 e2 He1 Hle.
-    assert (Hden : 0 < 1 + L) by lra.
-    unfold Rdiv.
+    apply Rinv_0_lt_compat; exact Hden. }
+  assert (Hmono : forall e1 e2, 0 < e1 -> e1 <= e2 -> f e1 <= f e2).
+  { intros e1 e2 He1 Hle. unfold f, Rdiv.
     apply Rmult_le_compat_r; [apply Rlt_le; apply Rinv_0_lt_compat; exact Hden|].
-    exact Hle.
-  - intros eps Heps; reflexivity.
+    exact Hle. }
+  exists {| mu := f; mu_pos := Hpos; mu_mono := Hmono |}.
+  intros eps Heps; unfold f; reflexivity.
 Qed.
 
 (** * Hölder Modulus *)
@@ -57,21 +55,22 @@ Lemma holder_modulus :
     True.  (** Placeholder for full spec *)
 Proof.
   intros C alpha HC Halpha Halpha1.
-  refine (ex_intro _ {| mu := fun eps => Rpower (eps / C) (/ alpha) |} _).
-  split.
-  - intros eps Heps.
-    apply Rpower_pos.
-  split.
-  - intros e1 e2 He1 Hle.
+  pose (f := fun eps : R => Rpower (eps / C) (/ alpha)).
+  assert (Hpos : forall eps, 0 < eps -> 0 < f eps).
+  { intros eps _. unfold f. apply Rpower_pos. }
+  assert (Hmono : forall e1 e2, 0 < e1 -> e1 <= e2 -> f e1 <= f e2).
+  { intros e1 e2 He1 Hle. unfold f.
     apply Rle_Rpower_l.
-    + apply Rlt_le. apply Rinv_0_lt_compat. exact Halpha.
-    + split.
-      * apply Rlt_le. unfold Rdiv. apply Rmult_lt_0_compat.
-        exact He1. apply Rinv_0_lt_compat. exact HC.
-      * unfold Rdiv. apply Rmult_le_compat_r.
-        apply Rlt_le. apply Rinv_0_lt_compat. exact HC.
-        exact Hle.
-  - trivial.
+    - apply Rlt_le. apply Rinv_0_lt_compat. exact Halpha.
+    - split.
+      + apply Rlt_le. unfold Rdiv. apply Rmult_lt_0_compat.
+        * exact He1.
+        * apply Rinv_0_lt_compat. exact HC.
+      + unfold Rdiv. apply Rmult_le_compat_r.
+        * apply Rlt_le. apply Rinv_0_lt_compat. exact HC.
+        * exact Hle. }
+  exists {| mu := f; mu_pos := Hpos; mu_mono := Hmono |}.
+  trivial.
 Qed.
 
 (** * Modulus Composition *)

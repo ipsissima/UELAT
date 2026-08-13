@@ -64,7 +64,7 @@ Proof.
 Qed.
 
 Lemma midpoint_sample_upper : forall a h n k,
-  h >= 0 -> (k < n)%nat -> n > 0 ->
+  h >= 0 -> (k < n)%nat -> (n > 0)%nat ->
   midpoint_sample a h k < a + INR n * h.
 Proof.
   intros a h n k Hh Hk Hn.

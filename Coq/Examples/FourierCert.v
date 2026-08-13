@@ -135,12 +135,12 @@ Proof.
   intros n x.
   unfold basis_n.
   apply continuity_pt_mult.
-  - apply continuity_pt_const.
+  - apply continuity_pt_const; intros a b; reflexivity.
   - (* sin(n * PI * x) is continuous in x *)
     apply continuity_pt_comp with (f2 := sin).
     + (* n * PI * x is continuous *)
       apply continuity_pt_mult.
-      * apply continuity_pt_const.
+      * apply continuity_pt_const; intros a b; reflexivity.
       * apply continuity_pt_id.
     + apply sin_continuous.
 Qed.
@@ -151,7 +151,7 @@ Lemma term_continuous : forall n x,
 Proof.
   intros n x.
   apply continuity_pt_mult.
-  - apply continuity_pt_const.
+  - apply continuity_pt_const; intros a b; reflexivity.
   - apply basis_n_continuous.
 Qed.
 
@@ -178,7 +178,7 @@ Proof.
     apply continuity_pt_plus.
     + exact Hg.
     + apply continuity_pt_mult.
-      * apply continuity_pt_const.
+      * apply continuity_pt_const; intros a b; reflexivity.
       * apply basis_n_continuous.
 Qed.
 
@@ -188,7 +188,7 @@ Lemma partial_sum_aux_continuous : forall N acc x,
 Proof.
   intros N acc x.
   apply partial_sum_aux_continuous_gen.
-  apply continuity_pt_const.
+  apply continuity_pt_const; intros a b; reflexivity.
 Qed.
 
 Lemma partial_sum_continuous : forall N x,

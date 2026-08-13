@@ -18,7 +18,7 @@ Definition BN (N:nat) (f:R->R) (x:R) : R :=
   in
   let fix sum k :=
       match k with
-      | O => term 0
+      | O => term 0%nat
       | S k' => sum k' + term (S k')
       end
   in if Nat.eqb N 0 then f 0 else sum N.

@@ -450,3 +450,83 @@ The 3 Admitted are exactly:
   subsequent rounds can batch-fix. Purely operational; no source or
   opam change; no theorem statement / `Axiom` / `Parameter` /
   `Admitted` / `admit.` affected.
+
+- **Round 14** (this commit): batch-fix eight of the eleven Rocq 9
+  source breaks the `-k` run enumerated. Every one is either a
+  scope annotation, a missing import, or the same pattern as an
+  earlier round. No theorem statement / `Axiom` / `Parameter` /
+  `Admitted` / `admit.` added anywhere.
+
+  **14a. `Coq/Stability/CertificateComposition.v:11`**
+  `Cannot find module ListNotations` — file imported `Reals Lra Lia`
+  but not `List`, so `Import ListNotations` had nothing to import
+  from. Fix: add `List` to the `From Stdlib Require Import` line.
+
+  **14b. `Coq/Approx/EffectiveDescent.v:80`**
+  `The term "0" has type "R" while it is expected to have type "nat".`
+  `Definition total_local_size := fold_right plus 0 (map cert_size …)`
+  — under `R_scope` the literal `0` is `R0`, but `fold_right plus`
+  on a `list nat` needs a nat zero. Fix: `0` → `0%nat` in
+  `total_local_size` and `total_compat_size`.
+
+  **14c. `Coq/Approx/Bernstein.v:21`**
+  Same shape: inside `BN`'s `sum` fixpoint, `term 0` needs `term 0%nat`
+  because `term : nat -> R` and `R_scope` makes `0` be `R0`.
+
+  **14d. `Coq/SobolevApprox.v:67`**
+  `midpoint_sample_upper`'s hypothesis `n > 0` under `R_scope`
+  binds `>` to R comparison. Same-round fix as Round 7: annotate as
+  `(n > 0)%nat`. Lemma statement's mathematical content unchanged.
+
+  **14e. `Coq/Adjunction/Functors.v:99`**
+  `nth (find_index x l) l 0 = x` — the default value at position 3
+  of `nth : nat -> list nat -> nat -> nat` needs `0%nat`, not `R0`.
+
+  **14f. `Coq/Approx/Incompressibility.v:233`** (base case of
+  `certificate_size_lower_bound`)
+  Sibling of Round 11: `le_lt_dec` returns Peano.le, but the
+  theorem statement's `>= K)%nat` under `all_ssreflect` is ssrnat
+  `leq` bool. `exact Hge` doesn't unify. Replace with
+  `apply/leP; exact Hge.`
+
+  **14g. `Coq/Stability/Modulus.v`** — same pseudo-`refine + split
+  + bullet` pattern as `Util/Modulus.v` had (Round 4b). Both
+  `lipschitz_modulus` and `holder_modulus` refactored to build the
+  record fully (`Hpos`, `Hmono` as separate asserts) then instantiate
+  the existential. Statements identical, witness functions identical,
+  proofs now discharge cleanly under Rocq 9's obligation ordering.
+
+  **14h. `Coq/Examples/FourierCert.v` (lines 138, 143, 154)**
+  `apply continuity_pt_const.` — under Rocq 9's `Stdlib.Reals.Ranalysis1`
+  the lemma has signature `constant f -> continuity_pt f x0`, so it
+  leaves a `constant (fun _ => sqrt 2)`-shape obligation that the
+  file wasn't discharging (old Coq's variant took it as trivially
+  discharged). Append `; intros a b; reflexivity` to close the
+  obligation in the same tactic.
+
+  **14i. `Coq/Certificate.v` (root)** — legacy Bernstein module.
+  `Require Import Coq.Arith.Binomial` fails because Rocq 9 retired
+  `Stdlib.Arith.Binomial` (see Round 5's discovery). Replace with a
+  self-contained local `Fixpoint binomial : nat -> nat -> nat` and
+  three helper lemmas (`binomn0`, `binomnn`, `binom_gt`) proved by
+  straightforward induction. `binomial_R` and every downstream
+  `bernstein_basis_*` lemma keep their existing signatures and
+  bodies. New helper code only — no `Axiom` / `Parameter` /
+  `Admitted` added.
+
+  **Deferred to later rounds** (harder):
+  - `Coq/Approx/Bernstein_Lipschitz.v` — mathcomp-analysis 1.16.0
+    split `reals` into a separate package (`rocq-mathcomp-reals`);
+    the file's `From mathcomp.analysis Require Import reals` needs
+    to become `From mathcomp.reals Require Import reals`. The
+    file also uses `binom`, `binomS0`, `binomS`, `binomnn` from
+    the missing `Coq.Arith.Binomial`, so it needs the same
+    local-`binomial` treatment as `Coq/Certificate.v` plus mathcomp
+    package-path updates. Worth a dedicated round.
+  - `Coq/Examples/ChebyshevProof.v:123` — proof context slip in
+    `sorted_dec_head_largest`'s induction (specialising `IH` on
+    `Hin' : In x (h'' :: t'')` while `IH` was quantified over
+    `In x (h' :: t'')`). Under older Coq the destruct/induction
+    interaction happened to produce a matching IH; under Rocq 9 it
+    doesn't. Needs a rewrite of the inner induction, which I want
+    to do carefully — deferring.

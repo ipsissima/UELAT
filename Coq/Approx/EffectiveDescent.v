@@ -77,10 +77,10 @@ Hypothesis Hpart_max : Forall (fun L => L <= partition_max_lip) partition_lipsch
 (** * Size Computations *)
 
 Definition total_local_size : nat :=
-  fold_right plus 0 (map cert_size local_certs).
+  fold_right plus 0%nat (map cert_size local_certs).
 
 Definition total_compat_size : nat :=
-  fold_right plus 0 (map cert_size compat_certs).
+  fold_right plus 0%nat (map cert_size compat_certs).
 
 Definition partition_encoding_size : nat :=
   2 * M.  (** Encoding of M Lipschitz constants and supports *)

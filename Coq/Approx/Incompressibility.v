@@ -230,7 +230,9 @@ Proof.
     exists (repeat true K).
     split.
     + unfold valid_config. apply repeat_length.
-    + exact Hge.
+    + (* Statement's `>= K)%nat` under all_ssreflect is ssrnat leq (bool);
+         le_lt_dec gives Peano.le. Bridge via /leP. *)
+      apply/leP; exact Hge.
   - (* All certs have size < K? This leads to contradiction *)
     (* Number of possible certs of size < K is sum_{i=0}^{K-1} 2^i = 2^K - 1 < 2^K *)
     (* But we have 2^K configs, so some must collide *)
