@@ -73,15 +73,36 @@ Proof.
     + right. apply in_map. apply IH. exact Hlen'.
 Qed.
 
+(* Rocq 9's Stdlib.Lists.List exports NoDup_map_inv (backward direction)
+   but not the forward NoDup_map that older stdlibs had. Prove it locally
+   with a distinct name; it's a small structural fact, no axiom added. *)
+Lemma NoDup_map_local :
+  forall (A B : Type) (f : A -> B) (l : list A),
+    (forall x y, In x l -> In y l -> f x = f y -> x = y) ->
+    NoDup l -> NoDup (map f l).
+Proof.
+  intros A B f l Hinj Hnd.
+  induction Hnd as [|a l' Hnotin Hnd' IH]; simpl.
+  - constructor.
+  - constructor.
+    + intro Hin. apply in_map_iff in Hin.
+      destruct Hin as [x [Hfx Hx]].
+      assert (Heq: a = x).
+      { apply Hinj; [left; reflexivity | right; exact Hx | symmetry; exact Hfx]. }
+      subst x. contradiction.
+    + apply IH. intros x y Hx Hy Heq.
+      apply Hinj; [right; exact Hx | right; exact Hy | exact Heq].
+Qed.
+
 Lemma all_bool_lists_nodup : forall n,
   NoDup (all_bool_lists n).
 Proof.
   induction n as [|n IH]; simpl.
   - constructor; [intro H; destruct H|constructor].
   - apply NoDup_app.
-    + apply NoDup_map; [|exact IH].
+    + apply NoDup_map_local; [|exact IH].
       intros x y _ _ Heq. injection Heq. auto.
-    + apply NoDup_map; [|exact IH].
+    + apply NoDup_map_local; [|exact IH].
       intros x y _ _ Heq. injection Heq. auto.
     + intros l Hin1 Hin2.
       apply in_map_iff in Hin1. destruct Hin1 as [l1 [Heq1 _]].

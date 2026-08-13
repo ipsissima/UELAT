@@ -268,3 +268,31 @@ The 3 Admitted are exactly:
   touched — CI hasn't reported on them because make -j2 aborts
   fast. If they surface as Rocq 9 breaks in the next round, they
   get their own entry.
+
+- **Round 6** (this commit): `Coq/Approx/Incompressibility.v:82` —
+  `Error: The variable NoDup_map was not found in the current
+  environment.`
+
+  Cause: Rocq 9's `Stdlib.Lists.List` no longer exports the forward
+  direction of NoDup-preservation-under-map. Only `NoDup_map_inv`
+  (the backward direction, `NoDup (map f l) -> NoDup l`) remains.
+  `all_bool_lists_nodup` relied on the forward direction.
+
+  Fix: add a small local helper `NoDup_map_local` with the standard
+  signature `(∀ x y, x∈l → y∈l → f x = f y → x = y) → NoDup l →
+  NoDup (map f l)`, proved by straightforward induction on `NoDup l`.
+  Reroute the two `apply NoDup_map` calls in `all_bool_lists_nodup`
+  to `NoDup_map_local`. No statement change to `all_bool_lists_nodup`
+  or any other lemma; no `Axiom`, `Parameter`, `Admitted`, or
+  `admit.` added. The helper is a plain `Lemma … Proof … Qed.` —
+  the constructive-island grep in CI ignores files outside
+  `Coq/Util/Modulus.v` and `Coq/Approx/{Certificate,Bernstein,
+  Bernstein_Lipschitz,Spec,Weierstrass_Lipschitz}.v`, and this
+  helper introduces no forbidden constructs anywhere in the tree.
+
+  Expected outcome: `Approx/Incompressibility.v` compiles;
+  build continues into the still-unexercised modules
+  (Adjunction/*, Stability/*, Examples/*, Approx/{EffectiveDescent,
+  UELAT_{External,Internal},Spec,Weierstrass_Lipschitz,
+  Bernstein_Lipschitz}, and the legacy root files). If any of them
+  hit further Rocq 9 breaks, each gets its own round.
