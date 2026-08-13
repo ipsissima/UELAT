@@ -225,3 +225,46 @@ The 3 Admitted are exactly:
   `refine`, no bullets, no order-dependence. Statement of
   `lipschitz_modulus` unchanged; witness function `mu(eps) = eps/(1+L)`
   and its two properties unchanged.
+
+- **Round 5** (this commit): the Round-4 attempt to route
+  `Approx/Certificate.v` through `Coq.Arith.Binomial` doesn't work
+  under Rocq 9 either — the compat alias `Coq.Arith.Binomial →
+  Stdlib.Arith.Binomial` fails at load time:
+  ```
+  File "./Approx/Certificate.v", line 4, characters 15-33:
+  Error: Unable to locate library Stdlib.Arith.Binomial
+  ```
+  because Rocq 9's stdlib no longer ships `Stdlib.Arith.Binomial`
+  at all. The nat-typed `binomial : nat -> nat -> nat` that Coq 8.x
+  provided from `Coq.Arith.Binomial` has been retired.
+
+  Fix: switch both `Coq/Approx/Certificate.v` and
+  `Coq/Approx/Bernstein.v` to use `C : nat -> nat -> R` from
+  `Stdlib.Reals.Binomial`. `C n k` is defined there as
+  `INR (fact n) / (INR (fact p) * INR (fact (n - p)))`, i.e. exactly
+  the R-valued binomial coefficient, which is what
+  `IZR (binomial N k)` was trying to express in the first place —
+  same value, just skipping the removed nat→Z→R detour. Definitions:
+
+  ```
+  (* Approx/Certificate.v *)
+  Definition bernstein (N k:nat) (x:R) : R :=
+    C N k * (x ^ k) * ((1 - x) ^ (N - k)).
+
+  (* Approx/Bernstein.v — inside BN's `term` *)
+  f (INR k / INR N) * (C N k * x^k * (1 - x)^(N - k))
+  ```
+
+  No statement / theorem / `Axiom` / `Parameter` / `Admitted` /
+  `admit.` change anywhere. Downstream callers use `eval_cert` /
+  `BN`, never inspect `bernstein`'s specific numeric form, so the
+  refactor is transparent to every proof that consumes these
+  operators.
+
+  Legacy files `Coq/Certificate.v`, `Coq/Approx/Bernstein_Lipschitz.v`,
+  and (transitively) `Coq/PartitionOfUnity.v`/`Coq/ErrorBound.v` also
+  reference `Coq.Arith.Binomial` and its nat-typed lemmas
+  (`binomn0`, `binomnn`, `binom_gt`, `binom_mult_S`). Not yet
+  touched — CI hasn't reported on them because make -j2 aborts
+  fast. If they surface as Rocq 9 breaks in the next round, they
+  get their own entry.

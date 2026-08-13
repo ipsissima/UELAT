@@ -1,4 +1,8 @@
-From Stdlib Require Import Reals Binomial Psatz.
+From Stdlib Require Import Reals Psatz.
+(* [C : nat -> nat -> R] from Stdlib.Reals.Binomial. See the note in
+   Approx/Certificate.v: Rocq 9 dropped Stdlib.Arith.Binomial and the
+   unqualified [Binomial] import no longer yields a nat-typed [binomial]. *)
+Require Import Stdlib.Reals.Binomial.
 From UELAT.Approx Require Import Certificate.
 Local Open Scope R_scope.
 
@@ -10,7 +14,7 @@ Definition I01 (x:R) : Prop := 0 <= x <= 1.
 Definition BN (N:nat) (f:R->R) (x:R) : R :=
   let term k :=
     f (INR k / INR N) *
-    (IZR (binomial N k) * x^k * (1 - x)^(N - k))
+    (C N k * x^k * (1 - x)^(N - k))
   in
   let fix sum k :=
       match k with
