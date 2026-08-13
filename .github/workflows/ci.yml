@@ -59,14 +59,26 @@ jobs:
       - name: Build Coq
         shell: bash
         run: |
-          set -eux
+          # Do NOT `set -e` here: we run `make -k` so every remaining
+          # Rocq 9 source break surfaces in one CI cycle instead of one
+          # per push. We still fail the step at the end if any target
+          # failed, so the job stays red until the whole tree builds.
+          set -ux
           eval "$(opam env)"
           # Rocq 9's coq_makefile requires -o to be in the current directory,
           # so run it from inside Coq/ with file paths relative to Coq/.
           readarray -t COQ_FILES < <(git ls-files 'Coq/*.v' 'Coq/*/*.v' 'Coq/*/*/*.v')
           COQ_FILES_LOCAL=("${COQ_FILES[@]#Coq/}")
-          (cd Coq && coq_makefile -f _CoqProject "${COQ_FILES_LOCAL[@]}" -o Makefile)
-          make -C Coq -j2
+          (cd Coq && coq_makefile -f _CoqProject "${COQ_FILES_LOCAL[@]}" -o Makefile) \
+            || { echo "coq_makefile failed"; exit 1; }
+          set +e
+          make -C Coq -j2 -k
+          make_rc=$?
+          set -e
+          if [ "$make_rc" -ne 0 ]; then
+            echo "::error::make -k finished with rc=$make_rc — see errors above"
+            exit "$make_rc"
+          fi
 
       - name: coqchk (UELAT)
         shell: bash

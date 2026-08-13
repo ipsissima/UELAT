@@ -441,3 +441,12 @@ The 3 Admitted are exactly:
   Same disposition as the Classical import: pre-existing use of the
   same identifier, made explicit; no new logical dependency, no
   `Axiom` / `Parameter` / `Admitted` / `admit.` declared.
+
+- **Round 13 (CI change only, no `.v` edit)**: switch the `Build Coq`
+  step to `make -k` and let it collect every remaining Rocq 9 source
+  break in a single CI cycle instead of one per push. The step still
+  fails if any target failed, so the job stays red until the entire
+  tree builds — but the log now enumerates all breaks at once so
+  subsequent rounds can batch-fix. Purely operational; no source or
+  opam change; no theorem statement / `Axiom` / `Parameter` /
+  `Admitted` / `admit.` affected.
