@@ -141,7 +141,7 @@ Lemma riemann_sum_aux_nonneg_interval : forall f a b n,
 Proof.
   intros f a b n Hf Hab Hn h.
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; lia]. }
   induction n.
   - lia.
   - destruct n.
@@ -181,7 +181,7 @@ Proof.
   unfold riemann_sum.
   set (h := (b - a) / INR n).
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; lia]. }
   apply Rmult_ge_compat.
   - lra.
   - exact Hh.
@@ -248,7 +248,7 @@ Lemma riemann_sum_aux_bound : forall f a b n M,
 Proof.
   intros f a b n M Hf Ha Hb Hab Hn h.
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; lia]. }
   induction n.
   - lia.
   - destruct n.
@@ -283,7 +283,7 @@ Proof.
   unfold inner_product_R, riemann_sum.
   set (h := (b - a) / INR quad_points).
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; unfold quad_points; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; unfold quad_points; lia]. }
   rewrite Rabs_mult.
   assert (Habs_h : Rabs h = h).
   { rewrite Rabs_right; [reflexivity | lra]. }

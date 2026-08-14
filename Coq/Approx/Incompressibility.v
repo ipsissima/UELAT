@@ -252,7 +252,11 @@ Proof.
        needs `2^k >= 1` as an inductive hypothesis. Use `induction K`
        instead — base K=0 gives `1 >= 1`, step case reuses IHK. *)
     assert (Hpow: (Nat.pow 2 K >= 1)%coq_nat).
-    { clear -HK. induction K; simpl; lia. }
+    { (* K is a Section Variable; abstract into an aux lemma first,
+         then instantiate at K. *)
+      assert (Haux : forall k : nat, (Nat.pow 2 k >= 1)%coq_nat).
+      { induction k; simpl; lia. }
+      apply Haux. }
 
     (* We use the fact that:
        - There are 2^K valid configurations

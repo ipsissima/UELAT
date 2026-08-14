@@ -91,7 +91,12 @@ Proof.
   intros x n [Hx0 Hx1].
   induction n.
   - simpl. lra.
-  - simpl. apply Rmult_le_1; [exact Hx0 | exact IHn | exact Hx1].
+  - (* Rmult_le_1 was removed from Rocq 9's Stdlib.Reals; prove x*x^n<=1
+       via Rmult_le_compat and boundedness of both factors. *)
+    simpl.
+    apply Rle_trans with (1 * 1); [|lra].
+    apply Rmult_le_compat; try assumption.
+    apply pow_le; assumption.
 Qed.
 
 (** * Binomial Theorem via Direct Power Expansion

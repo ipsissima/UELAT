@@ -111,13 +111,9 @@ Theorem glued_cert_size_bound :
 Proof.
   unfold glued_certificate, cert_size.
   unfold total_local_size.
-  (* GlueCert's cert_size uses Nat.add (matches plus definitionally in
-     Rocq 9's stdlib, but not syntactically); `change` unifies the two
-     folds so `set + lia` sees the same variable on both sides. *)
-  change Nat.add with Init.Nat.add.
-  set (S := fold_right Init.Nat.add 0%nat (map cert_size local_certs)).
-  (* Goal: M + S <= S + M *)
-  lia.
+  (* Rewrite with add_comm and close by reflexivity of nat_le *)
+  rewrite Nat.add_comm.
+  apply Nat.le_refl.
 Qed.
 
 (** The glued certificate is well-formed *)

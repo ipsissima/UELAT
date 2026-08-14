@@ -157,8 +157,8 @@ Qed.
     We axiomatize this to avoid requiring additional structure on ModelMorphism. *)
 Axiom find_index_preserves_order : forall (l1 l2 : list nat) (i j : nat),
   (i < j)%nat -> (j < length l1)%nat ->
-  (forall k, (k < length l1)%nat -> In (nth k l1 0) l2) ->
-  (find_index (nth i l1 0) l2 < find_index (nth j l1 0) l2)%nat.
+  (forall k, (k < length l1)%nat -> In (nth k l1 0%nat) l2) ->
+  (find_index (nth i l1 0%nat) l2 < find_index (nth j l1 0%nat) l2)%nat.
 
 (** For basis index lists, find_index is a left inverse of nth.
 

@@ -95,9 +95,11 @@ Proof.
     + apply mu_pos. lra.
     + apply mu_pos. lra.
   - intros e1 e2 He1 Hle.
-    apply Rle_min_compat.
-    + apply mu_mono; lra.
-    + apply mu_mono; lra.
+    (* Rle_min_compat isn't in Rocq 9's Stdlib.Reals; prove via Rmin_glb
+       + Rle_trans through the two branches. *)
+    apply Rmin_glb.
+    + apply Rle_trans with (mu M1 (e1/2)); [apply Rmin_l | apply mu_mono; lra].
+    + apply Rle_trans with (mu M2 (e1/2)); [apply Rmin_r | apply mu_mono; lra].
 Defined.
 
 (** * Modulus Scaling *)

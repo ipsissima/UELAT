@@ -151,7 +151,7 @@ Qed.
 
 Lemma cert_chain_size : forall certs,
   cert_size (cert_chain certs) =
-    fold_right plus 0 (map cert_size certs).
+    fold_right plus 0%nat (map cert_size certs).
 Proof.
   intro certs.
   induction certs as [|C rest IH].
