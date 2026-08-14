@@ -36,6 +36,13 @@ Proof.
   rewrite IH. rewrite (binom_gt n (S n)) by lia. reflexivity.
 Qed.
 
+(* Pascal's identity: binomial (S n) (S k) = binomial n k + binomial n (S k) —
+   reduces by the Fixpoint's own recursive case. Needed by binomial_R_pascal. *)
+Lemma binomS : forall n k,
+  (S k <= S n)%nat ->
+  binomial (S n) (S k) = (binomial n k + binomial n (S k))%nat.
+Proof. intros n k _. reflexivity. Qed.
+
 (** * Bernstein Basis Functions *)
 
 Definition binomial_R (n k : nat) : R := IZR (Z.of_nat (binomial n k)).

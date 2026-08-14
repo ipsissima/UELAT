@@ -122,11 +122,10 @@ Theorem glued_cert_wf :
   cert_wf glued_certificate.
 Proof.
   intro Hall.
-  unfold glued_certificate. simpl.
-  repeat split.
-  - exact HM.
-  - exact Hlocal_len.
-  - exact Hall.
+  unfold glued_certificate.
+  (* cert_wf on GlueCert is the wf_glue constructor, not a conjunction —
+     `repeat split` doesn't help. Apply the constructor directly. *)
+  apply wf_glue; assumption.
 Qed.
 
 (** * Error Propagation *)

@@ -167,7 +167,7 @@ Axiom find_index_preserves_order : forall (l1 l2 : list nat) (i j : nat),
     property (see find_index_nth_self_nodup above). We keep this as an axiom
     to avoid threading NoDup hypotheses through all Model definitions. *)
 Axiom find_index_nth_self : forall (l : list nat) (k : nat),
-  (k < length l)%nat -> find_index (nth k l 0) l = k.
+  (k < length l)%nat -> find_index (nth k l 0%nat) l = k.
 
 (** G_obj is parameterized by answers. When ans has the correct length,
     it produces a probe theory with those answers. *)
@@ -197,7 +197,7 @@ Proof.
   (* The injection maps index i in G_obj W to the position of the i-th
      basis element of W in the basis of W'. *)
   refine {|
-    injection := fun i => find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')
+    injection := fun i => find_index (nth i (fds_basis_indices W) 0%nat) (fds_basis_indices W')
   |}.
   - (* Order preservation - uses the axiom find_index_preserves_order *)
     intros i j Hij.
@@ -235,11 +235,11 @@ Definition G_mor_gen {W W' : FinDimSubspace}
   (Hans : length ans = fds_dim W) (Hans' : length ans' = fds_dim W')
   (f : ModelMorphism W W')
   (Hcoh : forall i, (i < fds_dim W)%nat ->
-    nth i ans 0%Q = nth (find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')) ans' 0%Q) :
+    nth i ans 0%Q = nth (find_index (nth i (fds_basis_indices W) 0%nat) (fds_basis_indices W')) ans' 0%Q) :
   ProbeMorphism (G_obj W ans Hans) (G_obj W' ans' Hans').
 Proof.
   refine {|
-    injection := fun i => find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')
+    injection := fun i => find_index (nth i (fds_basis_indices W) 0%nat) (fds_basis_indices W')
   |}.
   - (* Order preservation *)
     intros i j Hij.
@@ -341,7 +341,7 @@ Proof.
   (* eta's injection is identity *)
   rewrite eta_injection_id; [| exact Hi].
   rewrite eta_injection_id; [| apply inj_in_range; exact Hi].
-  (* Now show: find_index (nth i (probes T) 0) (probes T') = injection f i *)
+  (* Now show: find_index (nth i (probes T) 0%nat) (probes T') = injection f i *)
   simpl. unfold F_obj. simpl.
   (* By inj_preserves_probes: nth i (probes T) 0 = nth (injection f i) (probes T') 0 *)
   rewrite (inj_preserves_probes f i Hi).

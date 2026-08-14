@@ -664,6 +664,52 @@ The 3 Admitted are exactly:
   slip), and now `Examples/FourierCert.v:260` (field tactic on a
   complex rational equation — needs a careful look).
 
+- **Round 18 & 19**: iterative batches (7+ file-fixes each) for
+  the succession of "next-error" sites Rocq 9 exposes as each
+  layer is unblocked. Fixes so far: wf_glue constructor apply in
+  `EffectiveDescent.v`, second `Rle_min_compat`→`Rmin_glb+Rle_trans`
+  in `Stability/Modulus.v` (`max_modulus`), a local `binomS` lemma
+  in `Certificate.v` (Rocq 9's dropped `Coq.Arith.Binomial`),
+  more `%nat` scope annotations in `Adjunction/Functors.v`,
+  `Rplus_ge_le_0_compat`→`Rle_ge + Rplus_le_le_0_compat` in
+  `SobolevApprox.v`. Same disposition throughout: no `Axiom` /
+  `Parameter` / `Admitted` / `admit.` added, no theorem statement
+  altered.
+
+  **NEW pseudo-proofs discovered** — under the same rule as
+  Round 9's `pigeonhole_injective` and Round 15's
+  `midpoint_sample_upper`, reporting openly rather than
+  silently patching:
+
+  - `Coq/Approx/Incompressibility.v:272` — the exfalso branch of
+    `certificate_size_lower_bound` (Theorem 8.2) ends with a bare
+    `lia` and a comment "Simplified: just show the bound must hold".
+    That `lia` does NOT actually derive False from the available
+    hypotheses (`Hpow : 2^K >= 1`, `Hlt : cert_size(encode(all-true)) < K`);
+    the theorem legitimately needs a pigeonhole argument
+    (`pigeonhole_injective`, which we proved in Round 9) to show
+    that if all-true's cert is small AND encoding is injective,
+    some other cfg's cert must be large. The original destruct
+    over just the all-true configuration is fundamentally too weak
+    to prove the general theorem — the pseudo-proof was silently
+    accepted by older Coq's laxer `lia`. **Blocker for Phase 1
+    green.** Fixing it requires reworking the case split into a
+    proper pigeonhole application via `pigeonhole_injective`,
+    which is doable but nontrivial — I have not yet completed it.
+    Reported per the non-negotiable "don't silently change
+    theorems" rule.
+
+  - `Coq/Stability/CertificateComposition.v:174` —
+    `cert_parallel_error`'s proof uses `rewrite Rmax_right; [|
+    apply Rmax_r]. reflexivity.`, whose subgoal shape doesn't
+    match what Rmax_right needs. The lemma statement — that a
+    parallel certificate's error is the max of the two subcerts —
+    is true if the folded certs have nonneg error, but that's a
+    hypothesis the current lemma doesn't assume. Needs either a
+    nonneg-error hypothesis added or a proof via case analysis
+    that doesn't rely on Rmax collapsing to just one arg.
+    Deferred alongside the above.
+
 - **Round 17** (this commit): Round-16 patches partially worked;
   seven follow-ups for either regressed sites or fresh breaks.
 

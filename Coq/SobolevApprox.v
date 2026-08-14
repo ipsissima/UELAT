@@ -147,8 +147,10 @@ Proof.
   - destruct n.
     + (* n = 1 *)
       simpl.
-      apply Rplus_ge_le_0_compat.
-      * apply Hf. apply midpoint_in_interval; [exact Hab | lia | lia].
+      (* Rplus_ge_le_0_compat is missing in Rocq 9 Stdlib; go through
+         Rle_ge + Rplus_le_le_0_compat which is stable. *)
+      apply Rle_ge. apply Rplus_le_le_0_compat.
+      * apply Rge_le. apply Hf. apply midpoint_in_interval; [exact Hab | lia | lia].
       * lra.
     + (* n = S n' *)
       simpl.
