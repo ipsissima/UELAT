@@ -91,8 +91,9 @@ jobs:
           eval "$(opam env)"
           # Check every included module. Root UELAT.v is excluded so we
           # cannot ask coqchk for `UELAT` — enumerate the included
-          # modules explicitly instead.
-          coqchk -q -R Coq UELAT \
+          # modules explicitly instead. Rocq 9's coqchk removed the
+          # old `-q` flag; don't pass it.
+          coqchk -R Coq UELAT \
             UELAT.Util.Reals_ext UELAT.Util.Summation UELAT.Util.Modulus \
             UELAT.Foundations.Certificate UELAT.Foundations.ProbeTheory \
             UELAT.Foundations.CCP \
