@@ -262,33 +262,33 @@ End WithPresentation.
     expected to have type Presentation"). Making [P] implicit on
     every projection and section-generalized definition fixes this. *)
 
-Arguments EvidenceClosure P.
-Arguments ec_refl_witness    {P} r nu.
-Arguments ec_weaken_witness  {P} r nu mu q q' W.
-Arguments ec_sym_witness     {P} r nu mu q W.
-Arguments ec_triangle_witness {P} r nu mu xi q1 q2 W1 W2.
-Arguments ec_refl_ok         {P} r nu.
-Arguments ec_weaken_ok       {P} r nu mu q q' W Hle Hdc.
-Arguments ec_sym_ok          {P} r nu mu q W Hdc.
-Arguments ec_triangle_ok     {P} r nu mu xi q1 q2 W1 W2 Hdc1 Hdc2.
+(* Positional (`_`) rather than named — `Arguments f x y` renames the
+   binder to `x`, `y`, and the record projection's auto-generated
+   binder names don't match what we'd type. `_` skips the rename. *)
 
-Arguments CertSystem P nu.
-Arguments cs_run     {P nu} c eps.
-Arguments cs_bound_lt {P nu} c eps Heps.
-Arguments cs_accept  {P nu} c eps Heps.
+Arguments ec_refl_witness    {_} _ _.
+Arguments ec_weaken_witness  {_} _ _ _ _ _ _.
+Arguments ec_sym_witness     {_} _ _ _ _ _.
+Arguments ec_triangle_witness {_} _ _ _ _ _ _ _ _.
+Arguments ec_refl_ok         {_} _ _.
+Arguments ec_weaken_ok       {_} _ _ _ _ _ _ _.
+Arguments ec_sym_ok          {_} _ _ _ _ _ _.
+Arguments ec_triangle_ok     {_} _ _ _ _ _ _ _ _ _.
 
-Arguments EvidenceObject P.
-Arguments eo_name {P} c.
-Arguments eo_system {P} c.
+Arguments cs_run     {_ _} _ _.
+Arguments cs_bound_lt {_ _} _ _ _.
+Arguments cs_accept  {_ _} _ _ _.
 
-Arguments EvidenceMorphism {P} c d.
-Arguments em_bound {P c d} f.
-Arguments em_bound_nonneg {P c d} f.
-Arguments em_witness {P c d} f.
-Arguments em_ok {P c d} f.
+Arguments eo_name {_} _.
+Arguments eo_system {_} _.
 
-Arguments id_evidence {P} EC c.
-Arguments comp_evidence {P} EC {c d e} f g.
+Arguments em_bound {_ _ _} _.
+Arguments em_bound_nonneg {_ _ _} _.
+Arguments em_witness {_ _ _} _.
+Arguments em_ok {_ _ _} _.
+
+Arguments id_evidence {_} _ _.
+Arguments comp_evidence {_} _ {_ _ _} _ _.
 
 (** ** What this file DOES NOT contain
 
