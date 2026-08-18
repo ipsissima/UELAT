@@ -209,6 +209,12 @@ Definition comp_evidence
     so the Lawvere metric can be computed from these lemmas alone even
     before the on-the-nose category laws are settled. *)
 
+(** The identity morphism's bound is literally 0 (Leibniz), from the
+    id_evidence definition; the other three bound identities hold up
+    to Qeq only, since Qplus/Qmult on Q is not Leibniz-associative or
+    Leibniz-unital. Stating them as Qeq is the correct shape and lets
+    downstream metric arguments use the setoid rewriting Q provides. *)
+
 Lemma id_evidence_bound : forall c, em_bound (id_evidence c) = 0.
 Proof. intro c. reflexivity. Qed.
 
@@ -219,16 +225,16 @@ Proof. intros; reflexivity. Qed.
 
 Lemma comp_evidence_id_right_bound :
   forall c d (f : EvidenceMorphism c d),
-    em_bound (comp_evidence f (id_evidence d)) = em_bound f.
+    (em_bound (comp_evidence f (id_evidence d)) == em_bound f)%Q.
 Proof.
-  intros c d f. simpl. now rewrite Qplus_0_r.
+  intros c d f. cbn. apply Qplus_0_r.
 Qed.
 
 Lemma comp_evidence_id_left_bound :
   forall c d (f : EvidenceMorphism c d),
-    em_bound (comp_evidence (id_evidence c) f) = em_bound f.
+    (em_bound (comp_evidence (id_evidence c) f) == em_bound f)%Q.
 Proof.
-  intros c d f. simpl. now rewrite Qplus_0_l.
+  intros c d f. cbn. apply Qplus_0_l.
 Qed.
 
 Lemma comp_evidence_assoc_bound :
@@ -236,10 +242,10 @@ Lemma comp_evidence_assoc_bound :
          (f : EvidenceMorphism c d)
          (g : EvidenceMorphism d e)
          (k : EvidenceMorphism e h),
-    em_bound (comp_evidence (comp_evidence f g) k)
-    = em_bound (comp_evidence f (comp_evidence g k)).
+    (em_bound (comp_evidence (comp_evidence f g) k)
+     == em_bound (comp_evidence f (comp_evidence g k)))%Q.
 Proof.
-  intros. simpl. now rewrite Qplus_assoc.
+  intros. cbn. symmetry. apply Qplus_assoc.
 Qed.
 
 End WithPresentation.
