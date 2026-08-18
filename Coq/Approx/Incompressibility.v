@@ -127,8 +127,9 @@ Lemma short_bits_length : forall n,
 Proof.
   induction n as [|n IH].
   - reflexivity.
-  - rewrite seq_S, flat_map_app, app_length, IH.
-    simpl flat_map. rewrite app_nil_r, all_bool_lists_length.
+  - (* all_ssreflect's rewrite takes space-separated lemmas, not commas. *)
+    rewrite seq_S flat_map_app app_length IH.
+    simpl flat_map. rewrite app_nil_r all_bool_lists_length.
     assert (Hk : (Nat.pow 2 n >= 1)%coq_nat).
     { clear. induction n; simpl; lia. }
     simpl Nat.pow. lia.
