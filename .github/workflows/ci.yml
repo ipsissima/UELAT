@@ -55,6 +55,15 @@ jobs:
         run: |
           set -eux
           SWITCH_NAME="uelat"
+          # Symmetric cleanup to the coq-released one above: a cached
+          # ~/.opam/${SWITCH_NAME} directory can survive without opam's
+          # switch registry knowing about it, in which case `switch set`
+          # sees no switch and `switch create` refuses because the
+          # directory exists. Delete the orphan so `switch create` works.
+          if [ -d "$HOME/.opam/${SWITCH_NAME}" ] && \
+             ! opam switch list --short 2>/dev/null | grep -Fxq "${SWITCH_NAME}"; then
+            rm -rf "$HOME/.opam/${SWITCH_NAME}"
+          fi
           if opam switch list --short | grep -Fxq "${SWITCH_NAME}"; then
             echo "Reusing existing switch '${SWITCH_NAME}'"
             opam switch set "${SWITCH_NAME}"
