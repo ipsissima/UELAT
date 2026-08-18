@@ -79,7 +79,7 @@ Stability/Modulus.v
 # midpoint_sample_upper (Round 15 corrected statement) and further
 # missing-lemma-name issues, PartitionOfUnity uses the old Coq.* import
 # style which triggers deprecation cascades but not yet errors.
-# EXCLUDED: PartitionOfUnity.v
+PartitionOfUnity.v
 # EXCLUDED: Certificate.v (root, legacy)
 # EXCLUDED: ErrorBound.v (depends on FourierCert)
 # EXCLUDED: SobolevApprox.v (multiple)

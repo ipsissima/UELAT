@@ -118,7 +118,8 @@ jobs:
             UELAT.Foundations.CCP \
             UELAT.Adjunction.Probe UELAT.Adjunction.Model \
             UELAT.Approx.Certificate UELAT.Approx.Bernstein UELAT.Approx.Spec \
-            UELAT.Stability.Modulus
+            UELAT.Stability.Modulus \
+            UELAT.PartitionOfUnity
 
       - name: No Admitted/Axiom in constructive island
         shell: bash

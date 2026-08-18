@@ -1,7 +1,4 @@
-Require Import Coq.Reals.Reals.
-Require Import Coq.Lists.List.
-Require Import Coq.micromega.Lra.
-Require Import Coq.Arith.Arith.
+From Stdlib Require Import Reals List Lra Arith.
 Import ListNotations.
 Open Scope R_scope.
 
