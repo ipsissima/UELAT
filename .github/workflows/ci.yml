@@ -36,6 +36,16 @@ jobs:
         run: |
           set -eux
           opam init -a --bare --disable-sandboxing || true
+          # actions/cache restores ~/.opam using the uelat.opam hash. When
+          # the restored tree has ~/.opam/repo/coq-released on disk but
+          # opam's own registry does NOT list the repo (which happens after
+          # opam version bumps and partial cache hits), both `add` and
+          # `set-url` fail. Detect and clean up before adding.
+          if [ -d "$HOME/.opam/repo/coq-released" ] && \
+             ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
+            rm -rf "$HOME/.opam/repo/coq-released" \
+                   "$HOME/.opam/repo/coq-released.tar.gz"
+          fi
           opam repo add coq-released https://coq.inria.fr/opam/released || \
             opam repo set-url coq-released https://coq.inria.fr/opam/released
           opam update
