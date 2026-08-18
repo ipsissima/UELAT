@@ -36,15 +36,22 @@ Adjunction/Model.v
 # facilities that moved in mathcomp-analysis 1.16 (reals split into
 # rocq-mathcomp-reals package) plus binom-lemma renames; EffectiveDescent
 # has a `where`-clause syntax break; UELAT_* transitively import
-# Bernstein_Lipschitz. Incompressibility joined the green set in Round 21
-# after the pigeonhole rewrite.
+# Bernstein_Lipschitz. Incompressibility's Theorem 8.2
+# (certificate_size_lower_bound) was rewritten with a real pigeonhole
+# proof in Round 21, but the same file contains lipschitz_lower_bound
+# and explicit_lower_bound whose STATEMENTS are provably false — old
+# Coq's lra silently accepted them. Per the Phase-1 no-weakening rule,
+# the file stays excluded pending real fixes to those statements; see
+# BUILD_NOTES §Round 21e.
 Approx/Certificate.v
 Approx/Bernstein.v
 Approx/Spec.v
-Approx/Incompressibility.v
 # EXCLUDED: Approx/Bernstein_Lipschitz.v (mathcomp-analysis reorg + binom)
 # EXCLUDED: Approx/UELAT_Internal.v (transitively imports Bernstein_Lipschitz)
 # EXCLUDED: Approx/UELAT_External.v (transitively imports Bernstein_Lipschitz)
+# EXCLUDED: Approx/Incompressibility.v (Theorem 8.2 fixed; lipschitz_lower_bound
+#                                       and explicit_lower_bound are false as
+#                                       stated — needs restatement, see BUILD_NOTES)
 # EXCLUDED: Approx/EffectiveDescent.v (`where`-clause syntax + pseudo-proof)
 # EXCLUDED: Approx/Weierstrass_Lipschitz.v (depends on Bernstein_Lipschitz)
 

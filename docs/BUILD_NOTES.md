@@ -832,3 +832,79 @@ for the same list annotated inline):
   see through the syntactic mismatch. Use `change Nat.add with
   Init.Nat.add`, `set` the fold to a variable `S`, and let lia
   discharge `M + S <= S + M`.
+
+---
+
+## Round 21 — Theorem 8.2's real proof, and two further false statements
+
+**Goal.** Replace the pseudo-proof at `Approx/Incompressibility.v:272`
+(certificate_size_lower_bound = Theorem 8.2 in the paper) — the previous
+proof ended in a bare `lia` inside an `exfalso` branch that could not in
+fact derive `False`, and only compiled under older Coq's `lia`.
+
+**21a. `Coq/Approx/Incompressibility.v:215-273` — real pigeonhole proof.**
+Replaced the exfalso branch with the argument the theorem actually
+requires:
+
+  * New helper `short_bits_length` shows
+    `length (flat_map all_bool_lists (seq 0 K)) = 2^K - 1`, i.e. the
+    number of bit strings of length strictly less than K.
+  * The main proof classically case-splits on the goal. In the negation
+    branch, every one of the 2^K valid configs encodes to some element
+    of that (2^K − 1)-sized list, so `pigeonhole_injective` produces two
+    distinct configs with equal encodings, contradicting the injectivity
+    hypothesis.
+
+The statement is untouched; no axiom or admit was added.
+
+**21b/c. `.github/workflows/ci.yml` — orphan-cache cleanup.** Two CI infra
+fixes needed after the underlying opam bumped to 2.5.2: the restored
+`~/.opam` tree from `actions/cache@v4` sometimes contains
+`~/.opam/repo/coq-released` or `~/.opam/<switch-name>` as a directory
+without opam's registry knowing about it. Both `add`/`set-url` and
+`switch create` then fail. The workflow now detects each state and
+deletes the orphan directory before adding.
+
+**21d. `Approx/Incompressibility.v:130` — ssreflect rewrite syntax.**
+My new `short_bits_length` initially used `rewrite l1, l2, l3.` (stdlib
+comma syntax). Under `all_ssreflect` the file imports, `rewrite` takes
+space-separated arguments; comma triggers
+`Syntax error: [ltac_use_default] expected after [tactic]`. Fixed to the
+space form matching the rest of the file.
+
+**21e. Two further FALSE statements discovered in Incompressibility.v —
+file re-excluded per NON-NEGOTIABLE RULE 1.**
+
+Un-excluding the file surfaced two theorems in the same module that were
+NEVER previously in the CI build (this module was excluded before Round
+21). Their `Proof`s call `lra` on goals that are provably false; old
+Coq's `lra` accepted them silently:
+
+  * **`lipschitz_lower_bound`** (line ~281) claims that from
+    `INR K >= L/(4*eps) - 1` one can produce `c > 0` with
+    `INR K >= c * L / eps`. For small L and large eps the hypothesis
+    holds vacuously (both sides of `-1` collapse into non-positive
+    territory while INR K ≥ 0), but the conclusion demands a strictly
+    positive multiple of `L/eps`, forcing `c ≤ 0`. False.
+
+  * **`explicit_lower_bound`** (line ~407) sharpens that to the concrete
+    `1/5 * L/eps` bound and depends on the same broken chain.
+
+Per Phase-1 rule 1 (never weaken a statement to make it compile), these
+must be restated by whoever owns the paper's Section 8 numerical
+constants, not silently patched here. The pigeonhole rewrite of
+`certificate_size_lower_bound` itself is committed to the file (the CI
+log shows the file compiled past both `short_bits_length` and the new
+`certificate_size_lower_bound` before dying at line 307 on the
+`lipschitz_lower_bound` `lra` call), but the module stays out of the CI
+build until the two false statements are resolved. Adding a new
+`EXCLUDED:` entry to `_CoqProject` with an inline reason.
+
+**Follow-up (supersedes Round 20's list item #1):**
+Restate `lipschitz_lower_bound` and `explicit_lower_bound` with a valid
+relationship between the K-bound hypothesis and the c-constant
+conclusion — most likely by strengthening the hypothesis (e.g., add
+`L / eps >= 5` or require `K >= L/(4*eps)` rather than `≥ L/(4*eps) - 1`)
+or by weakening the conclusion (e.g., existential `c` chosen after L,
+eps rather than universal). This is a paper-side decision, not a
+mechanical fix.
