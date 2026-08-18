@@ -51,7 +51,8 @@ theorem.
 | Prop 2.4 Norm-enclosure ⇒ certificate system | §2 | — | — | PAPER-ONLY | — | To be `Coq/V3/Presentation.v :: certificate_system_from_enclosure`. |
 | Prop 2.5 Hilbert presentation | §2 | — | — | PAPER-ONLY | — | Parseval-based construction; requires a Hilbert-space interface. |
 | Prop 2.7 Finite product presentations | §2 | — | — | PAPER-ONLY | — | Tuple/max-norm; naturally follows the record definition. |
-| Def 3.1 Proof-relevant evidence category | §3 | — | `Coq/V3/Evidence.v` (planned) | IN-PROGRESS | — | Layer-A. Objects `(ν, c)`; morphisms `(q, W)` with `DistCheck` accept; identity = zero-distance proof tree. |
+| Def 2.3 Certificate system | §2 | `V3_Evidence.CertSystem` | `Coq/V3/Evidence.v` | IN-PROGRESS | closure record `EvidenceClosure` for the presentation | Rocq record matches Def 2.3 (procedure returning `(p, ε̄, V)` with `ε̄ < ε` and `AppCheck` accept). |
+| Def 3.1 Proof-relevant evidence category | §3 | `V3_Evidence.EvidenceObject`, `V3_Evidence.EvidenceMorphism`, `V3_Evidence.id_evidence`, `V3_Evidence.comp_evidence` | `Coq/V3/Evidence.v` | IN-PROGRESS | `EvidenceClosure P` (reflexivity/weakening/symmetry/triangle witnesses) | Objects/morphisms/identity/composition constructors match Def 3.1. On-the-nose category laws pending proof-tree normalization; arithmetic content of the bounds is proved (`id_evidence_bound`, `comp_evidence_*_bound`). |
 | Def 3.2 Lawvere metric `d_Cert` | §3 | — | — | PAPER-ONLY | — | Requires infimum over `Q_{≥0}`; formalization choice open (`{q : Q | inf-like predicate}` vs quotient by `∼_0`). |
 | Prop 3.3 Soundness of evidence metric | §3 | — | — | PAPER-ONLY | — | Awaits Def 3.1, Def 3.2. |
 | Thm 4.4 Extensional collapse | §4 | — | — | PAPER-ONLY | — | Needs distance adequacy (Def 4.1) and evidence-regularity (Def 4.3) as explicit typed hypotheses. |
