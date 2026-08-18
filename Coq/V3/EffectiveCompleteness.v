@@ -152,8 +152,8 @@ Theorem principal_evidence_dense :
 Proof.
   intros c eps Heps.
   (* Get the certificate the certificate system of c produces at eps. *)
-  set (nu := eo_name P c).
-  set (cs := eo_system P c).
+  set (nu := eo_name c).
+  set (cs := eo_system c).
   destruct (cs_run cs eps) as [[p ebar] V] eqn:Hcs_run.
   pose proof (cs_bound_lt cs eps Heps) as Hbounds.
   pose proof (cs_accept  cs eps Heps) as Haccept.
@@ -189,7 +189,7 @@ Corollary principal_evidence_dense_analytic :
     exists (p : CodeF P) (q : Q),
       (0 <= q)%Q /\ (q < eps)%Q /\
       distF P
-        (deltaF P (eo_name P c))
+        (deltaF P (eo_name c))
         (deltaF P (iotaF P p))
       <= Q2R q.
 Proof.

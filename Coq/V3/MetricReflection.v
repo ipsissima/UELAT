@@ -82,7 +82,7 @@ Definition dist_accepted (nu mu : NameF P) (q : Q) : Prop :=
     of bound q" clause in Def 3.2. *)
 
 Definition achievable_bound (c d : EvidenceObject P) (q : Q) : Prop :=
-  dist_accepted (eo_name P c) (eo_name P d) q.
+  dist_accepted (eo_name c) (eo_name d) q.
 
 (** ** Def 3.2 — is_lawvere_dist as a predicate.
 
@@ -141,7 +141,7 @@ Qed.
 Theorem prop_3_3_lower_bound :
   forall c d,
     (forall q, achievable_bound c d q ->
-       distF P (deltaF P (eo_name P c)) (deltaF P (eo_name P d)) <= Q2R q).
+       distF P (deltaF P (eo_name c)) (deltaF P (eo_name d)) <= Q2R q).
 Proof.
   intros c d q [W Hacc].
   apply DistCheck_sound with (W := W). exact Hacc.
@@ -153,13 +153,13 @@ Qed.
 Corollary lawvere_bounds_analytic :
   forall c d r,
     is_lawvere_dist c d r ->
-    distF P (deltaF P (eo_name P c)) (deltaF P (eo_name P d)) <= r.
+    distF P (deltaF P (eo_name c)) (deltaF P (eo_name d)) <= r.
 Proof.
   intros c d r [_ Hglb].
   (* We show ‖·‖ ≤ r by contradiction. Suppose r < ‖·‖; take
      ε := ‖·‖ − r > 0, obtain q accepted with Q2R q < r + ε = ‖·‖,
      but Prop 3.3 lower-bound says ‖·‖ ≤ Q2R q — contradiction. *)
-  set (an := distF P (deltaF P (eo_name P c)) (deltaF P (eo_name P d))).
+  set (an := distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))).
   destruct (Rle_lt_dec an r) as [Hle | Hlt]; [exact Hle | exfalso].
   set (eps := an - r).
   assert (Heps : 0 < eps) by (unfold eps; lra).
@@ -196,10 +196,10 @@ Theorem extensional_collapse :
   distance_adequate ->
   forall c d,
     is_lawvere_dist c d
-      (distF P (deltaF P (eo_name P c)) (deltaF P (eo_name P d))).
+      (distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))).
 Proof.
   intros Hadeq c d.
-  set (an := distF P (deltaF P (eo_name P c)) (deltaF P (eo_name P d))).
+  set (an := distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))).
   split.
   - (* (LB): every accepted q satisfies an ≤ Q2R q. This is Prop 3.3. *)
     intros q Hacc.
@@ -210,7 +210,7 @@ Proof.
     intros eps Heps.
     assert (Hlt : an < an + eps) by lra.
     destruct (Q_dense_R an (an + eps) Hlt) as [q [Hq_gt Hq_lt]].
-    assert (Hcheck : exists W, DistCheck P (eo_name P c) (eo_name P d) q W = true).
+    assert (Hcheck : exists W, DistCheck P (eo_name c) (eo_name d) q W = true).
     { apply Hadeq. unfold an in Hq_gt. exact Hq_gt. }
     destruct Hcheck as [W HW].
     exists q. split.
@@ -234,12 +234,12 @@ Corollary ext_equiv_iff_analytic_zero :
   distance_adequate ->
   forall c d,
     ext_equiv c d <->
-    distF P (deltaF P (eo_name P c)) (deltaF P (eo_name P d)) = 0.
+    distF P (deltaF P (eo_name c)) (deltaF P (eo_name d)) = 0.
 Proof.
   intros Hadeq c d. split.
   - intro Hext.
     pose proof (lawvere_bounds_analytic c d 0 Hext) as Hle.
-    pose proof (distF_nonneg P (deltaF P (eo_name P c)) (deltaF P (eo_name P d))) as Hge.
+    pose proof (distF_nonneg P (deltaF P (eo_name c)) (deltaF P (eo_name d))) as Hge.
     lra.
   - intro Han0.
     unfold ext_equiv.
