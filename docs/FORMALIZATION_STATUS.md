@@ -61,8 +61,11 @@ theorem.
 | Prop 5.3 Identity + composition of lifts | §5 | — | — | PAPER-ONLY | — | Companion to Thm 5.2. |
 | Thm 5.6 Grothendieck construction / split opfibration | §5 | — | — | PAPER-ONLY | — | Standard categorical argument once Def 5.4 is stated. |
 | Thm 5.8 Presentation invariance | §5 | — | — | PAPER-ONLY | — | Requires Def 5.7 effective equivalence + distance adequacy + Thm 4.4. |
-| Thm 6.2 Effective limits lift to evidence | §6 | — | — | PAPER-ONLY | — | Uses effective completeness (Def 6.1). |
-| Thm 6.5 Effective finite-core completion | §6 | — | — | PAPER-ONLY | — | Requires evidence regularity. |
+| Def 4.3 Evidence-regular presentation | §4 | `V3_EffectiveCompleteness.EvidenceRegular` | `Coq/V3/EffectiveCompleteness.v` | CHECKED-EXACT | — | Two-constructor record (exact witness for canonical name; approximation-to-distance promotion). Reverse-bound remark proved as `er_promote_reverse_ok`. |
+| Def 6.4 Principal evidence | §6 | `V3_EffectiveCompleteness.principal_cert_system`, `V3_EffectiveCompleteness.principal_evidence` | `Coq/V3/EffectiveCompleteness.v` | CHECKED-EXACT | evidence-regular presentation | Certificate system returns `(p, 0, er_exact_witness p)` at every positive tolerance. |
+| Thm 6.2 Effective limits lift to evidence | §6 | — | — | PAPER-ONLY | — | Uses effective completeness (Def 6.1). Def 6.1 as a Rocq record not yet added. |
+| Thm 6.5 (1) Density of principal evidence | §6 | `V3_EffectiveCompleteness.principal_evidence_dense` (+ analytic corollary `principal_evidence_dense_analytic`) | `Coq/V3/EffectiveCompleteness.v` | CHECKED-RESTRICTED | evidence-regular presentation, evidence-closure record | For every ε>0 there is a code p and bound q with `0 ≤ q < ε` and DistCheck between the name of c and iota_F(p) at bound q. The Lawvere-distance form `d_Cert(c, hat_p) < ε` follows once `MetricReflection.v` provides d_Cert as a term. The certified-Cauchy-modulus part of Thm 6.5 needs Thm 6.2. |
+| Thm 6.5 (2) Cauchy limits of principal evidence | §6 | — | — | PAPER-ONLY | — | Requires Thm 6.2. |
 | Thm 7.2 Certified synthesis and reconstruction | §7 | — | — | PAPER-ONLY | — | The v3 substantive local-to-global result; carries the reconstruction datum of Def 7.1 including proof-transport interfaces `Γ_Σ`, `Γ_R`. Distinct from the v2 syntactic `GlueCert` in `Coq/Approx/EffectiveDescent.v`. |
 | Cor 8.2 Certified partition-of-unity synthesis | §8 | — | — | PAPER-ONLY | — | W^{1,2} instance of Thm 7.2 plus multiplier estimate (Lem 8.1). |
 | Thm 9.2 Quantitative certified gluing | §9 | — | — | PAPER-ONLY | — | Local defects `Δ_j = Σ_i (1+L_i) ε_ij`. |
