@@ -99,6 +99,7 @@ jobs:
             UELAT.Foundations.CCP \
             UELAT.Adjunction.Probe UELAT.Adjunction.Model \
             UELAT.Approx.Certificate UELAT.Approx.Bernstein UELAT.Approx.Spec \
+            UELAT.Approx.Incompressibility \
             UELAT.Stability.Modulus
 
       - name: No Admitted/Axiom in constructive island

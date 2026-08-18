@@ -119,6 +119,21 @@ Proof.
       subst l. discriminate.
 Qed.
 
+(** Length of the enumeration of all bit-strings shorter than K.
+    Sum over i ∈ [0..K-1] of 2^i equals 2^K - 1. Small structural
+    fact used by the pigeonhole side of certificate_size_lower_bound. *)
+Lemma short_bits_length : forall n,
+  (length (flat_map all_bool_lists (seq 0 n)) = Nat.pow 2 n - 1)%coq_nat.
+Proof.
+  induction n as [|n IH].
+  - reflexivity.
+  - rewrite seq_S, flat_map_app, app_length, IH.
+    simpl flat_map. rewrite app_nil_r, all_bool_lists_length.
+    assert (Hk : (Nat.pow 2 n >= 1)%coq_nat).
+    { clear. induction n; simpl; lia. }
+    simpl Nat.pow. lia.
+Qed.
+
 (** * Pigeonhole Principle *)
 
 (** If we have more elements than slots, some slot has multiple elements *)
@@ -211,65 +226,62 @@ Definition encoding_injective : Prop :=
     cert_bits (encode cfg1) = cert_bits (encode cfg2) ->
     cfg1 = cfg2.
 
-(** Key theorem: if encoding is injective, some certificate has size >= K *)
+(** Key theorem: if encoding is injective, some certificate has size >= K.
+
+    Strategy (Round 21 rewrite; replaces the Round-9 `exfalso ... lia`
+    pseudo-proof that old Coq accepted silently):
+
+    Assume for contradiction that every valid config's encoding has
+    length < K. Then each of the 2^K valid configs maps to some element
+    of `flat_map all_bool_lists (seq 0 K)` — the enumeration of all
+    bit strings of length < K, whose size is 2^K - 1. Since 2^K > 2^K - 1,
+    `pigeonhole_injective` forces two distinct configs to the same
+    cert, contradicting `encoding_injective`. *)
 Theorem certificate_size_lower_bound :
   encoding_injective ->
   exists cfg, valid_config cfg /\ (cert_size (encode cfg) >= K)%nat.
 Proof.
   intros Hinj.
-  (* Strategy: If all certs have size < K, then there are < 2^K distinct certs.
-     But there are 2^K configs, so by pigeonhole, two would get the same cert.
-     This contradicts injectivity. *)
-
-  (* Find the configuration with maximum certificate size *)
-  (* For a constructive proof, we show that at least one config
-     must have cert_size >= K by the counting argument *)
-
-  destruct (le_lt_dec K (cert_size (encode (repeat true K)))) as [Hge | Hlt].
-  - (* Found one: the all-true config *)
-    exists (repeat true K).
+  assert (Hpow : (Nat.pow 2 K >= 1)%coq_nat).
+  { assert (Haux : forall k : nat, (Nat.pow 2 k >= 1)%coq_nat).
+    { induction k; simpl; lia. }
+    apply Haux. }
+  destruct (classic (exists cfg, valid_config cfg
+                                 /\ (cert_size (encode cfg) >= K)%nat))
+    as [Hex | Hnex]; [exact Hex |].
+  exfalso.
+  (* Hnex ⇒ every valid config's cert is strictly shorter than K bits. *)
+  assert (Hall_short : forall cfg, In cfg all_configs ->
+                       (length (cert_bits (encode cfg)) < K)%coq_nat).
+  { intros cfg Hin.
+    apply all_configs_valid in Hin as Hv.
+    destruct (le_lt_dec K (cert_size (encode cfg))) as [Hge | Hlt].
+    - exfalso. apply Hnex. exists cfg. split; [exact Hv | apply/leP; exact Hge].
+    - unfold cert_size in Hlt. exact Hlt. }
+  (* short_bits enumerates all bit strings of length < K; size = 2^K - 1. *)
+  pose (short_bits := flat_map all_bool_lists (seq 0 K)).
+  assert (Hshort_in : forall cfg, In cfg all_configs ->
+                      In (cert_bits (encode cfg)) short_bits).
+  { intros cfg Hin. unfold short_bits.
+    apply in_flat_map.
+    exists (length (cert_bits (encode cfg))).
     split.
-    + unfold valid_config. apply repeat_length.
-    + (* Statement's `>= K)%nat` under all_ssreflect is ssrnat leq (bool);
-         le_lt_dec gives Peano.le. Bridge via /leP. *)
-      apply/leP; exact Hge.
-  - (* All certs have size < K? This leads to contradiction *)
-    (* Number of possible certs of size < K is sum_{i=0}^{K-1} 2^i = 2^K - 1 < 2^K *)
-    (* But we have 2^K configs, so some must collide *)
-
-    (* For simplicity, we show the all-true config works by the bound *)
-    (* The contrapositive: if cert_size < K for all, we have a collision *)
-
-    exfalso.
-    (* cert_size (encode (repeat true K)) < K *)
-    (* But the number of distinct bit strings of length < K is < 2^K *)
-    (* And we have 2^K valid configs, so pigeonhole gives collision *)
-    (* This contradicts Hinj *)
-
-    (* Nat.pow_le_mono_r produces `b^n <= b^m`; the goal `1 <= 2^K` isn't
-       yet in that shape (1 is not literally 2^0 after reduction). Round-16
-       tried `destruct K` but that fails for K = S k because the S branch
-       needs `2^k >= 1` as an inductive hypothesis. Use `induction K`
-       instead — base K=0 gives `1 >= 1`, step case reuses IHK. *)
-    assert (Hpow: (Nat.pow 2 K >= 1)%coq_nat).
-    { (* K is a Section Variable; abstract into an aux lemma first,
-         then instantiate at K. *)
-      assert (Haux : forall k : nat, (Nat.pow 2 k >= 1)%coq_nat).
-      { induction k; simpl; lia. }
-      apply Haux. }
-
-    (* We use the fact that:
-       - There are 2^K valid configurations
-       - If all cert_sizes < K, then all certs are bit strings of length < K
-       - There are at most 2^K - 1 such strings
-       - Pigeonhole: two configs get the same cert, contradicting Hinj *)
-
-    (* For the proof, we observe that if cert_size < K, then
-       the cert can be extended to a K-bit string, but there are
-       fewer short strings than K-bit strings *)
-
-    (* Simplified: just show the bound must hold *)
-    lia.
+    - apply in_seq. split; [lia | rewrite Nat.add_0_l; apply Hall_short; exact Hin].
+    - apply all_bool_lists_complete. reflexivity. }
+  assert (Hshort_len : (length short_bits = Nat.pow 2 K - 1)%coq_nat)
+    by (unfold short_bits; apply short_bits_length).
+  destruct (pigeonhole_injective config (list bool)
+              (fun cfg => cert_bits (encode cfg))
+              all_configs short_bits
+              all_configs_nodup Hshort_in) as [cfg1 [cfg2 [Hc1 [Hc2 [Hne Heq]]]]].
+  { (* (length all_configs > length short_bits)%nat is ssrnat.ltn under
+       all_ssreflect. Bridge to Peano via /ltP, then close with lia. *)
+    apply/ltP.
+    rewrite all_configs_size Hshort_len. lia. }
+  apply Hne. apply Hinj.
+  - apply all_configs_valid; exact Hc1.
+  - apply all_configs_valid; exact Hc2.
+  - exact Heq.
 Qed.
 
 (** * Corollary: Ω(1/ε) bits for Lipschitz approximation *)

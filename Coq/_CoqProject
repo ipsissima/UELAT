@@ -34,16 +34,17 @@ Adjunction/Model.v
 
 # Approximation core (Sections 5-9). Bernstein_Lipschitz uses mathcomp
 # facilities that moved in mathcomp-analysis 1.16 (reals split into
-# rocq-mathcomp-reals package) plus binom-lemma renames; Incompressibility
-# and EffectiveDescent have pseudo-proofs (Rounds 19 and 18); UELAT_*
-# transitively import Bernstein_Lipschitz.
+# rocq-mathcomp-reals package) plus binom-lemma renames; EffectiveDescent
+# has a `where`-clause syntax break; UELAT_* transitively import
+# Bernstein_Lipschitz. Incompressibility joined the green set in Round 21
+# after the pigeonhole rewrite.
 Approx/Certificate.v
 Approx/Bernstein.v
 Approx/Spec.v
+Approx/Incompressibility.v
 # EXCLUDED: Approx/Bernstein_Lipschitz.v (mathcomp-analysis reorg + binom)
 # EXCLUDED: Approx/UELAT_Internal.v (transitively imports Bernstein_Lipschitz)
 # EXCLUDED: Approx/UELAT_External.v (transitively imports Bernstein_Lipschitz)
-# EXCLUDED: Approx/Incompressibility.v (pseudo-proof, exfalso needs pigeonhole)
 # EXCLUDED: Approx/EffectiveDescent.v (`where`-clause syntax + pseudo-proof)
 # EXCLUDED: Approx/Weierstrass_Lipschitz.v (depends on Bernstein_Lipschitz)
 
