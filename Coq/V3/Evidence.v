@@ -125,9 +125,9 @@ Record CertSystem (nu : NameF P) : Type := {
       AppCheck P nu p ebar V = true
 }.
 
-Arguments cs_run     [nu] _ _.
-Arguments cs_bound_lt [nu] _ _ _.
-Arguments cs_accept  [nu] _ _ _.
+(* Section-local Arguments removed — they were being clobbered when the
+   section variable P was generalized on End. Full Arguments block
+   sits after End WithPresentation, below. *)
 
 (** ** Def 3.1 — Objects and morphisms of Cert_ev(F).
 
@@ -249,6 +249,46 @@ Proof.
 Qed.
 
 End WithPresentation.
+
+(** ** Cross-section implicit-arguments plumbing.
+
+    Every definition inside [WithPresentation] that uses [P] as a
+    Section variable gets [P] generalized as an explicit parameter on
+    section close. When a downstream module (e.g.
+    [V3/EffectiveCompleteness.v]) writes
+    [ec_sym_witness EC nu ...] with [EC : EvidenceClosure P], Rocq
+    otherwise interprets [EC] as the first explicit argument [P] and
+    fails ("The term EC has type EvidenceClosure P while it is
+    expected to have type Presentation"). Making [P] implicit on
+    every projection and section-generalized definition fixes this. *)
+
+Arguments EvidenceClosure P.
+Arguments ec_refl_witness    {P} r nu.
+Arguments ec_weaken_witness  {P} r nu mu q q' W.
+Arguments ec_sym_witness     {P} r nu mu q W.
+Arguments ec_triangle_witness {P} r nu mu xi q1 q2 W1 W2.
+Arguments ec_refl_ok         {P} r nu.
+Arguments ec_weaken_ok       {P} r nu mu q q' W Hle Hdc.
+Arguments ec_sym_ok          {P} r nu mu q W Hdc.
+Arguments ec_triangle_ok     {P} r nu mu xi q1 q2 W1 W2 Hdc1 Hdc2.
+
+Arguments CertSystem P nu.
+Arguments cs_run     {P nu} c eps.
+Arguments cs_bound_lt {P nu} c eps Heps.
+Arguments cs_accept  {P nu} c eps Heps.
+
+Arguments EvidenceObject P.
+Arguments eo_name {P} c.
+Arguments eo_system {P} c.
+
+Arguments EvidenceMorphism {P} c d.
+Arguments em_bound {P c d} f.
+Arguments em_bound_nonneg {P c d} f.
+Arguments em_witness {P c d} f.
+Arguments em_ok {P c d} f.
+
+Arguments id_evidence {P} EC c.
+Arguments comp_evidence {P} EC {c d e} f g.
 
 (** ** What this file DOES NOT contain
 
