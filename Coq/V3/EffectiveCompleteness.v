@@ -188,10 +188,10 @@ Corollary principal_evidence_dense_analytic :
   forall (c : EvidenceObject P) (eps : Q), (0 < eps)%Q ->
     exists (p : CodeF P) (q : Q),
       (0 <= q)%Q /\ (q < eps)%Q /\
-      distF P
+      (distF P
         (deltaF P (eo_name c))
         (deltaF P (iotaF P p))
-      <= Q2R q.
+       <= Q2R q)%R.
 Proof.
   intros c eps Heps.
   destruct (principal_evidence_dense c eps Heps)
