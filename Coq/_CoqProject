@@ -62,6 +62,7 @@ V3/Presentation.v
 V3/Evidence.v
 V3/MetricReflection.v
 V3/EffectiveCompleteness.v
+V3/RealizableMap.v
 
 # Stability (Section 7) — Modulus only. UniformStability uses
 # `Qreals.Q2R` which is no longer at that path in Rocq 9;
