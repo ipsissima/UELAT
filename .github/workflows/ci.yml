@@ -120,7 +120,8 @@ jobs:
             UELAT.Approx.Certificate UELAT.Approx.Bernstein UELAT.Approx.Spec \
             UELAT.Stability.Modulus \
             UELAT.PartitionOfUnity \
-            UELAT.V3.Presentation UELAT.V3.Evidence
+            UELAT.V3.Presentation UELAT.V3.Evidence \
+            UELAT.V3.MetricReflection
 
       - name: No Admitted/Axiom in constructive island
         shell: bash

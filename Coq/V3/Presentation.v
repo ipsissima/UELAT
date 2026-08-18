@@ -19,8 +19,15 @@
       concrete instances but stated abstractly here.
     - Names [NameF] are an abstract type paired with a decoder
       [deltaF] into an ambient normed space.
+    - We do NOT axiomatize the full normed-vector-space structure of
+      [F]. Instead we expose an *analytic distance* [distF : F → F → R]
+      obeying non-negativity, self-zero, symmetry and the triangle
+      inequality — the metric structure the paper actually uses at
+      the checker interface. A concrete presentation with a genuine
+      normed space defines [distF a b := ‖a − b‖].
     - [AppCheck] and [DistCheck] are Boolean-valued terminating
-      checkers whose acceptance implies the rational bound.
+      checkers whose acceptance implies the rational bound on
+      [distF].
     - The soundness laws are the theorem-level content of the
       record; a concrete presentation MUST discharge them.
 
@@ -36,9 +43,10 @@ Module V3_Presentation.
 (** ** The presentation record
 
     We keep the ambient normed space abstract, represented by a
-    carrier [F] and a norm function [normF]. This lets [Presentation]
-    be instantiated for [W^{1,2}(I)] later (Coq/V3/Models/) without
-    hard-coding a real-analysis library up front.
+    carrier [F] and an analytic distance [distF]. This lets
+    [Presentation] be instantiated for W^{1,2}(I) or L¹(ℝ³) later
+    (Coq/V3/Models/) without hard-coding a real-analysis library up
+    front.
 
     A concrete Rocq value of type [Presentation] IS a v3 approximation
     presentation. To conclude anything is to feed this record into
@@ -50,7 +58,12 @@ Record Presentation : Type := {
   CodeF   : Type;
   NameF   : Type;
   F       : Type;                       (* completion carrier *)
-  normF   : F -> R;
+  distF   : F -> F -> R;                (* analytic distance ‖·−·‖ *)
+  (* --- distance axioms (make F a pseudo-metric space) --- *)
+  distF_nonneg   : forall a b : F, 0 <= distF a b;
+  distF_self0    : forall a : F, distF a a = 0;
+  distF_sym      : forall a b : F, distF a b = distF b a;
+  distF_triangle : forall a b c : F, distF a c <= distF a b + distF b c;
   (* --- decoders --- *)
   rhoF    : CodeF -> F;                 (* code decoder *)
   deltaF  : NameF -> F;                 (* name decoder into represented domain *)
@@ -67,84 +80,70 @@ Record Presentation : Type := {
   AppCheck_sound :
     forall (nu : NameF) (p : CodeF) (q : Q) (V : list bool),
       AppCheck nu p q V = true ->
-      normF (deltaF nu) - normF (rhoF p) <= Q2R q
-      /\ - (Q2R q) <= normF (deltaF nu) - normF (rhoF p);
+      distF (deltaF nu) (rhoF p) <= Q2R q;
   DistCheck_sound :
     forall (nu mu : NameF) (q : Q) (W : list bool),
       DistCheck nu mu q W = true ->
-      normF (deltaF nu) - normF (deltaF mu) <= Q2R q
-      /\ - (Q2R q) <= normF (deltaF nu) - normF (deltaF mu)
+      distF (deltaF nu) (deltaF mu) <= Q2R q
 }.
 
-(** ** Notation shorthand for use inside a fixed presentation. *)
+(** ** Small helpers, restated inside a fixed presentation. *)
 
 Section WithPresentation.
 Variable P : Presentation.
 
-Notation "|| x ||" := (normF P x) (at level 65).
+(** Canonical-name coherence in distance form: the analytic distance
+    from the canonical-name decode of [p] to the code decode of [p]
+    vanishes. Follows immediately from [canonical_name_ok] and
+    [distF_self0]. *)
 
-(** The Def 2.1 soundness statements as ordinary R-inequalities.
-    These are the shapes downstream v3 modules will consume; the two
-    projections of the [/\] in [AppCheck_sound] bundle to
-    [Rabs (|delta nu| - |rho p|) <= Q2R q]. We keep them as separate
-    lemmas so callers can pick the direction they need. *)
-
-Lemma app_upper :
-  forall nu p q V,
-    AppCheck P nu p q V = true ->
-    normF P (deltaF P nu) - normF P (rhoF P p) <= Q2R q.
+Lemma canonical_name_distF_zero : forall p,
+  distF P (deltaF P (iotaF P p)) (rhoF P p) = 0.
 Proof.
-  intros nu p q V H. destruct (AppCheck_sound P nu p q V H) as [Hup _]. exact Hup.
+  intro p. rewrite canonical_name_ok. apply distF_self0.
 Qed.
 
-Lemma app_lower :
-  forall nu p q V,
-    AppCheck P nu p q V = true ->
-    - Q2R q <= normF P (deltaF P nu) - normF P (rhoF P p).
-Proof.
-  intros nu p q V H. destruct (AppCheck_sound P nu p q V H) as [_ Hlo]. exact Hlo.
-Qed.
+(** For every accepted [DistCheck] pair, the *reverse* direction also
+    gives the same rational bound, by [distF_sym]. This is the "distF
+    is symmetric" companion of [DistCheck_sound] — no additional
+    hypothesis on the checker itself; it comes from the metric
+    axiom. *)
 
-Lemma dist_upper :
+Lemma DistCheck_sound_sym :
   forall nu mu q W,
     DistCheck P nu mu q W = true ->
-    normF P (deltaF P nu) - normF P (deltaF P mu) <= Q2R q.
+    distF P (deltaF P mu) (deltaF P nu) <= Q2R q.
 Proof.
-  intros nu mu q W H. destruct (DistCheck_sound P nu mu q W H) as [Hup _]. exact Hup.
+  intros nu mu q W H.
+  rewrite distF_sym.
+  apply DistCheck_sound with (W := W). exact H.
 Qed.
 
-Lemma dist_lower :
+(** Any accepted [DistCheck] bound is non-negative on the rational
+    side, because [distF] is non-negative on the analytic side. *)
+
+Lemma DistCheck_bound_nonneg :
   forall nu mu q W,
-    DistCheck P nu mu q W = true ->
-    - Q2R q <= normF P (deltaF P nu) - normF P (deltaF P mu).
+    DistCheck P nu mu q W = true -> 0 <= Q2R q.
 Proof.
-  intros nu mu q W H. destruct (DistCheck_sound P nu mu q W H) as [_ Hlo]. exact Hlo.
+  intros nu mu q W H.
+  eapply Rle_trans; [apply distF_nonneg | ].
+  apply DistCheck_sound with (W := W). exact H.
 Qed.
-
-(** Canonical-name identity, restated in norm form for downstream
-    convenience: the norm of a canonical-name decode equals the norm
-    of the code decode. Follows from [canonical_name_ok] by
-    congruence. *)
-
-Lemma canonical_name_norm : forall p,
-  normF P (deltaF P (iotaF P p)) = normF P (rhoF P p).
-Proof. intro p. now rewrite canonical_name_ok. Qed.
 
 End WithPresentation.
 
 (** ** What this file DOES NOT contain
 
-    - The evidence category [Cert_ev(F)] of Definition 3.1 —
-      that lives in [Coq/V3/Evidence.v] (planned).
+    - The evidence category [Cert_ev(F)] of Definition 3.1 — that
+      lives in [Coq/V3/Evidence.v].
     - The Lawvere metric [d_Cert] of Definition 3.2 — planned in
       [Coq/V3/MetricReflection.v].
-    - Any of the closure rules on the evidence language
-      (reflexivity, weakening, symmetry, triangle, finite sum, stored
-      Lipschitz). Those are properties of [AppCheck]/[DistCheck] that
-      a concrete presentation must exhibit; the [Presentation] record
-      does not enforce them at the abstract level. Concrete
-      instances (e.g. [Coq/V3/Models/W12Presentation.v]) will build
-      them into their checkers and expose them as separate lemmas.
+    - The full §2 evidence-language closure rules (reflexivity,
+      weakening, symmetry, triangle, finite sum, stored Lipschitz)
+      as checker properties. Those live in
+      [V3_Evidence.EvidenceClosure], since they are a *hypothesis
+      structure on top of* Def 2.1, not a field of Def 2.1 itself.
 
     Correspondence with v3 (per §11 of the project brief):
 
@@ -155,11 +154,11 @@ End WithPresentation.
       Correspondence:
         EXACT for the record shape and the two soundness laws (items
         (5) and (6) of Def 2.1). Structural coherence
-        [canonical_name_ok] is item (3). The other Def 2.1 items —
-        finite enumerability of [CodeF], size function, closure of
-        the evidence language under the standard finite norm rules —
-        are conditions IMPOSED ON [Presentation] AT USE, not fields
-        of the record.
+        [canonical_name_ok] is item (3). Item (1) (effective
+        enumerability of [CodeF]) and the size function item (4) are
+        represented by the [code_size] field; effective enumerability
+        is a property that a concrete instance will exhibit, not a
+        universal field of the record.
 
     This file is CHECKED under Rocq 9 (in the CI-built module set).
     It is not yet a v3 THEOREM — it is a v3 DEFINITION on which v3

@@ -60,6 +60,7 @@ Approx/Spec.v
 # each carries an explicit STATUS marker matching FORMALIZATION_STATUS.md.
 V3/Presentation.v
 V3/Evidence.v
+V3/MetricReflection.v
 
 # Stability (Section 7) — Modulus only. UniformStability uses
 # `Qreals.Q2R` which is no longer at that path in Rocq 9;
