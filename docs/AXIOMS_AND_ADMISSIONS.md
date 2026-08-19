@@ -74,24 +74,35 @@ the specific failure mode this document exists to prevent.
 
 ## Axiom declarations
 
-The six `Axiom` declarations live in the legacy `Adjunction/Functors.v`
-and `Foundations/Certificate.v` chain (`find_index`-style helpers and
-list-decoding stubs). None are on a dependency path of anything in
-`Coq/V3/`, and none should ever be reachable from a v3 `CHECKED-EXACT`
-theorem. If a future v3 module needs the corresponding functionality,
-it should reprove it as a real Rocq lemma, not import through the
-legacy axiom.
+The six `Axiom` declarations at the current commit are, by file:
 
-Exact enumerations are best obtained by searching the tree:
+| file | line | name | notes |
+| --- | --- | --- | --- |
+| `Coq/Adjunction/Functors.v` | 158 | `find_index_preserves_order` | Legacy list-indexing helper used by the v1–v2 probes/models adjunction. Not reachable from any `Coq/V3/` module. |
+| `Coq/Adjunction/Functors.v` | 169 | `find_index_nth_self` | Same. |
+| `Coq/Example.v` | 77 | `error_bound_example` | Legacy demo file. `LegacyV2`. |
+| `Coq/Examples/ChebyshevProof.v` | 67 | `rolle` | Rolle's theorem — legacy analytic axiom used by the withdrawn Chebyshev example. `LegacyV2`. |
+| `Coq/Examples/ChebyshevProof.v` | 2108 | `chebyshev_nodal_identity_axiom` | Same. |
+| `Coq/ErrorBound.v` | 714 | `parseval_identity_integration` | Parseval identity — legacy analytic axiom used by the withdrawn Fourier/Chebyshev material. `LegacyV2`. |
+
+`Coq/Foundations/Certificate.v` declares **zero** axioms; an earlier
+version of this document wrongly grouped it into the axiom-holding
+files.
+
+None of these axioms is on a dependency path of anything in
+`Coq/V3/`, and none should ever be reachable from a v3
+`CHECKED-EXACT` theorem. When a future v3 module needs the
+corresponding mathematical fact, it should reprove it as a real Rocq
+lemma, not import through the legacy axiom.
+
+Regenerate the enumeration at any commit with:
 
 ```bash
 grep -rn --include='*.v' -E '^\s*Axiom\b' Coq/
 ```
 
-The full list will be captured programmatically once CI has a
-"dependency of advertised checked theorems" scan; today it is not, so
-this document does not enumerate them by name — the enumeration is
-grep-reproducible and any change is visible in the commit diff.
+The table above must be updated in the same commit as any change in
+that grep output; a future CI check will diff the two.
 
 ## Section-level `Hypothesis` count
 

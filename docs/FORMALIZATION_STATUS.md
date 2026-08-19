@@ -3,9 +3,9 @@
 This document is the authoritative record of correspondence between
 theorems in
 
-> Ballús Santacana, *Certificate-Carrying Approximation: Functorial
-> Evidence, Quantitative Descent, and Generated Universes*,
-> arXiv:2506.22693 v3
+> Ballús Santacana, *Universal Gluing and Contextual Choice:
+> Certificate-Carrying Approximation, Functorial Evidence, and
+> Effective Descent*, arXiv:2506.22693 v3
 
 and Rocq artifacts in this repository. It replaces every earlier
 document that claimed "all main theorems are proven" or "scientifically
@@ -47,7 +47,7 @@ theorem.
 
 | v3 paper result | section | Rocq theorem | module | status | assumptions | notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Def 2.1 Approximation presentation | §2 | `V3_Presentation.Presentation` record | `Coq/V3/Presentation.v` | IN-PROGRESS | — | Layer-A. Refactored in Phase 3 to expose an analytic `distF : F → F → R` with metric axioms rather than a bare norm; matches paper's use of `‖·−·‖` at the checker interface. `AppCheck_sound` / `DistCheck_sound` are soundness in that shape. |
+| Def 2.1 Approximation presentation | §2 | `V3_Presentation.Presentation` record | `Coq/V3/Presentation.v` | IN-PROGRESS | — | Semantic checker core of Def 2.1: abstract `CodeF`, `NameF`, `F` carriers; analytic `distF` with metric axioms; decoders `rhoF`, `deltaF`, `iotaF`; `AppCheck` / `DistCheck` soundness in the `distF` shape. Def 2.1 additionally requires an effectively enumerable `CodeF` with dense decoding range in the completion, and a represented subdomain `D_F ⊆ F` with `deltaF` surjective onto it — neither is encoded yet. Future refinement will add `EnumerableCode`, a represented-domain predicate/subtype, and a density property. |
 | Prop 2.4 Norm-enclosure ⇒ certificate system | §2 | — | — | PAPER-ONLY | — | To be `Coq/V3/Presentation.v :: certificate_system_from_enclosure`. |
 | Prop 2.5 Hilbert presentation | §2 | — | — | PAPER-ONLY | — | Parseval-based construction; requires a Hilbert-space interface. |
 | Prop 2.7 Finite product presentations | §2 | — | — | PAPER-ONLY | — | Tuple/max-norm; naturally follows the record definition. |
@@ -57,8 +57,8 @@ theorem.
 | Prop 3.3 Soundness of evidence metric (lower-bound half) | §3 | `V3_MetricReflection.prop_3_3_lower_bound` (+ corollary `lawvere_bounds_analytic`) | `Coq/V3/MetricReflection.v` | CHECKED-RESTRICTED | — | The lower-bound direction: every accepted rational bound dominates `distF`. Full Prop 3.3 also includes surjectivity of the certifiable-subset image, deferred to a downstream module that will invoke Prop 2.4. |
 | Def 4.1 Distance adequacy | §4 | `V3_MetricReflection.distance_adequate` | `Coq/V3/MetricReflection.v` | CHECKED-EXACT | — | Exact restatement of the paper definition. |
 | Thm 4.4 Extensional collapse (first equation) | §4 | `V3_MetricReflection.extensional_collapse` | `Coq/V3/MetricReflection.v` | CHECKED-RESTRICTED | rational density hypothesis `Q_dense_R` | Proves `is_lawvere_dist c d (distF …)` under distance adequacy AND a `Q dense in R` hypothesis passed as a Section variable. The hypothesis is a true fact of ℝ; a follow-up commit will discharge it inline. Quotient-object statement (isometry to certifiable subset, separated reflection universal property) not yet formalized. |
-| Def 5.1 Certifiably realizable Lipschitz map | §5 | `V3_RealizableMap.RealizableMap` | `Coq/V3/RealizableMap.v` | CHECKED-EXACT | — | Five-clause record: analytic Lipschitz map with rational constant; name transformer with naturality; finite-code realizer; approximation-evidence transformer Ξ_T; distance-evidence transformer Θ_T. Fields correspond one-to-one with the paper's clauses (1)–(5). |
-| Thm 5.2 Generic lifting — achievable-bound Lipschitz | §5 | `V3_RealizableMap.lift_dist_accepted`, `V3_RealizableMap.analytic_lipschitz` | `Coq/V3/RealizableMap.v` | CHECKED-RESTRICTED | — | Λ_T-scaling of accepted rational bounds proved exactly. Full functor T_* : Cert_ev(F) → Cert_ev(G) on objects and morphisms, and the d_Cert-level Lipschitz clause, deferred pending an object-level T_* construction (α_T bookkeeping). |
+| Def 5.1 Certifiably realizable Lipschitz map | §5 | `V3_RealizableMap.RealizableMap` | `Coq/V3/RealizableMap.v` | IN-PROGRESS | — | The Rocq record does NOT match v3 Def 5.1 as stated. v3 Def 5.1 has four clauses — analytic Lipschitz map with a **stored finite derivation** in the evidence language, name transformer with naturality, finite-code realizer with defect witness, distance-evidence transformer Θ_T that **preserves identity and concatenation on the nose**. The current Rocq record has five components (adds a separate `rm_app_promote` transformer that Def 5.1 does not have), does not represent the stored derivation as evidence, and does not encode the strict identity/composition laws for Θ_T. Follow-up commit will restructure the record to the paper's four clauses and add the strict-coherence obligations. |
+| Thm 5.2 Generic lifting — achievable-bound Lipschitz | §5 | `V3_RealizableMap.lift_dist_accepted`, `V3_RealizableMap.analytic_lipschitz` | `Coq/V3/RealizableMap.v` | IN-PROGRESS | inherits the Def 5.1 mismatch | Depends on `RealizableMap`; downgraded to `IN-PROGRESS` in tandem with the Def 5.1 row. The `lift_dist_accepted` and `analytic_lipschitz` lemmas are individually correct against the current record but do not express the full Thm 5.2 content and cannot be claimed as an EXACT correspondence with the paper until the Def 5.1 record itself matches. |
 | Prop 5.3 Identity + composition of lifts | §5 | — | — | PAPER-ONLY | — | Deferred pending Q-arithmetic bookkeeping (aligning 1*r with r etc.). |
 | Thm 5.6 Grothendieck construction / split opfibration | §5 | — | — | PAPER-ONLY | — | Standard categorical argument once Def 5.4 is stated. |
 | Thm 5.8 Presentation invariance | §5 | — | — | PAPER-ONLY | — | Requires Def 5.7 effective equivalence + distance adequacy + Thm 4.4. |

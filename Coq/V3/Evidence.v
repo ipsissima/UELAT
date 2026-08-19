@@ -1,7 +1,6 @@
 (** * Evidence.v — v3 proof-relevant evidence category (§3, Def 3.1)
 
-    Paper reference: Ballús Santacana, "Certificate-Carrying
-    Approximation…", arXiv:2506.22693 v3, Definitions 2.3, 3.1,
+    Paper reference: Ballús Santacana, "Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent", arXiv:2506.22693 v3, Definitions 2.3, 3.1,
     and §2 evidence-language closure rules.
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).

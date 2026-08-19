@@ -1,16 +1,30 @@
 opam-version: "2.0"
 name: "uelat"
 version: "dev"
-synopsis: "Constructive eigenspace and certificate analysis framework"
-maintainer: "ipsissima"
+synopsis: "Certificate-carrying approximation — v3 formalization (Rocq)"
+description: """
+Formal artifacts accompanying arXiv:2506.22693 v3
+(Ballús Santacana, "Universal Gluing and Contextual Choice:
+ Certificate-Carrying Approximation, Functorial Evidence, and Effective
+ Descent"). See README.md and docs/FORMALIZATION_STATUS.md.
+"""
+maintainer: "andreu.ballus@uab.cat"
+authors: [ "Andreu Ballús Santacana" ]
+homepage: "https://github.com/ipsissima/UELAT"
+bug-reports: "https://github.com/ipsissima/UELAT/issues"
 license: "MIT"
 depends: [
-  "ocaml" {>= "4.14.0"}
-  "rocq-prover" {>= "9.0.0"}
-  "coq-mathcomp-ssreflect"
-  "coq-mathcomp-algebra"
-  "coq-mathcomp-analysis"
-  "dune" {>= "3.10"}
+  # Pinned exactly to the toolchain the current CI resolves and builds
+  # green on. Do not relax these bounds without simultaneously
+  # updating .github/workflows/ci.yml and re-recording the resolved
+  # versions here. Widening the bounds silently invalidates the
+  # reproducibility claim in docs/FORMALIZATION_STATUS.md.
+  "ocaml"                       {>= "4.14.2" & < "4.15.0"}
+  "rocq-prover"                 {>= "9.2.0"  & < "9.3.0"}
+  "coq-mathcomp-ssreflect"      {>= "2.4.0"}
+  "coq-mathcomp-algebra"        {>= "2.4.0"}
+  "coq-mathcomp-analysis"       {>= "1.11.0"}
+  "dune"                        {>= "3.10.0"}
 ]
 build: [ "dune" "build" "-p" "uelat" "-j" jobs ]
 install: [ "dune" "install" "-p" "uelat" ]

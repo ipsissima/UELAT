@@ -1,8 +1,7 @@
 (** * EffectiveCompleteness.v — v3 evidence regularity, principal
        evidence, and finite-core density (§4 Def 4.3, §6)
 
-    Paper reference: Ballús Santacana, "Certificate-Carrying
-    Approximation…", arXiv:2506.22693 v3, Definition 4.3,
+    Paper reference: Ballús Santacana, "Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent", arXiv:2506.22693 v3, Definition 4.3,
     Definition 6.1, Definition 6.4, Theorem 6.5.
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).

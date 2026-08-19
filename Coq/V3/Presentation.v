@@ -1,7 +1,6 @@
 (** * Presentation.v — v3 approximation-presentation interface (§2)
 
-    Paper reference: Ballús Santacana, "Certificate-Carrying
-    Approximation…", arXiv:2506.22693 v3, Definition 2.1.
+    Paper reference: Ballús Santacana, "Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent", arXiv:2506.22693 v3, Definition 2.1.
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
 
@@ -147,18 +146,30 @@ End WithPresentation.
 
     Correspondence with v3 (per §11 of the project brief):
 
-      Paper theorem:
+      Paper definition:
         Definition 2.1 (Approximation presentation).
       Rocq definition:
         V3_Presentation.Presentation.
       Correspondence:
-        EXACT for the record shape and the two soundness laws (items
-        (5) and (6) of Def 2.1). Structural coherence
-        [canonical_name_ok] is item (3). Item (1) (effective
-        enumerability of [CodeF]) and the size function item (4) are
-        represented by the [code_size] field; effective enumerability
-        is a property that a concrete instance will exhibit, not a
-        universal field of the record.
+        SEMANTIC CHECKER CORE of Def 2.1 — not EXACT. The record
+        captures the checker interface (finite codes / names /
+        decoders / analytic distance / canonical-name coherence /
+        AppCheck and DistCheck with soundness), which is what the
+        rest of the v3 development consumes. Def 2.1 additionally
+        requires:
+
+          (i) [CodeF] to be *effectively enumerable* — i.e. a total
+              computable enumeration `nat → CodeF`;
+          (ii) the decoding [rhoF : CodeF → F] to have *dense range*
+               in the completion of F;
+          (iii) the represented subdomain D_F ⊆ F and the assertion
+                that [deltaF : NameF → D_F] is *surjective* onto it.
+
+        None of (i)–(iii) is encoded here. They are properties a
+        concrete presentation must exhibit — future work will factor
+        them into an [EnumerableCode] structure, a represented-domain
+        predicate/subtype, and a density property, at which point this
+        record can be upgraded toward EXACT.
 
     This file is CHECKED under Rocq 9 (in the CI-built module set).
     It is not yet a v3 THEOREM — it is a v3 DEFINITION on which v3

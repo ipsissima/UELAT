@@ -2,11 +2,33 @@
        and the achievable-bound content of the generic lifting
        theorem (§5, Def 5.1 and Thm 5.2 partial)
 
-    Paper reference: Ballús Santacana, "Certificate-Carrying
-    Approximation…", arXiv:2506.22693 v3, Definition 5.1, Theorem
+    Paper reference: Ballús Santacana, "Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent", arXiv:2506.22693 v3, Definition 5.1, Theorem
     5.2, Proposition 5.3.
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
+
+    ***CORRESPONDENCE MISMATCH — TO BE RECONCILED.***
+
+    v3 Def 5.1 has FOUR clauses: (1) analytic Lipschitz map with a
+    STORED FINITE DERIVATION in the evidence language; (2) name
+    transformer with naturality; (3) finite-code realizer with defect
+    witness; (4) distance-evidence transformer Θ_T with the STRICT
+    identity/composition preservation property.
+
+    The current Rocq record has FIVE components: it inserts a separate
+    `rm_app_promote` (Ξ_T-style) transformer that Def 5.1 does not
+    have, it does not represent the stored derivation as evidence, and
+    it does not encode the strict identity/composition laws for
+    `rm_dist_promote`. The extra transformer is a real object of the
+    paper's constructions but sits at the theorem-proof layer of Thm
+    5.2, not as a datum of Def 5.1.
+
+    A follow-up commit will restructure this record to match the
+    paper's four clauses (drop `rm_app_promote`; add a stored-
+    derivation evidence-language field; add strict identity /
+    composition laws for `rm_dist_promote`). Until then, do NOT read
+    a Rocq value of `RealizableMap P G` as a v3 certifiably realizable
+    Lipschitz map — it is a working proxy.
 
     This module formalizes:
 

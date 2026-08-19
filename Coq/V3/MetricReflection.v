@@ -1,8 +1,7 @@
 (** * MetricReflection.v — v3 Lawvere metric, distance adequacy,
        extensional collapse (§3, §4)
 
-    Paper reference: Ballús Santacana, "Certificate-Carrying
-    Approximation…", arXiv:2506.22693 v3, Definitions 3.2, 4.1,
+    Paper reference: Ballús Santacana, "Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent", arXiv:2506.22693 v3, Definitions 3.2, 4.1,
     and Theorem 4.4.
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).

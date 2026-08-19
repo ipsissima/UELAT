@@ -4,13 +4,18 @@
 
 Formal artifacts accompanying:
 
-> **Certificate-Carrying Approximation: Functorial Evidence,
-> Quantitative Descent, and Generated Universes.**
+> **Universal Gluing and Contextual Choice: Certificate-Carrying
+> Approximation, Functorial Evidence, and Effective Descent.**
 > Andreu Ballús Santacana. arXiv:2506.22693, version 3.
 
-Prior arXiv versions of this preprint were titled *Universal Embedding and
-Linear Approximation Theorem*; version 3 supersedes them under the current
-title. This repository is being restructured to correspond to version 3.
+Prior arXiv versions of this preprint used two different titles:
+
+- **v1** — *Universal Embedding and Linear Approximation Theorem*.
+- **v2** — *Universal Gluing and Contextual Choice: Categorical Logic and the
+  Foundations of Analytic Approximation*.
+
+v3 supersedes both under the title above. This repository is being
+restructured to correspond to v3.
 
 ## Status of this repository — read before citing
 
@@ -91,10 +96,8 @@ theorem beyond that enumerated set.
 
 ## License
 
-License metadata in `uelat.opam` and this README have not yet been
-reconciled with the top-level `LICENSE`. Any use of the code should
-consult the file present in the repository root; the eventual reconciled
-choice will be recorded in the git history under a `chore: license` commit.
+MIT. See the root `LICENSE` file. `uelat.opam` declares `license: "MIT"`
+consistently.
 
 ## Citation
 
@@ -104,7 +107,7 @@ against the current commit:
 
 ```bibtex
 @misc{uelat-v3,
-  title  = {Certificate-Carrying Approximation: Functorial Evidence, Quantitative Descent, and Generated Universes},
+  title  = {Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent},
   author = {Ballús Santacana, Andreu},
   year   = {2026},
   eprint = {2506.22693},

@@ -125,6 +125,22 @@ jobs:
             UELAT.V3.EffectiveCompleteness \
             UELAT.V3.RealizableMap
 
+      - name: Assumptions audit (Print Assumptions)
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          # The script's AUDIT_LIST is empty as long as no v3 theorem
+          # has reached CHECKED-EXACT. When it fills, this step also
+          # diff-checks the generated outputs against what is committed
+          # under docs/assumptions/ and fails on drift.
+          bash .github/scripts/print_assumptions.sh
+          if [ -n "$(git status --porcelain docs/assumptions/)" ]; then
+            echo "::error::docs/assumptions/ is out of date — regenerate with .github/scripts/print_assumptions.sh"
+            git --no-pager diff docs/assumptions/
+            exit 1
+          fi
+
       - name: No Admitted/Axiom in constructive island
         shell: bash
         run: |
