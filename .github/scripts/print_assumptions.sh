@@ -65,9 +65,21 @@ EOF
   # Redirect stdout AND stderr to the raw file — coqc writes
   # Print Assumptions output on stdout, but errors on stderr, and we
   # want both captured.
-  ( cd "${REPO_ROOT}/Coq" && coqc -R . UELAT "${probe}" ) > "${raw}" 2>&1 || true
+  #
+  # NO `|| true` here. A coqc failure means either the theorem name is
+  # wrong, the module does not compile, or the Require path is broken —
+  # in every one of those cases the audit has NOT established anything
+  # and must fail loudly rather than committing an error message as if
+  # it were an assumption report. `set -e` at the top propagates it.
+  if ! ( cd "${REPO_ROOT}/Coq" && coqc -R . UELAT "${probe}" ) > "${raw}" 2>&1; then
+    echo "::error::print_assumptions: coqc failed for ${thmname}" >&2
+    echo "--- probe file ---" >&2
+    cat "${probe}" >&2
+    echo "--- coqc output ---" >&2
+    cat "${raw}" >&2
+    exit 1
+  fi
 
-  # Extract the block after "Axioms:" (or "Closed under the global context")
   out="${OUT_DIR}/${stem}.txt"
   {
     echo "# Print Assumptions ${thmname}"
