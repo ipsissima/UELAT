@@ -46,9 +46,12 @@
 
     Correspondence entries in docs/FORMALIZATION_STATUS.md:
       Def 3.2 → is_lawvere_dist (IN-PROGRESS)
-      Prop 3.3 → prop_3_3_lower_bound (CHECKED-EXACT candidate,
-                 pending in-file correspondence review)
-      Def 4.1 → distance_adequate
+      Prop 3.3 → prop_3_3_lower_bound (CHECKED-RESTRICTED — lower-
+                 bound half only; full Prop 3.3 also needs the
+                 image-surjectivity clause)
+      Def 4.1 → distance_adequate (DEFINITION-EXACT — a paper
+                DEFINITION, not itself a machine-checked theorem;
+                see the status vocabulary in FORMALIZATION_STATUS.md)
       Thm 4.4 → extensional_collapse (CHECKED-RESTRICTED under
                 Q_dense_R hypothesis) *)
 
