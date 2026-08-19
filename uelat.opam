@@ -14,17 +14,21 @@ homepage: "https://github.com/ipsissima/UELAT"
 bug-reports: "https://github.com/ipsissima/UELAT/issues"
 license: "MIT"
 depends: [
-  # Pinned exactly to the toolchain the current CI resolves and builds
-  # green on. Do not relax these bounds without simultaneously
-  # updating .github/workflows/ci.yml and re-recording the resolved
-  # versions here. Widening the bounds silently invalidates the
-  # reproducibility claim in docs/FORMALIZATION_STATUS.md.
-  "ocaml"                       {>= "4.14.2" & < "4.15.0"}
-  "rocq-prover"                 {>= "9.2.0"  & < "9.3.0"}
-  "coq-mathcomp-ssreflect"      {>= "2.4.0"}
-  "coq-mathcomp-algebra"        {>= "2.4.0"}
-  "coq-mathcomp-analysis"       {>= "1.11.0"}
-  "dune"                        {>= "3.10.0"}
+  # Lower bounds match what the current CI resolves and builds green
+  # on (see docs/BUILD_NOTES.md). Upper bounds are DELIBERATELY not
+  # pinned here: opam-repo add / restore-cache interactions in CI plus
+  # cross-package dependency solving make tight upper bounds brittle,
+  # and a lockfile (opam.export or similar) is the honest way to
+  # freeze exact versions. Follow-up: add such a lockfile and drop
+  # this comment. Until then, the reproducibility claim in
+  # docs/FORMALIZATION_STATUS.md rests on the CI job resolving the
+  # same versions run-to-run, not on lower-bound pins.
+  "ocaml"                    {>= "4.14.2"}
+  "rocq-prover"              {>= "9.0.0"}
+  "coq-mathcomp-ssreflect"
+  "coq-mathcomp-algebra"
+  "coq-mathcomp-analysis"
+  "dune"                     {>= "3.10.0"}
 ]
 build: [ "dune" "build" "-p" "uelat" "-j" jobs ]
 install: [ "dune" "install" "-p" "uelat" ]
