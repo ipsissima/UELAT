@@ -62,12 +62,24 @@ of a green build alone.
 
 ## Building
 
-The current CI environment is:
+The CI environment is currently specified by lower-bound constraints
+in `uelat.opam`:
 
-- OCaml 4.14.2
+- OCaml ≥ 4.14.2
 - rocq-prover ≥ 9.0.0 (installed via opam)
-- mathcomp / mathcomp-analysis as pulled by the pinned `uelat.opam` deps
-- dune (bundled with the ocaml/setup-ocaml action)
+- mathcomp / mathcomp-algebra / mathcomp-analysis (unversioned;
+  whatever the opam solver picks at CI time under the rocq-prover ≥
+  9.0.0 constraint)
+- dune ≥ 3.10.0
+
+**These are constraints, not exact pins.** A fresh build in the future
+can resolve to newer versions inside those ranges, and `opam update`
+runs during CI. For paper-grade reproducibility we need an opam
+lockfile (or an exact-version dependency block, or a pinned
+opam-repository revision) so that this repository can truthfully
+report the versions the paper was checked against, rather than
+"whatever currently satisfies these constraints". Adding a lockfile is
+tracked as a follow-up.
 
 `.github/workflows/ci.yml` provisions the environment from a fresh
 runner. To reproduce locally with opam ≥ 2.5:
