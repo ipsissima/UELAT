@@ -55,7 +55,34 @@ of a green build alone.
 
 | document | purpose |
 | --- | --- |
-| `docs/FORMALIZATION_STATUS.md` | v3 theorem inventory, Rocq identifier when one exists, exact status label (`CHECKED-EXACT`, `CHECKED-RESTRICTED`, `CHECKED-ANALYTIC-CORE`, `LEGACY-V2`, `PAPER-ONLY`, `IN-PROGRESS`, `FAILED-AUDIT`), and known assumption footprint. |
+| `docs/FORMALIZATION_STATUS.md` | v3 theorem inventory, Rocq identifier when one exists, exact status label (see vocabulary below), and known assumption footprint. |
+
+The status vocabulary used consistently across this repository:
+
+- **`CHECKED-EXACT`** — Rocq **theorem** with the same statement, at
+  the same strength, as the paper theorem, on a `coqchk`-clean
+  dependency path in the CI-built module set, with a captured
+  `Print Assumptions` audit under `docs/assumptions/`.
+- **`DEFINITION-EXACT`** — Rocq **definition / record** faithfully
+  modelling a paper definition. Does NOT itself count as a
+  machine-checked theorem.
+- **`CHECKED-RESTRICTED`** — Rocq theorem valid but with a documented
+  delta from the paper theorem (extra hypothesis, narrower
+  quantifier, etc.).
+- **`CHECKED-ANALYTIC-CORE`** — classical analytic lemma the paper
+  uses, checked in isolation from the v3 evidence-level statement.
+- **`LEGACY-V2`** — v1/v2 statement no longer asserted in v3. Not a
+  v3 theorem.
+- **`PAPER-ONLY`** — proved in the paper, no Rocq artifact.
+- **`IN-PROGRESS`** — Rocq module exists with partial correspondence;
+  must NOT be advertised as checked.
+- **`FAILED-AUDIT`** — earlier repository incarnation claimed this as
+  checked; audit found the statement false or vacuous.
+
+**The advertised machine-checked v3 theorem list is `CHECKED-EXACT`
+only.** `DEFINITION-EXACT` says "we modelled the object faithfully";
+`CHECKED-RESTRICTED` says "we proved a deltaed statement"; neither
+counts as machine-checked v3 in the sense of paper §18.
 | `docs/LEGACY_AUDIT.md` | audit of pre-v3 modules — what survives as analytic infrastructure, what is legacy, what failed a correspondence check. |
 | `docs/AXIOMS_AND_ADMISSIONS.md` | dependency/status report for every `Admitted`, `Axiom`, `Parameter`, and `Hypothesis` in the tree. Assumption text is descriptive; the file makes no scientific-completeness claim. |
 | `docs/BUILD_NOTES.md` | round-by-round record of the Rocq 9 migration and every discovery that changed the status of a legacy theorem. |

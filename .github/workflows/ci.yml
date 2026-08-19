@@ -130,16 +130,41 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
-          # The script's AUDIT_LIST is empty as long as no v3 theorem
-          # has reached CHECKED-EXACT. When it fills, this step also
-          # diff-checks the generated outputs against what is committed
-          # under docs/assumptions/ and fails on drift.
+          # Runs .github/scripts/print_assumptions.sh, which writes one
+          # docs/assumptions/<stem>.txt per entry in its AUDIT_LIST.
+          # See docs/assumptions/README.md for the discipline.
           bash .github/scripts/print_assumptions.sh
-          if [ -n "$(git status --porcelain docs/assumptions/)" ]; then
-            echo "::error::docs/assumptions/ is out of date — regenerate with .github/scripts/print_assumptions.sh"
-            git --no-pager diff docs/assumptions/
+
+          # Two failure modes we care about:
+          #   (a) a committed file was modified by the run — theorem
+          #       proof drifted and its assumption footprint changed.
+          #       This ALWAYS fails.
+          #   (b) a new file was written but not yet committed — the
+          #       AUDIT_LIST gained an entry. Warn but do not fail;
+          #       the intended flow is: audit list expanded → CI
+          #       generates → maintainer downloads the artifact →
+          #       commits the files → subsequent CI enforces (a).
+          modified_committed="$(git status --porcelain docs/assumptions/ | awk '/^ M|^M /{print $2}')"
+          if [ -n "${modified_committed}" ]; then
+            echo "::error::docs/assumptions/ has DRIFT on committed files — assumption footprint changed"
+            echo "${modified_committed}"
+            git --no-pager diff docs/assumptions/ || true
             exit 1
           fi
+          new_untracked="$(git status --porcelain docs/assumptions/ | awk '/^\?\?/{print $2}')"
+          if [ -n "${new_untracked}" ]; then
+            echo "::warning::docs/assumptions/ contains newly-generated files not yet committed:"
+            echo "${new_untracked}"
+            echo "Download the assumptions-audit artifact from this run and commit the files."
+          fi
+
+      - name: Upload assumptions audit as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assumptions-audit
+          path: docs/assumptions/
+          if-no-files-found: warn
 
       - name: No Admitted/Axiom in constructive island
         shell: bash

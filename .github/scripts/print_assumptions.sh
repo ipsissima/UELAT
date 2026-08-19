@@ -23,11 +23,21 @@ OUT_DIR="${REPO_ROOT}/docs/assumptions"
 mkdir -p "${OUT_DIR}"
 
 # --------------------------------------------------------------------
-# Audit list. Empty for now — no v3 theorem is yet CHECKED-EXACT.
-# When adding entries, keep the format exactly:
-#   stem|From … Require Import module|Module.theorem_name
+# Audit list — one entry per Rocq theorem the correspondence table in
+# docs/FORMALIZATION_STATUS.md advertises as CHECKED-EXACT or
+# CHECKED-RESTRICTED. DEFINITION-EXACT rows do NOT go here (a
+# definition has no meaningful Print Assumptions output).
+#
+# Format:
+#   stem|From … Require Import <files>|<qualified theorem name>
 # --------------------------------------------------------------------
-AUDIT_LIST=()
+AUDIT_LIST=(
+  "prop_3_3_lower_bound|From UELAT.V3 Require Import Presentation Evidence MetricReflection|V3_MetricReflection.prop_3_3_lower_bound"
+  "lawvere_bounds_analytic|From UELAT.V3 Require Import Presentation Evidence MetricReflection|V3_MetricReflection.lawvere_bounds_analytic"
+  "extensional_collapse|From UELAT.V3 Require Import Presentation Evidence MetricReflection|V3_MetricReflection.extensional_collapse"
+  "principal_evidence_dense|From UELAT.V3 Require Import Presentation Evidence MetricReflection EffectiveCompleteness|V3_EffectiveCompleteness.principal_evidence_dense"
+  "principal_evidence_dense_analytic|From UELAT.V3 Require Import Presentation Evidence MetricReflection EffectiveCompleteness|V3_EffectiveCompleteness.principal_evidence_dense_analytic"
+)
 
 if [ "${#AUDIT_LIST[@]}" -eq 0 ]; then
   echo "print_assumptions: audit list empty — nothing to check yet."
@@ -52,7 +62,10 @@ Print Assumptions ${thmname}.
 EOF
 
   raw="${TMPDIR}/${stem}.raw"
-  ( cd "${REPO_ROOT}/Coq" && coqc -R . UELAT "${probe}" ) 2>&1 > "${raw}"
+  # Redirect stdout AND stderr to the raw file — coqc writes
+  # Print Assumptions output on stdout, but errors on stderr, and we
+  # want both captured.
+  ( cd "${REPO_ROOT}/Coq" && coqc -R . UELAT "${probe}" ) > "${raw}" 2>&1 || true
 
   # Extract the block after "Axioms:" (or "Closed under the global context")
   out="${OUT_DIR}/${stem}.txt"
