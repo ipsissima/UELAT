@@ -63,20 +63,25 @@ Proof.
     + lra.
 Qed.
 
+(* Corrected relative to the pre-Rocq-9 source: the original conclusion
+   was `midpoint_sample a h k < a + INR n * h`, which is FALSE at h = 0
+   (both sides collapse to `a`). Old Coq's lra apparently let the proof
+   through by accident, but the claim itself was wrong. The mathematical
+   fact that's actually true — and what the sole caller
+   `midpoint_in_interval` needs, via `Rle_trans` — is `<=`, so weaken the
+   conclusion. Hypothesis h >= 0 is retained. No Axiom / Admitted added. *)
 Lemma midpoint_sample_upper : forall a h n k,
-  h >= 0 -> (k < n)%nat -> n > 0 ->
-  midpoint_sample a h k < a + INR n * h.
+  h >= 0 -> (k < n)%nat -> (n > 0)%nat ->
+  midpoint_sample a h k <= a + INR n * h.
 Proof.
   intros a h n k Hh Hk Hn.
   unfold midpoint_sample.
-  apply Rplus_lt_compat_l.
-  apply Rmult_lt_compat_r.
+  apply Rplus_le_compat_l.
+  apply Rmult_le_compat_r; [lra|].
+  (* INR k + /2 <= INR n *)
+  apply Rle_trans with (INR k + 1).
   - lra.
-  - (* INR k + /2 < INR n *)
-    apply Rlt_le_trans with (INR k + 1).
-    + lra.
-    + rewrite <- S_INR.
-      apply le_INR. lia.
+  - rewrite <- S_INR. apply le_INR. lia.
 Qed.
 
 Lemma midpoint_in_interval : forall a b n k,
@@ -86,13 +91,16 @@ Lemma midpoint_in_interval : forall a b n k,
 Proof.
   intros a b n k Hab Hn Hk h.
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat.
+  { unfold h. apply Rle_ge. unfold Rdiv.
+    (* Rocq 9's Stdlib.Reals no longer exports Rdiv_le_0_compat; unfold
+       Rdiv and prove `0 <= (b - a) * / INR n` via Rmult_le_pos. *)
+    apply Rmult_le_pos.
     - lra.
-    - apply lt_0_INR. lia. }
+    - apply Rlt_le. apply Rinv_0_lt_compat. apply lt_0_INR. lia. }
   split.
   - apply midpoint_sample_lower. exact Hh.
   - apply Rle_trans with (a + INR n * h).
-    + left. apply midpoint_sample_upper; [exact Hh | exact Hk | lia].
+    + apply midpoint_sample_upper; [exact Hh | exact Hk | lia].
     + unfold h. field_simplify.
       * lra.
       * apply not_0_INR. lia.
@@ -118,9 +126,10 @@ Proof.
   induction n.
   - simpl. lra.
   - simpl.
-    apply Rplus_ge_compat.
-    + apply Hf.
-    + exact IHn.
+    (* Rocq 9's Rplus_ge_compat expects `x1 + y1 >= x2 + y2` shaped goals;
+       the goal here is `... + ... >= 0`, so specialize Hf at the sample
+       point and let lra combine with IHn. *)
+    specialize (Hf (midpoint_sample a h n)). lra.
 Qed.
 
 (** Riemann sum aux is non-negative when f is non-negative at sample points *)
@@ -132,14 +141,16 @@ Lemma riemann_sum_aux_nonneg_interval : forall f a b n,
 Proof.
   intros f a b n Hf Hab Hn h.
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; lia]. }
   induction n.
   - lia.
   - destruct n.
     + (* n = 1 *)
       simpl.
-      apply Rplus_ge_le_0_compat.
-      * apply Hf. apply midpoint_in_interval; [exact Hab | lia | lia].
+      (* Rplus_ge_le_0_compat is missing in Rocq 9 Stdlib; go through
+         Rle_ge + Rplus_le_le_0_compat which is stable. *)
+      apply Rle_ge. apply Rplus_le_le_0_compat.
+      * apply Rge_le. apply Hf. apply midpoint_in_interval; [exact Hab | lia | lia].
       * lra.
     + (* n = S n' *)
       simpl.
@@ -172,7 +183,7 @@ Proof.
   unfold riemann_sum.
   set (h := (b - a) / INR n).
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; lia]. }
   apply Rmult_ge_compat.
   - lra.
   - exact Hh.
@@ -239,7 +250,7 @@ Lemma riemann_sum_aux_bound : forall f a b n M,
 Proof.
   intros f a b n M Hf Ha Hb Hab Hn h.
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; lia]. }
   induction n.
   - lia.
   - destruct n.
@@ -274,7 +285,7 @@ Proof.
   unfold inner_product_R, riemann_sum.
   set (h := (b - a) / INR quad_points).
   assert (Hh : h >= 0).
-  { unfold h. apply Rle_ge. apply Rdiv_le_0_compat; [lra | apply lt_0_INR; unfold quad_points; lia]. }
+  { unfold h. apply Rle_ge. unfold Rdiv; apply Rmult_le_pos; [lra | apply Rlt_le; apply Rinv_0_lt_compat; apply lt_0_INR; unfold quad_points; lia]. }
   rewrite Rabs_mult.
   assert (Habs_h : Rabs h = h).
   { rewrite Rabs_right; [reflexivity | lra]. }

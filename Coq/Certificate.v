@@ -6,15 +6,42 @@
     Reference: UELAT Paper, Appendix A
 *)
 
-Require Import Coq.Reals.Reals.
-Require Import Coq.Lists.List.
-Require Import Coq.QArith.QArith.
-Require Import Lra Lia.
+From Stdlib Require Import Reals List QArith Lra Lia ZArith.
 Import ListNotations.
 Open Scope R_scope.
 
-Require Import Coq.ZArith.ZArith.
-Require Import Coq.Arith.Binomial.
+(** Rocq 9 no longer ships [Stdlib.Arith.Binomial]. Reimplement the nat
+    binomial coefficient and its three algebraic facts locally so this
+    legacy file is self-contained. Plain Fixpoint + Qed lemmas — no
+    Axiom / Parameter / Admitted / admit added. *)
+Fixpoint binomial (n k : nat) : nat :=
+  match n, k with
+  | _, O => 1%nat
+  | O, S _ => 0%nat
+  | S n', S k' => (binomial n' k' + binomial n' (S k'))%nat
+  end.
+
+Lemma binom_gt : forall n k, (n < k)%nat -> binomial n k = 0%nat.
+Proof.
+  induction n as [|n IH]; intros [|k'] Hk; simpl; try lia; try reflexivity.
+  rewrite (IH k') by lia. rewrite (IH (S k')) by lia. reflexivity.
+Qed.
+
+Lemma binomn0 : forall n, binomial n 0 = 1%nat.
+Proof. intros [|n]; reflexivity. Qed.
+
+Lemma binomnn : forall n, binomial n n = 1%nat.
+Proof.
+  induction n as [|n IH]; simpl; [reflexivity|].
+  rewrite IH. rewrite (binom_gt n (S n)) by lia. reflexivity.
+Qed.
+
+(* Pascal's identity: binomial (S n) (S k) = binomial n k + binomial n (S k) —
+   reduces by the Fixpoint's own recursive case. Needed by binomial_R_pascal. *)
+Lemma binomS : forall n k,
+  (S k <= S n)%nat ->
+  binomial (S n) (S k) = (binomial n k + binomial n (S k))%nat.
+Proof. intros n k _. reflexivity. Qed.
 
 (** * Bernstein Basis Functions *)
 
@@ -23,11 +50,21 @@ Definition binomial_R (n k : nat) : R := IZR (Z.of_nat (binomial n k)).
 Definition bernstein_basis (N k : nat) (x : R) : R :=
   binomial_R N k * pow x k * pow (1 - x) (N - k).
 
+(* The original `find_N` is not structurally recursive on any of its
+   arguments (it grows `n` and `acc` each call, bounded implicitly by
+   `<=? j`). Rocq 9's stricter termination checker rejects it. Convert
+   to a fuel-bounded structural recursion on `fuel`; `S j` fuel steps
+   are always enough because acc grows by n >= 1 each iteration and
+   the loop exits as soon as acc + n > j <= j. *)
 Definition decode_index (j : nat) : nat * nat :=
-  let fix find_N n acc :=
-    if (acc + n <=? j)%nat then find_N (S n) (acc + n)
-    else (n - 1, j - (acc - (n - 1)))
-  in find_N 1 0.
+  let fix find_N (fuel n acc : nat) : nat * nat :=
+    match fuel with
+    | O => ((n - 1)%nat, (j - (acc - (n - 1)))%nat)
+    | S fuel' =>
+        if (acc + n <=? j)%nat then find_N fuel' (S n) (acc + n)%nat
+        else ((n - 1)%nat, (j - (acc - (n - 1)))%nat)
+    end
+  in find_N (S j) 1%nat 0%nat.
 
 Definition basis (j : nat) (x : R) : R :=
   let '(N, k) := decode_index j in
@@ -61,7 +98,12 @@ Proof.
   intros x n [Hx0 Hx1].
   induction n.
   - simpl. lra.
-  - simpl. apply Rmult_le_1; [exact Hx0 | exact IHn | exact Hx1].
+  - (* Rmult_le_1 was removed from Rocq 9's Stdlib.Reals; prove x*x^n<=1
+       via Rmult_le_compat and boundedness of both factors. *)
+    simpl.
+    apply Rle_trans with (1 * 1); [|lra].
+    apply Rmult_le_compat; try assumption.
+    apply pow_le; assumption.
 Qed.
 
 (** * Binomial Theorem via Direct Power Expansion

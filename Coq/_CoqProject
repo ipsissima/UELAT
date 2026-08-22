@@ -1,52 +1,101 @@
 -Q . UELAT
 
-# Utility modules
+# NOTE ON SCOPE (Phase-1 partial green, Rocq 9 migration)
+#
+# The lines commented out with `# EXCLUDED:` below are NOT part of the
+# CI-verified build during the Rocq 9 migration. Each has a specific,
+# documented reason recorded in docs/BUILD_NOTES.md and none have been
+# silently patched. Statements in those files are UNMODIFIED. When
+# each blocker is worked through, its line is uncommented.
+#
+# The included set below is a working core that Rocq 9 builds cleanly.
+
+# Utility modules (Entropy excluded — depends on Approx/Incompressibility
+# which has a pseudo-proof in certificate_size_lower_bound's exfalso
+# branch, see BUILD_NOTES §Round 19)
 Util/Reals_ext.v
 Util/Summation.v
-Util/Entropy.v
+Util/Modulus.v
+# EXCLUDED: Util/Entropy.v (transitively depends on Incompressibility)
 
 # Foundations (Section 3-4)
 Foundations/Certificate.v
 Foundations/ProbeTheory.v
 Foundations/CCP.v
 
-# Adjunction (Section 3)
+# Adjunction (Section 3) — Probe and Model only. Functors uses find_index
+# axioms and has multiple sites still needing per-line fixes; Adjunction
+# and Reflection transitively depend on Functors.
 Adjunction/Probe.v
 Adjunction/Model.v
-Adjunction/Functors.v
-Adjunction/Adjunction.v
-Adjunction/Reflection.v
+# EXCLUDED: Adjunction/Functors.v (find_index axioms + several nth 0 sites)
+# EXCLUDED: Adjunction/Adjunction.v (depends on Functors)
+# EXCLUDED: Adjunction/Reflection.v (depends on Functors, Adjunction)
 
-# Approximation core (Sections 5-9)
+# Approximation core (Sections 5-9). Bernstein_Lipschitz uses mathcomp
+# facilities that moved in mathcomp-analysis 1.16 (reals split into
+# rocq-mathcomp-reals package) plus binom-lemma renames; EffectiveDescent
+# has a `where`-clause syntax break; UELAT_* transitively import
+# Bernstein_Lipschitz. Incompressibility's Theorem 8.2
+# (certificate_size_lower_bound) was rewritten with a real pigeonhole
+# proof in Round 21, but the same file contains lipschitz_lower_bound
+# and explicit_lower_bound whose STATEMENTS are provably false — old
+# Coq's lra silently accepted them. Per the Phase-1 no-weakening rule,
+# the file stays excluded pending real fixes to those statements; see
+# BUILD_NOTES §Round 21e.
 Approx/Certificate.v
 Approx/Bernstein.v
-Approx/Bernstein_Lipschitz.v
 Approx/Spec.v
-Approx/UELAT_Internal.v
-Approx/UELAT_External.v
-Approx/Incompressibility.v
-Approx/EffectiveDescent.v
+# EXCLUDED: Approx/Bernstein_Lipschitz.v (mathcomp-analysis reorg + binom)
+# EXCLUDED: Approx/UELAT_Internal.v (transitively imports Bernstein_Lipschitz)
+# EXCLUDED: Approx/UELAT_External.v (transitively imports Bernstein_Lipschitz)
+# EXCLUDED: Approx/Incompressibility.v (Theorem 8.2 fixed; lipschitz_lower_bound
+#                                       and explicit_lower_bound are false as
+#                                       stated — needs restatement, see BUILD_NOTES)
+# EXCLUDED: Approx/EffectiveDescent.v (`where`-clause syntax + pseudo-proof)
+# EXCLUDED: Approx/Weierstrass_Lipschitz.v (depends on Bernstein_Lipschitz)
 
-# Stability (Section 7)
+# V3 skeleton (Ballús, arXiv:2506.22693 v3). Layer A of the repository.
+# Each module here corresponds to a section of the v3 manuscript, and
+# each carries an explicit STATUS marker matching FORMALIZATION_STATUS.md.
+V3/Presentation.v
+V3/Evidence.v
+V3/MetricReflection.v
+V3/EffectiveCompleteness.v
+V3/RealizableMap.v
+
+# Stability (Section 7) — Modulus only. UniformStability uses
+# `Qreals.Q2R` which is no longer at that path in Rocq 9;
+# CertificateComposition's cert_parallel_error has a Rmax-collapse
+# pseudo-proof.
 Stability/Modulus.v
-Stability/UniformStability.v
-Stability/CertificateComposition.v
+# EXCLUDED: Stability/UniformStability.v (Qreals.Q2R path)
+# EXCLUDED: Stability/CertificateComposition.v (Rmax pseudo-proof at :174)
 
-# Examples (Appendix C)
-Examples/ExpCert.v
-Examples/FourierCert.v
-Examples/ChebyshevCert.v
-Examples/ChebyshevProof.v
-Examples/SobolevCert.v
+# Examples (Appendix C) — all excluded for now. ChebyshevProof has a
+# proof-context slip in sorted_dec_head_largest; FourierCert has a
+# `field` tactic failure at :260; ChebyshevCert / SobolevCert depend
+# on ChebyshevProof; ExpCert depends on Bernstein_Lipschitz.
+# EXCLUDED: Examples/ExpCert.v
+# EXCLUDED: Examples/FourierCert.v
+# EXCLUDED: Examples/ChebyshevCert.v
+# EXCLUDED: Examples/ChebyshevProof.v
+# EXCLUDED: Examples/SobolevCert.v
 
-# Legacy/compatibility modules
+# Legacy/compatibility modules — all excluded. The root Certificate.v
+# has decode_index / binom lemma issues progressing round-by-round,
+# ErrorBound / Reconstruct depend on FourierCert, SobolevApprox has
+# midpoint_sample_upper (Round 15 corrected statement) and further
+# missing-lemma-name issues, PartitionOfUnity uses the old Coq.* import
+# style which triggers deprecation cascades but not yet errors.
 PartitionOfUnity.v
-Certificate.v
-ErrorBound.v
-SobolevApprox.v
-Reconstruct.v
-Example.v
-Approx/Weierstrass_Lipschitz.v
+# EXCLUDED: Certificate.v (root, legacy)
+# EXCLUDED: ErrorBound.v (depends on FourierCert)
+# EXCLUDED: SobolevApprox.v (multiple)
+# EXCLUDED: Reconstruct.v (depends on FourierCert)
+# EXCLUDED: Example.v
+# (Approx/Weierstrass_Lipschitz.v excluded above)
 
-# Main entry point
-UELAT.v
+# Main entry point excluded — UELAT.v re-exports everything, so it
+# cannot compile until the excluded set does.
+# EXCLUDED: UELAT.v

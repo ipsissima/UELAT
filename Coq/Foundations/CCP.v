@@ -52,7 +52,10 @@ Proof.
   intros P bound. induction bound as [|b IH]; intros Hnone n Hle; simpl in Hnone.
   - (* Base case: bound = 0 *)
     assert (n = 0)%nat by lia. subst.
-    destruct (P 0%nat) eqn:Hp0; [discriminate | exact Hp0].
+    (* Rocq 9's `destruct … eqn:` substitutes P 0 in the goal, so the
+       false branch's goal is already `false = false`; reflexivity closes
+       it without needing Hp0. *)
+    destruct (P 0%nat) eqn:Hp0; [discriminate | reflexivity].
   - (* Inductive case: bound = S b *)
     destruct (P (S b)) eqn:HpSb; [discriminate |].
     destruct (Nat.eq_dec n (S b)) as [Heq | Hneq].

@@ -96,7 +96,7 @@ Fixpoint find_index (x : nat) (l : list nat) : nat :=
   end.
 
 Lemma find_index_correct : forall x l,
-  In x l -> nth (find_index x l) l 0 = x.
+  In x l -> nth (find_index x l) l 0%nat = x.
 Proof.
   intros x l Hin. induction l as [| y l' IH].
   - destruct Hin.
@@ -123,7 +123,7 @@ Qed.
 Lemma find_index_nth_self_nodup : forall (l : list nat) (k : nat),
   NoDup l ->
   (k < length l)%nat ->
-  find_index (nth k l 0) l = k.
+  find_index (nth k l 0%nat) l = k.
 Proof.
   intros l k Hnodup Hk.
   generalize dependent k.
@@ -131,11 +131,15 @@ Proof.
   - simpl in Hk. lia.
   - destruct k as [| k'].
     + simpl. rewrite Nat.eqb_refl. reflexivity.
-    + simpl. destruct (Nat.eqb (nth k' l' 0) x) eqn:Heq.
+    + simpl. destruct (Nat.eqb (nth k' l' 0%nat) x) eqn:Heq.
       * apply Nat.eqb_eq in Heq.
         inversion Hnodup; subst.
+        (* Rocq 9's `subst` after `inversion Hnodup` uses `Heq :
+           nth k' l' 0%nat = x` to substitute `x` throughout and then
+           consumes Heq, so H1's `~ In x l'` becomes `~ In (nth k' l'
+           0%nat) l'` directly — no `rewrite <- Heq` needed here. *)
         exfalso. apply H1.
-        rewrite <- Heq. apply nth_In. simpl in Hk. lia.
+        apply nth_In. simpl in Hk. lia.
       * f_equal. inversion Hnodup; subst.
         apply IH; [exact H2 | simpl in Hk; lia].
 Qed.
@@ -153,8 +157,8 @@ Qed.
     We axiomatize this to avoid requiring additional structure on ModelMorphism. *)
 Axiom find_index_preserves_order : forall (l1 l2 : list nat) (i j : nat),
   (i < j)%nat -> (j < length l1)%nat ->
-  (forall k, (k < length l1)%nat -> In (nth k l1 0) l2) ->
-  (find_index (nth i l1 0) l2 < find_index (nth j l1 0) l2)%nat.
+  (forall k, (k < length l1)%nat -> In (nth k l1 0%nat) l2) ->
+  (find_index (nth i l1 0%nat) l2 < find_index (nth j l1 0%nat) l2)%nat.
 
 (** For basis index lists, find_index is a left inverse of nth.
 
@@ -163,7 +167,7 @@ Axiom find_index_preserves_order : forall (l1 l2 : list nat) (i j : nat),
     property (see find_index_nth_self_nodup above). We keep this as an axiom
     to avoid threading NoDup hypotheses through all Model definitions. *)
 Axiom find_index_nth_self : forall (l : list nat) (k : nat),
-  (k < length l)%nat -> find_index (nth k l 0) l = k.
+  (k < length l)%nat -> find_index (nth k l 0%nat) l = k.
 
 (** G_obj is parameterized by answers. When ans has the correct length,
     it produces a probe theory with those answers. *)
@@ -193,7 +197,7 @@ Proof.
   (* The injection maps index i in G_obj W to the position of the i-th
      basis element of W in the basis of W'. *)
   refine {|
-    injection := fun i => find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')
+    injection := fun i => find_index (nth i (fds_basis_indices W) 0%nat) (fds_basis_indices W')
   |}.
   - (* Order preservation - uses the axiom find_index_preserves_order *)
     intros i j Hij.
@@ -231,11 +235,11 @@ Definition G_mor_gen {W W' : FinDimSubspace}
   (Hans : length ans = fds_dim W) (Hans' : length ans' = fds_dim W')
   (f : ModelMorphism W W')
   (Hcoh : forall i, (i < fds_dim W)%nat ->
-    nth i ans 0%Q = nth (find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')) ans' 0%Q) :
+    nth i ans 0%Q = nth (find_index (nth i (fds_basis_indices W) 0%nat) (fds_basis_indices W')) ans' 0%Q) :
   ProbeMorphism (G_obj W ans Hans) (G_obj W' ans' Hans').
 Proof.
   refine {|
-    injection := fun i => find_index (nth i (fds_basis_indices W) 0) (fds_basis_indices W')
+    injection := fun i => find_index (nth i (fds_basis_indices W) 0%nat) (fds_basis_indices W')
   |}.
   - (* Order preservation *)
     intros i j Hij.
@@ -337,7 +341,7 @@ Proof.
   (* eta's injection is identity *)
   rewrite eta_injection_id; [| exact Hi].
   rewrite eta_injection_id; [| apply inj_in_range; exact Hi].
-  (* Now show: find_index (nth i (probes T) 0) (probes T') = injection f i *)
+  (* Now show: find_index (nth i (probes T) 0%nat) (probes T') = injection f i *)
   simpl. unfold F_obj. simpl.
   (* By inj_preserves_probes: nth i (probes T) 0 = nth (injection f i) (probes T') 0 *)
   rewrite (inj_preserves_probes f i Hi).

@@ -6,7 +6,7 @@
     Reference: UELAT Paper, Section 5 (Lemma 5.2)
 *)
 
-From Stdlib Require Import Reals Lra Lia.
+From Stdlib Require Import Reals List Lra Lia.
 From UELAT.Foundations Require Import Certificate.
 Import ListNotations.
 Local Open Scope R_scope.
@@ -30,7 +30,7 @@ Proof.
 Qed.
 
 Lemma cert_add_size : forall Cf Cg,
-  cert_size (cert_add Cf Cg) = cert_size Cf + cert_size Cg.
+  cert_size (cert_add Cf Cg) = (cert_size Cf + cert_size Cg)%nat.
 Proof.
   intros Cf Cg. reflexivity.
 Qed.
@@ -39,7 +39,7 @@ Lemma cert_add_wf : forall Cf Cg,
   cert_wf Cf -> cert_wf Cg -> cert_wf (cert_add Cf Cg).
 Proof.
   intros Cf Cg HCf HCg.
-  simpl. split; assumption.
+  unfold cert_add. apply wf_compose; assumption.
 Qed.
 
 (** ** Scalar Multiplication of Certificates *)
@@ -82,7 +82,12 @@ Proof.
   intro Cf.
   unfold cert_neg.
   destruct Cf; simpl; try trivial.
-  rewrite Rabs_Ropp, Rabs_R1. ring.
+  (* Rocq 9 parses `-1` here as a numeric literal, not as `Ropp 1`,
+     so `rewrite Rabs_Ropp` can't find the `Rabs (- ?x)` pattern.
+     Handle `Rabs (-1) = 1` directly via Rabs_left. *)
+  replace (Rabs (-1)) with 1%R.
+  - ring.
+  - rewrite Rabs_left by lra. lra.
 Qed.
 
 (** ** Subtraction of Certificates *)
@@ -146,7 +151,7 @@ Qed.
 
 Lemma cert_chain_size : forall certs,
   cert_size (cert_chain certs) =
-    fold_right plus 0 (map cert_size certs).
+    fold_right plus 0%nat (map cert_size certs).
 Proof.
   intro certs.
   induction certs as [|C rest IH].

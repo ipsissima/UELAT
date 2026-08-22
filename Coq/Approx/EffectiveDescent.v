@@ -77,21 +77,21 @@ Hypothesis Hpart_max : Forall (fun L => L <= partition_max_lip) partition_lipsch
 (** * Size Computations *)
 
 Definition total_local_size : nat :=
-  fold_right plus 0 (map cert_size local_certs).
+  fold_right plus 0%nat (map cert_size local_certs).
 
 Definition total_compat_size : nat :=
-  fold_right plus 0 (map cert_size compat_certs).
+  fold_right plus 0%nat (map cert_size compat_certs).
 
 Definition partition_encoding_size : nat :=
   2 * M.  (** Encoding of M Lipschitz constants and supports *)
 
 (** * Glued Certificate Construction *)
 
-Definition glue_compat_data : CompatData := {|
-  overlap_indices := overlaps;
-  deltas := deltas;
-  compat_witness := seq 0 (length overlaps)
-|}.
+(* Positional constructor sidesteps Rocq 9's stricter record-notation
+   projection lookup, which chokes when a field name shadows a Variable
+   in scope (here: `deltas`). *)
+Definition glue_compat_data : CompatData :=
+  Build_CompatData overlaps deltas (seq 0 (length overlaps)).
 
 Definition glue_partition_data : PartitionData := {|
   num_patches := M;
@@ -111,7 +111,9 @@ Theorem glued_cert_size_bound :
 Proof.
   unfold glued_certificate, cert_size.
   unfold total_local_size.
-  lia.
+  (* Rewrite with add_comm and close by reflexivity of nat_le *)
+  rewrite Nat.add_comm.
+  apply Nat.le_refl.
 Qed.
 
 (** The glued certificate is well-formed *)
@@ -120,11 +122,10 @@ Theorem glued_cert_wf :
   cert_wf glued_certificate.
 Proof.
   intro Hall.
-  unfold glued_certificate. simpl.
-  repeat split.
-  - exact HM.
-  - exact Hlocal_len.
-  - exact Hall.
+  unfold glued_certificate.
+  (* cert_wf on GlueCert is the wf_glue constructor, not a conjunction —
+     `repeat split` doesn't help. Apply the constructor directly. *)
+  apply wf_glue; assumption.
 Qed.
 
 (** * Error Propagation *)

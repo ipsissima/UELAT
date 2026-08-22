@@ -13,6 +13,15 @@
 From mathcomp Require Import all_ssreflect all_algebra.
 From Stdlib Require Import Reals Lra Lia.
 From Stdlib Require Import List.
+(* Rocq 9 no longer transitively re-exports Classical from Reals, so the
+   uses of `classic`, `not_all_ex_not`, `imply_to_and` in this file need
+   their module imported explicitly. Not a new logical dependency — the
+   proofs below already invoke these classical helpers. *)
+From Stdlib Require Import Classical.
+(* Same reason for Compare_dec: `le_lt_dec` used in
+   certificate_size_lower_bound was previously visible via an implicit
+   re-export that Rocq 9 dropped. *)
+From Stdlib Require Import Compare_dec.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -73,20 +82,57 @@ Proof.
     + right. apply in_map. apply IH. exact Hlen'.
 Qed.
 
+(* Rocq 9's Stdlib.Lists.List exports NoDup_map_inv (backward direction)
+   but not the forward NoDup_map that older stdlibs had. Prove it locally
+   with a distinct name; it's a small structural fact, no axiom added. *)
+Lemma NoDup_map_local :
+  forall (A B : Type) (f : A -> B) (l : list A),
+    (forall x y, In x l -> In y l -> f x = f y -> x = y) ->
+    NoDup l -> NoDup (map f l).
+Proof.
+  intros A B f l Hinj Hnd.
+  induction Hnd as [|a l' Hnotin Hnd' IH]; simpl.
+  - constructor.
+  - constructor.
+    + intro Hin. apply in_map_iff in Hin.
+      destruct Hin as [x [Hfx Hx]].
+      assert (Heq: a = x).
+      { apply Hinj; [left; reflexivity | right; exact Hx | symmetry; exact Hfx]. }
+      subst x. contradiction.
+    + apply IH. intros x y Hx Hy Heq.
+      apply Hinj; [right; exact Hx | right; exact Hy | exact Heq].
+Qed.
+
 Lemma all_bool_lists_nodup : forall n,
   NoDup (all_bool_lists n).
 Proof.
   induction n as [|n IH]; simpl.
   - constructor; [intro H; destruct H|constructor].
   - apply NoDup_app.
-    + apply NoDup_map; [|exact IH].
+    + apply NoDup_map_local; [|exact IH].
       intros x y _ _ Heq. injection Heq. auto.
-    + apply NoDup_map; [|exact IH].
+    + apply NoDup_map_local; [|exact IH].
       intros x y _ _ Heq. injection Heq. auto.
     + intros l Hin1 Hin2.
       apply in_map_iff in Hin1. destruct Hin1 as [l1 [Heq1 _]].
       apply in_map_iff in Hin2. destruct Hin2 as [l2 [Heq2 _]].
       subst l. discriminate.
+Qed.
+
+(** Length of the enumeration of all bit-strings shorter than K.
+    Sum over i ∈ [0..K-1] of 2^i equals 2^K - 1. Small structural
+    fact used by the pigeonhole side of certificate_size_lower_bound. *)
+Lemma short_bits_length : forall n,
+  (length (flat_map all_bool_lists (seq 0 n)) = Nat.pow 2 n - 1)%coq_nat.
+Proof.
+  induction n as [|n IH].
+  - reflexivity.
+  - (* all_ssreflect's rewrite takes space-separated lemmas, not commas. *)
+    rewrite seq_S flat_map_app app_length IH.
+    simpl flat_map. rewrite app_nil_r all_bool_lists_length.
+    assert (Hk : (Nat.pow 2 n >= 1)%coq_nat).
+    { clear. induction n; simpl; lia. }
+    simpl Nat.pow. lia.
 Qed.
 
 (** * Pigeonhole Principle *)
@@ -95,7 +141,7 @@ Qed.
 Lemma pigeonhole_injective : forall (A B : Type) (f : A -> B) (la : list A) (lb : list B),
   NoDup la ->
   (forall a, In a la -> In (f a) lb) ->
-  length la > length lb ->
+  (length la > length lb)%nat ->
   exists a1 a2, In a1 la /\ In a2 la /\ a1 <> a2 /\ f a1 = f a2.
 Proof.
   intros A B f la lb Hnodup Himg Hlen.
@@ -104,21 +150,27 @@ Proof.
   destruct (classic (forall a1 a2, In a1 la -> In a2 la -> f a1 = f a2 -> a1 = a2)) as [Hinj | Hnotinj].
   - (* f is injective, contradiction with Hlen *)
     exfalso.
-    assert (Hle: length la <= length lb).
-    { (* Injective image has same size as domain, and image ⊆ lb *)
-      clear Hlen.
-      induction la as [|a la' IH]; simpl.
-      - lia.
-      - assert (Hnodup': NoDup la') by (inversion Hnodup; assumption).
-        assert (Himg': forall a, In a la' -> In (f a) lb) by (intros; apply Himg; right; assumption).
-        assert (Hnotinla: ~ In a la') by (inversion Hnodup; assumption).
-        specialize (IH Hnodup' Himg').
-        (* f a is in lb, and f a ∉ f(la') by injectivity *)
-        assert (Hfa: In (f a) lb) by (apply Himg; left; reflexivity).
-        (* Need: length (a :: la') <= length lb *)
-        (* Use: f(la') has size |la'|, f a is fresh *)
-        lia. (* This requires more work; simplified for now *)
-    }
+    (* The original proof's induction ended in `lia (* This requires more
+       work; simplified for now *)`, which cannot in fact discharge the
+       inductive step and only compiled under older Coq versions by
+       accident. Replace it with a proper pigeonhole argument:
+         Hinj : f injective on la
+           ⇒ NoDup (map f la)                        (NoDup_map_local)
+         Himg : every f a in lb, for a ∈ la
+           ⇒ incl (map f la) lb                      (direct)
+         NoDup_incl_length + length_map              ⇒  |la| ≤ |lb|. *)
+    (* %coq_nat, not %nat: mathcomp's all_ssreflect remaps %nat to ssrnat's
+       bool-returning leq, but NoDup_incl_length is a stdlib lemma returning
+       Peano.le. Match its type here; we then bridge Hlen (ssrnat %N) into
+       Peano so a single `lia` closes False. *)
+    assert (Hle: (length la <= length lb)%coq_nat).
+    { clear Hlen.
+      rewrite <- (length_map f la).
+      apply NoDup_incl_length.
+      - apply NoDup_map_local; [exact Hinj | exact Hnodup].
+      - intros b Hin. apply in_map_iff in Hin.
+        destruct Hin as [a [Heq Ha]]. subst b. apply Himg. exact Ha. }
+    assert (Hlen' : (length lb < length la)%coq_nat) by (apply/ltP; exact Hlen).
     lia.
   - (* f is not injective, extract witnesses *)
     apply not_all_ex_not in Hnotinj.
@@ -175,53 +227,62 @@ Definition encoding_injective : Prop :=
     cert_bits (encode cfg1) = cert_bits (encode cfg2) ->
     cfg1 = cfg2.
 
-(** Key theorem: if encoding is injective, some certificate has size >= K *)
+(** Key theorem: if encoding is injective, some certificate has size >= K.
+
+    Strategy (Round 21 rewrite; replaces the Round-9 `exfalso ... lia`
+    pseudo-proof that old Coq accepted silently):
+
+    Assume for contradiction that every valid config's encoding has
+    length < K. Then each of the 2^K valid configs maps to some element
+    of `flat_map all_bool_lists (seq 0 K)` — the enumeration of all
+    bit strings of length < K, whose size is 2^K - 1. Since 2^K > 2^K - 1,
+    `pigeonhole_injective` forces two distinct configs to the same
+    cert, contradicting `encoding_injective`. *)
 Theorem certificate_size_lower_bound :
   encoding_injective ->
-  exists cfg, valid_config cfg /\ cert_size (encode cfg) >= K.
+  exists cfg, valid_config cfg /\ (cert_size (encode cfg) >= K)%nat.
 Proof.
   intros Hinj.
-  (* Strategy: If all certs have size < K, then there are < 2^K distinct certs.
-     But there are 2^K configs, so by pigeonhole, two would get the same cert.
-     This contradicts injectivity. *)
-
-  (* Find the configuration with maximum certificate size *)
-  (* For a constructive proof, we show that at least one config
-     must have cert_size >= K by the counting argument *)
-
-  destruct (le_lt_dec K (cert_size (encode (repeat true K)))) as [Hge | Hlt].
-  - (* Found one: the all-true config *)
-    exists (repeat true K).
+  assert (Hpow : (Nat.pow 2 K >= 1)%coq_nat).
+  { assert (Haux : forall k : nat, (Nat.pow 2 k >= 1)%coq_nat).
+    { induction k; simpl; lia. }
+    apply Haux. }
+  destruct (classic (exists cfg, valid_config cfg
+                                 /\ (cert_size (encode cfg) >= K)%nat))
+    as [Hex | Hnex]; [exact Hex |].
+  exfalso.
+  (* Hnex ⇒ every valid config's cert is strictly shorter than K bits. *)
+  assert (Hall_short : forall cfg, In cfg all_configs ->
+                       (length (cert_bits (encode cfg)) < K)%coq_nat).
+  { intros cfg Hin.
+    apply all_configs_valid in Hin as Hv.
+    destruct (le_lt_dec K (cert_size (encode cfg))) as [Hge | Hlt].
+    - exfalso. apply Hnex. exists cfg. split; [exact Hv | apply/leP; exact Hge].
+    - unfold cert_size in Hlt. exact Hlt. }
+  (* short_bits enumerates all bit strings of length < K; size = 2^K - 1. *)
+  pose (short_bits := flat_map all_bool_lists (seq 0 K)).
+  assert (Hshort_in : forall cfg, In cfg all_configs ->
+                      In (cert_bits (encode cfg)) short_bits).
+  { intros cfg Hin. unfold short_bits.
+    apply in_flat_map.
+    exists (length (cert_bits (encode cfg))).
     split.
-    + unfold valid_config. apply repeat_length.
-    + exact Hge.
-  - (* All certs have size < K? This leads to contradiction *)
-    (* Number of possible certs of size < K is sum_{i=0}^{K-1} 2^i = 2^K - 1 < 2^K *)
-    (* But we have 2^K configs, so some must collide *)
-
-    (* For simplicity, we show the all-true config works by the bound *)
-    (* The contrapositive: if cert_size < K for all, we have a collision *)
-
-    exfalso.
-    (* cert_size (encode (repeat true K)) < K *)
-    (* But the number of distinct bit strings of length < K is < 2^K *)
-    (* And we have 2^K valid configs, so pigeonhole gives collision *)
-    (* This contradicts Hinj *)
-
-    assert (Hpow: Nat.pow 2 K >= 1) by (apply Nat.pow_le_mono_r; lia).
-
-    (* We use the fact that:
-       - There are 2^K valid configurations
-       - If all cert_sizes < K, then all certs are bit strings of length < K
-       - There are at most 2^K - 1 such strings
-       - Pigeonhole: two configs get the same cert, contradicting Hinj *)
-
-    (* For the proof, we observe that if cert_size < K, then
-       the cert can be extended to a K-bit string, but there are
-       fewer short strings than K-bit strings *)
-
-    (* Simplified: just show the bound must hold *)
-    lia.
+    - apply in_seq. split; [lia | rewrite Nat.add_0_l; apply Hall_short; exact Hin].
+    - apply all_bool_lists_complete. reflexivity. }
+  assert (Hshort_len : (length short_bits = Nat.pow 2 K - 1)%coq_nat)
+    by (unfold short_bits; apply short_bits_length).
+  destruct (pigeonhole_injective config (list bool)
+              (fun cfg => cert_bits (encode cfg))
+              all_configs short_bits
+              all_configs_nodup Hshort_in) as [cfg1 [cfg2 [Hc1 [Hc2 [Hne Heq]]]]].
+  { (* (length all_configs > length short_bits)%nat is ssrnat.ltn under
+       all_ssreflect. Bridge to Peano via /ltP, then close with lia. *)
+    apply/ltP.
+    rewrite all_configs_size Hshort_len. lia. }
+  apply Hne. apply Hinj.
+  - apply all_configs_valid; exact Hc1.
+  - apply all_configs_valid; exact Hc2.
+  - exact Heq.
 Qed.
 
 (** * Corollary: Ω(1/ε) bits for Lipschitz approximation *)
@@ -330,7 +391,7 @@ Theorem lipschitz_incompressibility :
        cfg1 = cfg2) ->
     exists cfg,
       length cfg = K_lipschitz /\
-      cert_size (encode cfg) >= K_lipschitz.
+      (cert_size (encode cfg) >= K_lipschitz)%nat.
 Proof.
   intros encode Hinj.
   apply (certificate_size_lower_bound K_lipschitz K_lipschitz_pos encode).
