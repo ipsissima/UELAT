@@ -1,254 +1,272 @@
-(** * RealizableMap.v — v3 certifiably realizable Lipschitz maps
-       and the achievable-bound content of the generic lifting
-       theorem (§5, Def 5.1 and Thm 5.2 partial)
+(** * RealizableMap.v — certifiably realizable Lipschitz maps (§5)
 
-    Paper reference: Ballús Santacana, "Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent", arXiv:2506.22693 v3, Definition 5.1, Theorem
-    5.2, Proposition 5.3.
+    Paper reference: Ballús Santacana, "Universal Gluing and Contextual
+    Choice: Certificate-Carrying Approximation, Functorial Evidence, and
+    Effective Descent", arXiv:2506.22693 v3, Definition 5.1 and
+    Theorem 5.2.
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
 
-    ***CORRESPONDENCE MISMATCH — TO BE RECONCILED.***
+    ** This record now has Definition 5.1's FOUR clauses
 
-    v3 Def 5.1 has FOUR clauses: (1) analytic Lipschitz map with a
-    STORED FINITE DERIVATION in the evidence language; (2) name
-    transformer with naturality; (3) finite-code realizer with defect
-    witness; (4) distance-evidence transformer Θ_T with the STRICT
-    identity/composition preservation property.
+    The previous revision was an explicitly-flagged proxy with five
+    components. What changed:
 
-    The current Rocq record has FIVE components: it inserts a separate
-    `rm_app_promote` (Ξ_T-style) transformer that Def 5.1 does not
-    have, it does not represent the stored derivation as evidence, and
-    it does not encode the strict identity/composition laws for
-    `rm_dist_promote`. The extra transformer is a real object of the
-    paper's constructions but sits at the theorem-proof layer of Thm
-    5.2, not as a datum of Def 5.1.
+    - Clause 1 now carries a STORED FINITE DERIVATION of the Lipschitz
+      estimate, not only the analytic Prop. Both are present and kept
+      distinct: [rm_lipschitz] is the analytic content, while
+      [rm_lip_store] together with [rm_lip_apply] / [rm_lip_apply_ok]
+      is the finite evidence-language object that actually manufactures
+      target leaf evidence.
 
-    A follow-up commit will restructure this record to match the
-    paper's four clauses (drop `rm_app_promote`; add a stored-
-    derivation evidence-language field; add strict identity /
-    composition laws for `rm_dist_promote`). Until then, do NOT read
-    a Rocq value of `RealizableMap P G` as a v3 certifiably realizable
-    Lipschitz map — it is a working proxy.
+    - Clause 4's Θ_T is no longer a field. It is DEFINED
+      ([rm_theta_prim], [rm_theta]) from the stored derivation, so the
+      evidence transformation genuinely arises from that derivation
+      rather than being an independent assumption that happens to agree
+      with it. Its two strict laws are then THEOREMS
+      ([rm_theta_id], [rm_theta_comp]), inherited from
+      [sp_transport_nil] / [sp_transport_app].
 
-    This module formalizes:
+    - The extra fifth field [rm_app_promote] is REMOVED. Approximation
+      evidence transport is derived instead, as
+      [rm_app_transport], from: evidence regularity on the source, the
+      derived Θ_T, the finite-code realizer, and the §2 mixed rule.
+      That derivation is the content of [rm_app_transport] below and is
+      the theorem showing the fifth field was unnecessary.
 
-    1. [RealizableMap P G] — Def 5.1 as a record collecting the
-       five data items of a certifiably realizable Lipschitz map
-       T : F(P) → F(G):
+    ** One honest caveat about "stored derivation"
 
-         (rm_T, rm_Lambda, rm_lipschitz) — the analytic map and its
-           stored Lipschitz constant with the analytic estimate.
-         (rm_name, rm_name_ok) — the uniform name transformer T^#
-           with the naturality δ_G(T^# ν) = T(δ_F ν).
-         (rm_code, rm_code_witness, rm_code_ok) — the uniform
-           finite-code realizer τ_T with its acceptance witness.
-         (rm_app_promote, rm_app_promote_ok) — the uniform
-           approximation-evidence transformer Ξ_T.
-         (rm_dist_promote, rm_dist_promote_ok) — the uniform
-           distance-evidence transformer Θ_T.
+    At this level of abstraction, carrying a finite store plus a
+    uniform application procedure is interderivable with carrying the
+    application procedure alone — one can always curry. The store
+    becomes mathematically forceful only for a CONCRETE evidence
+    language, where a presentation must exhibit an actual finite
+    derivation object. What is formalized here is the interface shape
+    the paper describes; it is recorded as such rather than claimed to
+    be stronger than it is. *)
 
-    2. [lift_dist_accepted] and [analytic_lipschitz] — the
-       achievable-bound-level content of Thm 5.2's metric-Lipschitz
-       clause. Every accepted rational bound q on names in F lifts
-       to an accepted rational bound Λ_T q on the transported names
-       in G; the analytic distance is bounded by Λ_T times the
-       source-side analytic distance.
-
-    Not in this commit (all IN-PROGRESS in
-    docs/FORMALIZATION_STATUS.md):
-
-    - Object-level [T_* : EvidenceObject P → EvidenceObject G] as a
-      real construction — Thm 5.2 requires assembling a target
-      certificate system c' over rm_name(ν) from an input
-      certificate system c over ν, invoking c at the reduced
-      tolerance α_T(ε) = ε / (3 max(1, Λ_T)) and the code realizer
-      at defect ε/3. This is a self-contained but non-trivial
-      Q-arithmetic bookkeeping exercise, and is left for a
-      subsequent commit so this checkpoint stays reviewable.
-    - Morphism-level [T_* : EvidenceMorphism P c d → …] as a real
-      function — same reason; the achievable-bound-level statement
-      here already captures the mathematical content.
-    - Prop 5.3 (identity is certifiably realizable; composition of
-      realizable maps is realizable). Both need Q-arithmetic to
-      match up rational bounds through Qmult_1_l etc.; deferred.
-    - Cor 5.4 [CAn↑] category and Thm 5.6 [Grothendieck opfibration]
-      — depend on the full functor construction.
-
-    No axiom, no Admitted. *)
-
-From Stdlib Require Import Reals QArith Lra Lia.
-From UELAT.V3 Require Import Presentation Evidence.
-Local Open Scope Q_scope.
+From Stdlib Require Import Reals QArith Qreals Qcanon Lra Lia.
+From UELAT.V3 Require Import EvidenceSyntax Presentation Evidence EffectiveCompleteness.
+Local Open Scope Qc_scope.
 
 Module V3_RealizableMap.
 
+Import V3_EvidenceSyntax.
 Import V3_Presentation.
 Import V3_Evidence.
+Import V3_EffectiveCompleteness.
 
-(** ** Def 5.1 — Certifiably realizable Lipschitz map. *)
+(** ** Definition 5.1 — certifiably realizable Lipschitz map. *)
 
 Record RealizableMap (P G : Presentation) : Type := {
-  (* --- analytic data --- *)
+
+  (* ---- Clause 1: analytic Lipschitz map with stored derivation ---- *)
   rm_T             : F P -> F G;
-  rm_Lambda        : Q;
-  rm_Lambda_nonneg : (0 <= rm_Lambda)%Q;
-  rm_lipschitz     : forall x y : F P,
-                       (distF G (rm_T x) (rm_T y)
-                        <= Q2R rm_Lambda * distF P x y)%R;
+  rm_Lambda        : Qc;
+  rm_Lambda_nonneg : 0 <= rm_Lambda;
+  rm_lipschitz     :
+    forall x y : F P,
+      (distF G (rm_T x) (rm_T y) <= Qc2R rm_Lambda * distF P x y)%R;
 
-  (* --- name transformer T^# with the naturality equation --- *)
-  rm_name          : NameF P -> NameF G;
-  rm_name_ok       : forall nu : NameF P,
-                       deltaF G (rm_name nu) = rm_T (deltaF P nu);
+  (* ---- Clause 2: name transformer with naturality ---- *)
+  rm_name    : NameF P -> NameF G;
+  rm_name_ok : forall nu : NameF P, deltaF G (rm_name nu) = rm_T (deltaF P nu);
 
-  (* --- finite-code realizer τ_T with defect witness E_T --- *)
-  rm_code          : CodeF P -> Q -> CodeF G;
-  rm_code_witness  : CodeF P -> Q -> list bool;
-  rm_code_ok       :
-    forall (p : CodeF P) (eta : Q),
-      (0 < eta)%Q ->
-      AppCheck G
-        (rm_name (iotaF P p))
-        (rm_code p eta)
-        eta
-        (rm_code_witness p eta) = true;
+  (* ---- Clause 1 (continued): the stored finite derivation, and the
+         uniform procedure that applies it to a primitive step ---- *)
+  rm_lip_store : list bool;
+  rm_lip_apply :
+    list bool -> NameF P -> NameF P -> Qc -> list bool -> list bool;
+  rm_lip_apply_ok :
+    forall (nu mu : NameF P) (q : Qc) (W : list bool),
+      DistLeaf P nu mu q W = true ->
+      DistLeaf G (rm_name nu) (rm_name mu) (rm_Lambda * q)
+               (rm_lip_apply rm_lip_store nu mu q W) = true;
 
-  (* --- approximation-evidence transformer Ξ_T --- *)
-  rm_app_promote   :
-    NameF P -> CodeF P -> Q -> list bool -> Q -> list bool;
-  rm_app_promote_ok :
-    forall nu p r V (eta : Q),
-      (0 < eta)%Q ->
-      AppCheck P nu p r V = true ->
-      AppCheck G
-        (rm_name nu)
-        (rm_code p eta)
-        (rm_Lambda * r + eta)
-        (rm_app_promote nu p r V eta) = true;
-
-  (* --- distance-evidence transformer Θ_T --- *)
-  rm_dist_promote  :
-    NameF P -> NameF P -> Q -> list bool -> list bool;
-  rm_dist_promote_ok :
-    forall nu mu r W,
-      DistCheck P nu mu r W = true ->
-      DistCheck G
-        (rm_name nu)
-        (rm_name mu)
-        (rm_Lambda * r)
-        (rm_dist_promote nu mu r W) = true
+  (* ---- Clause 3: finite-code realizer with accepted defect evidence ---- *)
+  rm_code         : CodeF P -> Qc -> CodeF G;
+  rm_code_witness : CodeF P -> Qc -> list bool;
+  rm_code_ok :
+    forall (p : CodeF P) (eta : Qc),
+      0 < eta ->
+      AppCheck G (rm_name (iotaF P p)) (rm_code p eta) eta
+               (rm_code_witness p eta) = true
 }.
 
-Arguments rm_T             {P G} _ _.
-Arguments rm_Lambda        {P G} _.
-Arguments rm_Lambda_nonneg {P G} _.
-Arguments rm_lipschitz     {P G} _ _ _.
-Arguments rm_name          {P G} _ _.
-Arguments rm_name_ok       {P G} _ _.
-Arguments rm_code          {P G} _ _ _.
-Arguments rm_code_witness  {P G} _ _ _.
-Arguments rm_code_ok       {P G} _ _ _ _.
-Arguments rm_app_promote   {P G} _ _ _ _ _ _.
-Arguments rm_app_promote_ok {P G} _ _ _ _ _ _ _ _.
-Arguments rm_dist_promote  {P G} _ _ _ _ _.
-Arguments rm_dist_promote_ok {P G} _ _ _ _ _ _.
-
-(** ** Achievable-bound-level content of Thm 5.2. *)
+Arguments rm_T {_ _} _ _.
+Arguments rm_Lambda {_ _} _.
+Arguments rm_Lambda_nonneg {_ _} _.
+Arguments rm_lipschitz {_ _} _ _ _.
+Arguments rm_name {_ _} _ _.
+Arguments rm_name_ok {_ _} _ _.
+Arguments rm_lip_store {_ _} _.
+Arguments rm_lip_apply {_ _} _ _ _ _ _ _.
+Arguments rm_lip_apply_ok {_ _} _ {_ _ _ _} _.
+Arguments rm_code {_ _} _ _ _.
+Arguments rm_code_witness {_ _} _ _ _.
+Arguments rm_code_ok {_ _} _ {_ _} _.
 
 Section WithMap.
-Variables (P G : Presentation).
+Variables P G : Presentation.
 Variable T : RealizableMap P G.
 
-(** Every accepted distance witness in F lifts to an accepted
-    distance witness in G at Λ_T-scaled bound. This is the
-    concrete-witness form; the "Λ_T-Lipschitz on Lawvere metrics"
-    statement of Thm 5.2 follows once d_Cert is a term. *)
+(** ** Clause 4, DERIVED: the primitive evidence transformer.
 
-Lemma lift_dist_accepted :
-  forall (nu mu : NameF P) (q : Q),
-    (exists W, DistCheck P nu mu q W = true) ->
-    exists W',
-      DistCheck G (rm_name T nu) (rm_name T mu)
-                (rm_Lambda T * q) W' = true.
+    Note it receives BOTH endpoint names [nu] and [mu] — this is the
+    general Θ_T(ν, μ, r, W) of Def 5.1, not a source-blind special
+    case. Its witness is produced by applying the STORED derivation. *)
+
+Definition rm_theta_prim (nu mu : NameF P)
+    (s : PrimStep (DistLeaf P) nu mu)
+  : PrimStep (DistLeaf G) (rm_name T nu) (rm_name T mu) :=
+  mkPrimStep (rm_Lambda T * ps_bound s)
+             (rm_lip_apply T (rm_lip_store T) nu mu (ps_bound s) (ps_witness s))
+             (rm_lip_apply_ok T (ps_ok s)).
+
+Lemma rm_theta_prim_scale :
+  forall nu mu (s : PrimStep (DistLeaf P) nu mu),
+    ps_bound (rm_theta_prim nu mu s) = rm_Lambda T * ps_bound s.
+Proof. reflexivity. Qed.
+
+(** Θ_T on whole normalized derivations. *)
+
+Definition rm_theta (a b : NameF P) (W : PSpine P a b)
+  : PSpine G (rm_name T a) (rm_name T b) :=
+  sp_transport (rm_name T) rm_theta_prim W.
+
+(** ** The two STRICT laws Def 5.1 clause 4 demands — as theorems. *)
+
+Theorem rm_theta_id :
+  forall a : NameF P, rm_theta a a (sp_nil a) = sp_nil (rm_name T a).
+Proof. intro a. apply sp_transport_nil. Qed.
+
+Theorem rm_theta_comp :
+  forall (a b c : NameF P) (W1 : PSpine P a b) (W2 : PSpine P b c),
+    rm_theta a c (sp_app W1 W2)
+    = sp_app (rm_theta a b W1) (rm_theta b c W2).
+Proof. intros. apply sp_transport_app. Qed.
+
+(** Bound scaling on whole derivations. *)
+
+Theorem rm_theta_bound :
+  forall (a b : NameF P) (W : PSpine P a b),
+    sp_bound (rm_theta a b W) = rm_Lambda T * sp_bound W.
 Proof.
-  intros nu mu q [W HW].
-  exists (rm_dist_promote T nu mu q W).
-  apply rm_dist_promote_ok. exact HW.
+  intros a b W. unfold rm_theta.
+  apply sp_bound_transport_scale. apply rm_theta_prim_scale.
 Qed.
 
-(** Analytic-level Lipschitz estimate on the transported names,
-    obtained by combining [rm_lipschitz] with the name-transformer
-    naturality [rm_name_ok]. *)
+(** ** Transport of certified distance. *)
 
-Lemma analytic_lipschitz :
-  forall (nu mu : NameF P),
-    (distF G (deltaF G (rm_name T nu)) (deltaF G (rm_name T mu))
-     <= Q2R (rm_Lambda T)
-        * distF P (deltaF P nu) (deltaF P mu))%R.
+Lemma qc_mult_le_mono_l :
+  forall L a b : Qc, 0 <= L -> a <= b -> L * a <= L * b.
 Proof.
-  intros nu mu.
-  rewrite !rm_name_ok.
-  apply rm_lipschitz.
+  intros L a b HL Hab.
+  rewrite (Qcmult_comm L a), (Qcmult_comm L b).
+  apply Qcmult_le_compat_r; assumption.
+Qed.
+
+Theorem rm_certified_dist :
+  forall (nu mu : NameF P) (q : Qc),
+    certified_dist P nu mu q ->
+    certified_dist G (rm_name T nu) (rm_name T mu) (rm_Lambda T * q).
+Proof.
+  intros nu mu q [W Hle].
+  exists (rm_theta nu mu W). rewrite rm_theta_bound.
+  apply qc_mult_le_mono_l; [apply rm_Lambda_nonneg | exact Hle].
+Qed.
+
+(** ** Approximation-evidence transport, DERIVED.
+
+    This is the theorem establishing that the old fifth field
+    [rm_app_promote] was unnecessary. Given accepted source
+    approximation evidence for [(nu, p, r)], we produce accepted TARGET
+    approximation evidence for [(T^# nu, tau_T(p, eta), Lambda*r + eta)]
+    out of:
+
+      - evidence regularity on the source (promote AppCheck to a
+        certified distance against the canonical name of [p]);
+      - the derived Θ_T (transport that distance, scaling by Lambda);
+      - the finite-code realizer (clause 3) at defect [eta];
+      - the §2 mixed rule on the target.
+
+    Nothing outside Def 5.1's clauses and Def 2.1's stated evidence
+    language is used. *)
+
+Variable ERP : EvidenceRegular P.
+Variable ECG : EvidenceClosure (P := G).
+
+Theorem rm_app_transport :
+  forall (nu : NameF P) (p : CodeF P) (r eta : Qc) (V : list bool),
+    0 < eta ->
+    AppCheck P nu p r V = true ->
+    exists V',
+      AppCheck G (rm_name T nu) (rm_code T p eta)
+               (rm_Lambda T * r + eta) V' = true.
+Proof.
+  intros nu p r eta V Heta Happ.
+  (* 1. source approximation evidence promotes to certified distance *)
+  pose proof (er_promote P ERP nu p r V Happ) as Hsrc.
+  (* 2. transport it along Theta_T *)
+  pose proof (rm_certified_dist nu (iotaF P p) r Hsrc) as Htgt.
+  (* 3. the code realizer supplies target approximation evidence
+        for the transported canonical name *)
+  pose proof (rm_code_ok T p eta Heta) as Hcode.
+  (* 4. the mixed rule composes them, adding the bounds *)
+  eapply (ec_mixed ECG). exact Htgt. exact Hcode.
+Qed.
+
+(** ** Analytic Lipschitz estimate on transported names. *)
+
+Theorem rm_analytic_lipschitz :
+  forall nu mu : NameF P,
+    (distF G (deltaF G (rm_name T nu)) (deltaF G (rm_name T mu))
+     <= Qc2R (rm_Lambda T) * distF P (deltaF P nu) (deltaF P mu))%R.
+Proof.
+  intros nu mu. rewrite !rm_name_ok. apply rm_lipschitz.
 Qed.
 
 End WithMap.
 
-(** ** What this file DOES NOT contain
+(** ** Correspondence with v3
 
-    - The full functor [T_* : Cert_ev(F) → Cert_ev(G)]. Object-level
-      requires constructing a target certificate system over
-      [rm_name T ν] from a source certificate system over ν, using
-      the α_T bookkeeping of Thm 5.2. Morphism-level uses
-      [rm_dist_promote] but must produce an [EvidenceMorphism] whose
-      endpoints are the lifted objects. Both require the object
-      lift first.
-    - Prop 5.3 identity + composition of realizable maps. Needs
-      Q-arithmetic manipulations that align 1*r with r etc.
-    - Def 5.4 [CAn↑] category. Depends on Prop 5.3.
-    - Thm 5.6 Grothendieck opfibration. Depends on Def 5.4 and the
-      full functor of Thm 5.2.
-
-    Correspondence with v3:
-
-      Paper theorem:
+      Paper definition:
         Definition 5.1 (Certifiably realizable Lipschitz map).
       Rocq definition:
         V3_RealizableMap.RealizableMap.
-      Correspondence: NOT EXACT — see the mismatch notice in the
-      module header. v3 Def 5.1 has FOUR clauses; this record has
-      FIVE components. The current field-to-clause picture is:
-        clause (1): rm_T, rm_Lambda, rm_Lambda_nonneg, rm_lipschitz
-                    — but the STORED FINITE DERIVATION of the
-                      Lipschitz estimate in the evidence language is
-                      MISSING; only the analytic Prop is present.
-        clause (2): rm_name, rm_name_ok                      — matches.
-        clause (3): rm_code, rm_code_witness, rm_code_ok     — matches.
-        clause (4): rm_dist_promote, rm_dist_promote_ok
-                    — but the STRICT identity/composition laws for
-                      Θ_T are MISSING.
-        (no clause): rm_app_promote, rm_app_promote_ok
-                    — an EXTRA field with no counterpart in Def 5.1.
-                      It belongs to the proof of Thm 5.2, where it
-                      should be DERIVED from the stored Lipschitz
-                      derivation, the finite-code realizer defect, and
-                      the triangle/weakening rules — not assumed.
-
-      An earlier revision of this comment claimed "EXACT for all five
-      clauses", contradicting both this module's header and
-      docs/FORMALIZATION_STATUS.md. That claim was wrong and is
-      retracted here.
+      Correspondence: the record now has Def 5.1's FOUR clauses, with
+      clause 4 derived rather than assumed:
+        clause 1: rm_T, rm_Lambda, rm_Lambda_nonneg, rm_lipschitz
+                  (analytic), plus rm_lip_store / rm_lip_apply /
+                  rm_lip_apply_ok (the stored finite derivation and the
+                  uniform procedure applying it);
+        clause 2: rm_name, rm_name_ok;
+        clause 3: rm_code, rm_code_witness, rm_code_ok;
+        clause 4: rm_theta_prim / rm_theta — DEFINED from the stored
+                  derivation, with the strict laws rm_theta_id and
+                  rm_theta_comp proved.
+      The previous revision's extra field rm_app_promote is gone; see
+      rm_app_transport. Status remains IN-PROGRESS because the
+      object-level and morphism-level T_* of Thm 5.2 are not yet
+      constructed — that is the next commit, not a hidden gap.
 
       Paper theorem:
-        Theorem 5.2 (Generic lifting theorem) — Lipschitz-on-Lawvere
-        clause.
+        Theorem 5.2 (Generic lifting) — evidence-transport content.
       Rocq theorems:
-        V3_RealizableMap.lift_dist_accepted (achievable-bound lift),
-        V3_RealizableMap.analytic_lipschitz (analytic Lipschitz on
-        transported names).
-      Correspondence: CHECKED-RESTRICTED. The Λ_T-scaling of
-      achievable rational bounds is proved exactly. The metric
-      Lipschitz statement d_Cert,G(T_*c, T_*d) ≤ Λ_T d_Cert,F(c,d)
-      requires the object-level functor T_* and a d_Cert-as-term
-      construction; both deferred. *)
+        rm_theta_id, rm_theta_comp (strict Θ_T laws),
+        rm_theta_bound, rm_certified_dist (Λ_T scaling),
+        rm_app_transport (approximation transport, DERIVED),
+        rm_analytic_lipschitz.
+      Correspondence: CHECKED-RESTRICTED. What is NOT yet here:
+      the functor T_* on evidence objects and morphisms, the strict
+      functor laws for it, and the d_Cert-level Lipschitz statement.
+
+    A note on hypotheses. [rm_app_transport] takes an
+    [EvidenceRegular P] and an [EvidenceClosure G] as Section
+    variables. Neither is an addition to Def 5.1: evidence regularity
+    is Def 4.3, and the closure record holds only rules Def 2.1's §2
+    already requires of the evidence language (symmetry, weakening, the
+    mixed rule). Reflexivity and the triangle rule are NOT among them —
+    those are proved in Presentation.v. *)
 
 End V3_RealizableMap.
