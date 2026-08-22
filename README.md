@@ -56,6 +56,9 @@ of a green build alone.
 | document | purpose |
 | --- | --- |
 | `docs/FORMALIZATION_STATUS.md` | v3 theorem inventory, Rocq identifier when one exists, exact status label (see vocabulary below), and known assumption footprint. |
+| `docs/LEGACY_AUDIT.md` | audit of pre-v3 modules — what survives as analytic infrastructure, what is legacy, what failed a correspondence check. |
+| `docs/AXIOMS_AND_ADMISSIONS.md` | dependency/status report for every `Admitted`, `Axiom`, `Parameter`, and `Hypothesis` in the tree. Assumption text is descriptive; the file makes no scientific-completeness claim. |
+| `docs/BUILD_NOTES.md` | round-by-round record of the Rocq 9 migration and every discovery that changed the status of a legacy theorem. |
 
 The status vocabulary used consistently across this repository:
 
@@ -83,9 +86,6 @@ The status vocabulary used consistently across this repository:
 only.** `DEFINITION-EXACT` says "we modelled the object faithfully";
 `CHECKED-RESTRICTED` says "we proved a deltaed statement"; neither
 counts as machine-checked v3 in the sense of paper §18.
-| `docs/LEGACY_AUDIT.md` | audit of pre-v3 modules — what survives as analytic infrastructure, what is legacy, what failed a correspondence check. |
-| `docs/AXIOMS_AND_ADMISSIONS.md` | dependency/status report for every `Admitted`, `Axiom`, `Parameter`, and `Hypothesis` in the tree. Assumption text is descriptive; the file makes no scientific-completeness claim. |
-| `docs/BUILD_NOTES.md` | round-by-round record of the Rocq 9 migration and every discovery that changed the status of a legacy theorem. |
 
 ## Building
 

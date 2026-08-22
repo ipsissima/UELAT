@@ -214,13 +214,29 @@ End WithMap.
         Definition 5.1 (Certifiably realizable Lipschitz map).
       Rocq definition:
         V3_RealizableMap.RealizableMap.
-      Correspondence: EXACT for all five clauses. The record fields
-      correspond field-by-field:
+      Correspondence: NOT EXACT — see the mismatch notice in the
+      module header. v3 Def 5.1 has FOUR clauses; this record has
+      FIVE components. The current field-to-clause picture is:
         clause (1): rm_T, rm_Lambda, rm_Lambda_nonneg, rm_lipschitz
-        clause (2): rm_name, rm_name_ok
-        clause (3): rm_code, rm_code_witness, rm_code_ok
-        clause (4): rm_app_promote, rm_app_promote_ok
-        clause (5): rm_dist_promote, rm_dist_promote_ok
+                    — but the STORED FINITE DERIVATION of the
+                      Lipschitz estimate in the evidence language is
+                      MISSING; only the analytic Prop is present.
+        clause (2): rm_name, rm_name_ok                      — matches.
+        clause (3): rm_code, rm_code_witness, rm_code_ok     — matches.
+        clause (4): rm_dist_promote, rm_dist_promote_ok
+                    — but the STRICT identity/composition laws for
+                      Θ_T are MISSING.
+        (no clause): rm_app_promote, rm_app_promote_ok
+                    — an EXTRA field with no counterpart in Def 5.1.
+                      It belongs to the proof of Thm 5.2, where it
+                      should be DERIVED from the stored Lipschitz
+                      derivation, the finite-code realizer defect, and
+                      the triangle/weakening rules — not assumed.
+
+      An earlier revision of this comment claimed "EXACT for all five
+      clauses", contradicting both this module's header and
+      docs/FORMALIZATION_STATUS.md. That claim was wrong and is
+      retracted here.
 
       Paper theorem:
         Theorem 5.2 (Generic lifting theorem) — Lipschitz-on-Lawvere

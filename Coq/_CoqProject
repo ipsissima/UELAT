@@ -58,6 +58,7 @@ Approx/Spec.v
 # V3 skeleton (Ballús, arXiv:2506.22693 v3). Layer A of the repository.
 # Each module here corresponds to a section of the v3 manuscript, and
 # each carries an explicit STATUS marker matching FORMALIZATION_STATUS.md.
+V3/EvidenceSyntax.v
 V3/Presentation.v
 V3/Evidence.v
 V3/MetricReflection.v
