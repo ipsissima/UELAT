@@ -185,8 +185,8 @@ Lemma dsp_sym_involutive :
 Proof.
   intros Name W. unfold dsp_sym.
   rewrite map_rev, rev_involutive, map_map.
-  rewrite <- (map_id W) at 2.
-  apply map_ext. intro s. apply ds_flip_involutive.
+  induction W as [|s W IH]; simpl; [reflexivity|].
+  rewrite IH, ds_flip_involutive. reflexivity.
 Qed.
 
 Lemma dsp_bound_sym :
@@ -194,15 +194,15 @@ Lemma dsp_bound_sym :
     dsp_bound (dsp_sym W) = dsp_bound W.
 Proof.
   intros Name W. unfold dsp_sym.
-  induction W as [|s W IH]; simpl; [reflexivity|].
-  rewrite fold_right_app. simpl.
-  rewrite <- IH. clear IH.
-  (* fold over a reversed list with a commutative-associative operator *)
-  generalize (rev (map ds_flip W)) as L. intro L.
-  induction L as [|t L IHL]; simpl.
-  - rewrite qc_add_0_r. reflexivity.
-  - rewrite <- IHL. rewrite !qc_add_assoc.
-    f_equal. apply Qcplus_comm.
+  induction W as [|s W IH].
+  - reflexivity.
+  - (* rev (map ds_flip (s :: W)) is definitionally
+       (rev (map ds_flip W)) ++ [ds_flip s], i.e. a dsp_comp. *)
+    replace (rev (map ds_flip (s :: W)))
+       with (dsp_comp (rev (map ds_flip W)) [ds_flip s])
+       by reflexivity.
+    rewrite dsp_bound_comp, IH.
+    simpl. rewrite qc_add_0_r. apply Qcplus_comm.
 Qed.
 
 (** ** Transport of a normalized derivation along a map on names.
