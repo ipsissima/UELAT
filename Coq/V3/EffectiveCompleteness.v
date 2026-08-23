@@ -30,22 +30,10 @@ Section WithPresentation.
 Variable P : Presentation.
 Variable EC : EvidenceClosure (P := P).
 
-(** ** Def 4.3 — Evidence-regular presentation.
-
-    (ER1) a finite code certifies its own canonical name exactly;
-    (ER2) approximation evidence promotes UNIFORMLY to an actual
-          normalized distance witness against the canonical name.
-
-    [er_promote_spine] is defined for every finite input tuple; the
-    correctness field [er_promote_bound] is conditional on AppCheck
-    acceptance. This keeps the computational witness independent of
-    eliminating a proof from Prop into Type. *)
-
 Record EvidenceRegular : Type := {
   er_exact_witness : CodeF P -> list bool;
   er_exact_ok :
     forall p, AppCheck P (iotaF P p) p 0 (er_exact_witness p) = true;
-
   er_promote_spine :
     forall (nu : NameF P) (p : CodeF P) (q : Qc) (V : list bool),
       PSpine P nu (iotaF P p);
@@ -57,8 +45,6 @@ Record EvidenceRegular : Type := {
 
 Variable ER : EvidenceRegular.
 
-(** Prop-level promotion is derived from the witness-producing fields. *)
-
 Theorem er_promote_certified :
   forall (nu : NameF P) (p : CodeF P) (q : Qc) (V : list bool),
     AppCheck P nu p q V = true ->
@@ -69,10 +55,6 @@ Proof.
   apply er_promote_bound. exact Happ.
 Qed.
 
-(** The reverse bound of Def 4.3's remark — obtained from the
-    witness-producing symmetry constructor, proved rather than posited
-    as a further field. *)
-
 Lemma er_promote_reverse :
   forall (nu : NameF P) (p : CodeF P) (q : Qc) (V : list bool),
     AppCheck P nu p q V = true ->
@@ -82,8 +64,6 @@ Proof.
   apply (ec_sym_certified P EC).
   eapply er_promote_certified. exact Happ.
 Qed.
-
-(** ** Def 6.4 — Principal evidence over a finite code. *)
 
 Definition principal_cert_system (p : CodeF P) : CertSystem (iotaF P p).
 Proof.
@@ -96,8 +76,6 @@ Defined.
 
 Definition principal_evidence (p : CodeF P) : EvidenceObject P :=
   {| eo_name := iotaF P p ; eo_system := principal_cert_system p |}.
-
-(** ** Thm 6.5 (1) — principal evidence is dense. *)
 
 Theorem principal_evidence_dense :
   forall (c : EvidenceObject P) (eps : Qc), 0 < eps ->
@@ -118,8 +96,6 @@ Proof.
   eapply er_promote_certified. exact Ha.
 Qed.
 
-(** Analytic corollary: the decoded points are that close. *)
-
 Corollary principal_evidence_dense_analytic :
   forall (c : EvidenceObject P) (eps : Qc), 0 < eps ->
     exists (p : CodeF P) (q : Qc),
@@ -135,10 +111,10 @@ Qed.
 End WithPresentation.
 
 Arguments EvidenceRegular {_}.
-Arguments er_exact_witness {_ _} _ _.
-Arguments er_exact_ok {_ _} _ _.
-Arguments er_promote_spine {_ _} _ _ _ _ _.
-Arguments er_promote_bound {_ _} _ {_ _ _ _} _.
+Arguments er_exact_witness {_} _ _.
+Arguments er_exact_ok {_} _ _.
+Arguments er_promote_spine {_} _ _ _ _ _.
+Arguments er_promote_bound {_} _ {_ _ _ _} _.
 
 (** ** Correspondence with v3
 
@@ -149,13 +125,10 @@ Arguments er_promote_bound {_ _} _ {_ _ _ _} _.
       Thm 6.5(1)→ principal_evidence_dense
                   (+ analytic corollary)         (CHECKED-RESTRICTED)
 
-    The important refinement in this revision is computational rather
-    than logical: [er_promote_spine] returns the finite distance witness
-    itself and [er_promote_bound] verifies it. The older Prop-only
-    existential wrapper is retained as the derived theorem
-    [er_promote_certified]. This is required by Theorem 5.2's
-    object-level lift, whose target certificate system must compute its
-    witness data.
+    [er_promote_spine] returns the finite distance witness itself and
+    [er_promote_bound] verifies it. The older Prop-only existential
+    wrapper is retained as [er_promote_certified]. This computational
+    form is required by Theorem 5.2's object-level lift.
 
     Def 6.1 (effective completeness), Thm 6.2 (effective limits lift to
     evidence) and Thm 6.5(2) remain PAPER-ONLY. *)
