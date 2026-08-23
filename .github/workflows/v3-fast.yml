@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.opam
-          key: ${{ runner.os }}-v3-rocq92-${{ hashFiles('.github/workflows/v3-fast.yml') }}
+          key: ${{ runner.os }}-v3-rocq92-stdlib91-${{ hashFiles('.github/workflows/v3-fast.yml') }}
 
       - name: Set up OCaml/opam
         uses: ocaml/setup-ocaml@v3
@@ -39,10 +39,11 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
-          # BUILD_NOTES records rocq-core/rocq-stdlib 9.2.0 as the
-          # repository's verified migration toolchain. V3 imports only
-          # Stdlib, so do NOT install the MathComp analysis stack here.
-          opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 --yes
+          # The current opam repository publishes rocq-core 9.2.0 and
+          # rocq-stdlib 9.1.0. Stdlib 9.1 accepts rocq-core >= 9.0, so
+          # this is the minimal current pairing for the V3 Stdlib-only
+          # theorem island. Do NOT install the MathComp analysis stack.
+          opam install rocq-core.9.2.0 rocq-stdlib.9.1.0 --yes
           coqc --version
 
       - name: Compile V3 modules in dependency order
