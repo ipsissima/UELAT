@@ -6,21 +6,33 @@
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
 
-    ** What changed, and why
+    ** Normalized witnesses, but genuine (q,W) morphism data
 
-    A morphism used to bundle a rational bound, an opaque [list bool]
-    witness, and a checker-acceptance proof. The category laws could
-    then only be stated up to an unspecified equivalence, because
-    nothing related two opaque witnesses. The module said so and
-    deferred them.
+    The normalized witness itself is an endpoint-indexed flattened spine
+    ([V3_EvidenceSyntax.Spine]).  Its endpoints live in the type and its
+    intrinsic bound is [sp_bound].  Definition 3.1, however, makes an
+    evidence morphism the accepted PAIR [(q,W)]: the announced rational
+    bound [q] is proof-relevant data and may contain slack above the
+    intrinsic spine bound.  We therefore retain [q] explicitly rather
+    than silently canonicalizing every morphism to [sp_bound W].
 
-    A morphism is now literally a NORMALIZED SPINE
-    ([V3_EvidenceSyntax.Spine]) between the two objects' names. Its
-    endpoints live in the type, so no endpoint proof is stored; its
-    bound is derived by [sp_bound]; and identity and composition are
-    the empty spine and concatenation. The Def 3.1 category laws are
-    therefore the strict spine laws, and are proved here as LEIBNIZ
-    equalities — no setoid, no quotient, no axiom.
+    The slack condition is stored as a BOOLEAN check
+
+      qcleb (sp_bound W) q = true
+
+    rather than as an arbitrary Prop proof.  This matters for strict
+    category laws: after the [Qc] bound and normalized spine components
+    are identified, the remaining checker-equality proofs are equal by
+    decidable UIP ([checker_proof_irrelevant]), with no proof-irrelevance
+    axiom.
+
+    Identity is [(0, empty spine)] and composition is
+
+      (q1,W1) ; (q2,W2) = (q1+q2, W1++W2).
+
+    Because bounds are canonical rationals [Qc] and witness composition
+    is normalized concatenation, the category laws below are genuine
+    Leibniz equalities.
 
     ** What the EvidenceClosure record is still for
 
@@ -32,7 +44,7 @@
     named record makes the residual assumption visible instead of
     burying it. *)
 
-From Stdlib Require Import List QArith Qcanon Bool Lra Lia.
+From Stdlib Require Import List QArith Qcanon Bool Eqdep_dec Lra Lia.
 From UELAT.V3 Require Import EvidenceSyntax Presentation.
 Import ListNotations.
 Local Open Scope Qc_scope.
@@ -45,30 +57,16 @@ Import V3_Presentation.
 Section WithPresentation.
 Variable P : Presentation.
 
-(** ** Residual closure rules.
-
-    Only the rules the normalized spine does not yet realize. A
-    concrete presentation must exhibit these; reflexivity and triangle
-    are NOT here because they are proved (see [Presentation.v]). *)
+(** ** Residual closure rules. *)
 
 Record EvidenceClosure : Type := {
-  (* Symmetry: reverse a certified distance at the same bound. *)
   ec_sym :
     forall (nu mu : NameF P) (q : Qc),
       certified_dist P nu mu q -> certified_dist P mu nu q;
-  (* Weakening: raise an announced bound. *)
   ec_weaken :
     forall (nu mu : NameF P) (q q' : Qc),
       (q <= q')%Qc ->
       certified_dist P nu mu q -> certified_dist P nu mu q';
-  (* The MIXED rule of §2: "a certified distance from one name to
-     another may be composed with an approximation certificate for the
-     second name to obtain an approximation certificate for the first
-     name, with the two rational bounds added." This is a stated
-     closure requirement of Def 2.1's evidence language, not an extra
-     hypothesis — and it is precisely what lets approximation-evidence
-     transport be DERIVED in Thm 5.2 instead of assumed as a fifth
-     clause of Def 5.1. *)
   ec_mixed :
     forall (nu mu : NameF P) (p : CodeF P) (q r : Qc) (V : list bool),
       certified_dist P nu mu q ->
@@ -76,11 +74,7 @@ Record EvidenceClosure : Type := {
       exists V', AppCheck P nu p (q + r) V' = true
 }.
 
-(** ** Def 2.3 — Certificate system over a named point.
-
-    A uniform terminating procedure returning, for each positive
-    rational tolerance, a certificate [(p, ε̄, V)] with [ε̄ < ε] that
-    [AppCheck] accepts. *)
+(** ** Def 2.3 — Certificate system over a named point. *)
 
 Record CertSystem (nu : NameF P) : Type := {
   cs_run     : Qc -> CodeF P * Qc * list bool;
@@ -93,48 +87,106 @@ Record CertSystem (nu : NameF P) : Type := {
       AppCheck P nu p ebar V = true
 }.
 
-(** ** Def 3.1 — Objects and morphisms of Cert_ev(F).
-
-    An object is a named point together with a certificate system over
-    it. A morphism is a normalized spine between the objects' names;
-    its rational bound is [sp_bound]. *)
+(** ** Def 3.1 — Objects of Cert_ev(F). *)
 
 Record EvidenceObject : Type := {
   eo_name   : NameF P;
   eo_system : CertSystem eo_name
 }.
 
-Definition EvidenceMorphism (c d : EvidenceObject) : Type :=
-  PSpine P (eo_name c) (eo_name d).
+(** Boolean comparison for canonical rationals.  [Qcle] is just [Qle]
+    on the underlying rational, so the stdlib's [Qle_bool_iff] is the
+    exact specification lemma we need. *)
+
+Definition qcleb (a b : Qc) : bool := Qle_bool a b.
+
+Lemma qcleb_iff :
+  forall a b : Qc, qcleb a b = true <-> (a <= b)%Qc.
+Proof.
+  intros a b. unfold qcleb, Qcle. apply Qle_bool_iff.
+Qed.
+
+Lemma qcleb_proof_irrelevant :
+  forall a b : Qc (p q : qcleb a b = true), p = q.
+Proof.
+  intros a b p q. apply checker_proof_irrelevant.
+Qed.
+
+(** ** Def 3.1 — proof-relevant morphisms are the actual pair (q,W).
+
+    [em_q] is the announced bound.  [em_spine] is the normalized witness.
+    [em_slack] is a decidable finite check that the witness's intrinsic
+    bound is no larger than the announced bound. *)
+
+Record EvidenceMorphism (c d : EvidenceObject) : Type := {
+  em_q     : Qc;
+  em_spine : PSpine P (eo_name c) (eo_name d);
+  em_slack : qcleb (sp_bound em_spine) em_q = true
+}.
 
 Definition em_bound {c d : EvidenceObject} (f : EvidenceMorphism c d) : Qc :=
-  sp_bound f.
+  em_q f.
 
-(** Identity is the empty spine; composition is concatenation. *)
+Lemma em_spine_le_bound :
+  forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
+    (sp_bound (em_spine f) <= em_bound f)%Qc.
+Proof.
+  intros c d f. apply (proj1 (qcleb_iff _ _)). exact (em_slack f).
+Qed.
 
-Definition id_evidence (c : EvidenceObject) : EvidenceMorphism c c :=
-  sp_nil (eo_name c).
+(** Record extensionality without a proof-irrelevance axiom. *)
+
+Lemma EvidenceMorphism_eq :
+  forall (c d : EvidenceObject) (f g : EvidenceMorphism c d),
+    em_q f = em_q g -> em_spine f = em_spine g -> f = g.
+Proof.
+  intros c d [qf Wf pf] [qg Wg pg] Hq HW. simpl in Hq, HW.
+  subst qg. subst Wg. f_equal. apply qcleb_proof_irrelevant.
+Qed.
+
+(** Identity is the accepted pair (0, empty spine). *)
+
+Definition id_evidence (c : EvidenceObject) : EvidenceMorphism c c.
+Proof.
+  refine {| em_q := 0; em_spine := sp_nil (eo_name c); em_slack := _ |}.
+  apply (proj2 (qcleb_iff _ _)). simpl. apply Qcle_refl.
+Defined.
+
+(** Composition adds announced bounds and concatenates normalized spines. *)
 
 Definition comp_evidence {c d e : EvidenceObject}
     (f : EvidenceMorphism c d) (g : EvidenceMorphism d e)
-  : EvidenceMorphism c e :=
-  sp_app f g.
+  : EvidenceMorphism c e.
+Proof.
+  refine {| em_q := em_q f + em_q g;
+            em_spine := sp_app (em_spine f) (em_spine g);
+            em_slack := _ |}.
+  apply (proj2 (qcleb_iff _ _)).
+  rewrite sp_bound_app.
+  apply Qcplus_le_compat.
+  - apply em_spine_le_bound.
+  - apply em_spine_le_bound.
+Defined.
 
-(** ** Def 3.1 category laws — STRICT, as Leibniz equalities.
-
-    These are exactly the paper's "strictly unital and associative"
-    claim for the normalized witness composition, now stated at the
-    level of evidence morphisms rather than only of raw spines. *)
+(** ** Def 3.1 category laws — STRICT, as Leibniz equalities. *)
 
 Theorem comp_evidence_id_l :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
     comp_evidence (id_evidence c) f = f.
-Proof. intros c d f. apply sp_app_nil_l. Qed.
+Proof.
+  intros c d f. apply EvidenceMorphism_eq.
+  - simpl. apply qc_add_0_l.
+  - simpl. apply sp_app_nil_l.
+Qed.
 
 Theorem comp_evidence_id_r :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
     comp_evidence f (id_evidence d) = f.
-Proof. intros c d f. apply sp_app_nil_r. Qed.
+Proof.
+  intros c d f. apply EvidenceMorphism_eq.
+  - simpl. apply qc_add_0_r.
+  - simpl. apply sp_app_nil_r.
+Qed.
 
 Theorem comp_evidence_assoc :
   forall (c d e h : EvidenceObject)
@@ -142,9 +194,13 @@ Theorem comp_evidence_assoc :
          (k : EvidenceMorphism e h),
     comp_evidence (comp_evidence f g) k
     = comp_evidence f (comp_evidence g k).
-Proof. intros. apply sp_app_assoc. Qed.
+Proof.
+  intros c d e h f g k. apply EvidenceMorphism_eq.
+  - simpl. symmetry. apply qc_add_assoc.
+  - simpl. apply sp_app_assoc.
+Qed.
 
-(** ** Bound behaviour, also strict. *)
+(** ** Announced-bound behaviour, also strict. *)
 
 Lemma id_evidence_bound : forall c, em_bound (id_evidence c) = 0.
 Proof. intro c. reflexivity. Qed.
@@ -153,22 +209,29 @@ Lemma comp_evidence_bound :
   forall (c d e : EvidenceObject)
          (f : EvidenceMorphism c d) (g : EvidenceMorphism d e),
     em_bound (comp_evidence f g) = em_bound f + em_bound g.
-Proof. intros. apply sp_bound_app. Qed.
+Proof. intros. reflexivity. Qed.
 
-(** ** Soundness of a morphism: the bridge, at the level of Def 3.1. *)
+(** ** Soundness of a morphism at its announced q. *)
 
 Theorem em_sound :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
     distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))
     <= Qc2R (em_bound f).
-Proof. intros c d f. apply spine_sound. Qed.
+Proof.
+  intros c d f.
+  eapply Rle_trans.
+  - apply spine_sound.
+  - apply Qc2R_le. apply em_spine_le_bound.
+Qed.
 
-(** Every morphism certifies its endpoints at its own bound. *)
+(** Every morphism certifies its endpoints at its announced bound. *)
 
 Theorem em_certifies :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
     certified_dist P (eo_name c) (eo_name d) (em_bound f).
-Proof. intros c d f. exists f. apply Qcle_refl. Qed.
+Proof.
+  intros c d f. exists (em_spine f). apply em_spine_le_bound.
+Qed.
 
 End WithPresentation.
 
@@ -184,6 +247,9 @@ Arguments EvidenceObject _.
 Arguments eo_name {_} _.
 Arguments eo_system {_} _.
 Arguments EvidenceMorphism {_} _ _.
+Arguments em_q {_ _ _} _.
+Arguments em_spine {_ _ _} _.
+Arguments em_slack {_ _ _} _.
 Arguments em_bound {_ _ _} _.
 Arguments id_evidence {_} _.
 Arguments comp_evidence {_ _ _ _} _ _.
@@ -204,20 +270,21 @@ Arguments comp_evidence {_ _ _ _} _ _.
         V3_Evidence.EvidenceObject, EvidenceMorphism,
         id_evidence, comp_evidence.
       Rocq theorems:
-        comp_evidence_id_l, comp_evidence_id_r, comp_evidence_assoc
-        — the category laws, as LEIBNIZ equalities.
-      Correspondence: DEFINITION-EXACT for objects, morphisms,
-      identity and composition, WITH the strict laws proved. This
-      discharges the deferral recorded in the previous revision of
-      this module.
+        comp_evidence_id_l, comp_evidence_id_r, comp_evidence_assoc.
+      Correspondence: DEFINITION-EXACT candidate pending CI/audit.
+      A morphism now literally retains the paper's accepted pair
+      [(q,W)]: [em_q] is first-class proof-relevant data and
+      [em_spine] is the normalized witness, with [em_slack] certifying
+      that its intrinsic bound is at most q.  Thus slackened witnesses
+      are not silently identified with their principal bound.  The
+      category laws are literal Leibniz equalities and use no
+      proof-irrelevance axiom.
 
       Residual assumptions, deliberately visible: [EvidenceClosure]
       still posits SYMMETRY and WEAKENING of certified distance. Both
       are rules of the paper's evidence language; neither is realized
-      by the current normal form. They are stated over
-      [certified_dist] (a Prop) rather than over spines, so a
-      presentation may discharge them semantically. Reflexivity and
-      the triangle rule are NOT assumed — they are theorems
+      by the current normal form. Reflexivity and the triangle rule are
+      NOT assumed — they are theorems
       ([certified_dist_refl], [certified_dist_trans]). *)
 
 End V3_Evidence.
