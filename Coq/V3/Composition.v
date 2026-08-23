@@ -125,7 +125,8 @@ Lemma comp_scale_beta_eq_half :
   forall eta : Qc, comp_scale * comp_beta eta = comp_half eta.
 Proof.
   intro eta. unfold comp_beta, comp_beta_den, comp_half.
-  field; [apply comp_two_nonzero | apply comp_scale_nonzero].
+  field.
+  apply comp_beta_den_nonzero.
 Qed.
 
 Lemma comp_two_half_eq :
