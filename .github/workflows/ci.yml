@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 env:
@@ -68,9 +69,8 @@ jobs:
         shell: bash
         run: |
           # Coq/_CoqProject is the single source of truth for the included
-          # Rocq migration island.  Earlier CI passed its .v entries a
-          # second time on the command line, producing duplicate-target
-          # warnings.  Do not duplicate them here.
+          # Rocq migration island. Earlier CI passed its .v entries a
+          # second time on the command line, producing duplicate targets.
           set -ux
           eval "$(opam env)"
           (cd Coq && coq_makefile -f _CoqProject -o Makefile) \
