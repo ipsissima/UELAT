@@ -107,10 +107,6 @@ Record EvidenceMorphism (c d : EvidenceObject) : Type := {
   em_slack   : qcleb (sp_bound em_spine) em_q = true
 }.
 
-(** The object endpoints are inferable from a morphism.  Declare that
-    immediately so every definition below can use projections as
-    [em_q f], [em_spine f], etc.; waiting until the end of the section
-    makes Rocq 9 treat [f] as the first explicit object argument. *)
 Arguments em_q {_ _} _.
 Arguments em_spine {_ _} _.
 Arguments em_nonneg {_ _} _.
@@ -237,8 +233,8 @@ Proof. intros. reflexivity. Qed.
 
 Theorem em_sound :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
-    distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))
-    <= Qc2R (em_bound f).
+    (distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))
+     <= Qc2R (em_bound f))%R.
 Proof.
   intros c d f.
   eapply Rle_trans.
