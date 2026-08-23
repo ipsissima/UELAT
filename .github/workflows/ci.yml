@@ -120,6 +120,7 @@ jobs:
             UELAT.Approx.Certificate UELAT.Approx.Bernstein UELAT.Approx.Spec \
             UELAT.Stability.Modulus \
             UELAT.PartitionOfUnity \
+            UELAT.V3.EvidenceSyntax \
             UELAT.V3.Presentation UELAT.V3.Evidence \
             UELAT.V3.MetricReflection \
             UELAT.V3.EffectiveCompleteness \
