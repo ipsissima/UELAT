@@ -152,7 +152,8 @@ Lemma rm_scale_alpha_eq_eta :
   forall eps : Qc, rm_scale * rm_alpha eps = rm_eta eps.
 Proof.
   intro eps. unfold rm_alpha, rm_alpha_den, rm_eta.
-  field; [apply qc_three_nonzero | apply rm_scale_nonzero].
+  field.
+  apply rm_alpha_den_nonzero.
 Qed.
 
 Lemma rm_eta_twice_lt_eps :
