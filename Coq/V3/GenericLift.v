@@ -193,6 +193,7 @@ Lemma rm_output_error_nonneg :
     (0 <= rm_Lambda T * r + rm_eta eps)%Qc.
 Proof.
   intros r eps Hr0 Heps.
+  rewrite <- (Qcplus_0_l 0).
   apply Qcplus_le_compat.
   - rewrite <- (Qcmult_0_r (rm_Lambda T)).
     apply qc_mult_le_mono_l; [apply rm_Lambda_nonneg | exact Hr0].
