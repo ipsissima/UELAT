@@ -343,10 +343,10 @@ Proof.
   assert (HL : (0 <= L)%R).
   { unfold L. rewrite <- Qc2R_0. apply Qc2R_le. apply rm_Lambda_nonneg. }
   apply Rnot_lt_le. intro Hbad.
-  set (eps := (rG - L * rP) / 2)%R.
+  set (eps := ((rG - L * rP) / 2)%R).
   assert (Heps : (0 < eps)%R) by (unfold eps; lra).
   assert (Hden : (0 < L + 1)%R) by lra.
-  set (delta := eps / (L + 1))%R.
+  set (delta := (eps / (L + 1))%R).
   assert (Hdelta : (0 < delta)%R).
   { unfold delta. apply Rdiv_lt_0_compat; assumption. }
   assert (Hratio : (L * delta < eps)%R).
