@@ -1,8 +1,8 @@
 (** * GenericLift.v — Theorem 5.2, exact functorial and metric content
 
     This module formalizes the generic lifting theorem at the strength
-    actually printed in v3.  In particular, it uses the manuscript's
-    quantitative algorithm
+    actually printed in v3.  It uses the manuscript's quantitative
+    algorithm
 
       alpha_T(eps) = eps / (3 * max(1,Lambda_T)),
       eta(eps)     = eps / 3,
@@ -10,15 +10,20 @@
     so one source certificate at [alpha_T(eps)] and one code-realizer
     call at defect [eps/3] produce the target certificate.
 
-    Objects are transported by an executable certificate-system
-    construction; genuine proof-relevant morphisms [(q,W)] are sent to
-    [(Lambda_T q, Theta_T W)].  Identity and composition hold as
-    Leibniz equalities, the forgetful square commutes, and the metric
-    inequality is proved in the GLB representation of [d_Cert]. *)
+    Crucially, this theorem does NOT assume Definition 4.3 evidence
+    regularity.  Definition 2.1 already requires the evidence language
+    to support application of a stored Lipschitz estimate to a tagged
+    source proof.  [V3_RealizableMap.rm_lip_apply] exposes exactly that
+    operation, so source AppCheck evidence is transported directly.
+
+    Genuine proof-relevant morphisms [(q,W)] are sent to
+    [(Lambda_T q, Theta_T W)]. Identity and composition are Leibniz
+    equalities, the forgetful square commutes, and the metric inequality
+    is proved in the GLB representation of [d_Cert]. *)
 
 From Stdlib Require Import Reals QArith Qreals Qcanon Lra Lia Field.
 From UELAT.V3 Require Import EvidenceSyntax Presentation Evidence
-  MetricReflection EffectiveCompleteness RealizableMap.
+  MetricReflection RealizableMap.
 Local Open Scope Qc_scope.
 
 Module V3_GenericLift.
@@ -27,17 +32,16 @@ Import V3_EvidenceSyntax.
 Import V3_Presentation.
 Import V3_Evidence.
 Import V3_MetricReflection.
-Import V3_EffectiveCompleteness.
 Import V3_RealizableMap.
 
 Section WithMap.
 Variables P G : Presentation.
 Variable T : RealizableMap P G.
-Variable ERP : EvidenceRegular (P := P).
+(** This record is the Rocq realization of the target presentation's
+    Def. 2.1 evidence-language closure rules. *)
 Variable ECG : EvidenceClosure (P := G).
 
 (** ** Exact quantitative budget from Theorem 5.2. *)
-
 Definition qc_three : Qc := 1 + 1 + 1.
 
 Lemma qc_zero_lt_one : (0 < 1)%Qc.
@@ -52,9 +56,7 @@ Proof. vm_compute. Qed.
 Lemma qc_three_nonzero : qc_three <> 0.
 Proof. apply Qclt_not_eq. exact qc_three_pos. Qed.
 
-(** [rm_scale] is a computational max(1,Lambda_T), expressed by the
-    decidable canonical-rational order so the certificate algorithm can
-    branch without any classical choice. *)
+(** A computational max(1,Lambda_T), using decidable Qc order. *)
 Definition rm_scale : Qc :=
   match Qclt_le_dec (rm_Lambda T) 1 with
   | left _  => 1
@@ -95,9 +97,6 @@ Qed.
 Lemma rm_alpha_den_nonzero : rm_alpha_den <> 0.
 Proof. apply Qclt_not_eq. exact rm_alpha_den_pos. Qed.
 
-(** Positive numerator divided by positive denominator stays positive.
-    This auxiliary lemma is constructive: the contradiction proof only
-    uses ordered-field arithmetic on canonical rationals. *)
 Lemma qc_div_pos :
   forall a d : Qc, (0 < a)%Qc -> (0 < d)%Qc -> (0 < a / d)%Qc.
 Proof.
@@ -128,7 +127,6 @@ Proof.
   apply qc_div_pos; [exact Heps | apply qc_three_pos].
 Qed.
 
-(** max(1,Lambda) * alpha = eps/3, exactly. *)
 Lemma rm_scale_alpha_eq_eta :
   forall eps : Qc, rm_scale * rm_alpha eps = rm_eta eps.
 Proof.
@@ -136,7 +134,6 @@ Proof.
   field; [apply qc_three_nonzero | apply rm_scale_nonzero].
 Qed.
 
-(** Two thirds is strictly below one full tolerance. *)
 Lemma rm_eta_twice_lt_eps :
   forall eps : Qc, (0 < eps)%Qc ->
     (rm_eta eps + rm_eta eps < eps)%Qc.
@@ -151,8 +148,6 @@ Proof.
   exact H.
 Qed.
 
-(** If the source announces r < alpha, its transported contribution is
-    at most eps/3.  This is the quantitative core of the paper proof. *)
 Lemma rm_scaled_source_le_eta :
   forall eps r : Qc,
     (0 < eps)%Qc -> (0 <= r)%Qc -> (r < rm_alpha eps)%Qc ->
@@ -195,12 +190,7 @@ Proof.
   - apply rm_eta_twice_lt_eps. exact Heps.
 Qed.
 
-(** ** Object map of T_*.
-
-    There is exactly one call to the source certificate system, at
-    [rm_alpha eps], and exactly one call to the code realizer, at
-    [rm_eta eps = eps/3]. *)
-
+(** ** Object map of T_* — exact printed algorithm. *)
 Definition lift_run (c : EvidenceObject P) (eps : Qc)
   : CodeF G * Qc * list bool :=
   let alpha := rm_alpha eps in
@@ -208,7 +198,7 @@ Definition lift_run (c : EvidenceObject P) (eps : Qc)
   let '(p, r, V) := cs_run (eo_system c) alpha in
   (rm_code T p eta,
    rm_Lambda T * r + eta,
-   rm_app_transport_witness P G T ERP ECG (eo_name c) p r eta V).
+   rm_app_transport_witness P G T ECG (eo_name c) p r eta V).
 
 Definition lift_cert_system (c : EvidenceObject P)
   : CertSystem (rm_name T (eo_name c)).
@@ -248,8 +238,6 @@ Definition lift_object (c : EvidenceObject P) : EvidenceObject G :=
   {| eo_name := rm_name T (eo_name c);
      eo_system := lift_cert_system c |}.
 
-(** The forgetful square U_G o T_* = T o U_F, at the represented-point
-    level used by the paper's forgetful maps. *)
 Theorem lift_underlying :
   forall c : EvidenceObject P,
     deltaF G (eo_name (lift_object c))
@@ -258,16 +246,13 @@ Proof.
   intro c. simpl. apply rm_name_ok.
 Qed.
 
-(** The quantitative part of Theorem 5.2 is not merely existential: the
-    computation performed by [lift_run] exposes the exact two calls and
-    their exact tolerances from the manuscript. *)
 Theorem lift_run_uses_printed_budget :
   forall (c : EvidenceObject P) (eps : Qc),
     lift_run c eps =
       let '(p, r, V) := cs_run (eo_system c) (rm_alpha eps) in
       (rm_code T p (rm_eta eps),
        rm_Lambda T * r + rm_eta eps,
-       rm_app_transport_witness P G T ERP ECG
+       rm_app_transport_witness P G T ECG
          (eo_name c) p r (rm_eta eps) V).
 Proof. reflexivity. Qed.
 
@@ -313,7 +298,6 @@ Proof.
   - simpl. apply rm_theta_comp.
 Qed.
 
-(** Achievable source bounds transport to achievable target bounds. *)
 Theorem lift_achievable :
   forall (c d : EvidenceObject P) (q : Qc),
     achievable_bound P c d q ->
@@ -324,7 +308,6 @@ Proof.
   apply rm_certified_dist. exact Hq.
 Qed.
 
-(** Canonical rational multiplication commutes with the embedding in R. *)
 Lemma Qc2R_mult :
   forall p q : Qc, Qc2R (p * q) = (Qc2R p * Qc2R q)%R.
 Proof.
@@ -332,12 +315,7 @@ Proof.
   apply Qeq_eqR. apply Qred_correct.
 Qed.
 
-(** ** Theorem 5.2, metric-reflection content.
-
-    [is_lawvere_dist] is the repository's GLB presentation of d_Cert.
-    The proof takes a source achievable bound arbitrarily close to the
-    source GLB and transports it.  The real epsilon is divided by L+1,
-    not by L, so Lambda=0 is covered without a case split. *)
+(** ** Metric-reflection part of Theorem 5.2. *)
 Theorem lift_lawvere_lipschitz :
   forall (c d : EvidenceObject P) (rP rG : R),
     is_lawvere_dist P c d rP ->
@@ -377,17 +355,20 @@ End WithMap.
 (** ** Correspondence with v3
 
     Theorem 5.2:
-      - exact printed source tolerance  -> rm_alpha
-      - exact printed realizer defect   -> rm_eta
-      - executable object map           -> lift_cert_system/lift_object
-      - forgetful square                -> lift_underlying
-      - morphism map                    -> lift_morphism
-      - strict functor laws             -> lift_morphism_id,
-                                           lift_morphism_comp
-      - metric Lipschitz statement      -> lift_lawvere_lipschitz
+      exact printed source tolerance  -> rm_alpha
+      exact printed realizer defect   -> rm_eta
+      executable object map           -> lift_cert_system/lift_object
+      forgetful square                -> lift_underlying
+      morphism map                    -> lift_morphism
+      strict functor laws             -> lift_morphism_id,
+                                        lift_morphism_comp
+      metric Lipschitz statement      -> lift_lawvere_lipschitz
+
+    There is deliberately no EvidenceRegular hypothesis here.  The
+    source AppCheck certificate is transported by Def. 2.1's stored
+    Lipschitz evidence rule, exposed by RealizableMap.rm_lip_apply.
 
     Status remains IN-PROGRESS until this exact branch compiles, coqchk
-    passes, and Print Assumptions reports for the principal theorems are
-    committed. *)
+    passes, and Print Assumptions reports are committed. *)
 
 End V3_GenericLift.
