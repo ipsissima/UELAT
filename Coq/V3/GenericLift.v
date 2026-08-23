@@ -51,6 +51,15 @@ Proof.
   auto with qarith.
 Qed.
 
+Lemma qc_pos_nonzero :
+  forall q : Qc, (0 < q)%Qc -> q <> 0.
+Proof.
+  intros q Hq.
+  apply not_eq_sym.
+  apply Qclt_not_eq.
+  exact Hq.
+Qed.
+
 Lemma qc_two_lt_three : (1 + 1 < qc_three)%Qc.
 Proof.
   unfold qc_three, Qclt, Qcplus. simpl.
@@ -66,7 +75,7 @@ Proof.
 Qed.
 
 Lemma qc_three_nonzero : qc_three <> 0.
-Proof. apply Qclt_not_eq. exact qc_three_pos. Qed.
+Proof. apply qc_pos_nonzero. exact qc_three_pos. Qed.
 
 (** A computational max(1,Lambda_T), using decidable Qc order. *)
 Definition rm_scale : Qc :=
@@ -95,7 +104,7 @@ Proof.
 Qed.
 
 Lemma rm_scale_nonzero : rm_scale <> 0.
-Proof. apply Qclt_not_eq. exact rm_scale_pos. Qed.
+Proof. apply qc_pos_nonzero. exact rm_scale_pos. Qed.
 
 Definition rm_alpha_den : Qc := qc_three * rm_scale.
 
@@ -107,7 +116,7 @@ Proof.
 Qed.
 
 Lemma rm_alpha_den_nonzero : rm_alpha_den <> 0.
-Proof. apply Qclt_not_eq. exact rm_alpha_den_pos. Qed.
+Proof. apply qc_pos_nonzero. exact rm_alpha_den_pos. Qed.
 
 Lemma qc_div_pos :
   forall a d : Qc, (0 < a)%Qc -> (0 < d)%Qc -> (0 < a / d)%Qc.
@@ -117,7 +126,7 @@ Proof.
   assert (Hd0 : (0 <= d)%Qc) by (apply Qclt_le_weak; exact Hd).
   pose proof (Qcmult_le_compat_r (a / d) 0 d Hbad Hd0) as Hmul.
   assert (Hcancel : (a / d) * d = a).
-  { field. apply Qclt_not_eq. exact Hd. }
+  { field. apply qc_pos_nonzero. exact Hd. }
   rewrite Hcancel, Qcmult_0_l in Hmul.
   exact (Qclt_not_le Ha Hmul).
 Qed.
