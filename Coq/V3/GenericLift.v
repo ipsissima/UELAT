@@ -77,7 +77,6 @@ Qed.
 Lemma qc_three_nonzero : qc_three <> 0.
 Proof. apply qc_pos_nonzero. exact qc_three_pos. Qed.
 
-(** A computational max(1,Lambda_T), using decidable Qc order. *)
 Definition rm_scale : Qc :=
   match Qclt_le_dec (rm_Lambda T) 1 with
   | left _  => 1
@@ -213,7 +212,6 @@ Proof.
   - apply rm_eta_twice_lt_eps. exact Heps.
 Qed.
 
-(** ** Object map of T_* — exact printed algorithm. *)
 Definition lift_run (c : EvidenceObject P) (eps : Qc)
   : CodeF G * Qc * list bool :=
   let alpha := rm_alpha eps in
@@ -279,13 +277,12 @@ Theorem lift_run_uses_printed_budget :
          (eo_name c) p r (rm_eta eps) V).
 Proof. reflexivity. Qed.
 
-(** ** Morphism map: (q,W) |-> (Lambda q, Theta W). *)
 Definition lift_morphism {c d : EvidenceObject P}
     (f : EvidenceMorphism c d)
   : EvidenceMorphism (lift_object c) (lift_object d).
 Proof.
   refine {| em_q := rm_Lambda T * em_bound f;
-            em_spine := rm_theta T (eo_name c) (eo_name d) (em_spine f);
+            em_spine := rm_theta T (eo_name c) (eo_name d) (@em_spine P c d f);
             em_nonneg := _;
             em_slack := _ |}.
   - apply (proj2 (qcleb_iff _ _)).
@@ -338,7 +335,6 @@ Proof.
   apply Qeq_eqR. apply Qred_correct.
 Qed.
 
-(** ** Metric-reflection part of Theorem 5.2. *)
 Theorem lift_lawvere_lipschitz :
   forall (c d : EvidenceObject P) (rP rG : R),
     is_lawvere_dist P c d rP ->
@@ -374,24 +370,5 @@ Proof.
 Qed.
 
 End WithMap.
-
-(** ** Correspondence with v3
-
-    Theorem 5.2:
-      exact printed source tolerance  -> rm_alpha
-      exact printed realizer defect   -> rm_eta
-      executable object map           -> lift_cert_system/lift_object
-      forgetful square                -> lift_underlying
-      morphism map                    -> lift_morphism
-      strict functor laws             -> lift_morphism_id,
-                                        lift_morphism_comp
-      metric Lipschitz statement      -> lift_lawvere_lipschitz
-
-    There is deliberately no EvidenceRegular hypothesis here.  The
-    source AppCheck certificate is transported by Def. 2.1's stored
-    Lipschitz evidence rule, exposed by RealizableMap.rm_lip_apply.
-
-    Status remains IN-PROGRESS until this exact branch compiles, coqchk
-    passes, and Print Assumptions reports are committed. *)
 
 End V3_GenericLift.
