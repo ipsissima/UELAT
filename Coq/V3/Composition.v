@@ -40,10 +40,14 @@ Variable ECH : EvidenceClosure (P := H).
 Definition comp_two : Qc := 1 + 1.
 
 Lemma comp_two_pos : (0 < comp_two)%Qc.
-Proof. vm_compute. Qed.
+Proof.
+  unfold comp_two, Qclt, Qcplus. simpl.
+  repeat rewrite Qred_correct.
+  auto with qarith.
+Qed.
 
 Lemma comp_two_nonzero : comp_two <> 0.
-Proof. apply Qclt_not_eq. exact comp_two_pos. Qed.
+Proof. apply qc_pos_nonzero. exact comp_two_pos. Qed.
 
 Definition comp_scale : Qc :=
   match Qclt_le_dec (rm_Lambda S) 1 with
@@ -68,12 +72,12 @@ Qed.
 Lemma comp_scale_pos : (0 < comp_scale)%Qc.
 Proof.
   eapply Qclt_le_trans.
-  - vm_compute.
+  - exact qc_zero_lt_one.
   - apply comp_scale_ge_one.
 Qed.
 
 Lemma comp_scale_nonzero : comp_scale <> 0.
-Proof. apply Qclt_not_eq. exact comp_scale_pos. Qed.
+Proof. apply qc_pos_nonzero. exact comp_scale_pos. Qed.
 
 Definition comp_beta_den : Qc := comp_two * comp_scale.
 
@@ -85,7 +89,7 @@ Proof.
 Qed.
 
 Lemma comp_beta_den_nonzero : comp_beta_den <> 0.
-Proof. apply Qclt_not_eq. exact comp_beta_den_pos. Qed.
+Proof. apply qc_pos_nonzero. exact comp_beta_den_pos. Qed.
 
 Definition comp_beta (eta : Qc) : Qc := eta / comp_beta_den.
 Definition comp_half (eta : Qc) : Qc := eta / comp_two.
@@ -98,7 +102,7 @@ Proof.
   assert (Hd0 : (0 <= d)%Qc) by (apply Qclt_le_weak; exact Hd).
   pose proof (Qcmult_le_compat_r (a / d) 0 d Hbad Hd0) as Hmul.
   assert (Hcancel : (a / d) * d = a).
-  { field. apply Qclt_not_eq. exact Hd. }
+  { field. apply qc_pos_nonzero. exact Hd. }
   rewrite Hcancel, Qcmult_0_l in Hmul.
   exact (Qclt_not_le Ha Hmul).
 Qed.
