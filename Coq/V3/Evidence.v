@@ -7,21 +7,23 @@
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
 
     A morphism of the paper is an accepted pair [(q,W)] with
-    [q in Q_{>=0}].  The Rocq representation keeps both pieces as
+    [q in Q_{>=0}]. The Rocq representation keeps both pieces as
     proof-relevant data: [em_q] is the announced canonical-rational bound,
     [em_spine] is a normalized endpoint-indexed witness, [em_nonneg]
     checks the manuscript's side condition [0 <= q], and [em_slack]
     checks that the intrinsic spine bound is at most the announced one.
 
-    Both side conditions are Boolean equalities.  Consequently equality
+    Both side conditions are Boolean equalities. Consequently equality
     of their proof components follows from decidable UIP for booleans;
     strict category laws remain genuine Leibniz equalities without a
     proof-irrelevance axiom.
 
-    Evidence-language closure is computational.  Symmetry returns an
-    actual normalized spine and the mixed rule returns an actual
-    AppCheck witness.  Weakening is derived by retaining the spine and
-    increasing the announced nonnegative bound. *)
+    Evidence-language closure is computational. Symmetry returns an
+    actual normalized spine; the mixed rule returns an actual AppCheck
+    witness; and AppCheck weakening explicitly recompiles evidence from
+    a certified bound [q] to any larger announced bound [q']. Distance
+    weakening itself remains derivable by retaining the same normalized
+    spine and increasing the announced morphism bound. *)
 
 From Stdlib Require Import List QArith Qcanon Bool Eqdep_dec Lra Lia.
 From UELAT.V3 Require Import EvidenceSyntax Presentation.
@@ -36,6 +38,7 @@ Import V3_Presentation.
 Section WithPresentation.
 Variable P : Presentation.
 
+(** ** Computational closure operations from Def. 2.1's evidence language. *)
 Record EvidenceClosure : Type := {
   ec_sym_spine :
     forall (nu mu : NameF P),
@@ -43,6 +46,7 @@ Record EvidenceClosure : Type := {
   ec_sym_bound :
     forall (nu mu : NameF P) (W : PSpine P nu mu),
       sp_bound (ec_sym_spine nu mu W) = sp_bound W;
+
   ec_mixed_witness :
     forall (nu mu : NameF P) (p : CodeF P) (q r : Qc),
       PSpine P nu mu -> list bool -> list bool;
@@ -52,7 +56,23 @@ Record EvidenceClosure : Type := {
       (sp_bound W <= q)%Qc ->
       AppCheck P mu p r V = true ->
       AppCheck P nu p (q + r)
-        (ec_mixed_witness nu mu p q r W V) = true
+        (ec_mixed_witness nu mu p q r W V) = true;
+
+  (** Weakening is computational for AppCheck evidence.  Unlike
+      distance evidence, an AppCheck witness is opaque finite data, so
+      increasing its announced bound cannot be implemented merely by
+      changing a record field; the proof language must manufacture the
+      weakened witness.  Prop. 5.3's printed composition proof uses
+      exactly this rule after obtaining a defect <= eta. *)
+  ec_app_weaken_witness :
+    forall (nu : NameF P) (p : CodeF P) (q q' : Qc),
+      list bool -> list bool;
+  ec_app_weaken_ok :
+    forall (nu : NameF P) (p : CodeF P) (q q' : Qc) (V : list bool),
+      (q <= q')%Qc ->
+      AppCheck P nu p q V = true ->
+      AppCheck P nu p q'
+        (ec_app_weaken_witness nu p q q' V) = true
 }.
 
 Record CertSystem (nu : NameF P) : Type := {
@@ -254,6 +274,8 @@ Arguments ec_sym_spine {_} _ _ _ _.
 Arguments ec_sym_bound {_} _ {_ _} _.
 Arguments ec_mixed_witness {_} _ _ _ _ _ _ _ _.
 Arguments ec_mixed_ok {_} _ {_ _ _ _ _ _} _ _ _.
+Arguments ec_app_weaken_witness {_} _ _ _ _ _ _.
+Arguments ec_app_weaken_ok {_} _ {_ _ _ _ _} _ _.
 Arguments CertSystem {_} _.
 Arguments cs_run {_ _} _ _.
 Arguments cs_bound_lt {_ _} _ _ _.
@@ -277,8 +299,14 @@ Arguments comp_evidence {_ _ _ _} _ _.
       [cs_bound_lt] enforces a nonnegative announced error strictly below
       the requested tolerance, and [cs_accept] is AppCheck acceptance.
 
+      Definition 2.1's evidence-language closure is represented here by
+      computational constructors for symmetry, mixed/triangle use, and
+      AppCheck weakening.  Distance weakening is derivable because a
+      distance morphism stores its announced bound separately from its
+      normalized proof spine.
+
       Definition 3.1 (proof-relevant evidence category) is represented by
-      [EvidenceObject] and [EvidenceMorphism].  A morphism literally
+      [EvidenceObject] and [EvidenceMorphism]. A morphism literally
       retains the paper's pair [(q,W)] with the manuscript's
       [q in Q_{>=0}] side condition ([em_nonneg]) and an accepted
       normalized witness whose intrinsic bound is at most q ([em_slack]).
