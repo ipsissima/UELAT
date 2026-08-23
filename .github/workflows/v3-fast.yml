@@ -42,14 +42,21 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
+          # A restored ~/.opam can contain the coq-released directory while
+          # setup-ocaml's registry does not list it.  This is the same orphan
+          # cache case handled by the main CI; remove the stale directory so
+          # `opam repo add` can restore the registry consistently.
+          if [ -d "$HOME/.opam/repo/coq-released" ] && \
+             ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
+            rm -rf "$HOME/.opam/repo/coq-released" \
+                   "$HOME/.opam/repo/coq-released.tar.gz"
+          fi
           opam repo add coq-released https://coq.inria.fr/opam/released || \
             opam repo set-url coq-released https://coq.inria.fr/opam/released
           opam update
           opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
           coqc --version
 
-      # Save immediately after the toolchain is known-good.  A later Rocq
-      # source failure must not discard a several-minute prover build.
       - name: Save minimal Rocq opam switch
         if: steps.rocq-switch-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
