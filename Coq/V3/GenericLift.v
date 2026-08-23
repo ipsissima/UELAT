@@ -37,11 +37,8 @@ Import V3_RealizableMap.
 Section WithMap.
 Variables P G : Presentation.
 Variable T : RealizableMap P G.
-(** This record is the Rocq realization of the target presentation's
-    Def. 2.1 evidence-language closure rules. *)
 Variable ECG : EvidenceClosure (P := G).
 
-(** ** Exact quantitative budget from Theorem 5.2. *)
 Definition qc_three : Qc := 1 + 1 + 1.
 
 Lemma qc_zero_lt_one : (0 < 1)%Qc.
@@ -281,10 +278,10 @@ Definition lift_morphism {c d : EvidenceObject P}
     (f : EvidenceMorphism c d)
   : EvidenceMorphism (lift_object c) (lift_object d).
 Proof.
-  refine {| em_q := rm_Lambda T * em_bound f;
-            em_spine := rm_theta T (eo_name c) (eo_name d) (@em_spine P c d f);
-            em_nonneg := _;
-            em_slack := _ |}.
+  refine (@Build_EvidenceMorphism G (lift_object c) (lift_object d)
+            (rm_Lambda T * em_bound f)
+            (rm_theta T (eo_name c) (eo_name d) (@em_spine P c d f))
+            _ _).
   - apply (proj2 (qcleb_iff _ _)).
     rewrite <- (Qcmult_0_r (rm_Lambda T)).
     apply qc_mult_le_mono_l.
