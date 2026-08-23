@@ -58,12 +58,6 @@ Record EvidenceClosure : Type := {
       AppCheck P nu p (q + r)
         (ec_mixed_witness nu mu p q r W V) = true;
 
-  (** Weakening is computational for AppCheck evidence.  Unlike
-      distance evidence, an AppCheck witness is opaque finite data, so
-      increasing its announced bound cannot be implemented merely by
-      changing a record field; the proof language must manufacture the
-      weakened witness.  Prop. 5.3's printed composition proof uses
-      exactly this rule after obtaining a defect <= eta. *)
   ec_app_weaken_witness :
     forall (nu : NameF P) (p : CodeF P) (q q' : Qc),
       list bool -> list bool;
@@ -112,6 +106,15 @@ Record EvidenceMorphism (c d : EvidenceObject) : Type := {
   em_nonneg  : qcleb 0 em_q = true;
   em_slack   : qcleb (sp_bound em_spine) em_q = true
 }.
+
+(** The object endpoints are inferable from a morphism.  Declare that
+    immediately so every definition below can use projections as
+    [em_q f], [em_spine f], etc.; waiting until the end of the section
+    makes Rocq 9 treat [f] as the first explicit object argument. *)
+Arguments em_q {_ _} _.
+Arguments em_spine {_ _} _.
+Arguments em_nonneg {_ _} _.
+Arguments em_slack {_ _} _.
 
 Definition em_bound {c d : EvidenceObject} (f : EvidenceMorphism c d) : Qc :=
   em_q f.
@@ -284,10 +287,6 @@ Arguments EvidenceObject _.
 Arguments eo_name {_} _.
 Arguments eo_system {_} _.
 Arguments EvidenceMorphism {_} _ _.
-Arguments em_q {_ _ _} _.
-Arguments em_spine {_ _ _} _.
-Arguments em_nonneg {_ _ _} _.
-Arguments em_slack {_ _ _} _.
 Arguments em_bound {_ _ _} _.
 Arguments id_evidence {_} _.
 Arguments comp_evidence {_ _ _ _} _ _.
@@ -301,7 +300,7 @@ Arguments comp_evidence {_ _ _ _} _ _.
 
       Definition 2.1's evidence-language closure is represented here by
       computational constructors for symmetry, mixed/triangle use, and
-      AppCheck weakening.  Distance weakening is derivable because a
+      AppCheck weakening. Distance weakening is derivable because a
       distance morphism stores its announced bound separately from its
       normalized proof spine.
 
