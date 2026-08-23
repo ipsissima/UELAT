@@ -45,13 +45,25 @@ Variable ECG : EvidenceClosure (P := G).
 Definition qc_three : Qc := 1 + 1 + 1.
 
 Lemma qc_zero_lt_one : (0 < 1)%Qc.
-Proof. vm_compute. Qed.
+Proof.
+  unfold Qclt. simpl.
+  repeat rewrite Qred_correct.
+  auto with qarith.
+Qed.
 
 Lemma qc_two_lt_three : (1 + 1 < qc_three)%Qc.
-Proof. vm_compute. Qed.
+Proof.
+  unfold qc_three, Qclt, Qcplus. simpl.
+  repeat rewrite Qred_correct.
+  auto with qarith.
+Qed.
 
 Lemma qc_three_pos : (0 < qc_three)%Qc.
-Proof. vm_compute. Qed.
+Proof.
+  unfold qc_three, Qclt, Qcplus. simpl.
+  repeat rewrite Qred_correct.
+  auto with qarith.
+Qed.
 
 Lemma qc_three_nonzero : qc_three <> 0.
 Proof. apply Qclt_not_eq. exact qc_three_pos. Qed.
@@ -172,7 +184,7 @@ Lemma rm_output_error_nonneg :
 Proof.
   intros r eps Hr0 Heps.
   apply Qcplus_le_compat.
-  - rewrite <- Qcmult_0_r with (x := rm_Lambda T).
+  - rewrite <- (Qcmult_0_r (rm_Lambda T)).
     apply qc_mult_le_mono_l; [apply rm_Lambda_nonneg | exact Hr0].
   - apply Qclt_le_weak. apply rm_eta_pos. exact Heps.
 Qed.
@@ -266,7 +278,7 @@ Proof.
             em_nonneg := _;
             em_slack := _ |}.
   - apply (proj2 (qcleb_iff _ _)).
-    rewrite <- Qcmult_0_r with (x := rm_Lambda T).
+    rewrite <- (Qcmult_0_r (rm_Lambda T)).
     apply qc_mult_le_mono_l.
     + apply rm_Lambda_nonneg.
     + apply em_bound_nonneg.
