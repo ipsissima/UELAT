@@ -1,0 +1,105 @@
+name: V3 Fast
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: v3-fast-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  OPAMYES: true
+
+jobs:
+  v3:
+    name: V3 Rocq 9.2 build + audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache minimal Rocq opam switch
+        uses: actions/cache@v4
+        with:
+          path: ~/.opam
+          key: ${{ runner.os }}-v3-rocq92-${{ hashFiles('.github/workflows/v3-fast.yml') }}
+
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: false
+
+      - name: Install minimal Rocq 9.2 toolchain
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          # BUILD_NOTES records rocq-core/rocq-stdlib 9.2.0 as the
+          # repository's verified migration toolchain.  V3 imports only
+          # Stdlib, so do NOT install the MathComp analysis stack here.
+          opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 --yes
+          coqc --version
+
+      - name: Compile V3 modules in dependency order
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          coqc -R Coq UELAT Coq/V3/EvidenceSyntax.v
+          coqc -R Coq UELAT Coq/V3/Presentation.v
+          coqc -R Coq UELAT Coq/V3/Evidence.v
+          coqc -R Coq UELAT Coq/V3/MetricReflection.v
+          coqc -R Coq UELAT Coq/V3/EffectiveCompleteness.v
+          coqc -R Coq UELAT Coq/V3/RealizableMap.v
+          coqc -R Coq UELAT Coq/V3/GenericLift.v
+
+      - name: coqchk V3 theorem island
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          coqchk -R Coq UELAT \
+            UELAT.V3.EvidenceSyntax \
+            UELAT.V3.Presentation \
+            UELAT.V3.Evidence \
+            UELAT.V3.MetricReflection \
+            UELAT.V3.EffectiveCompleteness \
+            UELAT.V3.RealizableMap \
+            UELAT.V3.GenericLift
+
+      - name: Print Assumptions audit
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          bash .github/scripts/print_assumptions.sh
+          modified_committed="$(git status --porcelain docs/assumptions/ | awk '/^ M|^M /{print $2}')"
+          if [ -n "${modified_committed}" ]; then
+            echo "::error::committed assumption reports drifted"
+            echo "${modified_committed}"
+            git --no-pager diff docs/assumptions/ || true
+            exit 1
+          fi
+
+      - name: No Admitted/Axiom in V3
+        shell: bash
+        run: |
+          set -e
+          if grep -R -n -E '\b(Admitted|Axiom)\b' Coq/V3/*.v; then
+            echo "::error::Found Admitted/Axiom in V3 theorem island"
+            exit 1
+          fi
+          echo "V3 theorem island is free of Admitted/Axiom"
+
+      - name: Upload assumptions audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-assumptions-audit
+          path: docs/assumptions/
+          if-no-files-found: warn
