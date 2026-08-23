@@ -9,18 +9,18 @@
     ** Normalized witnesses, but genuine (q,W) morphism data
 
     The normalized witness itself is an endpoint-indexed flattened spine
-    ([V3_EvidenceSyntax.Spine]).  Its endpoints live in the type and its
-    intrinsic bound is [sp_bound].  Definition 3.1, however, makes an
+    ([V3_EvidenceSyntax.Spine]). Its endpoints live in the type and its
+    intrinsic bound is [sp_bound]. Definition 3.1, however, makes an
     evidence morphism the accepted PAIR [(q,W)]: the announced rational
     bound [q] is proof-relevant data and may contain slack above the
-    intrinsic spine bound.  We therefore retain [q] explicitly rather
+    intrinsic spine bound. We therefore retain [q] explicitly rather
     than silently canonicalizing every morphism to [sp_bound W].
 
     The slack condition is stored as a BOOLEAN check
 
       qcleb (sp_bound W) q = true
 
-    rather than as an arbitrary Prop proof.  This matters for strict
+    rather than as an arbitrary Prop proof. This matters for strict
     category laws: after the [Qc] bound and normalized spine components
     are identified, the remaining checker-equality proofs are equal by
     decidable UIP ([checker_proof_irrelevant]), with no proof-irrelevance
@@ -34,15 +34,19 @@
     is normalized concatenation, the category laws below are genuine
     Leibniz equalities.
 
-    ** What the EvidenceClosure record is still for
+    ** Evidence closure is computational, not merely existential
 
-    Reflexivity and the triangle rule are now theorems (empty spine,
-    concatenation), so they are gone from the closure record.
-    SYMMETRY and WEAKENING remain abstract witness constructors: they
-    are genuine rules of the paper's evidence language that the current
-    normal form does not yet realize. Keeping them as an explicit,
-    named record makes the residual assumption visible instead of
-    burying it. *)
+    The paper's evidence language is certificate-carrying: its closure
+    operations must actually manufacture finite witnesses. Earlier V3
+    scaffolding stated symmetry and the mixed rule only through
+    [exists] in [Prop]. That is enough for existence proofs but cannot
+    feed a computational [CertSystem.cs_run], because Rocq deliberately
+    forbids eliminating arbitrary Prop existentials into Type.
+
+    [EvidenceClosure] therefore carries witness-producing functions and
+    separate correctness theorems. Weakening no longer needs to be a
+    primitive closure field: once a morphism retains its announced [q],
+    weakening is realized by keeping the same spine and increasing [q]. *)
 
 From Stdlib Require Import List QArith Qcanon Bool Eqdep_dec Lra Lia.
 From UELAT.V3 Require Import EvidenceSyntax Presentation.
@@ -57,21 +61,28 @@ Import V3_Presentation.
 Section WithPresentation.
 Variable P : Presentation.
 
-(** ** Residual closure rules. *)
+(** ** Residual closure rules, with explicit witness production. *)
 
 Record EvidenceClosure : Type := {
-  ec_sym :
-    forall (nu mu : NameF P) (q : Qc),
-      certified_dist P nu mu q -> certified_dist P mu nu q;
-  ec_weaken :
-    forall (nu mu : NameF P) (q q' : Qc),
-      (q <= q')%Qc ->
-      certified_dist P nu mu q -> certified_dist P nu mu q';
-  ec_mixed :
-    forall (nu mu : NameF P) (p : CodeF P) (q r : Qc) (V : list bool),
-      certified_dist P nu mu q ->
+  (* Symmetry rebuilds an actual normalized spine. *)
+  ec_sym_spine :
+    forall (nu mu : NameF P),
+      PSpine P nu mu -> PSpine P mu nu;
+  ec_sym_bound :
+    forall (nu mu : NameF P) (W : PSpine P nu mu),
+      sp_bound (ec_sym_spine nu mu W) = sp_bound W;
+
+  (* Mixed composition manufactures the target AppCheck witness. *)
+  ec_mixed_witness :
+    forall (nu mu : NameF P) (p : CodeF P) (q r : Qc),
+      PSpine P nu mu -> list bool -> list bool;
+  ec_mixed_ok :
+    forall (nu mu : NameF P) (p : CodeF P) (q r : Qc)
+           (W : PSpine P nu mu) (V : list bool),
+      (sp_bound W <= q)%Qc ->
       AppCheck P mu p r V = true ->
-      exists V', AppCheck P nu p (q + r) V' = true
+      AppCheck P nu p (q + r)
+        (ec_mixed_witness nu mu p q r W V) = true
 }.
 
 (** ** Def 2.3 — Certificate system over a named point. *)
@@ -94,9 +105,7 @@ Record EvidenceObject : Type := {
   eo_system : CertSystem eo_name
 }.
 
-(** Boolean comparison for canonical rationals.  [Qcle] is just [Qle]
-    on the underlying rational, so the stdlib's [Qle_bool_iff] is the
-    exact specification lemma we need. *)
+(** Boolean comparison for canonical rationals. *)
 
 Definition qcleb (a b : Qc) : bool := Qle_bool a b.
 
@@ -112,11 +121,7 @@ Proof.
   intros a b p q. apply checker_proof_irrelevant.
 Qed.
 
-(** ** Def 3.1 — proof-relevant morphisms are the actual pair (q,W).
-
-    [em_q] is the announced bound.  [em_spine] is the normalized witness.
-    [em_slack] is a decidable finite check that the witness's intrinsic
-    bound is no larger than the announced bound. *)
+(** ** Def 3.1 — proof-relevant morphisms are the actual pair (q,W). *)
 
 Record EvidenceMorphism (c d : EvidenceObject) : Type := {
   em_q     : Qc;
@@ -166,6 +171,30 @@ Proof.
   apply Qcplus_le_compat.
   - apply em_spine_le_bound.
   - apply em_spine_le_bound.
+Defined.
+
+(** Weakening is now a DERIVED constructor: same proof tree, larger q. *)
+
+Definition weaken_evidence {c d : EvidenceObject}
+    (f : EvidenceMorphism c d) (q' : Qc)
+    (Hle : (em_bound f <= q')%Qc) : EvidenceMorphism c d.
+Proof.
+  refine {| em_q := q'; em_spine := em_spine f; em_slack := _ |}.
+  apply (proj2 (qcleb_iff _ _)).
+  eapply Qcle_trans; [apply em_spine_le_bound | exact Hle].
+Defined.
+
+(** Symmetry is witness-producing through [EvidenceClosure]. *)
+
+Definition sym_evidence (EC : EvidenceClosure)
+    {c d : EvidenceObject} (f : EvidenceMorphism c d)
+  : EvidenceMorphism d c.
+Proof.
+  refine {| em_q := em_bound f;
+            em_spine := ec_sym_spine EC (eo_name c) (eo_name d) (em_spine f);
+            em_slack := _ |}.
+  apply (proj2 (qcleb_iff _ _)).
+  rewrite ec_sym_bound. apply em_spine_le_bound.
 Defined.
 
 (** ** Def 3.1 category laws — STRICT, as Leibniz equalities. *)
@@ -233,12 +262,32 @@ Proof.
   intros c d f. exists (em_spine f). apply em_spine_le_bound.
 Qed.
 
+(** Prop-level wrappers remain available for metric/reflection results. *)
+
+Theorem ec_sym_certified (EC : EvidenceClosure) :
+  forall (nu mu : NameF P) (q : Qc),
+    certified_dist P nu mu q -> certified_dist P mu nu q.
+Proof.
+  intros nu mu q [W Hle].
+  exists (ec_sym_spine EC nu mu W).
+  rewrite ec_sym_bound. exact Hle.
+Qed.
+
+Theorem certified_dist_weaken :
+  forall (nu mu : NameF P) (q q' : Qc),
+    (q <= q')%Qc -> certified_dist P nu mu q -> certified_dist P nu mu q'.
+Proof.
+  intros nu mu q q' Hqq' [W HW]. exists W.
+  eapply Qcle_trans; eauto.
+Qed.
+
 End WithPresentation.
 
 Arguments EvidenceClosure {_}.
-Arguments ec_sym {_} _ {_ _ _} _.
-Arguments ec_weaken {_} _ {_ _ _ _} _ _.
-Arguments ec_mixed {_} _ {_ _ _ _ _ _} _ _.
+Arguments ec_sym_spine {_} _ {_ _} _.
+Arguments ec_sym_bound {_} _ {_ _} _.
+Arguments ec_mixed_witness {_} _ {_ _ _ _ _} _ _.
+Arguments ec_mixed_ok {_} _ {_ _ _ _ _ _} _ _ _.
 Arguments CertSystem {_} _.
 Arguments cs_run {_ _} _ _.
 Arguments cs_bound_lt {_ _} _ _ _.
@@ -261,7 +310,7 @@ Arguments comp_evidence {_ _ _ _} _ _.
       Rocq definition:
         V3_Evidence.CertSystem.
       Correspondence: EXACT. [cs_run] is the uniform procedure,
-      [cs_bound_lt] enforces ε̄ < ε, [cs_accept] is AppCheck
+      [cs_bound_lt] enforces εbar < ε, [cs_accept] is AppCheck
       acceptance.
 
       Paper definition:
@@ -272,19 +321,19 @@ Arguments comp_evidence {_ _ _ _} _ _.
       Rocq theorems:
         comp_evidence_id_l, comp_evidence_id_r, comp_evidence_assoc.
       Correspondence: DEFINITION-EXACT candidate pending CI/audit.
-      A morphism now literally retains the paper's accepted pair
-      [(q,W)]: [em_q] is first-class proof-relevant data and
-      [em_spine] is the normalized witness, with [em_slack] certifying
-      that its intrinsic bound is at most q.  Thus slackened witnesses
-      are not silently identified with their principal bound.  The
-      category laws are literal Leibniz equalities and use no
-      proof-irrelevance axiom.
+      A morphism literally retains the paper's accepted pair [(q,W)]:
+      [em_q] is first-class proof-relevant data and [em_spine] is the
+      normalized witness, with [em_slack] certifying that its intrinsic
+      bound is at most q. Thus slackened witnesses are not silently
+      identified with their principal bound. The category laws are
+      literal Leibniz equalities and use no proof-irrelevance axiom.
 
-      Residual assumptions, deliberately visible: [EvidenceClosure]
-      still posits SYMMETRY and WEAKENING of certified distance. Both
-      are rules of the paper's evidence language; neither is realized
-      by the current normal form. Reflexivity and the triangle rule are
-      NOT assumed — they are theorems
-      ([certified_dist_refl], [certified_dist_trans]). *)
+      Evidence-language closure is now computational where the paper
+      needs computational content: symmetry returns an actual spine and
+      the mixed rule returns an actual AppCheck witness. Weakening is
+      derived from first-class announced bounds rather than postulated.
+      This distinction is essential for the object-level generic lift
+      of Theorem 5.2, whose [CertSystem.cs_run] must compute witness data
+      and therefore cannot eliminate Prop-only existentials. *)
 
 End V3_Evidence.
