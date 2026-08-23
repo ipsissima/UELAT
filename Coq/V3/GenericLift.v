@@ -362,7 +362,8 @@ Proof.
   pose proof (lift_achievable c d q Hqacc) as Htgt.
   specialize (HlowerG (rm_Lambda T * q) Htgt).
   rewrite Qc2R_mult in HlowerG.
-  unfold L in HlowerG at 2.
+  assert (HlowerG' : (rG <= L * Qc2R q)%R).
+  { unfold L. exact HlowerG. }
   nra.
 Qed.
 
