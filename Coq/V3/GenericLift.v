@@ -364,7 +364,15 @@ Proof.
   rewrite Qc2R_mult in HlowerG.
   assert (HlowerG' : (rG <= L * Qc2R q)%R).
   { unfold L. exact HlowerG. }
-  nra.
+  assert (Hscaled : (L * Qc2R q <= L * (rP + delta))%R).
+  {
+    apply Rmult_le_compat_l.
+    - exact HL.
+    - apply Rlt_le. exact Hqnear.
+  }
+  rewrite Rmult_plus_distr_l in Hscaled.
+  unfold eps in Hratio.
+  lra.
 Qed.
 
 End WithMap.
