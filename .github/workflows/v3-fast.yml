@@ -22,14 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache minimal Rocq opam switch
-        uses: actions/cache@v4
+      - name: Restore minimal Rocq opam switch
+        id: rocq-switch-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.opam
             _opam
-          key: ${{ runner.os }}-v3-rocq92-release-repo-switch-v1
-          save-always: true
+          key: ${{ runner.os }}-v3-rocq92-release-repo-switch-v2
 
       - name: Set up OCaml/opam
         uses: ocaml/setup-ocaml@v3
@@ -42,17 +42,22 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
-          # The main repository CI and BUILD_NOTES use Rocq's release
-          # repository. The default OCaml opam repository currently exposes
-          # an older Stdlib package, so add coq-released here too rather than
-          # silently testing V3 against a different Stdlib.
           opam repo add coq-released https://coq.inria.fr/opam/released || \
             opam repo set-url coq-released https://coq.inria.fr/opam/released
           opam update
-          # Exact migration family: prover/core + matching Stdlib, plus the
-          # compatibility binaries used by this repository (coqc/coqchk).
           opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
           coqc --version
+
+      # Save immediately after the toolchain is known-good.  A later Rocq
+      # source failure must not discard a several-minute prover build.
+      - name: Save minimal Rocq opam switch
+        if: steps.rocq-switch-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.opam
+            _opam
+          key: ${{ runner.os }}-v3-rocq92-release-repo-switch-v2
 
       - name: Compile V3 modules in dependency order
         shell: bash
