@@ -153,7 +153,7 @@ Lemma rm_scale_alpha_eq_eta :
 Proof.
   intro eps. unfold rm_alpha, rm_alpha_den, rm_eta.
   field.
-  apply rm_alpha_den_nonzero.
+  split; [apply qc_three_nonzero | apply rm_scale_nonzero].
 Qed.
 
 Lemma rm_eta_twice_lt_eps :
