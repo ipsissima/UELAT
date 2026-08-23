@@ -104,7 +104,7 @@ Proof.
   assert (Hcancel : (a / d) * d = a).
   { field. apply qc_pos_nonzero. exact Hd. }
   rewrite Hcancel, Qcmult_0_l in Hmul.
-  exact (Qclt_not_le Ha Hmul).
+  exact (Qclt_not_le 0 a Ha Hmul).
 Qed.
 
 Lemma comp_beta_pos :
