@@ -49,19 +49,27 @@ Import V3_EvidenceSyntax.
 
 Definition Qc2R (q : Qc) : R := Q2R (this q).
 
-Lemma Qc2R_0 : Qc2R 0 = 0.
-Proof. unfold Qc2R. simpl. apply Q2R_0. Qed.
+(** [Qcplus] is [Q2Qc] of the underlying sum, so the projection of a
+    [Qc] sum is [Qred] of the [Q] sum — equal to it under [Qeq], hence
+    equal after [Q2R]. [apply Qred_correct] unifies up to delta, so no
+    [simpl] is needed and the proof does not depend on the exact shape
+    [simpl] would produce. *)
 
 Lemma Qc2R_plus : forall p q : Qc, Qc2R (p + q)%Qc = Qc2R p + Qc2R q.
 Proof.
   intros p q. unfold Qc2R. rewrite <- Q2R_plus.
-  apply Qeq_eqR. simpl. apply Qred_correct.
+  apply Qeq_eqR. apply Qred_correct.
 Qed.
 
-Lemma Qc2R_mult : forall p q : Qc, Qc2R (p * q)%Qc = Qc2R p * Qc2R q.
+(** Derived from [Qc2R_plus] rather than from a [Q2R]-level zero lemma.
+    An earlier revision used [Q2R_0], which does not exist in this
+    stdlib; deriving it here removes the dependency on that name
+    entirely. *)
+
+Lemma Qc2R_0 : Qc2R 0 = 0.
 Proof.
-  intros p q. unfold Qc2R. rewrite <- Q2R_mult.
-  apply Qeq_eqR. simpl. apply Qred_correct.
+  assert (H : Qc2R (0 + 0)%Qc = Qc2R 0 + Qc2R 0) by apply Qc2R_plus.
+  rewrite qc_add_0_l in H. lra.
 Qed.
 
 Lemma Qc2R_le : forall p q : Qc, (p <= q)%Qc -> Qc2R p <= Qc2R q.
