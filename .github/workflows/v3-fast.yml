@@ -25,8 +25,11 @@ jobs:
       - name: Cache minimal Rocq opam switch
         uses: actions/cache@v4
         with:
-          path: ~/.opam
-          key: ${{ runner.os }}-v3-rocq92-release-repo-${{ hashFiles('.github/workflows/v3-fast.yml') }}
+          path: |
+            ~/.opam
+            _opam
+          key: ${{ runner.os }}-v3-rocq92-release-repo-switch-v1
+          save-always: true
 
       - name: Set up OCaml/opam
         uses: ocaml/setup-ocaml@v3
