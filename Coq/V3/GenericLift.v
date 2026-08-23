@@ -208,7 +208,7 @@ Proof.
   intros r eps Heps Hr0 Hrlt.
   eapply Qcle_lt_trans.
   - apply Qcplus_le_compat.
-    + apply rm_scaled_source_le_eta; assumption.
+    + exact (rm_scaled_source_le_eta eps r Heps Hr0 Hrlt).
     + apply Qcle_refl.
   - apply rm_eta_twice_lt_eps. exact Heps.
 Qed.
