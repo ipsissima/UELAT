@@ -100,7 +100,7 @@ Proof.
 Qed.
 
 Lemma qcleb_proof_irrelevant :
-  forall a b : Qc (p q : qcleb a b = true), p = q.
+  forall (a b : Qc) (p q : qcleb a b = true), p = q.
 Proof.
   intros a b p q. apply checker_proof_irrelevant.
 Qed.
