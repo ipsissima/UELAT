@@ -21,12 +21,9 @@ mkdir -p "${OUT_DIR}"
 # --------------------------------------------------------------------
 # Audit list — one entry per Rocq theorem the correspondence table in
 # docs/FORMALIZATION_STATUS.md advertises as CHECKED-EXACT or
-# CHECKED-RESTRICTED.  The section-5 entries below are deliberately
+# CHECKED-RESTRICTED. The section-5 entries below are deliberately
 # added before promotion: CI must establish their assumption footprint
 # before the status table is allowed to call them checked.
-#
-# Format:
-#   stem|From … Require Import <files>|<qualified theorem name>
 # --------------------------------------------------------------------
 AUDIT_LIST=(
   "comp_evidence_id_l|From UELAT.V3 Require Import Presentation Evidence|V3_Evidence.comp_evidence_id_l"
@@ -37,11 +34,16 @@ AUDIT_LIST=(
   "extensional_collapse|From UELAT.V3 Require Import Presentation Evidence MetricReflection|V3_MetricReflection.extensional_collapse"
   "principal_evidence_dense|From UELAT.V3 Require Import Presentation Evidence MetricReflection EffectiveCompleteness|V3_EffectiveCompleteness.principal_evidence_dense"
   "principal_evidence_dense_analytic|From UELAT.V3 Require Import Presentation Evidence MetricReflection EffectiveCompleteness|V3_EffectiveCompleteness.principal_evidence_dense_analytic"
-  "rm_app_transport_ok|From UELAT.V3 Require Import Presentation Evidence EffectiveCompleteness RealizableMap|V3_RealizableMap.rm_app_transport_ok"
+  "rm_app_transport_ok|From UELAT.V3 Require Import Presentation Evidence RealizableMap|V3_RealizableMap.rm_app_transport_ok"
   "lift_underlying|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_underlying"
   "lift_morphism_id|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_morphism_id"
   "lift_morphism_comp|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_morphism_comp"
   "lift_lawvere_lipschitz|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_lawvere_lipschitz"
+  "compose_realizable_lambda|From UELAT.V3 Require Import Composition|V3_Composition.compose_realizable_lambda"
+  "compose_realizable_map|From UELAT.V3 Require Import Composition|V3_Composition.compose_realizable_map"
+  "composed_lift_underlying|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_underlying"
+  "composed_lift_id|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_id"
+  "composed_lift_comp|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_comp"
 )
 
 if [ "${#AUDIT_LIST[@]}" -eq 0 ]; then
