@@ -133,7 +133,10 @@ Lemma comp_two_half_eq :
   forall eta : Qc, comp_half eta + comp_half eta = eta.
 Proof.
   intro eta. unfold comp_half.
-  field. apply comp_two_nonzero.
+  pose proof (Qcmult_div_r eta comp_two comp_two_nonzero) as H.
+  unfold comp_two in H.
+  rewrite Qcmult_plus_distr_l, !Qcmult_1_l in H.
+  exact H.
 Qed.
 
 Lemma comp_scaled_beta_le_half :
