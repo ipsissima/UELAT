@@ -126,7 +126,7 @@ Lemma comp_scale_beta_eq_half :
 Proof.
   intro eta. unfold comp_beta, comp_beta_den, comp_half.
   field.
-  apply comp_beta_den_nonzero.
+  split; [apply comp_two_nonzero | apply comp_scale_nonzero].
 Qed.
 
 Lemma comp_two_half_eq :
