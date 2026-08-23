@@ -3,18 +3,18 @@
     Paper reference: Ballús Santacana, arXiv:2506.22693 v3,
     Proposition 5.3.
 
-    This module follows the printed proof quantitatively.  For
+    This module follows the printed proof quantitatively. For
     T : F -> G and S : G -> H, the composite finite-code realizer uses
 
       beta(eta) = eta / (2 * max(1,Lambda_S))
 
-    for the T-stage and eta/2 for the S-stage.  The combined certified
+    for the T-stage and eta/2 for the S-stage. The combined certified
     defect is <= eta and is then promoted to the announced defect eta by
     the computational AppCheck weakening rule of Def. 2.1.
 
     The second half of the proposition is intentionally weaker than a
     uniqueness statement: S_* o T_* is proved to be a valid evidence
-    lift of S o T.  We do NOT claim it is literally equal to every
+    lift of S o T. We do NOT claim it is literally equal to every
     possible lift built from a different finite compiler. *)
 
 From Stdlib Require Import List Reals QArith Qreals Qcanon Lra Lia Field.
@@ -45,7 +45,6 @@ Proof. vm_compute. Qed.
 Lemma comp_two_nonzero : comp_two <> 0.
 Proof. apply Qclt_not_eq. exact comp_two_pos. Qed.
 
-(** max(1,Lambda_S), computed constructively. *)
 Definition comp_scale : Qc :=
   match Qclt_le_dec (rm_Lambda S) 1 with
   | left _  => 1
@@ -118,7 +117,6 @@ Proof.
   apply comp_div_pos; [exact Heta | apply comp_two_pos].
 Qed.
 
-(** max(1,Lambda_S) * beta = eta/2 exactly. *)
 Lemma comp_scale_beta_eq_half :
   forall eta : Qc, comp_scale * comp_beta eta = comp_half eta.
 Proof.
@@ -157,7 +155,6 @@ Proof.
   - rewrite comp_two_half_eq. apply Qcle_refl.
 Qed.
 
-(** Qc multiplication commutes with the embedding in R. *)
 Lemma comp_Qc2R_mult :
   forall p q : Qc, Qc2R (p * q) = (Qc2R p * Qc2R q)%R.
 Proof.
@@ -165,7 +162,6 @@ Proof.
   apply Qeq_eqR. apply Qred_correct.
 Qed.
 
-(** ** Composite finite-code realizer — exactly the proof's two stages. *)
 Definition comp_code (p : CodeF P) (eta : Qc) : CodeF H :=
   rm_code S (rm_code T p (comp_beta eta)) (comp_half eta).
 
@@ -214,7 +210,6 @@ Proof.
   - apply comp_raw_ok. exact Heta.
 Qed.
 
-(** ** Proposition 5.3, first clause: closure under composition. *)
 Definition compose_realizable : RealizableMap P H.
 Proof.
   refine {|
@@ -246,7 +241,7 @@ Proof.
     pose proof (rm_lipschitz T x y) as HT.
     pose proof (rm_lipschitz S (rm_T T x) (rm_T T y)) as HS.
     rewrite comp_Qc2R_mult.
-    rewrite <- Rmult_assoc.
+    rewrite Rmult_assoc.
     eapply Rle_trans; [exact HS |].
     apply Rmult_le_compat_l.
     + rewrite <- Qc2R_0. apply Qc2R_le. apply rm_Lambda_nonneg.
@@ -288,7 +283,6 @@ Proof. intro x. reflexivity. Qed.
 
 End CompositeMap.
 
-(** ** Proposition 5.3, second clause: composed chosen lifts are valid. *)
 Section ComposedLift.
 Variables P G H : Presentation.
 Variable T : RealizableMap P G.
@@ -336,9 +330,6 @@ Proof.
   apply lift_morphism_comp.
 Qed.
 
-(** This is the proposition's exact "valid evidence lift" conclusion.
-    The RHS is the analytic composite.  No equality with the particular
-    [lift_object] generated from [compose_realizable] is asserted. *)
 Theorem composed_lift_is_valid_for_composite :
   forall c : EvidenceObject P,
     deltaF H (eo_name (composed_lift_object c))
@@ -346,19 +337,5 @@ Theorem composed_lift_is_valid_for_composite :
 Proof. apply composed_lift_underlying. Qed.
 
 End ComposedLift.
-
-(** Correspondence with v3:
-
-    Proposition 5.3, closure under composition
-      -> compose_realizable, with exact constant Lambda_S Lambda_T and
-         the printed beta/eta/2 code-realizer construction.
-
-    Proposition 5.3, S_* o T_* is a valid evidence lift
-      -> composed_lift_object/composed_lift_morphism,
-         composed_lift_underlying, composed_lift_id,
-         composed_lift_comp.
-
-    The development deliberately does not identify the composed chosen
-    lift with every other possible lift of the same analytic composite. *)
 
 End V3_Composition.
