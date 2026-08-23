@@ -7,7 +7,6 @@ on:
 env:
   JULIA_NUM_THREADS: 2
   OPAMYES: true
-  COQCHK_ARGS: "-q -R Coq UELAT UELAT"
 
 permissions:
   contents: read
@@ -36,11 +35,6 @@ jobs:
         run: |
           set -eux
           opam init -a --bare --disable-sandboxing || true
-          # actions/cache restores ~/.opam using the uelat.opam hash. When
-          # the restored tree has ~/.opam/repo/coq-released on disk but
-          # opam's own registry does NOT list the repo (which happens after
-          # opam version bumps and partial cache hits), both `add` and
-          # `set-url` fail. Detect and clean up before adding.
           if [ -d "$HOME/.opam/repo/coq-released" ] && \
              ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
             rm -rf "$HOME/.opam/repo/coq-released" \
@@ -55,11 +49,6 @@ jobs:
         run: |
           set -eux
           SWITCH_NAME="uelat"
-          # Symmetric cleanup to the coq-released one above: a cached
-          # ~/.opam/${SWITCH_NAME} directory can survive without opam's
-          # switch registry knowing about it, in which case `switch set`
-          # sees no switch and `switch create` refuses because the
-          # directory exists. Delete the orphan so `switch create` works.
           if [ -d "$HOME/.opam/${SWITCH_NAME}" ] && \
              ! opam switch list --short 2>/dev/null | grep -Fxq "${SWITCH_NAME}"; then
             rm -rf "$HOME/.opam/${SWITCH_NAME}"
@@ -78,21 +67,13 @@ jobs:
       - name: Build Coq
         shell: bash
         run: |
-          # `make -k` surfaces every remaining Rocq 9 source break in one
-          # CI cycle. The step still fails at the end if any target failed.
-          # `-o` restricted to cwd under Rocq 9's coq_makefile, so we invoke
-          # from inside Coq/.
-          #
-          # Files come from Coq/_CoqProject, not `git ls-files`, so the
-          # explicit "excluded during Rocq 9 migration" set stays out of
-          # the build. See BUILD_NOTES.md for the per-file reason each is
-          # excluded — no source has been silently altered.
+          # Coq/_CoqProject is the single source of truth for the included
+          # Rocq migration island.  Earlier CI passed its .v entries a
+          # second time on the command line, producing duplicate-target
+          # warnings.  Do not duplicate them here.
           set -ux
           eval "$(opam env)"
-          # Parse .v file paths from _CoqProject: uncommented lines that
-          # end in `.v`.
-          readarray -t COQ_FILES_LOCAL < <(grep -E '^[^#[:space:]].*\.v$' Coq/_CoqProject)
-          (cd Coq && coq_makefile -f _CoqProject "${COQ_FILES_LOCAL[@]}" -o Makefile) \
+          (cd Coq && coq_makefile -f _CoqProject -o Makefile) \
             || { echo "coq_makefile failed"; exit 1; }
           set +e
           make -C Coq -j2 -k
@@ -108,10 +89,6 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
-          # Check every included module. Root UELAT.v is excluded so we
-          # cannot ask coqchk for `UELAT` — enumerate the included
-          # modules explicitly instead. Rocq 9's coqchk removed the
-          # old `-q` flag; don't pass it.
           coqchk -R Coq UELAT \
             UELAT.Util.Reals_ext UELAT.Util.Summation UELAT.Util.Modulus \
             UELAT.Foundations.Certificate UELAT.Foundations.ProbeTheory \
@@ -124,27 +101,15 @@ jobs:
             UELAT.V3.Presentation UELAT.V3.Evidence \
             UELAT.V3.MetricReflection \
             UELAT.V3.EffectiveCompleteness \
-            UELAT.V3.RealizableMap
+            UELAT.V3.RealizableMap UELAT.V3.GenericLift
 
       - name: Assumptions audit (Print Assumptions)
         shell: bash
         run: |
           set -eux
           eval "$(opam env)"
-          # Runs .github/scripts/print_assumptions.sh, which writes one
-          # docs/assumptions/<stem>.txt per entry in its AUDIT_LIST.
-          # See docs/assumptions/README.md for the discipline.
           bash .github/scripts/print_assumptions.sh
 
-          # Two failure modes we care about:
-          #   (a) a committed file was modified by the run — theorem
-          #       proof drifted and its assumption footprint changed.
-          #       This ALWAYS fails.
-          #   (b) a new file was written but not yet committed — the
-          #       AUDIT_LIST gained an entry. Warn but do not fail;
-          #       the intended flow is: audit list expanded → CI
-          #       generates → maintainer downloads the artifact →
-          #       commits the files → subsequent CI enforces (a).
           modified_committed="$(git status --porcelain docs/assumptions/ | awk '/^ M|^M /{print $2}')"
           if [ -n "${modified_committed}" ]; then
             echo "::error::docs/assumptions/ has DRIFT on committed files — assumption footprint changed"
@@ -171,7 +136,6 @@ jobs:
         shell: bash
         run: |
           set -e
-          # Check core proven modules - these must have no Admitted/Axiom
           CORE_FILES=(
             Coq/Util/Modulus.v
             Coq/Approx/Certificate.v
@@ -179,6 +143,13 @@ jobs:
             Coq/Approx/Bernstein_Lipschitz.v
             Coq/Approx/Spec.v
             Coq/Approx/Weierstrass_Lipschitz.v
+            Coq/V3/EvidenceSyntax.v
+            Coq/V3/Presentation.v
+            Coq/V3/Evidence.v
+            Coq/V3/MetricReflection.v
+            Coq/V3/EffectiveCompleteness.v
+            Coq/V3/RealizableMap.v
+            Coq/V3/GenericLift.v
           )
           CORE_CLEAN=true
           for f in "${CORE_FILES[@]}"; do
@@ -190,7 +161,7 @@ jobs:
           if [ "$CORE_CLEAN" = false ]; then
             exit 1
           fi
-          echo "Core constructive island is clean"
+          echo "Constructive/v3 checked island is clean"
 
   python:
     name: Python unit tests
@@ -209,16 +180,8 @@ jobs:
       - name: Run tests
         run: pytest -q
 
-  # The Julia companion at src/UELAT.jl implements the v2 numerical
-  # Bernstein / Chebyshev claims that v3 (Revision notice, item (i))
-  # explicitly withdraws. It had been failing on every commit
-  # unrelated to my changes. Removed from CI as of the v3 alignment;
-  # the sources stay in the tree pending a decision on whether to
-  # relocate under LegacyV2/ or retire outright.
-  #
-  # If the Julia companion returns as a v3-aligned artifact, restore a
-  # `julia:` job here — but do NOT restore it in a form that tests the
-  # withdrawn v2 numerical claims.
+  # The Julia companion implements withdrawn v2 numerical claims and is
+  # deliberately not part of the v3 CI island.
 
   lint:
     name: Workflow lint
