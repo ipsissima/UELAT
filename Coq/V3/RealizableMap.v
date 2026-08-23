@@ -7,13 +7,21 @@
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
 
-    This revision matches the FOUR conceptual clauses of Def 5.1 and
-    begins the actual generic lifting theorem.  Clause 4 (Theta_T) is
-    explicit data with strict identity/composition laws.  Clause 1's
-    stored finite Lipschitz derivation is separate.  Approximation
-    transport is executable and derived, and the object-level target
-    certificate system is constructed below using an explicit rational
-    error budget. *)
+    This module formalizes Definition 5.1 and the evidence-transport
+    ingredients used by Theorem 5.2.  The actual generic-lift algorithm,
+    including the theorem's printed quantitative budget
+
+        alpha_T(eps) = eps / (3 max(1,Lambda_T)),   eta = eps/3,
+
+    lives in [V3_GenericLift].  Keeping that algorithm out of this record
+    module prevents an alternative valid error split from being mistaken
+    for the exact quantitative statement of the manuscript.
+
+    Definition 5.1 has FOUR clauses.  Clause 4 (Theta_T) is explicit
+    data with strict identity/composition laws.  Clause 1's stored finite
+    Lipschitz derivation is separate.  The obsolete fifth
+    approximation-transport field remains absent: approximation transport
+    is executable and derived below. *)
 
 From Stdlib Require Import Reals QArith Qreals Qcanon Lra Lia.
 From UELAT.V3 Require Import EvidenceSyntax Presentation Evidence EffectiveCompleteness.
@@ -26,7 +34,10 @@ Import V3_Presentation.
 Import V3_Evidence.
 Import V3_EffectiveCompleteness.
 
+(** ** Definition 5.1 — certifiably realizable Lipschitz map. *)
+
 Record RealizableMap (P G : Presentation) : Type := {
+  (* ---- Clause 1: analytic Lipschitz map ---- *)
   rm_T             : F P -> F G;
   rm_Lambda        : Qc;
   rm_Lambda_nonneg : 0 <= rm_Lambda;
@@ -34,9 +45,13 @@ Record RealizableMap (P G : Presentation) : Type := {
     forall x y : F P,
       (distF G (rm_T x) (rm_T y) <= Qc2R rm_Lambda * distF P x y)%R;
 
+  (* ---- Clause 2: name transformer with exact naturality ---- *)
   rm_name    : NameF P -> NameF G;
   rm_name_ok : forall nu : NameF P, deltaF G (rm_name nu) = rm_T (deltaF P nu);
 
+  (* ---- Clause 1 continued: stored finite derivation ----
+     It follows the name transformer in record order because its checker
+     law mentions transported names. *)
   rm_lip_store : list bool;
   rm_lip_apply :
     list bool -> NameF P -> NameF P -> Qc -> list bool -> list bool;
@@ -46,6 +61,7 @@ Record RealizableMap (P G : Presentation) : Type := {
       DistLeaf G (rm_name nu) (rm_name mu) (rm_Lambda * q)
                (rm_lip_apply rm_lip_store nu mu q W) = true;
 
+  (* ---- Clause 3: finite-code realizer with accepted defect evidence ---- *)
   rm_code         : CodeF P -> Qc -> CodeF G;
   rm_code_witness : CodeF P -> Qc -> list bool;
   rm_code_ok :
@@ -54,6 +70,7 @@ Record RealizableMap (P G : Presentation) : Type := {
       AppCheck G (rm_name (iotaF P p)) (rm_code p eta) eta
                (rm_code_witness p eta) = true;
 
+  (* ---- Clause 4: explicit distance-evidence transformer Theta_T ---- *)
   rm_theta :
     forall (a b : NameF P),
       PSpine P a b -> PSpine G (rm_name a) (rm_name b);
@@ -90,8 +107,13 @@ Section WithMap.
 Variables P G : Presentation.
 Variable T : RealizableMap P G.
 
-(** Clause-1 stored derivation induces a canonical strict transformer,
-    kept separate from the explicit clause-4 transformer. *)
+(** ** Clause-1 stored derivation induces a canonical strict transformer.
+
+    This construction is deliberately separate from the explicit
+    clause-4 [rm_theta].  The manuscript permits clause 4 as data; in a
+    concrete proof-tree language it is normally induced by the stored
+    derivation, but the abstract definition does not identify them. *)
+
 Definition rm_stored_theta_prim (nu mu : NameF P)
     (s : PrimStep (DistLeaf P) nu mu)
   : PrimStep (DistLeaf G) (rm_name T nu) (rm_name T mu) :=
@@ -127,6 +149,7 @@ Proof.
   apply sp_bound_transport_scale. apply rm_stored_theta_prim_scale.
 Qed.
 
+(** Rational monotonicity helper used throughout the lift. *)
 Lemma qc_mult_le_mono_l :
   forall L a b : Qc, 0 <= L -> a <= b -> L * a <= L * b.
 Proof.
@@ -135,87 +158,7 @@ Proof.
   apply Qcmult_le_compat_r; assumption.
 Qed.
 
-Lemma qc_zero_lt_one : (0 < 1)%Qc.
-Proof. vm_compute. Qed.
-
-Lemma qc_one_lt_two : (1 < 1 + 1)%Qc.
-Proof.
-  rewrite <- (Qcplus_0_l 1) at 1.
-  apply Qcmult_lt_0_le_reg_r with (z := 1); try apply qc_zero_lt_one.
-  rewrite !Qcmult_1_r. apply Qclt_le_weak. exact qc_zero_lt_one.
-Qed.
-
-Lemma rm_lambda_plus_one_pos : (0 < rm_Lambda T + 1)%Qc.
-Proof.
-  eapply Qclt_le_trans with (y := 1).
-  - exact qc_zero_lt_one.
-  - rewrite <- (Qcplus_0_l 1).
-    apply Qcplus_le_compat; [apply rm_Lambda_nonneg | apply Qcle_refl].
-Qed.
-
-Definition rm_budget_den : Qc := (1 + 1) * (rm_Lambda T + 1).
-
-Lemma rm_budget_den_pos : (0 < rm_budget_den)%Qc.
-Proof.
-  unfold rm_budget_den.
-  assert (Htwo : (0 < 1 + 1)%Qc).
-  { eapply Qclt_trans; [exact qc_zero_lt_one | exact qc_one_lt_two]. }
-  rewrite <- Qcmult_0_l with (n := rm_Lambda T + 1).
-  apply Qcmult_lt_compat_r; [apply rm_lambda_plus_one_pos | exact Htwo].
-Qed.
-
-Lemma rm_budget_den_nonzero : rm_budget_den <> 0.
-Proof. apply Qclt_not_eq. exact rm_budget_den_pos. Qed.
-
-Lemma qc_inv_pos : forall d : Qc, 0 < d -> 0 < / d.
-Proof.
-  intros d Hd.
-  apply Qcnot_le_lt. intro Hinv.
-  pose proof (Qcmult_le_compat_r (/d) 0 d Hinv (Qclt_le_weak Hd)) as Hmul.
-  rewrite Qcmult_inv_l in Hmul by (apply Qclt_not_eq; exact Hd).
-  rewrite Qcmult_0_l in Hmul.
-  exact (Qclt_not_le qc_zero_lt_one Hmul).
-Qed.
-
-Definition rm_budget (eps : Qc) : Qc := eps / rm_budget_den.
-
-Lemma rm_budget_pos :
-  forall eps : Qc, 0 < eps -> 0 < rm_budget eps.
-Proof.
-  intros eps Heps. unfold rm_budget, Qcdiv.
-  rewrite <- Qcmult_0_l with (n := / rm_budget_den).
-  apply Qcmult_lt_compat_r.
-  - apply qc_inv_pos. apply rm_budget_den_pos.
-  - exact Heps.
-Qed.
-
-Lemma rm_lambda_plus_one_lt_den :
-  (rm_Lambda T + 1 < rm_budget_den)%Qc.
-Proof.
-  unfold rm_budget_den.
-  rewrite <- Qcmult_1_l with (n := rm_Lambda T + 1).
-  rewrite Qcmult_comm with (x := 1 + 1) (y := rm_Lambda T + 1).
-  apply Qcmult_lt_compat_r.
-  - apply rm_lambda_plus_one_pos.
-  - exact qc_one_lt_two.
-Qed.
-
-Lemma rm_budget_error_strict :
-  forall eps : Qc, 0 < eps ->
-    (rm_Lambda T * rm_budget eps + rm_budget eps < eps)%Qc.
-Proof.
-  intros eps Heps.
-  assert (Hb : (0 < rm_budget eps)%Qc) by (apply rm_budget_pos; exact Heps).
-  assert (Hmul :
-    ((rm_Lambda T + 1) * rm_budget eps < rm_budget_den * rm_budget eps)%Qc).
-  { apply Qcmult_lt_compat_r; [exact Hb | apply rm_lambda_plus_one_lt_den]. }
-  rewrite Qcmult_plus_distr_l in Hmul.
-  rewrite Qcmult_1_l in Hmul.
-  unfold rm_budget in Hmul.
-  rewrite Qcmult_div_r in Hmul by apply rm_budget_den_nonzero.
-  exact Hmul.
-Qed.
-
+(** ** Transport of certified distance using explicit clause 4. *)
 Theorem rm_certified_dist :
   forall (nu mu : NameF P) (q : Qc),
     certified_dist P nu mu q ->
@@ -228,6 +171,7 @@ Proof.
   - apply qc_mult_le_mono_l; [apply rm_Lambda_nonneg | exact Hle].
 Qed.
 
+(** ** Approximation-evidence transport, executable and derived. *)
 Variable ERP : EvidenceRegular (P := P).
 Variable ECG : EvidenceClosure (P := G).
 
@@ -290,60 +234,7 @@ Proof.
   apply rm_app_transport_ok; assumption.
 Qed.
 
-(** ** Theorem 5.2 — object-level generic lift.
-
-    The same budget [b = eps/(2(Lambda+1))] is used for the source
-    certificate tolerance and for the finite-code realization defect.
-    If the source certificate returns [r < b], the target announced
-    error is [Lambda*r+b], which is strictly below eps. *)
-
-Definition rm_lift_run (c : EvidenceObject P) (eps : Qc)
-  : CodeF G * Qc * list bool :=
-  let b := rm_budget eps in
-  let '(p, r, V) := cs_run (eo_system c) b in
-  (rm_code T p b,
-   rm_Lambda T * r + b,
-   rm_app_transport_witness (eo_name c) p r b V).
-
-Definition rm_lift_cert_system (c : EvidenceObject P)
-  : CertSystem (rm_name T (eo_name c)).
-Proof.
-  refine {| cs_run := rm_lift_run c;
-            cs_bound_lt := _;
-            cs_accept := _ |}.
-  - intros eps Heps.
-    unfold rm_lift_run.
-    set (b := rm_budget eps).
-    destruct (cs_run (eo_system c) b) as [[p r] V] eqn:Hrun.
-    simpl.
-    assert (Hbpos : (0 < b)%Qc) by (unfold b; apply rm_budget_pos; exact Heps).
-    pose proof (cs_bound_lt (eo_system c) b Hbpos) as Hsrc.
-    rewrite Hrun in Hsrc. simpl in Hsrc.
-    destruct Hsrc as [Hr0 Hrlt]. split.
-    + apply Qcplus_le_compat.
-      * rewrite Qcmult_comm.
-        apply Qcmult_le_compat_r; [exact Hr0 | apply rm_Lambda_nonneg].
-      * apply Qclt_le_weak. exact Hbpos.
-    + eapply Qcle_lt_trans.
-      * apply Qcplus_le_compat.
-        -- apply qc_mult_le_mono_l; [apply rm_Lambda_nonneg | apply Qclt_le_weak; exact Hrlt].
-        -- apply Qcle_refl.
-      * unfold b. apply rm_budget_error_strict. exact Heps.
-  - intros eps Heps.
-    unfold rm_lift_run.
-    set (b := rm_budget eps).
-    destruct (cs_run (eo_system c) b) as [[p r] V] eqn:Hrun.
-    simpl.
-    assert (Hbpos : (0 < b)%Qc) by (unfold b; apply rm_budget_pos; exact Heps).
-    pose proof (cs_accept (eo_system c) b Hbpos) as Hsrc.
-    rewrite Hrun in Hsrc. simpl in Hsrc.
-    apply rm_app_transport_ok; assumption.
-Defined.
-
-Definition rm_lift_object (c : EvidenceObject P) : EvidenceObject G :=
-  {| eo_name := rm_name T (eo_name c);
-     eo_system := rm_lift_cert_system c |}.
-
+(** Analytic Lipschitz estimate on transported names. *)
 Theorem rm_analytic_lipschitz :
   forall nu mu : NameF P,
     (distF G (deltaF G (rm_name T nu)) (deltaF G (rm_name T mu))
@@ -356,15 +247,23 @@ End WithMap.
 
 (** ** Correspondence with v3
 
-      Def. 5.1 → [RealizableMap]: four clauses at the manuscript's
-      stated generality; clause 4 is explicit data.  The obsolete fifth
-      approximation-transport hypothesis remains absent.
+      Definition 5.1 → [RealizableMap].  The four clauses are represented
+      at the manuscript's stated generality:
+        clause 1: rm_T, rm_Lambda, rm_Lambda_nonneg, rm_lipschitz,
+                  rm_lip_store/rm_lip_apply/rm_lip_apply_ok;
+        clause 2: rm_name, rm_name_ok;
+        clause 3: rm_code, rm_code_witness, rm_code_ok;
+        clause 4: rm_theta, rm_theta_bound, rm_theta_id, rm_theta_comp.
 
-      Thm. 5.2 → the object-level construction is now
-      [rm_lift_cert_system]/[rm_lift_object], using the explicit strict
-      budget [rm_budget].  Still missing in this file: the morphism lift,
-      strict functor laws, and the Lawvere-metric Lipschitz theorem.
-      Status therefore remains IN-PROGRESS until the complete theorem is
-      compiled, checked, and assumption-audited. *)
+      [rm_stored_theta] separately shows the canonical transformer induced
+      by the stored derivation.  It is not silently substituted for the
+      explicit fourth clause.
+
+      The obsolete fifth field rm_app_promote remains absent.
+      [rm_app_transport_witness]/[rm_app_transport_ok] derive its useful
+      computational content from Defs 4.3/5.1 plus the target mixed rule.
+
+      Theorem 5.2 itself, including its EXACT printed error budget, is in
+      [V3_GenericLift]. *)
 
 End V3_RealizableMap.
