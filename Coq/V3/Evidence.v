@@ -25,7 +25,7 @@
     weakening itself remains derivable by retaining the same normalized
     spine and increasing the announced morphism bound. *)
 
-From Stdlib Require Import List QArith Qcanon Bool Eqdep_dec Lra Lia.
+From Stdlib Require Import List Reals QArith Qcanon Bool Eqdep_dec Lra Lia.
 From UELAT.V3 Require Import EvidenceSyntax Presentation.
 Import ListNotations.
 Local Open Scope Qc_scope.
