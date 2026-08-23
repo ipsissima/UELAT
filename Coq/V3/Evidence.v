@@ -48,7 +48,7 @@
     primitive closure field: once a morphism retains its announced [q],
     weakening is realized by keeping the same spine and increasing [q]. *)
 
-From Stdlib Require Import List QArith Qcanon Bool Eqdep_dec Lra Lia.
+From Stdlib Require Import Reals List QArith Qcanon Bool Eqdep_dec Lra Lia.
 From UELAT.V3 Require Import EvidenceSyntax Presentation.
 Import ListNotations.
 Local Open Scope Qc_scope.
@@ -105,7 +105,7 @@ Proof.
 Qed.
 
 Lemma qcleb_proof_irrelevant :
-  forall a b : Qc (p q : qcleb a b = true), p = q.
+  forall (a b : Qc) (p q : qcleb a b = true), p = q.
 Proof.
   intros a b p q. apply checker_proof_irrelevant.
 Qed.
@@ -115,6 +115,10 @@ Record EvidenceMorphism (c d : EvidenceObject) : Type := {
   em_spine : PSpine P (eo_name c) (eo_name d);
   em_slack : qcleb (sp_bound em_spine) em_q = true
 }.
+
+Arguments em_q     {c d} _.
+Arguments em_spine {c d} _.
+Arguments em_slack {c d} _.
 
 Definition em_bound {c d : EvidenceObject} (f : EvidenceMorphism c d) : Qc :=
   em_q f.
@@ -215,8 +219,8 @@ Proof. intros. reflexivity. Qed.
 
 Theorem em_sound :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
-    distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))
-    <= Qc2R (em_bound f).
+    (distF P (deltaF P (eo_name c)) (deltaF P (eo_name d))
+     <= Qc2R (em_bound f))%R.
 Proof.
   intros c d f.
   eapply Rle_trans.
