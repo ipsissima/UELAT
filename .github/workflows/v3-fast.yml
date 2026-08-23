@@ -22,15 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore minimal Rocq opam switch
-        id: rocq-switch-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            ~/.opam
-            _opam
-          key: ${{ runner.os }}-v3-rocq92-release-repo-switch-v2
-
       - name: Set up OCaml/opam
         uses: ocaml/setup-ocaml@v3
         with:
@@ -42,10 +33,6 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
-          # A restored ~/.opam can contain the coq-released directory while
-          # setup-ocaml's registry does not list it.  This is the same orphan
-          # cache case handled by the main CI; remove the stale directory so
-          # `opam repo add` can restore the registry consistently.
           if [ -d "$HOME/.opam/repo/coq-released" ] && \
              ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
             rm -rf "$HOME/.opam/repo/coq-released" \
@@ -56,15 +43,6 @@ jobs:
           opam update
           opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
           coqc --version
-
-      - name: Save minimal Rocq opam switch
-        if: steps.rocq-switch-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/.opam
-            _opam
-          key: ${{ runner.os }}-v3-rocq92-release-repo-switch-v2
 
       - name: Compile V3 modules in dependency order
         shell: bash
