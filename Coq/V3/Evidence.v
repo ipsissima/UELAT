@@ -61,18 +61,13 @@ Import V3_Presentation.
 Section WithPresentation.
 Variable P : Presentation.
 
-(** ** Residual closure rules, with explicit witness production. *)
-
 Record EvidenceClosure : Type := {
-  (* Symmetry rebuilds an actual normalized spine. *)
   ec_sym_spine :
     forall (nu mu : NameF P),
       PSpine P nu mu -> PSpine P mu nu;
   ec_sym_bound :
     forall (nu mu : NameF P) (W : PSpine P nu mu),
       sp_bound (ec_sym_spine nu mu W) = sp_bound W;
-
-  (* Mixed composition manufactures the target AppCheck witness. *)
   ec_mixed_witness :
     forall (nu mu : NameF P) (p : CodeF P) (q r : Qc),
       PSpine P nu mu -> list bool -> list bool;
@@ -85,8 +80,6 @@ Record EvidenceClosure : Type := {
         (ec_mixed_witness nu mu p q r W V) = true
 }.
 
-(** ** Def 2.3 — Certificate system over a named point. *)
-
 Record CertSystem (nu : NameF P) : Type := {
   cs_run     : Qc -> CodeF P * Qc * list bool;
   cs_bound_lt :
@@ -98,14 +91,10 @@ Record CertSystem (nu : NameF P) : Type := {
       AppCheck P nu p ebar V = true
 }.
 
-(** ** Def 3.1 — Objects of Cert_ev(F). *)
-
 Record EvidenceObject : Type := {
   eo_name   : NameF P;
   eo_system : CertSystem eo_name
 }.
-
-(** Boolean comparison for canonical rationals. *)
 
 Definition qcleb (a b : Qc) : bool := Qle_bool a b.
 
@@ -120,8 +109,6 @@ Lemma qcleb_proof_irrelevant :
 Proof.
   intros a b p q. apply checker_proof_irrelevant.
 Qed.
-
-(** ** Def 3.1 — proof-relevant morphisms are the actual pair (q,W). *)
 
 Record EvidenceMorphism (c d : EvidenceObject) : Type := {
   em_q     : Qc;
@@ -139,8 +126,6 @@ Proof.
   intros c d f. apply (proj1 (qcleb_iff _ _)). exact (em_slack f).
 Qed.
 
-(** Record extensionality without a proof-irrelevance axiom. *)
-
 Lemma EvidenceMorphism_eq :
   forall (c d : EvidenceObject) (f g : EvidenceMorphism c d),
     em_q f = em_q g -> em_spine f = em_spine g -> f = g.
@@ -149,15 +134,11 @@ Proof.
   subst qg. subst Wg. f_equal. apply qcleb_proof_irrelevant.
 Qed.
 
-(** Identity is the accepted pair (0, empty spine). *)
-
 Definition id_evidence (c : EvidenceObject) : EvidenceMorphism c c.
 Proof.
   refine {| em_q := 0; em_spine := sp_nil (eo_name c); em_slack := _ |}.
   apply (proj2 (qcleb_iff _ _)). simpl. apply Qcle_refl.
 Defined.
-
-(** Composition adds announced bounds and concatenates normalized spines. *)
 
 Definition comp_evidence {c d e : EvidenceObject}
     (f : EvidenceMorphism c d) (g : EvidenceMorphism d e)
@@ -173,8 +154,6 @@ Proof.
   - apply em_spine_le_bound.
 Defined.
 
-(** Weakening is now a DERIVED constructor: same proof tree, larger q. *)
-
 Definition weaken_evidence {c d : EvidenceObject}
     (f : EvidenceMorphism c d) (q' : Qc)
     (Hle : (em_bound f <= q')%Qc) : EvidenceMorphism c d.
@@ -183,8 +162,6 @@ Proof.
   apply (proj2 (qcleb_iff _ _)).
   eapply Qcle_trans; [apply em_spine_le_bound | exact Hle].
 Defined.
-
-(** Symmetry is witness-producing through [EvidenceClosure]. *)
 
 Definition sym_evidence (EC : EvidenceClosure)
     {c d : EvidenceObject} (f : EvidenceMorphism c d)
@@ -196,8 +173,6 @@ Proof.
   apply (proj2 (qcleb_iff _ _)).
   rewrite ec_sym_bound. apply em_spine_le_bound.
 Defined.
-
-(** ** Def 3.1 category laws — STRICT, as Leibniz equalities. *)
 
 Theorem comp_evidence_id_l :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
@@ -229,8 +204,6 @@ Proof.
   - simpl. apply sp_app_assoc.
 Qed.
 
-(** ** Announced-bound behaviour, also strict. *)
-
 Lemma id_evidence_bound : forall c, em_bound (id_evidence c) = 0.
 Proof. intro c. reflexivity. Qed.
 
@@ -239,8 +212,6 @@ Lemma comp_evidence_bound :
          (f : EvidenceMorphism c d) (g : EvidenceMorphism d e),
     em_bound (comp_evidence f g) = em_bound f + em_bound g.
 Proof. intros. reflexivity. Qed.
-
-(** ** Soundness of a morphism at its announced q. *)
 
 Theorem em_sound :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
@@ -253,16 +224,12 @@ Proof.
   - apply Qc2R_le. apply em_spine_le_bound.
 Qed.
 
-(** Every morphism certifies its endpoints at its announced bound. *)
-
 Theorem em_certifies :
   forall (c d : EvidenceObject) (f : EvidenceMorphism c d),
     certified_dist P (eo_name c) (eo_name d) (em_bound f).
 Proof.
   intros c d f. exists (em_spine f). apply em_spine_le_bound.
 Qed.
-
-(** Prop-level wrappers remain available for metric/reflection results. *)
 
 Theorem ec_sym_certified (EC : EvidenceClosure) :
   forall (nu mu : NameF P) (q : Qc),
@@ -284,9 +251,9 @@ Qed.
 End WithPresentation.
 
 Arguments EvidenceClosure {_}.
-Arguments ec_sym_spine {_} _ {_ _} _.
+Arguments ec_sym_spine {_} _ _ _ _.
 Arguments ec_sym_bound {_} _ {_ _} _.
-Arguments ec_mixed_witness {_} _ {_ _ _ _ _} _ _.
+Arguments ec_mixed_witness {_} _ _ _ _ _ _ _ _.
 Arguments ec_mixed_ok {_} _ {_ _ _ _ _ _} _ _ _.
 Arguments CertSystem {_} _.
 Arguments cs_run {_ _} _ _.
@@ -328,12 +295,11 @@ Arguments comp_evidence {_ _ _ _} _ _.
       identified with their principal bound. The category laws are
       literal Leibniz equalities and use no proof-irrelevance axiom.
 
-      Evidence-language closure is now computational where the paper
-      needs computational content: symmetry returns an actual spine and
-      the mixed rule returns an actual AppCheck witness. Weakening is
+      Evidence-language closure is computational where the paper needs
+      computational content: symmetry returns an actual spine and the
+      mixed rule returns an actual AppCheck witness. Weakening is
       derived from first-class announced bounds rather than postulated.
-      This distinction is essential for the object-level generic lift
-      of Theorem 5.2, whose [CertSystem.cs_run] must compute witness data
-      and therefore cannot eliminate Prop-only existentials. *)
+      This is essential for the object-level generic lift of Theorem 5.2,
+      whose [CertSystem.cs_run] must compute witness data. *)
 
 End V3_Evidence.
