@@ -7,43 +7,12 @@
 
     STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
 
-    ** This record now has Definition 5.1's FOUR clauses
-
-    The previous revision was an explicitly-flagged proxy with five
-    components. What changed:
-
-    - Clause 1 now carries a STORED FINITE DERIVATION of the Lipschitz
-      estimate, not only the analytic Prop. Both are present and kept
-      distinct: [rm_lipschitz] is the analytic content, while
-      [rm_lip_store] together with [rm_lip_apply] / [rm_lip_apply_ok]
-      is the finite evidence-language object that actually manufactures
-      target leaf evidence.
-
-    - Clause 4's Θ_T is no longer a field. It is DEFINED
-      ([rm_theta_prim], [rm_theta]) from the stored derivation, so the
-      evidence transformation genuinely arises from that derivation
-      rather than being an independent assumption that happens to agree
-      with it. Its two strict laws are then THEOREMS
-      ([rm_theta_id], [rm_theta_comp]), inherited from
-      [sp_transport_nil] / [sp_transport_app].
-
-    - The extra fifth field [rm_app_promote] is REMOVED. Approximation
-      evidence transport is derived instead, as
-      [rm_app_transport], from: evidence regularity on the source, the
-      derived Θ_T, the finite-code realizer, and the §2 mixed rule.
-      That derivation is the content of [rm_app_transport] below and is
-      the theorem showing the fifth field was unnecessary.
-
-    ** One honest caveat about "stored derivation"
-
-    At this level of abstraction, carrying a finite store plus a
-    uniform application procedure is interderivable with carrying the
-    application procedure alone — one can always curry. The store
-    becomes mathematically forceful only for a CONCRETE evidence
-    language, where a presentation must exhibit an actual finite
-    derivation object. What is formalized here is the interface shape
-    the paper describes; it is recorded as such rather than claimed to
-    be stronger than it is. *)
+    The extra fifth field [rm_app_promote] from the old proxy remains
+    removed. Approximation transport is now not only existentially
+    provable but EXECUTABLE: [rm_app_transport_witness] computes the
+    finite target AppCheck witness and [rm_app_transport_ok] proves it
+    accepted. This is the form required to build Theorem 5.2's target
+    [CertSystem.cs_run]. *)
 
 From Stdlib Require Import Reals QArith Qreals Qcanon Lra Lia.
 From UELAT.V3 Require Import EvidenceSyntax Presentation Evidence EffectiveCompleteness.
@@ -56,7 +25,13 @@ Import V3_Presentation.
 Import V3_Evidence.
 Import V3_EffectiveCompleteness.
 
-(** ** Definition 5.1 — certifiably realizable Lipschitz map. *)
+(** ** Definition 5.1 — certifiably realizable Lipschitz map.
+
+    NOTE: clause 4 is still DERIVED below from the stored Lipschitz
+    derivation. This is intentionally still marked IN-PROGRESS: before
+    declaring Def 5.1 definition-exact we will restore clause 4 as
+    explicit data, while retaining the derived construction as a
+    canonical constructor. *)
 
 Record RealizableMap (P G : Presentation) : Type := {
 
@@ -72,8 +47,7 @@ Record RealizableMap (P G : Presentation) : Type := {
   rm_name    : NameF P -> NameF G;
   rm_name_ok : forall nu : NameF P, deltaF G (rm_name nu) = rm_T (deltaF P nu);
 
-  (* ---- Clause 1 (continued): the stored finite derivation, and the
-         uniform procedure that applies it to a primitive step ---- *)
+  (* ---- Clause 1 continued: stored finite derivation ---- *)
   rm_lip_store : list bool;
   rm_lip_apply :
     list bool -> NameF P -> NameF P -> Qc -> list bool -> list bool;
@@ -110,11 +84,7 @@ Section WithMap.
 Variables P G : Presentation.
 Variable T : RealizableMap P G.
 
-(** ** Clause 4, DERIVED: the primitive evidence transformer.
-
-    Note it receives BOTH endpoint names [nu] and [mu] — this is the
-    general Θ_T(ν, μ, r, W) of Def 5.1, not a source-blind special
-    case. Its witness is produced by applying the STORED derivation. *)
+(** ** Clause 4, currently derived: primitive evidence transformer. *)
 
 Definition rm_theta_prim (nu mu : NameF P)
     (s : PrimStep (DistLeaf P) nu mu)
@@ -128,13 +98,9 @@ Lemma rm_theta_prim_scale :
     ps_bound (rm_theta_prim nu mu s) = rm_Lambda T * ps_bound s.
 Proof. reflexivity. Qed.
 
-(** Θ_T on whole normalized derivations. *)
-
 Definition rm_theta (a b : NameF P) (W : PSpine P a b)
   : PSpine G (rm_name T a) (rm_name T b) :=
   sp_transport (rm_name T) rm_theta_prim W.
-
-(** ** The two STRICT laws Def 5.1 clause 4 demands — as theorems. *)
 
 Theorem rm_theta_id :
   forall a : NameF P, rm_theta a a (sp_nil a) = sp_nil (rm_name T a).
@@ -145,8 +111,6 @@ Theorem rm_theta_comp :
     rm_theta a c (sp_app W1 W2)
     = sp_app (rm_theta a b W1) (rm_theta b c W2).
 Proof. intros. apply sp_transport_app. Qed.
-
-(** Bound scaling on whole derivations. *)
 
 Theorem rm_theta_bound :
   forall (a b : NameF P) (W : PSpine P a b),
@@ -176,27 +140,63 @@ Proof.
   apply qc_mult_le_mono_l; [apply rm_Lambda_nonneg | exact Hle].
 Qed.
 
-(** ** Approximation-evidence transport, DERIVED.
+(** ** Approximation-evidence transport, executable and derived.
 
-    This is the theorem establishing that the old fifth field
-    [rm_app_promote] was unnecessary. Given accepted source
-    approximation evidence for [(nu, p, r)], we produce accepted TARGET
-    approximation evidence for [(T^# nu, tau_T(p, eta), Lambda*r + eta)]
-    out of:
+    Earlier scaffolding returned [exists V'] in Prop. That theorem is
+    useful logically but cannot define a target certificate procedure.
+    The following definition computes the witness itself from the
+    witness-producing EvidenceRegular and EvidenceClosure interfaces. *)
 
-      - evidence regularity on the source (promote AppCheck to a
-        certified distance against the canonical name of [p]);
-      - the derived Θ_T (transport that distance, scaling by Lambda);
-      - the finite-code realizer (clause 3) at defect [eta];
-      - the §2 mixed rule on the target.
-
-    Nothing outside Def 5.1's clauses and Def 2.1's stated evidence
-    language is used. *)
-
-Variable ERP : EvidenceRegular P.
+Variable ERP : EvidenceRegular (P := P).
 Variable ECG : EvidenceClosure (P := G).
 
-Theorem rm_app_transport :
+Definition rm_app_transport_spine
+    (nu : NameF P) (p : CodeF P) (r : Qc) (V : list bool)
+  : PSpine G (rm_name T nu) (rm_name T (iotaF P p)) :=
+  rm_theta nu (iotaF P p) (er_promote_spine ERP nu p r V).
+
+Lemma rm_app_transport_spine_bound :
+  forall (nu : NameF P) (p : CodeF P) (r : Qc) (V : list bool),
+    AppCheck P nu p r V = true ->
+    (sp_bound (rm_app_transport_spine nu p r V) <= rm_Lambda T * r)%Qc.
+Proof.
+  intros nu p r V Happ.
+  unfold rm_app_transport_spine. rewrite rm_theta_bound.
+  apply qc_mult_le_mono_l.
+  - apply rm_Lambda_nonneg.
+  - apply er_promote_bound. exact Happ.
+Qed.
+
+Definition rm_app_transport_witness
+    (nu : NameF P) (p : CodeF P) (r eta : Qc) (V : list bool)
+  : list bool :=
+  ec_mixed_witness ECG
+    (rm_name T nu)
+    (rm_name T (iotaF P p))
+    (rm_code T p eta)
+    (rm_Lambda T * r)
+    eta
+    (rm_app_transport_spine nu p r V)
+    (rm_code_witness T p eta).
+
+Theorem rm_app_transport_ok :
+  forall (nu : NameF P) (p : CodeF P) (r eta : Qc) (V : list bool),
+    0 < eta ->
+    AppCheck P nu p r V = true ->
+    AppCheck G (rm_name T nu) (rm_code T p eta)
+      (rm_Lambda T * r + eta)
+      (rm_app_transport_witness nu p r eta V) = true.
+Proof.
+  intros nu p r eta V Heta Happ.
+  unfold rm_app_transport_witness.
+  apply ec_mixed_ok.
+  - apply rm_app_transport_spine_bound. exact Happ.
+  - apply rm_code_ok. exact Heta.
+Qed.
+
+(** Existential presentation retained as a corollary for logical users. *)
+
+Corollary rm_app_transport :
   forall (nu : NameF P) (p : CodeF P) (r eta : Qc) (V : list bool),
     0 < eta ->
     AppCheck P nu p r V = true ->
@@ -205,15 +205,8 @@ Theorem rm_app_transport :
                (rm_Lambda T * r + eta) V' = true.
 Proof.
   intros nu p r eta V Heta Happ.
-  (* 1. source approximation evidence promotes to certified distance *)
-  pose proof (er_promote P ERP nu p r V Happ) as Hsrc.
-  (* 2. transport it along Theta_T *)
-  pose proof (rm_certified_dist nu (iotaF P p) r Hsrc) as Htgt.
-  (* 3. the code realizer supplies target approximation evidence
-        for the transported canonical name *)
-  pose proof (rm_code_ok T p eta Heta) as Hcode.
-  (* 4. the mixed rule composes them, adding the bounds *)
-  eapply (ec_mixed ECG). exact Htgt. exact Hcode.
+  exists (rm_app_transport_witness nu p r eta V).
+  apply rm_app_transport_ok; assumption.
 Qed.
 
 (** ** Analytic Lipschitz estimate on transported names. *)
@@ -234,39 +227,27 @@ End WithMap.
         Definition 5.1 (Certifiably realizable Lipschitz map).
       Rocq definition:
         V3_RealizableMap.RealizableMap.
-      Correspondence: the record now has Def 5.1's FOUR clauses, with
-      clause 4 derived rather than assumed:
-        clause 1: rm_T, rm_Lambda, rm_Lambda_nonneg, rm_lipschitz
-                  (analytic), plus rm_lip_store / rm_lip_apply /
-                  rm_lip_apply_ok (the stored finite derivation and the
-                  uniform procedure applying it);
-        clause 2: rm_name, rm_name_ok;
-        clause 3: rm_code, rm_code_witness, rm_code_ok;
-        clause 4: rm_theta_prim / rm_theta — DEFINED from the stored
-                  derivation, with the strict laws rm_theta_id and
-                  rm_theta_comp proved.
-      The previous revision's extra field rm_app_promote is gone; see
-      rm_app_transport. Status remains IN-PROGRESS because the
-      object-level and morphism-level T_* of Thm 5.2 are not yet
-      constructed — that is the next commit, not a hidden gap.
+      Correspondence: IN-PROGRESS. Clauses 1--3 are represented; the
+      current [rm_theta] gives a canonical clause-4 transformer derived
+      from the stored Lipschitz derivation, but the manuscript permits
+      clause 4 as explicit data. A following commit will restore that
+      literal four-clause interface and keep this derived transformer as
+      a constructor theorem rather than silently strengthening Def 5.1.
 
       Paper theorem:
         Theorem 5.2 (Generic lifting) — evidence-transport content.
-      Rocq theorems:
-        rm_theta_id, rm_theta_comp (strict Θ_T laws),
-        rm_theta_bound, rm_certified_dist (Λ_T scaling),
-        rm_app_transport (approximation transport, DERIVED),
+      Rocq content currently includes:
+        rm_theta_id, rm_theta_comp,
+        rm_theta_bound, rm_certified_dist,
+        rm_app_transport_witness / rm_app_transport_ok,
         rm_analytic_lipschitz.
-      Correspondence: CHECKED-RESTRICTED. What is NOT yet here:
-      the functor T_* on evidence objects and morphisms, the strict
-      functor laws for it, and the d_Cert-level Lipschitz statement.
+      The important new fact is that approximation transport is now
+      executable: it computes the finite target certificate witness,
+      rather than merely proving an existential in Prop. This removes a
+      genuine obstruction to constructing the object-level T_*.
 
-    A note on hypotheses. [rm_app_transport] takes an
-    [EvidenceRegular P] and an [EvidenceClosure G] as Section
-    variables. Neither is an addition to Def 5.1: evidence regularity
-    is Def 4.3, and the closure record holds only rules Def 2.1's §2
-    already requires of the evidence language (symmetry, weakening, the
-    mixed rule). Reflexivity and the triangle rule are NOT among them —
-    those are proved in Presentation.v. *)
+      Still missing from Thm 5.2: the target EvidenceObject / CertSystem,
+      the morphism-level lift, strict functor laws, and the
+      d_Cert/Lawvere-metric Lipschitz statement. *)
 
 End V3_RealizableMap.
