@@ -55,15 +55,14 @@ Approx/Spec.v
 # EXCLUDED: Approx/EffectiveDescent.v (`where`-clause syntax + pseudo-proof)
 # EXCLUDED: Approx/Weierstrass_Lipschitz.v (depends on Bernstein_Lipschitz)
 
-# V3 skeleton (Ballús, arXiv:2506.22693 v3). Layer A of the repository.
-# Each module here corresponds to a section of the v3 manuscript, and
-# each carries an explicit STATUS marker matching FORMALIZATION_STATUS.md.
+# V3 formal companion (Ballús, arXiv:2506.22693 v3). Layer A.
 V3/EvidenceSyntax.v
 V3/Presentation.v
 V3/Evidence.v
 V3/MetricReflection.v
 V3/EffectiveCompleteness.v
 V3/RealizableMap.v
+V3/GenericLift.v
 
 # Stability (Section 7) — Modulus only. UniformStability uses
 # `Qreals.Q2R` which is no longer at that path in Rocq 9;
