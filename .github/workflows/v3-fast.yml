@@ -28,9 +28,6 @@ jobs:
           ocaml-compiler: 4.14.2
           dune-cache: false
 
-      # Restore only the local switch, and only AFTER setup-ocaml has
-      # initialized opam coherently.  Caching ~/.opam as well can leave
-      # repository registries and installed-package state out of sync.
       - name: Restore exact Rocq 9.2 local switch
         id: rocq-switch
         uses: actions/cache/restore@v4
@@ -59,8 +56,6 @@ jobs:
             coqc --version
           fi
 
-      # Seed the reusable switch before source compilation.  A later
-      # proof failure must not discard a known-good prover installation.
       - name: Save exact Rocq 9.2 local switch
         if: steps.rocq-switch.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -76,11 +71,16 @@ jobs:
           coqc -R Coq UELAT Coq/V3/EvidenceSyntax.v
           coqc -R Coq UELAT Coq/V3/Presentation.v
           coqc -R Coq UELAT Coq/V3/Evidence.v
+          coqc -R Coq UELAT Coq/V3/EvidenceClosureV3.v
           coqc -R Coq UELAT Coq/V3/MetricReflection.v
+          coqc -R Coq UELAT Coq/V3/LawvereDistanceV3.v
           coqc -R Coq UELAT Coq/V3/EffectiveCompleteness.v
           coqc -R Coq UELAT Coq/V3/RealizableMap.v
+          coqc -R Coq UELAT Coq/V3/RealizableMapV3.v
           coqc -R Coq UELAT Coq/V3/GenericLift.v
+          coqc -R Coq UELAT Coq/V3/GenericLiftV3.v
           coqc -R Coq UELAT Coq/V3/Composition.v
+          coqc -R Coq UELAT Coq/V3/CompositionV3.v
 
       - name: coqchk V3 theorem island
         shell: bash
@@ -91,11 +91,16 @@ jobs:
             UELAT.V3.EvidenceSyntax \
             UELAT.V3.Presentation \
             UELAT.V3.Evidence \
+            UELAT.V3.EvidenceClosureV3 \
             UELAT.V3.MetricReflection \
+            UELAT.V3.LawvereDistanceV3 \
             UELAT.V3.EffectiveCompleteness \
             UELAT.V3.RealizableMap \
+            UELAT.V3.RealizableMapV3 \
             UELAT.V3.GenericLift \
-            UELAT.V3.Composition
+            UELAT.V3.GenericLiftV3 \
+            UELAT.V3.Composition \
+            UELAT.V3.CompositionV3
 
       - name: Print Assumptions audit
         shell: bash
