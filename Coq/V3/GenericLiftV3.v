@@ -1,8 +1,8 @@
 (** * GenericLiftV3.v — Theorem 5.2 over the exact five-clause interface
 
-    This is the migration target for Theorem 5.2.  Unlike the older
+    This is the migration target for Theorem 5.2. Unlike the older
     GenericLift module, certificate construction consumes the explicit
-    Xi_T field of Definition 5.1 directly.  No EvidenceClosure argument
+    Xi_T field of Definition 5.1 directly. No EvidenceClosure argument
     is needed to manufacture Xi_T after the fact. *)
 
 From Stdlib Require Import Reals QArith Qreals Qcanon Lra Lia Field.
@@ -169,9 +169,9 @@ Proof.
   intros r eps Heps Hr Hrlt.
   eapply Qcle_lt_trans.
   - apply Qcplus_le_compat.
-    + apply gv3_scaled_source_le_eta; assumption.
+    + exact (gv3_scaled_source_le_eta eps r Heps Hr Hrlt).
     + apply Qcle_refl.
-  - apply gv3_eta_twice_lt_eps. exact Heps.
+  - exact (gv3_eta_twice_lt_eps eps Heps).
 Qed.
 
 Definition lift_run_v3 (c : EvidenceObject P) (eps : Qc)
@@ -193,8 +193,12 @@ Proof.
     assert (Ha : (0 < alpha)%Qc) by (unfold alpha; apply gv3_alpha_pos; exact Heps).
     pose proof (cs_bound_lt (eo_system c) alpha Ha) as Hsrc.
     rewrite Hrun in Hsrc. simpl in Hsrc. destruct Hsrc as [Hr0 Hrlt]. split.
-    + unfold eta. apply gv3_output_nonneg; assumption.
-    + unfold alpha, eta in *. apply gv3_output_lt; assumption.
+    + unfold eta. exact (gv3_output_nonneg r eps Hr0 Heps).
+    + unfold eta.
+      apply gv3_output_lt.
+      * exact Heps.
+      * exact Hr0.
+      * unfold alpha in Hrlt. exact Hrlt.
   - intros eps Heps. unfold lift_run_v3.
     set (alpha := gv3_alpha eps). set (eta := gv3_eta eps).
     destruct (cs_run (eo_system c) alpha) as [[p r] V] eqn:Hrun. simpl.
@@ -203,7 +207,10 @@ Proof.
     pose proof (cs_bound_lt (eo_system c) alpha Ha) as Hb.
     pose proof (cs_accept (eo_system c) alpha Ha) as Hacc.
     rewrite Hrun in Hb, Hacc. simpl in Hb, Hacc. destruct Hb as [Hr0 _].
-    apply rv3_xi_ok; assumption.
+    eapply rv3_xi_ok.
+    + exact Hr0.
+    + exact He.
+    + exact Hacc.
 Defined.
 
 Definition lift_object_v3 (c : EvidenceObject P) : EvidenceObject G :=
@@ -299,7 +306,7 @@ Proof.
     - rewrite HL0. simpl. lra.
     - assert (HLpos : 0 < L) by lra.
       assert (Hmul : L * Qc2R q < L * (rP + delta)).
-      { apply Rmult_lt_compat_l; assumption. }
+      { apply Rmult_lt_compat_l; [exact HLpos | exact Hq_upper]. }
       nra.
   }
   unfold L in *. lra.
