@@ -11,10 +11,6 @@
 # added to docs/FORMALIZATION_STATUS.md, add the corresponding entry
 # here. CI diffs the generated files against what is committed under
 # docs/assumptions/; a mismatch fails the job.
-#
-# Nothing here silently generates or hides axioms — the whole point is
-# to keep the assumption footprint of every advertised checked
-# theorem visible in the tree.
 
 set -euo pipefail
 
@@ -25,24 +21,33 @@ mkdir -p "${OUT_DIR}"
 # --------------------------------------------------------------------
 # Audit list — one entry per Rocq theorem the correspondence table in
 # docs/FORMALIZATION_STATUS.md advertises as CHECKED-EXACT or
-# CHECKED-RESTRICTED. DEFINITION-EXACT rows do NOT go here (a
-# definition has no meaningful Print Assumptions output).
-#
-# Format:
-#   stem|From … Require Import <files>|<qualified theorem name>
+# CHECKED-RESTRICTED. The section-5 entries below are deliberately
+# added before promotion: CI must establish their assumption footprint
+# before the status table is allowed to call them checked.
 # --------------------------------------------------------------------
 AUDIT_LIST=(
+  "comp_evidence_id_l|From UELAT.V3 Require Import Presentation Evidence|V3_Evidence.comp_evidence_id_l"
+  "comp_evidence_id_r|From UELAT.V3 Require Import Presentation Evidence|V3_Evidence.comp_evidence_id_r"
+  "comp_evidence_assoc|From UELAT.V3 Require Import Presentation Evidence|V3_Evidence.comp_evidence_assoc"
   "prop_3_3_lower_bound|From UELAT.V3 Require Import Presentation Evidence MetricReflection|V3_MetricReflection.prop_3_3_lower_bound"
   "lawvere_bounds_analytic|From UELAT.V3 Require Import Presentation Evidence MetricReflection|V3_MetricReflection.lawvere_bounds_analytic"
   "extensional_collapse|From UELAT.V3 Require Import Presentation Evidence MetricReflection|V3_MetricReflection.extensional_collapse"
   "principal_evidence_dense|From UELAT.V3 Require Import Presentation Evidence MetricReflection EffectiveCompleteness|V3_EffectiveCompleteness.principal_evidence_dense"
   "principal_evidence_dense_analytic|From UELAT.V3 Require Import Presentation Evidence MetricReflection EffectiveCompleteness|V3_EffectiveCompleteness.principal_evidence_dense_analytic"
+  "rm_app_transport_ok|From UELAT.V3 Require Import Presentation Evidence RealizableMap|V3_RealizableMap.rm_app_transport_ok"
+  "lift_underlying|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_underlying"
+  "lift_morphism_id|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_morphism_id"
+  "lift_morphism_comp|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_morphism_comp"
+  "lift_lawvere_lipschitz|From UELAT.V3 Require Import GenericLift|V3_GenericLift.lift_lawvere_lipschitz"
+  "compose_realizable_lambda|From UELAT.V3 Require Import Composition|V3_Composition.compose_realizable_lambda"
+  "compose_realizable_map|From UELAT.V3 Require Import Composition|V3_Composition.compose_realizable_map"
+  "composed_lift_underlying|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_underlying"
+  "composed_lift_id|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_id"
+  "composed_lift_comp|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_comp"
 )
 
 if [ "${#AUDIT_LIST[@]}" -eq 0 ]; then
   echo "print_assumptions: audit list empty — nothing to check yet."
-  echo "  add an entry when a v3 theorem reaches CHECKED-EXACT in"
-  echo "  docs/FORMALIZATION_STATUS.md."
   exit 0
 fi
 
@@ -62,15 +67,6 @@ Print Assumptions ${thmname}.
 EOF
 
   raw="${TMPDIR}/${stem}.raw"
-  # Redirect stdout AND stderr to the raw file — coqc writes
-  # Print Assumptions output on stdout, but errors on stderr, and we
-  # want both captured.
-  #
-  # NO `|| true` here. A coqc failure means either the theorem name is
-  # wrong, the module does not compile, or the Require path is broken —
-  # in every one of those cases the audit has NOT established anything
-  # and must fail loudly rather than committing an error message as if
-  # it were an assumption report. `set -e` at the top propagates it.
   if ! ( cd "${REPO_ROOT}/Coq" && coqc -R . UELAT "${probe}" ) > "${raw}" 2>&1; then
     echo "::error::print_assumptions: coqc failed for ${thmname}" >&2
     echo "--- probe file ---" >&2
@@ -80,15 +76,6 @@ EOF
     exit 1
   fi
 
-  # Keep ONLY the Print Assumptions verdict block — either the single
-  # "Closed under the global context" line, or everything from the
-  # "Axioms:" header onward. Everything else is discarded.
-  #
-  # This matters for reproducibility: coqc also emits deprecation and
-  # notation warnings that quote the probe's path, and the probe lives
-  # in a fresh `mktemp -d` on every run. Committing those would make
-  # the file differ run-to-run and trip the drift check on every CI
-  # build, which would train reviewers to ignore a real drift signal.
   if grep -q '^Closed under the global context' "${raw}"; then
     verdict="$(grep '^Closed under the global context' "${raw}")"
   else
@@ -113,8 +100,6 @@ EOF
     echo "${verdict}"
   } > "${out}"
 
-  # Echo into the build log as well, so the assumption footprint is
-  # reviewable directly from a CI run without downloading the artifact.
   echo "===== BEGIN ${stem}.txt ====="
   cat "${out}"
   echo "===== END ${stem}.txt ====="

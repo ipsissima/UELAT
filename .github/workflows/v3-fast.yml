@@ -1,0 +1,130 @@
+name: V3 Fast
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: v3-fast-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  OPAMYES: true
+
+jobs:
+  v3:
+    name: V3 Rocq 9.2 build + audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: false
+
+      # Restore only the local switch, and only AFTER setup-ocaml has
+      # initialized opam coherently.  Caching ~/.opam as well can leave
+      # repository registries and installed-package state out of sync.
+      - name: Restore exact Rocq 9.2 local switch
+        id: rocq-switch
+        uses: actions/cache/restore@v4
+        with:
+          path: _opam
+          key: ${{ runner.os }}-v3-rocq92-local-switch-v1
+
+      - name: Ensure exact Rocq 9.2 migration toolchain
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          if [ "${{ steps.rocq-switch.outputs.cache-hit }}" = "true" ]; then
+            coqc --version
+            coqc --version | grep -Fq 'version 9.2'
+          else
+            if [ -d "$HOME/.opam/repo/coq-released" ] && \
+               ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
+              rm -rf "$HOME/.opam/repo/coq-released" \
+                     "$HOME/.opam/repo/coq-released.tar.gz"
+            fi
+            opam repo add coq-released https://coq.inria.fr/opam/released || \
+              opam repo set-url coq-released https://coq.inria.fr/opam/released
+            opam update
+            opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
+            coqc --version
+          fi
+
+      # Seed the reusable switch before source compilation.  A later
+      # proof failure must not discard a known-good prover installation.
+      - name: Save exact Rocq 9.2 local switch
+        if: steps.rocq-switch.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: _opam
+          key: ${{ runner.os }}-v3-rocq92-local-switch-v1
+
+      - name: Compile V3 modules in dependency order
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          coqc -R Coq UELAT Coq/V3/EvidenceSyntax.v
+          coqc -R Coq UELAT Coq/V3/Presentation.v
+          coqc -R Coq UELAT Coq/V3/Evidence.v
+          coqc -R Coq UELAT Coq/V3/MetricReflection.v
+          coqc -R Coq UELAT Coq/V3/EffectiveCompleteness.v
+          coqc -R Coq UELAT Coq/V3/RealizableMap.v
+          coqc -R Coq UELAT Coq/V3/GenericLift.v
+          coqc -R Coq UELAT Coq/V3/Composition.v
+
+      - name: coqchk V3 theorem island
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          coqchk -R Coq UELAT \
+            UELAT.V3.EvidenceSyntax \
+            UELAT.V3.Presentation \
+            UELAT.V3.Evidence \
+            UELAT.V3.MetricReflection \
+            UELAT.V3.EffectiveCompleteness \
+            UELAT.V3.RealizableMap \
+            UELAT.V3.GenericLift \
+            UELAT.V3.Composition
+
+      - name: Print Assumptions audit
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          bash .github/scripts/print_assumptions.sh
+          modified_committed="$(git status --porcelain docs/assumptions/ | awk '/^ M|^M /{print $2}')"
+          if [ -n "${modified_committed}" ]; then
+            echo "::error::committed assumption reports drifted"
+            echo "${modified_committed}"
+            git --no-pager diff docs/assumptions/ || true
+            exit 1
+          fi
+
+      - name: No Admitted/Axiom in V3
+        shell: bash
+        run: |
+          set -e
+          if grep -R -n -E '\b(Admitted|Axiom)\b' Coq/V3/*.v; then
+            echo "::error::Found Admitted/Axiom in V3 theorem island"
+            exit 1
+          fi
+          echo "V3 theorem island is free of Admitted/Axiom"
+
+      - name: Upload assumptions audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-assumptions-audit
+          path: docs/assumptions/
+          if-no-files-found: warn
