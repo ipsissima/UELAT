@@ -64,6 +64,7 @@ V3/EffectiveCompleteness.v
 V3/RealizableMap.v
 V3/RealizableMapV3.v
 V3/GenericLift.v
+V3/GenericLiftV3.v
 V3/Composition.v
 
 # Stability (Section 7) — Modulus only. UniformStability uses
