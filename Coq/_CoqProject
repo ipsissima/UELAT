@@ -54,6 +54,7 @@ V3/RealizableMapV3.v
 V3/GenericLift.v
 V3/GenericLiftV3.v
 V3/Composition.v
+V3/CompositionV3.v
 
 # Stability (Section 7)
 Stability/Modulus.v
