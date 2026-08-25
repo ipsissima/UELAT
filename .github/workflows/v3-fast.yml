@@ -76,6 +76,7 @@ jobs:
           coqc -R Coq UELAT Coq/V3/RealizableMap.v
           coqc -R Coq UELAT Coq/V3/RealizableMapV3.v
           coqc -R Coq UELAT Coq/V3/GenericLift.v
+          coqc -R Coq UELAT Coq/V3/GenericLiftV3.v
           coqc -R Coq UELAT Coq/V3/Composition.v
 
       - name: coqchk V3 theorem island
@@ -92,6 +93,7 @@ jobs:
             UELAT.V3.RealizableMap \
             UELAT.V3.RealizableMapV3 \
             UELAT.V3.GenericLift \
+            UELAT.V3.GenericLiftV3 \
             UELAT.V3.Composition
 
       - name: Print Assumptions audit
