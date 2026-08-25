@@ -4,37 +4,21 @@
     Choice: Certificate-Carrying Approximation, Functorial Evidence, and
     Effective Descent", arXiv:2506.22693 v3, Definition 2.1.
 
-    STATUS: IN-PROGRESS (see docs/FORMALIZATION_STATUS.md).
+    This revision restores the literal manuscript interface at the
+    represented-space/checker level.  In particular:
+      - CodeF is supplied with a finite-string coding and an effective
+        enumeration which is complete for all codes;
+      - rhoF has dense range in the ambient completed carrier F;
+      - a represented domain D_F is explicit and deltaF is surjective
+        onto it;
+      - DistCheck is the manuscript's terminating whole-claim checker.
 
-    ** What changed, and why
+    Normalized spines remain the structural normal form of accepted
+    distance proof trees.  Their leaves are now accepted DistCheck
+    claims, rather than the stronger and non-manuscript primitive
+    DistLeaf interface used by the previous revision. *)
 
-    Earlier this record carried a whole-claim distance checker
-
-      DistCheck : NameF -> NameF -> Q -> list bool -> bool
-
-    together with an ASSUMED soundness field. That conflated two
-    different things: the primitive act of verifying one elementary
-    distance witness, and the structural act of composing verified
-    steps along a triangle spine. The paper separates them — §2 lists
-    the structural rules (reflexivity, weakening, symmetry, triangle,
-    finite sums, stored Lipschitz) as closure properties OF the
-    evidence language, not as primitive checks.
-
-    So the presentation now supplies only the PRIMITIVE leaf checker
-
-      DistLeaf : NameF -> NameF -> Qc -> list bool -> bool
-
-    with its soundness. Composite distance certification is then
-    [V3_EvidenceSyntax.Spine], and whole-spine soundness is DERIVED
-    here as [spine_sound] — the "checker-realization bridge". The
-    triangle rule is consequently a theorem about [distF], proved from
-    [distF_triangle], rather than an assumed closure constructor.
-
-    Bounds moved from [Q] to [Qc] so that bound arithmetic is Leibniz;
-    see the header of [V3_EvidenceSyntax] for why that matters to the
-    strict laws Def 5.1 requires. *)
-
-From Stdlib Require Import Reals QArith Qreals Qcanon Lra Lia.
+From Stdlib Require Import Reals QArith Qreals Qcanon Lra Lia List.
 From UELAT.V3 Require Import EvidenceSyntax.
 Local Open Scope R_scope.
 
@@ -42,29 +26,13 @@ Module V3_Presentation.
 
 Import V3_EvidenceSyntax.
 
-(** ** Canonical rationals as reals.
-
-    [Qc] is [Q] restricted to canonical form, so its underlying
-    rational is recovered by the [this] projection. *)
-
 Definition Qc2R (q : Qc) : R := Q2R (this q).
-
-(** [Qcplus] is [Q2Qc] of the underlying sum, so the projection of a
-    [Qc] sum is [Qred] of the [Q] sum — equal to it under [Qeq], hence
-    equal after [Q2R]. [apply Qred_correct] unifies up to delta, so no
-    [simpl] is needed and the proof does not depend on the exact shape
-    [simpl] would produce. *)
 
 Lemma Qc2R_plus : forall p q : Qc, Qc2R (p + q)%Qc = Qc2R p + Qc2R q.
 Proof.
   intros p q. unfold Qc2R. rewrite <- Q2R_plus.
   apply Qeq_eqR. apply Qred_correct.
 Qed.
-
-(** Derived from [Qc2R_plus] rather than from a [Q2R]-level zero lemma.
-    An earlier revision used [Q2R_0], which does not exist in this
-    stdlib; deriving it here removes the dependency on that name
-    entirely. *)
 
 Lemma Qc2R_0 : Qc2R 0 = 0.
 Proof.
@@ -75,79 +43,81 @@ Qed.
 Lemma Qc2R_le : forall p q : Qc, (p <= q)%Qc -> Qc2R p <= Qc2R q.
 Proof. intros p q H. unfold Qc2R. apply Qle_Rle. exact H. Qed.
 
-(** ** The presentation record.
-
-    The ambient space stays abstract, represented by a carrier [F] and
-    an analytic distance [distF] obeying the pseudo-metric laws — the
-    structure the paper's checker interface actually uses. A concrete
-    presentation over a genuine normed space takes
-    [distF a b := ‖a − b‖]. *)
-
+(** A Rocq record function is total/terminating by construction.  The
+    finite-string representation below makes the manuscript's
+    "effectively enumerable set of finite strings" explicit without
+    forcing every concrete model to identify its semantic code type
+    definitionally with [list bool]. *)
 Record Presentation : Type := {
-  (* --- carriers --- *)
+  (* --- analytic and syntactic carriers --- *)
   CodeF   : Type;
   NameF   : Type;
   F       : Type;
   distF   : F -> F -> R;
-  (* --- pseudo-metric laws --- *)
+
+  (* --- pseudo-metric laws on the completion carrier --- *)
   distF_nonneg   : forall a b : F, 0 <= distF a b;
   distF_self0    : forall a : F, distF a a = 0;
   distF_sym      : forall a b : F, distF a b = distF b a;
   distF_triangle : forall a b c : F, distF a c <= distF a b + distF b c;
-  (* --- decoders --- *)
-  rhoF    : CodeF -> F;
-  deltaF  : NameF -> F;
-  iotaF   : CodeF -> NameF;
-  code_size : CodeF -> nat;
-  (* --- checkers: approximation, and PRIMITIVE distance leaf --- *)
-  AppCheck : NameF -> CodeF -> Qc -> list bool -> bool;
-  DistLeaf : NameF -> NameF -> Qc -> list bool -> bool;
-  (* --- structural coherence (Def 2.1 item 3) --- *)
+
+  (* --- effective finite-string code presentation, Def. 2.1(1) --- *)
+  code_encode : CodeF -> list bool;
+  code_decode : list bool -> option CodeF;
+  code_decode_encode : forall p : CodeF, code_decode (code_encode p) = Some p;
+  code_enum : nat -> option CodeF;
+  code_enum_complete : forall p : CodeF, exists n : nat, code_enum n = Some p;
+
+  (* --- decoders and density, Def. 2.1(1) --- *)
+  rhoF : CodeF -> F;
+  rhoF_dense : forall (x : F) (eps : R),
+      0 < eps -> exists p : CodeF, distF x (rhoF p) < eps;
+
+  (* --- represented domain of named points, Def. 2.1(2) --- *)
+  D_F : F -> Prop;
+  deltaF : NameF -> F;
+  deltaF_in_domain : forall nu : NameF, D_F (deltaF nu);
+  deltaF_surjective : forall x : F, D_F x -> exists nu : NameF, deltaF nu = x;
+
+  (* --- canonical names, Def. 2.1(3) --- *)
+  iotaF : CodeF -> NameF;
   canonical_name_ok : forall p : CodeF, deltaF (iotaF p) = rhoF p;
-  (* --- soundness (Def 2.1 items 5 and 6, leaf form) --- *)
+
+  (* --- finite code size, Def. 2.1(4) --- *)
+  code_size : CodeF -> nat;
+  code_size_encoding : forall p : CodeF, code_size p = length (code_encode p);
+
+  (* --- terminating checkers, Def. 2.1(5)-(6) --- *)
+  AppCheck : NameF -> CodeF -> Qc -> list bool -> bool;
+  DistCheck : NameF -> NameF -> Qc -> list bool -> bool;
+
+  (* --- checker soundness --- *)
   AppCheck_sound :
     forall (nu : NameF) (p : CodeF) (q : Qc) (V : list bool),
       AppCheck nu p q V = true -> distF (deltaF nu) (rhoF p) <= Qc2R q;
-  DistLeaf_sound :
+  DistCheck_sound :
     forall (nu mu : NameF) (q : Qc) (W : list bool),
-      DistLeaf nu mu q W = true -> distF (deltaF nu) (deltaF mu) <= Qc2R q
+      DistCheck nu mu q W = true -> distF (deltaF nu) (deltaF mu) <= Qc2R q
 }.
 
-(** ** Normalized distance evidence over a presentation. *)
-
+(** Normalized distance evidence over the manuscript's DistCheck. *)
 Definition PSpine (P : Presentation) (a b : NameF P) : Type :=
-  Spine (DistLeaf P) a b.
+  Spine (DistCheck P) a b.
 
-(** ** The checker-realization bridge.
-
-    A whole normalized spine certifies the analytic distance between
-    the decoded endpoints, at its announced bound. This is the theorem
-    that replaces the old assumed [DistCheck_sound]: the triangle rule
-    is now PROVED from [distF_triangle] and leaf soundness, not
-    postulated as a closure constructor. *)
-
+(** A flattened spine of accepted DistCheck leaves is sound by repeated
+    triangle inequality.  This is the semantic bridge from the finite
+    proof-tree normal form required in Def. 2.1 to the analytic metric. *)
 Theorem spine_sound :
   forall (P : Presentation) (a b : NameF P) (W : PSpine P a b),
     distF P (deltaF P a) (deltaF P b) <= Qc2R (sp_bound W).
 Proof.
   intros P a b W. induction W as [x | x m y s rest IH].
-  - (* reflexivity: distance from a point to itself is 0 *)
-    simpl. rewrite distF_self0, Qc2R_0. apply Rle_refl.
-  - (* triangle step *)
-    simpl. rewrite Qc2R_plus.
+  - simpl. rewrite distF_self0, Qc2R_0. apply Rle_refl.
+  - simpl. rewrite Qc2R_plus.
     eapply Rle_trans; [apply distF_triangle with (b := deltaF P m) |].
     apply Rplus_le_compat; [| exact IH].
-    eapply DistLeaf_sound. exact (ps_ok s).
+    eapply DistCheck_sound. exact (ps_ok s).
 Qed.
-
-(** ** Certified distance, as a relation on names.
-
-    "The pair (nu, mu) is certified at rational bound q" means some
-    normalized spine runs from nu to mu with announced bound at most q.
-    Taking [<=] rather than [=] builds in weakening at the level of the
-    RELATION, which is where the paper uses it; it does not assume a
-    syntactic weakening constructor on spines (there is none yet — see
-    the gap note in EvidenceSyntax). *)
 
 Definition certified_dist (P : Presentation) (nu mu : NameF P) (q : Qc) : Prop :=
   exists W : PSpine P nu mu, (sp_bound W <= q)%Qc.
@@ -161,16 +131,11 @@ Proof.
   eapply Rle_trans; [apply spine_sound | apply Qc2R_le; exact Hle].
 Qed.
 
-(** Reflexivity of certified distance at bound 0 — the empty spine. *)
-
 Theorem certified_dist_refl :
   forall (P : Presentation) (nu : NameF P), certified_dist P nu nu 0.
 Proof.
   intros P nu. exists (sp_nil nu). simpl. apply Qcle_refl.
 Qed.
-
-(** Transitivity, at the sum of the bounds — the triangle rule,
-    realized by spine concatenation. *)
 
 Theorem certified_dist_trans :
   forall (P : Presentation) (nu mu xi : NameF P) (q r : Qc),
@@ -183,14 +148,18 @@ Proof.
   apply Qcplus_le_compat; assumption.
 Qed.
 
-(** ** Small helpers inside a fixed presentation. *)
-
 Section WithPresentation.
 Variable P : Presentation.
 
 Lemma canonical_name_distF_zero : forall p,
   distF P (deltaF P (iotaF P p)) (rhoF P p) = 0.
 Proof. intro p. rewrite canonical_name_ok. apply distF_self0. Qed.
+
+Lemma canonical_name_in_domain : forall p,
+  D_F P (rhoF P p).
+Proof.
+  intro p. rewrite <- canonical_name_ok. apply deltaF_in_domain.
+Qed.
 
 Lemma AppCheck_bound_nonneg :
   forall nu p q V, AppCheck P nu p q V = true -> 0 <= Qc2R q.
@@ -201,40 +170,16 @@ Qed.
 
 End WithPresentation.
 
-(** ** Correspondence with v3
+(** Correspondence note.
 
-      Paper definition:
-        Definition 2.1 (Approximation presentation).
-      Rocq definition:
-        V3_Presentation.Presentation.
-      Correspondence:
-        SEMANTIC CHECKER CORE of Def 2.1 — not EXACT. The record
-        captures carriers, decoders, canonical-name coherence, the
-        approximation checker, and the PRIMITIVE distance-leaf checker
-        with their soundness. Def 2.1 additionally requires:
-          (i)  [CodeF] effectively enumerable;
-          (ii) [rhoF] with dense range in the completion;
-          (iii) a represented subdomain D_F with [deltaF] surjective
-                onto it.
-        None of (i)–(iii) is encoded yet.
-
-        NOTE on the checker split: Def 2.1 states a whole-claim
-        DistCheck. Here the presentation supplies only the leaf
-        checker, and whole-claim certification is derived
-        ([certified_dist], [certified_dist_sound]). This is a
-        REFINEMENT rather than a weakening — any presentation with a
-        leaf checker induces a whole-claim one, and the paper's
-        structural rules become theorems. A presentation whose only
-        natural checker is genuinely whole-claim and NOT decomposable
-        into leaves would not fit this record; no such presentation
-        appears in the paper, but the restriction is recorded here
-        rather than left implicit.
-
-      Paper text:
-        §2 triangle rule for the evidence language.
-      Rocq theorem:
-        V3_Presentation.certified_dist_trans (and [spine_sound]).
-      Correspondence: the triangle rule is PROVED from
-      [distF_triangle] plus leaf soundness, not assumed. *)
+    The fields above now encode items (1)--(6) of manuscript Def. 2.1:
+    finite-string/effective code enumeration, dense decoding, represented
+    domain and surjective naming, canonical names, code size, and the two
+    terminating sound checkers.  The evidence-language closure operations
+    listed in the paragraph following item (6) live in [Evidence] and
+    [EvidenceClosureV3], while [PSpine] is the required flattened strict
+    normal form.  A final status promotion must therefore audit those
+    modules jointly rather than treating [Presentation] alone as the whole
+    post-item-(6) closure paragraph. *)
 
 End V3_Presentation.
