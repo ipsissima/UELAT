@@ -304,8 +304,8 @@ Proof.
   {
     destruct (Req_dec L 0) as [HL0|HL0].
     - rewrite HL0. simpl. lra.
-    - assert (HLpos : 0 < L) by lra.
-      assert (Hmul : L * Qc2R q < L * (rP + delta)).
+    - assert (HLpos : (0 < L)%R) by lra.
+      assert (Hmul : (L * Qc2R q < L * (rP + delta))%R).
       { apply Rmult_lt_compat_l; [exact HLpos | exact Hq_upper]. }
       nra.
   }
