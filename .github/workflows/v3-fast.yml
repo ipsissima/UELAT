@@ -80,6 +80,7 @@ jobs:
           coqc -R Coq UELAT Coq/V3/GenericLift.v
           coqc -R Coq UELAT Coq/V3/GenericLiftV3.v
           coqc -R Coq UELAT Coq/V3/Composition.v
+          coqc -R Coq UELAT Coq/V3/CompositionV3.v
 
       - name: coqchk V3 theorem island
         shell: bash
@@ -98,7 +99,8 @@ jobs:
             UELAT.V3.RealizableMapV3 \
             UELAT.V3.GenericLift \
             UELAT.V3.GenericLiftV3 \
-            UELAT.V3.Composition
+            UELAT.V3.Composition \
+            UELAT.V3.CompositionV3
 
       - name: Print Assumptions audit
         shell: bash
