@@ -16,7 +16,7 @@
     The empty/nonempty branch is classical and therefore intentionally
     visible in the assumption audit. *)
 
-From Stdlib Require Import Reals Qcanon ClassicalDescription Classical.
+From Stdlib Require Import Reals Qcanon ClassicalDescription Classical Lra.
 From UELAT.V3 Require Import Presentation Evidence MetricReflection.
 Local Open Scope R_scope.
 
