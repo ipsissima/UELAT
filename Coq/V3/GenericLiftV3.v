@@ -307,7 +307,8 @@ Proof.
     - assert (HLpos : (0 < L)%R) by lra.
       assert (Hmul : (L * Qc2R q < L * (rP + delta))%R).
       { apply Rmult_lt_compat_l; [exact HLpos | exact Hq_upper]. }
-      nra.
+      rewrite Rmult_plus_distr_l in Hmul.
+      lra.
   }
   unfold L in *. lra.
 Qed.
