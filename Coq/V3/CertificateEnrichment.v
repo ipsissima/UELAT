@@ -104,7 +104,7 @@ Section Certificates.
     distance (decode_name nu) (decode_code (cert_code c)) <= cert_bound c.
   Proof.
     destruct c as [p q Hq w Hw]. simpl.
-    pose proof (app_sound E _ _ _ _ Hw) as [_ H].
+    pose proof (@app_sound X E nu p q w Hw) as [_ H].
     exact H.
   Qed.
 
