@@ -54,7 +54,8 @@ Section ClassicalRate.
   Lemma global_l2_rate_derived :
     global_l2_error D <= kappa * C0 * h_alpha * Rbound.
   Proof.
-    assert (HC0R : 0 <= C0 * Rbound) by nra.
+    assert (HC0R : 0 <= C0 * Rbound).
+    { apply Rmult_le_pos; assumption. }
     assert (Hlocal : local_l2_aggregate D <= C0 * h_alpha * Rbound).
     {
       eapply Rle_trans; [exact (local_l2_rate D)|].
@@ -73,8 +74,12 @@ Section ClassicalRate.
     global_deriv_error D <=
       kappa * (Cchi * C0 + C1) * h_alpha * Rbound.
   Proof.
-    assert (Hchiinv : 0 <= Cchi * h_inv) by nra.
-    assert (Hfactor : 0 <= Cchi * C0 * Rbound) by nra.
+    assert (Hchiinv : 0 <= Cchi * h_inv).
+    { apply Rmult_le_pos; assumption. }
+    assert (HchiC0 : 0 <= Cchi * C0).
+    { apply Rmult_le_pos; assumption. }
+    assert (Hfactor : 0 <= Cchi * C0 * Rbound).
+    { apply Rmult_le_pos; assumption. }
     assert (Hweighted :
       Cchi * h_inv * local_l2_aggregate D
         <= Cchi * C0 * h_alpha * Rbound).
