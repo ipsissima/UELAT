@@ -1,6 +1,6 @@
 (** RationalPUFEM.v -- authoritative rational PUFEM structural/defect core. *)
 
-From Coq Require Import Reals List Lra Lra.
+From Coq Require Import Reals List Lra.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -70,16 +70,9 @@ Section MultiplierEstimate.
   Proof.
     assert (Hsq : deriv_product^2
               <= (L * delta0 + Cinf * delta1)^2) by nra.
-    assert (Hident :
-      2 * L^2 * delta0^2 + 2 * Cinf^2 * delta1^2
-      = (L * delta0 + Cinf * delta1)^2
-        + (L * delta0 - Cinf * delta1)^2) by ring.
+    pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)) as Hdiff.
     eapply Rle_trans; [exact Hsq|].
-    rewrite Hident.
-    replace ((L * delta0 + Cinf * delta1)^2)
-      with ((L * delta0 + Cinf * delta1)^2 + 0) at 1 by ring.
-    apply Rplus_le_compat_l.
-    apply Rle_0_sqr.
+    nra.
   Qed.
 
   Theorem multiplier_w12_squared :
