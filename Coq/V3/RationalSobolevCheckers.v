@@ -38,9 +38,9 @@ Section CheckerSoundness.
     intros p q n [Hq Hsq].
     pose proof (distance_nonnegative X (stages n) p) as Hd0.
     assert (Hfinite : distance (stages n) p < q - dyadic n) by nra.
-    eapply Rle_lt_trans.
-    - apply distance_triangle with (y := stages n).
-    - specialize (stage_tail n). lra.
+    pose proof (stage_tail n) as Htail.
+    pose proof (distance_triangle X x (stages n) p) as Htri.
+    lra.
   Qed.
 
 End CheckerSoundness.
@@ -65,14 +65,13 @@ Section DistanceCheckerSoundness.
     intros q n [Hq Hsq].
     pose proof (distance_nonnegative X (xs n) (ys n)) as Hd0.
     assert (Hfinite : distance (xs n) (ys n) < q - 2 * dyadic n) by nra.
-    eapply Rle_lt_trans.
-    - apply distance_triangle with (y := xs n).
-    - eapply Rlt_le_trans.
-      + specialize (x_tail n). lra.
-      + eapply Rle_trans.
-        * apply Rplus_le_compat_l.
-          apply distance_triangle with (y := ys n).
-        * specialize (y_tail n). lra.
+    pose proof (x_tail n) as Hxtail.
+    pose proof (y_tail n) as Hytail.
+    assert (Hytail_rev : distance (ys n) y <= dyadic n).
+    { rewrite distance_symmetric. exact Hytail. }
+    pose proof (distance_triangle X x (xs n) y) as Htri1.
+    pose proof (distance_triangle X (xs n) (ys n) y) as Htri2.
+    lra.
   Qed.
 
   (** Strict-slack completeness reduces to finding a finite stage whose tails
