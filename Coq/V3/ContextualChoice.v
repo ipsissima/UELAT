@@ -39,7 +39,7 @@ Arguments ccp_modulus {A B DA DB UA UB} _ _ _.
 Definition ccp_query_count
     {A B DA DB} {UA : A -> DA} {UB : B -> DB}
     (F : CCPConstructor UA UB) (n : nat) (a : A) : nat :=
-  length (ccp_queries F n a).
+  length (@ccp_queries A B DA DB UA UB F n a).
 
 Theorem ccp_queries_are_finite :
   forall A B DA DB (UA : A -> DA) (UB : B -> DB)
@@ -66,19 +66,25 @@ Definition compose_ccp
     (F : CCPConstructor UA UB) : CCPConstructor UA UC.
 Proof.
   refine {| ccp_evidence_map := fun a =>
-              ccp_evidence_map G (ccp_evidence_map F a);
+              @ccp_evidence_map B C DB DC UB UC G
+                (@ccp_evidence_map A B DA DB UA UB F a);
             ccp_analytic_map := fun x =>
-              ccp_analytic_map G (ccp_analytic_map F x);
+              @ccp_analytic_map B C DB DC UB UC G
+                (@ccp_analytic_map A B DA DB UA UB F x);
             ccp_queries := fun n a =>
-              ccp_queries F
-                (ccp_modulus G n (ccp_evidence_map F a)) a
-              ++ ccp_queries G n (ccp_evidence_map F a);
+              @ccp_queries A B DA DB UA UB F
+                (@ccp_modulus B C DB DC UB UC G n
+                   (@ccp_evidence_map A B DA DB UA UB F a)) a
+              ++ @ccp_queries B C DB DC UB UC G n
+                   (@ccp_evidence_map A B DA DB UA UB F a);
             ccp_modulus := fun n a =>
-              ccp_modulus F
-                (ccp_modulus G n (ccp_evidence_map F a)) a |}.
+              @ccp_modulus A B DA DB UA UB F
+                (@ccp_modulus B C DB DC UB UC G n
+                   (@ccp_evidence_map A B DA DB UA UB F a)) a |}.
   intro a.
-  rewrite (ccp_commutes G (ccp_evidence_map F a)).
-  rewrite (ccp_commutes F a).
+  rewrite (@ccp_commutes B C DB DC UB UC G
+             (@ccp_evidence_map A B DA DB UA UB F a)).
+  rewrite (@ccp_commutes A B DA DB UA UB F a).
   reflexivity.
 Defined.
 
@@ -87,8 +93,11 @@ Theorem compose_query_count :
          (UA : A -> DA) (UB : B -> DB) (UC : C -> DC)
          (G : CCPConstructor UB UC) (F : CCPConstructor UA UB) n a,
     ccp_query_count (compose_ccp G F) n a
-      = ccp_query_count F (ccp_modulus G n (ccp_evidence_map F a)) a
-        + ccp_query_count G n (ccp_evidence_map F a).
+      = ccp_query_count F
+          (@ccp_modulus B C DB DC UB UC G n
+             (@ccp_evidence_map A B DA DB UA UB F a)) a
+        + ccp_query_count G n
+            (@ccp_evidence_map A B DA DB UA UB F a).
 Proof.
   intros. unfold ccp_query_count. simpl. apply app_length.
 Qed.
@@ -101,14 +110,20 @@ Definition product_ccp
     CCPConstructor UA (fun bc : B * C => (UB (fst bc), UC (snd bc))).
 Proof.
   refine {| ccp_evidence_map := fun a =>
-              (ccp_evidence_map F a, ccp_evidence_map G a);
+              (@ccp_evidence_map A B DA DB UA UB F a,
+               @ccp_evidence_map A C DA DC UA UC G a);
             ccp_analytic_map := fun x =>
-              (ccp_analytic_map F x, ccp_analytic_map G x);
-            ccp_queries := fun n a => ccp_queries F n a ++ ccp_queries G n a;
+              (@ccp_analytic_map A B DA DB UA UB F x,
+               @ccp_analytic_map A C DA DC UA UC G x);
+            ccp_queries := fun n a =>
+              @ccp_queries A B DA DB UA UB F n a
+              ++ @ccp_queries A C DA DC UA UC G n a;
             ccp_modulus := fun n a =>
-              Nat.max (ccp_modulus F n a) (ccp_modulus G n a) |}.
+              Nat.max (@ccp_modulus A B DA DB UA UB F n a)
+                      (@ccp_modulus A C DA DC UA UC G n a) |}.
   intro a. simpl.
-  rewrite (ccp_commutes F a), (ccp_commutes G a).
+  rewrite (@ccp_commutes A B DA DB UA UB F a),
+          (@ccp_commutes A C DA DC UA UC G a).
   reflexivity.
 Defined.
 
