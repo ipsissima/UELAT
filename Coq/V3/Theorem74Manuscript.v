@@ -5,15 +5,15 @@
     the exact rational-epsilon language of the authoritative manuscript.
 
     The finite statements below are the constructive content underlying the
-    manuscript big-O clauses.  A row in FORMALIZATION_STATUS.md must remain
+    manuscript big-O clauses. A row in FORMALIZATION_STATUS.md remains
     IN-PROGRESS until the asymptotic m(epsilon) / standard-regime wrappers and
-    the full H1--H7 correspondence have also passed the pinned build, coqchk,
-    and assumptions audit.
+    full H1--H7 correspondence have passed the pinned build, coqchk and
+    assumptions audit.
 *)
 
 From Coq Require Import Reals QArith Qreals.
 From UELAT.V3 Require Import
-  CertificateEnrichment RepresentedSpace ProofDAG
+  CertificateEnrichment RepresentedSpace ProofDAG OrderNeutralDescent
   H1H7Descent DescentCertificateSize FiniteCodeDescent
   EpsilonPrecision OrderNeutralEpsilonDescent ManuscriptH1H7.
 
@@ -21,6 +21,7 @@ Module UELAT_V3_Theorem74Manuscript.
 Import UELAT_V3_CertificateEnrichment.
 Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_ProofDAG.
+Import UELAT_V3_OrderNeutralDescent.
 Import UELAT_V3_H1H7Descent.
 Import UELAT_V3_DescentCertificateSize.
 Import UELAT_V3_FiniteCodeDescent.
@@ -37,11 +38,9 @@ Section ManuscriptTheorem.
   Let p := realized_approximant decode pcode.
 
   Variable H : H1H7Data (Payload:=Payload) (Rule:=Rule) f p.
-
   Variables h0 Cchi C0 C1 Rbound : R.
   Variable r : nat.
-  Variable MH :
-    ManuscriptH1H7Data f p H h0 Cchi C0 C1 Rbound r.
+  Variable MH : ManuscriptH1H7Data f p H h0 Cchi C0 C1 Rbound r.
 
   Definition theorem74_epsilon_level
       (eps : Q) (Heps : (0 < eps)%Q) : nat :=
@@ -54,40 +53,29 @@ Section ManuscriptTheorem.
   Definition theorem74_limit : RepresentedPoint X :=
     epsilon_limit decode f pcode H.
 
-  (** Finite, kernel-level form of the resource conclusions in Theorem 7.4. *)
   Theorem theorem74_finite_resource_form :
     forall (eps : Q) (Heps : (0 < eps)%Q) (Heps1 : (eps <= 1)%Q),
     represented_value theorem74_limit = f
     /\ fpc_level (theorem74_epsilon_certificate eps Heps)
          = theorem74_epsilon_level eps Heps
     /\ distance f
-         (decode (fpc_code (theorem74_epsilon_certificate eps Heps)))
-         < Q2R eps
+         (decode (fpc_code (theorem74_epsilon_certificate eps Heps))) < Q2R eps
     /\ size_denominator H
-         * selected_certificate_bits decode f pcode H
-             (epsilon_precision eps Heps)
-         <= total_factor H
-              * h_ordinary_bits H (theorem74_epsilon_level eps Heps)
+         * selected_certificate_bits decode f pcode H (epsilon_precision eps Heps)
+         <= total_factor H * h_ordinary_bits H (theorem74_epsilon_level eps Heps)
     /\ h_cnum H * h_Cden H
-         * nsum_upto (h_level_verification H)
-             (theorem74_epsilon_level eps Heps)
+         * nsum_upto (h_level_verification H) (theorem74_epsilon_level eps Heps)
          <= 2 * h_cverify H * h_cden H * h_Cnum H
               * h_M H (theorem74_epsilon_level eps Heps)
               * h_A H (h_beta H (theorem74_epsilon_level eps Heps))
     /\ h_source_lookahead H (theorem74_epsilon_level eps Heps)
-         <= h_csource H * h_beta_factor H
-              * S (theorem74_epsilon_level eps Heps)
+         <= h_csource H * h_beta_factor H * S (theorem74_epsilon_level eps Heps)
     /\ h_target_queries H = 0.
   Proof.
     intros eps Heps Heps1.
-    exact (order_neutral_descent_at_rational_epsilon
-      decode f pcode H eps Heps).
+    exact (order_neutral_descent_at_rational_epsilon decode f pcode H eps Heps).
   Qed.
 
-  (** The internal ceiling schedule has the manuscript's inverse-alpha depth
-      mechanism.  This is the exact arithmetic fact from which
-      m(epsilon)=O(log(1/epsilon)/(r-1)) is read after connecting the rational
-      epsilon search to bit length/logarithm. *)
   Theorem theorem74_precision_exponent : forall eps Heps,
     epsilon_precision eps Heps + 1 + h_offset H
       <= h_alpha H * theorem74_epsilon_level eps Heps.
@@ -137,7 +125,6 @@ Section ManuscriptTheorem.
     apply epsilon_certificate_keeps_selected_ancestry.
     exact Hsink.
   Qed.
-
 End ManuscriptTheorem.
 
 End UELAT_V3_Theorem74Manuscript.
