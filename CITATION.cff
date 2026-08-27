@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this formal companion, please cite the version 3 manuscript."
+title: "Proof-Carrying Analytic Approximation: Local-to-Global Evidence Transport at Encoding Cost"
+type: software
+authors:
+  - family-names: "Ballús Santacana"
+    given-names: "Andreu"
+    email: "andreu.ballus@uab.cat"
+year: 2026
+license: MIT
+repository-code: "https://github.com/ipsissima/UELAT"
+url: "https://arxiv.org/abs/2506.22693"
+identifiers:
+  - type: url
+    value: "https://arxiv.org/abs/2506.22693"
+    description: "Authoritative manuscript, arXiv:2506.22693 v3"
