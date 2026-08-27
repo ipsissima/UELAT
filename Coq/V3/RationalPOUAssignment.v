@@ -96,7 +96,10 @@ Theorem grouped_hats_partition_cell : forall A k a b x,
 Proof.
   intros A k a b x Hab. unfold cell_patch_values.
   rewrite bucketize_preserves_total.
-  - simpl. rewrite two_hat_partition_identity by exact Hab. ring.
+  - simpl.
+    transitivity (left_hat_on_cell a b x + right_hat_on_cell a b x).
+    + ring.
+    + apply two_hat_partition_identity. exact Hab.
   - apply cell_entries_in_range.
 Qed.
 Theorem grouped_hats_partition_certified_cell : forall A k c x,
