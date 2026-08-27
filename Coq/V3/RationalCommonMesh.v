@@ -84,7 +84,11 @@ Proof.
   intros x c. unfold split_piece_at.
   destruct (strictly_inside_piece x c) eqn:Hinside.
   - simpl. unfold piece_energy. simpl.
-    rewrite <- qpoly_w12_inner_split. ring.
+    transitivity
+      (qpoly_w12_inner_on (piece_left c) x (piece_poly c) (piece_poly c)
+       + qpoly_w12_inner_on x (piece_right c) (piece_poly c) (piece_poly c)).
+    + ring.
+    + symmetry. apply qpoly_w12_inner_split.
   - simpl. ring.
 Qed.
 
