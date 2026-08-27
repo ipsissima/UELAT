@@ -9,7 +9,7 @@
 
 From Coq Require Import Reals QArith Qreals Lra.
 From UELAT.V3 Require Import
-  CertificateEnrichment RepresentedSpace ProofDAG
+  CertificateEnrichment RepresentedSpace ProofDAG OrderNeutralDescent
   H1H7Descent DescentCertificateSize FiniteCodeDescent
   EpsilonPrecision.
 
@@ -17,6 +17,7 @@ Module UELAT_V3_OrderNeutralEpsilonDescent.
 Import UELAT_V3_CertificateEnrichment.
 Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_ProofDAG.
+Import UELAT_V3_OrderNeutralDescent.
 Import UELAT_V3_H1H7Descent.
 Import UELAT_V3_DescentCertificateSize.
 Import UELAT_V3_FiniteCodeDescent.
