@@ -41,8 +41,8 @@ Record StrictIndexed (B : BaseCategory) := {
 Arguments fibre_obj {B} _ _.
 Arguments fibre_hom {B} _ _ _ _.
 Arguments fibre_id {B} _ _ _.
-Arguments push_obj {B I x y} _ _.
-Arguments push_hom {B I x y} _ _.
+Arguments push_obj {B s x y} _ _.
+Arguments push_hom {B s x y} _ _.
 
 Definition transport_source
     {A : Type} (P : A -> Type) {x y : A}
