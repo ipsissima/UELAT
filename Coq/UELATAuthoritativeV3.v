@@ -6,8 +6,10 @@
       arXiv:2506.22693 v3.
 
     This entry point intentionally excludes the withdrawn probes--models
-    adjunction and other pre-v3 theorem surfaces.  PARTIAL Section 3 interfaces
-    may be added here only when their dependency path is explicit.
+    adjunction and other pre-v3 theorem surfaces.  Section 3 modules are
+    exposed here only when they have been observed compiling under the pinned
+    Rocq 9.2 current-paper build; unfinished strong Type-2/Hahn--Banach
+    assembly remains outside this authoritative aggregate.
 *)
 
 From UELAT.V3 Require Export
@@ -33,6 +35,10 @@ From UELAT.V3 Require Export
   EvidenceTransport
   GrothendieckEvidence
   ResourceProfile
+
+  LinearUniversality
+  NormingPolar
+  EffectiveClosedCompactness
 
   ProofDAG
   ProofDAGBuilder
@@ -80,4 +86,5 @@ From UELAT.V3 Require Export
 
   ContextualChoice
   FiniteMeasureBoundary
+  InformationBoundary
   ExtensionalSheaf.
