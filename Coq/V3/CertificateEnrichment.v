@@ -89,6 +89,13 @@ Section Certificates.
     cert_accepted : app_check nu cert_code cert_bound cert_evidence = true
   }.
 
+  (** These local declarations make the represented name inferable while the
+      dependent records below are being elaborated.  They are repeated after
+      the section with the explicit enrichment parameter for stable downstream
+      call sites under Rocq 9.2. *)
+  Arguments cert_code {nu} _.
+  Arguments cert_bound {nu} _.
+
   Record CertificateAt (nu : name X) (eps : R) := {
     certificate_at_record : Certificate nu;
     certificate_at_strict : cert_bound certificate_at_record < eps
