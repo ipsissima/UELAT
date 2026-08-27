@@ -9,7 +9,7 @@
     finite code constructed by the certificate.
 *)
 
-From Coq Require Import List Arith Lia Bool.
+From Coq Require Import Reals List Arith Lia Bool.
 Import ListNotations.
 From UELAT.V3 Require Import CertificateEnrichment.
 
