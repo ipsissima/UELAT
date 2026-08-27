@@ -23,6 +23,10 @@ V3/EvidenceTransport.v
 V3/GrothendieckEvidence.v
 V3/ResourceProfile.v
 
+V3/LinearUniversality.v
+V3/NormingPolar.v
+V3/EffectiveClosedCompactness.v
+
 V3/ProofDAG.v
 V3/ProofDAGBuilder.v
 V3/ProofDAGEncodingAppend.v
@@ -69,5 +73,6 @@ V3/Theorem74Manuscript.v
 
 V3/ContextualChoice.v
 V3/FiniteMeasureBoundary.v
+V3/InformationBoundary.v
 V3/ExtensionalSheaf.v
 UELATAuthoritativeV3.v
