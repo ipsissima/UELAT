@@ -75,7 +75,7 @@ jobs:
             printf '%s\n' 'UELATAuthoritativeV3.v'
           } > _CoqProject.v3.generated
           coq_makefile -f _CoqProject.v3.generated -o Makefile.v3
-          make -f Makefile.v3 -j2
+          make -k -f Makefile.v3 -j2
 
       - name: coqchk complete V3 source surface
         shell: bash
