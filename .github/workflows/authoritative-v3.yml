@@ -74,9 +74,26 @@ jobs:
       - name: Reject proof admissions on authoritative surface
         shell: bash
         run: |
-          set -e
-          if grep -R -n -E '^[[:space:]]*(Admitted\.|Axiom[[:space:]])' Coq/V3/*.v Coq/UELATAuthoritativeV3.v; then
-            echo "::error::Found Admitted/Axiom declaration on authoritative surface"
+          set -euo pipefail
+          mapfile -t authoritative_files < <(
+            sed -e 's/#.*$//' -e '/^[[:space:]]*$/d' Coq/_CoqProject.authoritative-v3 \
+              | awk '$1 !~ /^-/ && $1 ~ /\.v$/ { print "Coq/" $1 }'
+          )
+
+          if [ "${#authoritative_files[@]}" -eq 0 ]; then
+            echo "::error::Authoritative project yielded no Rocq source files"
             exit 1
           fi
-          echo "No Admitted/Axiom declarations found on authoritative surface"
+
+          found=0
+          for source in "${authoritative_files[@]}"; do
+            if grep -n -E '^[[:space:]]*(Admitted\.|Axiom[[:space:]])' "$source"; then
+              echo "::error file=${source}::Found Admitted/Axiom declaration on authoritative surface"
+              found=1
+            fi
+          done
+
+          if [ "$found" -ne 0 ]; then
+            exit 1
+          fi
+          echo "No Admitted/Axiom declarations found in ${#authoritative_files[@]} authoritative source files"
