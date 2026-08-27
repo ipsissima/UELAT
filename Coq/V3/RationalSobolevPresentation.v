@@ -13,6 +13,7 @@
 *)
 
 From Coq Require Import Reals QArith Qreals.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment RepresentedSpace RationalSobolev.
 
 Module UELAT_V3_RationalSobolevPresentation.
@@ -32,7 +33,7 @@ Record RationalW12Presentation := {
   w12_stage_tail : forall nu n,
       distance (w12_name_value nu) (w12_decode (w12_stage nu n)) <= dyadic n;
   w12_stage_fast : forall nu m n,
-      n <= m ->
+      (n <= m)%nat ->
       distance (w12_decode (w12_stage nu m))
                (w12_decode (w12_stage nu n)) <= dyadic n;
   w12_constant_name : RationalPiecewiseCode -> w12_name;
