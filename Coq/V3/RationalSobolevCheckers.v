@@ -9,8 +9,9 @@
     late stage once semantic strict slack is known.
 *)
 
-From Coq Require Import Reals Lra Lra Arith.
-From UELAT.V3 Require Import RepresentedSpace.
+From Coq Require Import Reals Lra Arith.
+Local Open Scope R_scope.
+From UELAT.V3 Require Import CertificateEnrichment RepresentedSpace.
 
 Module UELAT_V3_RationalSobolevCheckers.
 Import UELAT_V3_CertificateEnrichment.
