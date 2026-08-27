@@ -136,7 +136,7 @@ Proof.
   - exact (dag_sink_in_range H).
   - pose proof (dag_backward H i rule refs payload Hnth) as Hb.
     pose proof ((proj1 (@Forall_forall nat (fun j0 => j0 < i) refs)) Hb j Hin) as Hji.
-    lia.
+    exact (Nat.lt_trans Hji IH).
 Qed.
 
 Section ProvenanceCertificate.
