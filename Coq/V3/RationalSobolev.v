@@ -93,13 +93,16 @@ Definition piece_interval_positive (c : RationalPiece) : Prop :=
 Fixpoint piece_chain_wf (pieces : list RationalPiece) : Prop :=
   match pieces with
   | [] => True
-  | [c] => piece_interval_positive c
-  | c1 :: c2 :: rest =>
+  | c1 :: rest =>
       piece_interval_positive c1 /\
-      Qeq (piece_right c1) (piece_left c2) /\
-      Qeq (qpoly_eval (piece_poly c1) (piece_right c1))
-          (qpoly_eval (piece_poly c2) (piece_left c2)) /\
-      piece_chain_wf (c2 :: rest)
+      match rest with
+      | [] => True
+      | c2 :: _ =>
+          Qeq (piece_right c1) (piece_left c2) /\
+          Qeq (qpoly_eval (piece_poly c1) (piece_right c1))
+              (qpoly_eval (piece_poly c2) (piece_left c2)) /\
+          piece_chain_wf rest
+      end
   end.
 
 Record RationalPiecewiseCode := {
