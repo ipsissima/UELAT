@@ -137,17 +137,17 @@ Proof.
   intros. unfold ccp_query_count. simpl. apply app_length.
 Qed.
 
-Theorem ccp_structural_closure :
-  (forall A DA (UA : A -> DA), CCPConstructor UA UA)
-  /\
-  (forall A B C DA DB DC
-          (UA : A -> DA) (UB : B -> DB) (UC : C -> DC),
-      CCPConstructor UA UB -> CCPConstructor UB UC -> CCPConstructor UA UC)
-  /\
-  (forall A B C DA DB DC
-          (UA : A -> DA) (UB : B -> DB) (UC : C -> DC),
-      CCPConstructor UA UB -> CCPConstructor UA UC ->
-      CCPConstructor UA (fun bc : B * C => (UB (fst bc), UC (snd bc)))).
+Definition ccp_structural_closure :
+  prod
+    (forall A DA (UA : A -> DA), CCPConstructor UA UA)
+    (prod
+      (forall A B C DA DB DC
+              (UA : A -> DA) (UB : B -> DB) (UC : C -> DC),
+          CCPConstructor UA UB -> CCPConstructor UB UC -> CCPConstructor UA UC)
+      (forall A B C DA DB DC
+              (UA : A -> DA) (UB : B -> DB) (UC : C -> DC),
+          CCPConstructor UA UB -> CCPConstructor UA UC ->
+          CCPConstructor UA (fun bc : B * C => (UB (fst bc), UC (snd bc))))).
 Proof.
   split.
   - intros A DA UA. exact (identity_ccp UA).
@@ -156,7 +156,7 @@ Proof.
       exact (compose_ccp G F).
     + intros A B C DA DB DC UA UB UC F G.
       exact (product_ccp F G).
-Qed.
+Defined.
 
 (** * Operational Contextual Choice Principle *)
 
