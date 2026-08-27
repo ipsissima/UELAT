@@ -1,8 +1,9 @@
 (** OrderNeutralEpsilonDescent.v -- rational-epsilon core of authoritative
     Theorem 7.4.
 
-    The core theorem uses H1--H7 only.  The source-lookahead conclusion is
-    provided separately under [SourceLookaheadRegime], matching the manuscript.
+    The core theorem uses H1--H7 only. The standard-rational linear-bit
+    hypothesis and the additional source-generation lookahead hypothesis are
+    separate optional regimes, exactly as in the manuscript.
 *)
 
 From Coq Require Import Reals QArith Qreals Lra.
@@ -50,7 +51,6 @@ Section EpsilonTheorem.
     lra.
   Qed.
 
-  (** Core Theorem 7.4 conclusions at rational epsilon, with H1--H7 only. *)
   Theorem order_neutral_descent_at_rational_epsilon : forall eps Heps,
     represented_value epsilon_limit = f
     /\ fpc_level (epsilon_certificate eps Heps) = epsilon_level eps Heps
@@ -76,12 +76,13 @@ Section EpsilonTheorem.
   Qed.
 
   Section ConditionalSourceLookahead.
-    Variable SR : SourceLookaheadRegime H.
+    Variable LB : LinearBitRegime H.
+    Variable SR : SourceLookaheadRegime H LB.
 
     Theorem order_neutral_source_lookahead_at_rational_epsilon :
       forall eps Heps,
         sr_source_lookahead SR (epsilon_level eps Heps)
-          <= sr_csource SR * sr_beta_factor SR * S (epsilon_level eps Heps).
+          <= sr_csource SR * lb_beta_factor LB * S (epsilon_level eps Heps).
     Proof.
       intros eps Heps.
       unfold epsilon_level.
