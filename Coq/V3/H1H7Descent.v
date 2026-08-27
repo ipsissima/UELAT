@@ -1,9 +1,8 @@
 (** H1H7Descent.v -- manuscript-shaped assembly for the authoritative v3
     encoding-cost evidence-transport theorem (Theorem 7.4).
 
-    The core record contains only H1--H7.  In particular, the manuscript's
-    additional linear-bit/source-lookahead hypothesis is NOT part of H1--H7;
-    it is represented separately by [SourceLookaheadRegime].
+    The core record contains only H1--H7. The manuscript's additional linear
+    beta schedule and source-lookahead hypothesis are represented separately.
 *)
 
 From Coq Require Import Reals Arith Lia Nia List.
@@ -100,16 +99,21 @@ Section FullInterface.
       h_level_verification n <= h_cverify * h_M n * h_A (h_beta n)
   }.
 
-  (** Additional hypothesis for the final conditional Q_source statement in
-      Theorem 7.4.  It is deliberately separate from H1--H7. *)
-  Record SourceLookaheadRegime (H : H1H7Data) := {
+  (** Additional assumption used for the explicit standard-rational asymptotic
+      in Theorem 7.4 / Corollary 7.5. *)
+  Record LinearBitRegime (H : H1H7Data) := {
+    lb_beta_factor : nat;
+    lb_beta_linear : forall n,
+      h_beta H n <= lb_beta_factor * S n
+  }.
+
+  (** Additional source-generation hypothesis for the conditional Q_source
+      clause. It is separate even from the linear-bit assumption. *)
+  Record SourceLookaheadRegime (H : H1H7Data) (LB : LinearBitRegime H) := {
     sr_source_lookahead : nat -> nat;
     sr_csource : nat;
-    sr_beta_factor : nat;
     sr_source_level_bound : forall n,
-      sr_source_lookahead n <= sr_csource * h_beta H n;
-    sr_beta_linear : forall n,
-      h_beta H n <= sr_beta_factor * S n
+      sr_source_lookahead n <= sr_csource * h_beta H n
   }.
 
   Section Consequences.
@@ -231,7 +235,6 @@ Section FullInterface.
     Theorem h1h7_target_query_zero : h_target_queries H = 0.
     Proof. exact (h_no_target_recertification H). Qed.
 
-    (** Core H1--H7 conclusions: no linear-beta/source-lookahead assumption. *)
     Theorem h1h7_order_neutral_at_precision : forall s,
       represented_value h1h7_represented_limit = f
       /\ approximant (represented_name h1h7_represented_limit) s = p (h_mu s)
@@ -254,24 +257,32 @@ Section FullInterface.
       - apply h1h7_target_query_zero.
     Qed.
 
-    Section OptionalSourceLookahead.
-      Variable SR : SourceLookaheadRegime H.
+    Section LinearBits.
+      Variable LB : LinearBitRegime H.
 
-      Theorem h1h7_source_lookahead_bound : forall n,
-        sr_source_lookahead SR n
-          <= sr_csource SR * sr_beta_factor SR * S n.
-      Proof.
-        intro n.
-        pose proof (sr_source_level_bound SR n).
-        pose proof (sr_beta_linear SR n).
-        nia.
-      Qed.
+      Theorem h1h7_beta_linear_at_level : forall n,
+        h_beta H n <= lb_beta_factor LB * S n.
+      Proof. intro n. apply lb_beta_linear. Qed.
 
-      Theorem h1h7_source_lookahead_at_precision : forall s,
-        sr_source_lookahead SR (h_mu s)
-          <= sr_csource SR * sr_beta_factor SR * S (h_mu s).
-      Proof. intro s. apply h1h7_source_lookahead_bound. Qed.
-    End OptionalSourceLookahead.
+      Section OptionalSourceLookahead.
+        Variable SR : SourceLookaheadRegime H LB.
+
+        Theorem h1h7_source_lookahead_bound : forall n,
+          sr_source_lookahead SR n
+            <= sr_csource SR * lb_beta_factor LB * S n.
+        Proof.
+          intro n.
+          pose proof (sr_source_level_bound SR n).
+          pose proof (lb_beta_linear LB n).
+          nia.
+        Qed.
+
+        Theorem h1h7_source_lookahead_at_precision : forall s,
+          sr_source_lookahead SR (h_mu s)
+            <= sr_csource SR * lb_beta_factor LB * S (h_mu s).
+        Proof. intro s. apply h1h7_source_lookahead_bound. Qed.
+      End OptionalSourceLookahead.
+    End LinearBits.
   End Consequences.
 End FullInterface.
 
