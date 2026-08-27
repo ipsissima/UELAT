@@ -1,6 +1,7 @@
 (** SlackCollapse.v -- conditional extensional collapse, authoritative v3 §2.2. *)
 
 From Coq Require Import Reals Lra.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment EvidenceCategory.
 
 Module UELAT_V3_SlackCollapse.
