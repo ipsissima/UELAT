@@ -48,9 +48,6 @@ Section DirectCoreFunctional.
   Proof.
     intro p.
     unfold CoordinateSpanGraph.
-    destruct (normalized_core_rationally_spans_original_core B p) as [i [c Hpc]].
-    (** Use the explicit searchable index rather than an arbitrary spanning
-        index, so the value is executable. *)
     exists [(core_scale_factor B p, core_index S p)].
     split.
     - unfold span_vector. simpl.
@@ -58,8 +55,6 @@ Section DirectCoreFunctional.
       rewrite normalized_index_for_code.
       apply rescale_normalized_code.
     - unfold span_value, direct_core_value. simpl.
-      change (Q2R (core_scale_factor B p) * cdb_coordinates a (core_index S p) + 0
-              = Q2R (core_scale_factor B p) * cdb_coordinates a (core_index S p)).
       ring.
   Qed.
 
@@ -85,24 +80,36 @@ Section DirectCoreFunctional.
     intros p q.
     eapply coordinate_span_graph_functional.
     - apply direct_core_value_in_span_graph.
-    - unfold CoordinateSpanGraph.
-      destruct (direct_core_value_in_span_graph p) as [tp [Hvp Hrp]].
-      destruct (direct_core_value_in_span_graph q) as [tq [Hvq Hrq]].
-      exists (tp ++ tq). split.
-      + rewrite span_vector_append, <- Hvp, <- Hvq, core_add_sound. reflexivity.
-      + rewrite span_value_append, <- Hrp, <- Hrq. reflexivity.
+    - rewrite core_add_sound.
+      apply coordinate_span_graph_add.
+      + apply direct_core_value_in_span_graph.
+      + apply direct_core_value_in_span_graph.
+  Qed.
+
+  Theorem direct_core_value_scale : forall c p,
+    direct_core_value (core_scale B c p) = Q2R c * direct_core_value p.
+  Proof.
+    intros c p.
+    eapply coordinate_span_graph_functional.
+    - apply direct_core_value_in_span_graph.
+    - rewrite core_scale_sound.
+      apply coordinate_span_graph_scale_Q.
+      apply direct_core_value_in_span_graph.
   Qed.
 
   Theorem admissible_coordinate_gives_bounded_rational_core_functional :
     (forall p, Rabs (direct_core_value p) <= cb_norm B (core_decode p))
     /\ direct_core_value (core_zero B) = 0
     /\ (forall p q,
-      direct_core_value (core_add B p q) = direct_core_value p + direct_core_value q).
+      direct_core_value (core_add B p q) = direct_core_value p + direct_core_value q)
+    /\ (forall c p,
+      direct_core_value (core_scale B c p) = Q2R c * direct_core_value p).
   Proof.
     repeat split.
     - apply direct_core_value_bounded.
     - apply direct_core_value_zero.
     - apply direct_core_value_add.
+    - apply direct_core_value_scale.
   Qed.
 End DirectCoreFunctional.
 
