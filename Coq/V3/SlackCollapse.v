@@ -11,10 +11,13 @@ Import UELAT_V3_EvidenceCategory.
 Section Collapse.
   Context {X : MetricPresentation} (E : CertificateEnrichment X).
 
+  (** This is the proposition-level completeness hypothesis used by Theorem
+      2.8.  Executable witness-producing realizers live in the constructive
+      certification modules; the collapse theorem itself only needs existence. *)
   Definition StrictSlackComplete : Prop :=
     forall (nu mu : name X) (q : R),
       distance (decode_name nu) (decode_name mu) < q ->
-      { w : dist_witness E | dist_check nu mu q w = true }.
+      exists w : dist_witness E, dist_check nu mu q w = true.
 
   Definition EvidenceBound (nu mu : name X) (q : R) : Prop :=
     exists w : dist_witness E, dist_check nu mu q w = true.
