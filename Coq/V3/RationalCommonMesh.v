@@ -116,9 +116,11 @@ Fixpoint refine_by_points (points : list Q) (cs : list RationalPiece) : list Rat
 Theorem refine_by_points_energy : forall points cs,
   pieces_energy (refine_by_points points cs) == pieces_energy cs.
 Proof.
-  intros points cs. induction points as [|x xs IH]; simpl.
+  intro points. induction points as [|x xs IH]; intro cs; simpl.
   - reflexivity.
-  - rewrite IH. apply refine_pieces_at_energy.
+  - transitivity (pieces_energy (refine_pieces_at x cs)).
+    + apply IH.
+    + apply refine_pieces_at_energy.
 Qed.
 
 Definition internal_breakpoints (cs : list RationalPiece) : list Q :=
