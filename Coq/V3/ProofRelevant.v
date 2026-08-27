@@ -40,16 +40,8 @@ Proof.
                         evidence_choice := 1 |} _).
   split.
   - intro H.
-    assert (Htag : 0 = 1).
-    { change (evidence_choice
-                {| underlying_map := fun _ : unit => tt;
-                   evidence_choice := 0 |}) =
-              evidence_choice
-                {| underlying_map := fun _ : unit => tt;
-                   evidence_choice := 1 |}).
-      now rewrite H.
-    }
-    discriminate Htag.
+    pose proof (f_equal (@evidence_choice unit unit) H) as Htag.
+    cbn in Htag. discriminate Htag.
   - intros []. reflexivity.
 Qed.
 
