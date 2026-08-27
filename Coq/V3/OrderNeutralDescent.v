@@ -37,8 +37,10 @@ Lemma sum_pow2 : forall n,
 Proof.
   induction n as [|n IH].
   - reflexivity.
-  - simpl nsum_upto. rewrite IH. unfold pow2 in *. simpl Nat.pow.
-    assert (Hpos : 0 < 2 ^ S n) by (induction n; simpl; nia).
+  - simpl nsum_upto. rewrite IH.
+    pose proof (pow2_positive (S n)) as Hpos.
+    unfold pow2 in *.
+    simpl Nat.pow.
     nia.
 Qed.
 

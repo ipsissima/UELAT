@@ -61,7 +61,12 @@ Proof.
 Qed.
 Theorem inverse_width_positive : forall a b,
   (a < b)%Q -> (0 < hat_inverse_width a b)%Q.
-Proof. intros a b Hab. unfold hat_inverse_width. apply Qinv_lt_0_compat. lra. Qed.
+Proof.
+  intros a b Hab. unfold hat_inverse_width, Qdiv.
+  apply Qmult_lt_0_compat.
+  - lra.
+  - apply Qinv_lt_0_compat. lra.
+Qed.
 
 Record HatCellCertificate := {
   hat_left_endpoint : Q;

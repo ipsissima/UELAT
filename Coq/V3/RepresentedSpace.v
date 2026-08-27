@@ -3,7 +3,7 @@
     This module supplies the metric/Cauchy part of manuscript Definition 2.1.
 *)
 
-From Coq Require Import Reals Lia.
+From Coq Require Import Reals Lia Lra.
 Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment.
 

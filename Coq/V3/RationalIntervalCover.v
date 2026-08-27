@@ -81,9 +81,10 @@ Proof.
   - discriminate.
   - destruct (star_insideb s u) eqn:Hinside.
     + inversion Hfind; subst.
-      exists 0%nat, u. simpl.
-      repeat split; try lia.
-      now apply star_insideb_spec.
+      exists 0%nat, u.
+      split; [reflexivity|].
+      split; [lia|].
+      apply (proj1 (star_insideb_spec s u)). exact Hinside.
     + destruct (IH (S offset) i Hfind) as [k [v [Hnth [Hi Hv]]]].
       exists (S k), v. simpl.
       split; [exact Hnth|].

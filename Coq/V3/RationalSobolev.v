@@ -195,17 +195,23 @@ Proof. intros a xs. induction xs; simpl; congruence. Qed.
 Lemma add_piece_lists_length_left : forall xs ys,
   length xs = length ys -> length (add_piece_lists xs ys) = length xs.
 Proof.
-  induction xs as [|x xs IH]; destruct ys as [|y ys]; simpl; intros H;
-    try discriminate; auto.
-  inversion H. simpl. f_equal. now apply IH.
+  induction xs as [|x xs IH]; destruct ys as [|y ys]; simpl; intros H.
+  - reflexivity.
+  - discriminate.
+  - discriminate.
+  - injection H as Hlen.
+    f_equal. apply IH. exact Hlen.
 Qed.
 
 Lemma mul_piece_lists_length_left : forall xs ys,
   length xs = length ys -> length (mul_piece_lists xs ys) = length xs.
 Proof.
-  induction xs as [|x xs IH]; destruct ys as [|y ys]; simpl; intros H;
-    try discriminate; auto.
-  inversion H. simpl. f_equal. now apply IH.
+  induction xs as [|x xs IH]; destruct ys as [|y ys]; simpl; intros H.
+  - reflexivity.
+  - discriminate.
+  - discriminate.
+  - injection H as Hlen.
+    f_equal. apply IH. exact Hlen.
 Qed.
 
 Record RawRationalCode := { raw_pieces : list RationalPiece }.

@@ -141,7 +141,9 @@ Proof.
       [| i rule refs payload j Hreach IH Hnth Hin].
   - exact (dag_sink_in_range H).
   - pose proof (dag_backward H i rule refs payload Hnth) as Hb.
-    eapply Forall_forall in Hb; eauto.
+    apply Forall_forall in Hb.
+    specialize (Hb j Hin).
+    lia.
 Qed.
 
 Section ProvenanceCertificate.

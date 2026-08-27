@@ -71,7 +71,9 @@ Section MultiplierEstimate.
   Proof.
     assert (Hsq : deriv_product^2
               <= (L * delta0 + Cinf * delta1)^2) by nra.
-    eapply Rle_trans; [exact Hsq|]. nra.
+    assert (Haux : 0 <= (L * delta0 - Cinf * delta1)^2) by apply sq_nonneg.
+    eapply Rle_trans; [exact Hsq|].
+    nra.
   Qed.
 
   Theorem multiplier_w12_squared :

@@ -41,7 +41,13 @@ Section ClassicalRate.
 
   Definition scale_Cstar : R := kappa * ((1 + Cchi) * C0 + C1).
   Lemma scale_Cstar_nonnegative : 0 <= scale_Cstar.
-  Proof. unfold scale_Cstar. nra. Qed.
+  Proof.
+    unfold scale_Cstar.
+    apply Rmult_le_pos; [exact Hkappa|].
+    apply Rplus_le_le_0_compat.
+    - apply Rmult_le_pos; [lra|exact HC0].
+    - exact HC1.
+  Qed.
 
   Variable D : ScaleSensitiveAnalyticData.
   Lemma global_l2_rate_derived :

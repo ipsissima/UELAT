@@ -31,7 +31,7 @@ Section Evidence.
 
   Definition id_arrow (a : EvidenceObject) : EvidenceArrow a a.
   Proof.
-    destruct (dist_identity E (ev_name a)) as [w Hw].
+    destruct (@dist_identity X E (ev_name a)) as [w Hw].
     refine {| arrow_bound := 0;
               arrow_bound_nonnegative := Rle_refl 0;
               arrow_witness := w;
@@ -41,7 +41,7 @@ Section Evidence.
   Definition compose_arrow {a b c : EvidenceObject}
       (g : EvidenceArrow b c) (f : EvidenceArrow a b) : EvidenceArrow a c.
   Proof.
-    destruct (dist_compose E
+    destruct (@dist_compose X E
               (ev_name a) (ev_name b) (ev_name c)
               (arrow_bound f) (arrow_bound g)
               (arrow_witness f) (arrow_witness g)
@@ -56,7 +56,7 @@ Section Evidence.
   Lemma arrow_sound {a b : EvidenceObject} (f : EvidenceArrow a b) :
     distance (decode_name (ev_name a)) (decode_name (ev_name b)) <= arrow_bound f.
   Proof.
-    pose proof (dist_sound E _ _ _ _ (arrow_accepted f)) as [_ H].
+    pose proof (@dist_sound X E _ _ _ _ (arrow_accepted f)) as [_ H].
     exact H.
   Qed.
 
