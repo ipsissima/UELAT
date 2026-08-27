@@ -7,6 +7,7 @@
 *)
 
 From Coq Require Import Reals Lra.
+Local Open Scope R_scope.
 
 Module UELAT_V3_InformationBoundary.
 

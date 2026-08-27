@@ -11,6 +11,7 @@
 
 From Coq Require Import Reals List Lra.
 Import ListNotations.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import ContextualChoice.
 
 Module UELAT_V3_FiniteMeasureBoundary.

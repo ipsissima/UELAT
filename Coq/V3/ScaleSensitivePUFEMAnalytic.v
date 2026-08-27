@@ -1,6 +1,7 @@
 (** ScaleSensitivePUFEMAnalytic.v -- standard analytic derivation for v3 Theorem 7.2. *)
 
 From Coq Require Import Reals Lra Lra.
+Local Open Scope R_scope.
 
 Module UELAT_V3_ScaleSensitivePUFEMAnalytic.
 Section ClassicalRate.

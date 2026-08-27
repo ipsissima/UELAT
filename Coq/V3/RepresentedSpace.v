@@ -4,6 +4,7 @@
 *)
 
 From Coq Require Import Reals Lia.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment.
 
 Module UELAT_V3_RepresentedSpace.

@@ -2,6 +2,7 @@
     Theorem 3.2, Step 3. *)
 
 From Coq Require Import Reals Lra.
+Local Open Scope R_scope.
 
 Module UELAT_V3_NormingPolar.
 Section Polar.

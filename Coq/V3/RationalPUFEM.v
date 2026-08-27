@@ -2,6 +2,7 @@
 
 From Coq Require Import Reals List Lra Lra.
 Import ListNotations.
+Local Open Scope R_scope.
 
 Module UELAT_V3_RationalPUFEM.
 

@@ -3,7 +3,7 @@
     summable relative to the finest relevant level.
 *)
 
-From Coq Require Import Arith Lia Lia List.
+From Coq Require Import Arith Lia List.
 
 Module UELAT_V3_OrderNeutralDescent.
 
@@ -37,7 +37,7 @@ Lemma sum_pow2 : forall n,
 Proof.
   induction n as [|n IH].
   - reflexivity.
-  - simpl nsum_upto. rewrite IH. unfold pow2 at *. simpl Nat.pow.
+  - simpl nsum_upto. rewrite IH. unfold pow2 in *. simpl Nat.pow.
     assert (Hpos : 0 < 2 ^ S n) by (induction n; simpl; nia).
     nia.
 Qed.
