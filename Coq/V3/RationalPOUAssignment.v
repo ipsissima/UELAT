@@ -56,7 +56,9 @@ Lemma bucketize_length : forall M entries,
 Proof.
   intros M entries Hrange. induction Hrange as [|[i v] rest Hi Hrest IH]; simpl.
   - apply zero_buckets_length.
-  - apply add_at_length. rewrite IH. exact Hi.
+  - transitivity (length (bucketize M rest)).
+    + apply add_at_length. rewrite IH. exact Hi.
+    + exact IH.
 Qed.
 
 Fixpoint entry_value_sum (entries : list (nat * Q)) : Q :=
