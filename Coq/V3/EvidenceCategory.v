@@ -53,6 +53,7 @@ Section Evidence.
               (arrow_accepted f) (arrow_accepted g)) as [w Hw].
     refine {| arrow_bound := arrow_bound f + arrow_bound g;
               arrow_bound_nonnegative := Rplus_le_le_0_compat
+                (arrow_bound f) (arrow_bound g)
                 (arrow_bound_nonnegative f) (arrow_bound_nonnegative g);
               arrow_witness := w;
               arrow_accepted := Hw |}.
