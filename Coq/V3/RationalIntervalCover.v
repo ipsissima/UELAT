@@ -73,7 +73,7 @@ Lemma find_covering_from_sound : forall offset s cover i,
   find_covering_from offset s cover = Some i ->
   exists k u,
     nth_error cover k = Some u
-    /\ i = offset + k
+    /\ i = (offset + k)%nat
     /\ star_inside_interval s u.
 Proof.
   intros offset s cover.
@@ -81,7 +81,7 @@ Proof.
   - discriminate.
   - destruct (star_insideb s u) eqn:Hinside.
     + inversion Hfind; subst.
-      exists 0, u. simpl.
+      exists 0%nat, u. simpl.
       repeat split; try lia.
       now apply star_insideb_spec.
     + destruct (IH (S offset) i Hfind) as [k [v [Hnth [Hi Hv]]]].
@@ -97,7 +97,7 @@ Theorem find_covering_interval_sound : forall s cover i,
 Proof.
   intros s cover i H.
   unfold find_covering_interval in H.
-  destruct (find_covering_from_sound 0 s cover i H)
+  destruct (find_covering_from_sound 0%nat s cover i H)
     as [k [u [Hnth [Hi Hinside]]]].
   simpl in Hi. subst. now exists u.
 Qed.
