@@ -71,8 +71,13 @@ Section MultiplierEstimate.
     assert (Hsq : deriv_product^2
               <= (L * delta0 + Cinf * delta1)^2) by nra.
     pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)) as Hdiff.
+    assert (Hidentity :
+      (L * delta0 + Cinf * delta1)^2 =
+        2 * L^2 * delta0^2 + 2 * Cinf^2 * delta1^2
+        - (L * delta0 - Cinf * delta1)^2) by ring.
     eapply Rle_trans; [exact Hsq|].
-    nra.
+    rewrite Hidentity.
+    lra.
   Qed.
 
   Theorem multiplier_w12_squared :
