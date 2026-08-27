@@ -1,0 +1,58 @@
+name: Rocq 9.2 micromega migration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/rocq92-micromega-migration.yml
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Replace removed tactic-module names
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          changed = []
+          for path in sorted(Path('Coq/V3').glob('*.v')):
+              old = path.read_text(encoding='utf-8')
+              new = re.sub(r'\bNia\b', 'Lia', old)
+              new = re.sub(r'\bNra\b', 'Lra', new)
+              if new != old:
+                  path.write_text(new, encoding='utf-8')
+                  changed.append(str(path))
+
+          print('Migrated files:')
+          for path in changed:
+              print(path)
+          if not changed:
+              print('(none)')
+          PY
+          git diff --check
+          git --no-pager diff -- Coq/V3
+
+      - name: Commit migration
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if git diff --quiet -- Coq/V3; then
+            echo 'No migration changes required.'
+            exit 0
+          fi
+          git config user.name 'uelat-rocq-migration'
+          git config user.email 'actions@users.noreply.github.com'
+          git add Coq/V3
+          git commit -m 'Migrate micromega imports to Rocq 9.2 [skip ci]'
+          git push origin HEAD:main
