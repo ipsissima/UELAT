@@ -12,7 +12,7 @@
     an independent generic certificate generator for the semantic target.
 *)
 
-From Coq Require Import Reals Lra Lra.
+From Coq Require Import Reals Lra Field.
 Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment EvidenceCategory.
 
