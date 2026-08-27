@@ -40,6 +40,8 @@ Record ProofDAG (Payload Rule : Type) := {
 
 Arguments dag_nodes {Payload Rule} _.
 Arguments dag_sink {Payload Rule} _.
+Arguments dag_sink_in_range {Payload Rule} _.
+Arguments dag_backward {Payload Rule} _ _ _ _ _ _.
 
 Definition node_count {Payload Rule} (H : ProofDAG Payload Rule) : nat :=
   length (dag_nodes H).
