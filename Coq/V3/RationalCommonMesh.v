@@ -54,7 +54,7 @@ Definition split_piece_at (x : Q) (c : RationalPiece) : list RationalPiece :=
   else [c].
 
 Lemma split_piece_at_length : forall x c,
-  length (split_piece_at x c) = 1 \/ length (split_piece_at x c) = 2.
+  (length (split_piece_at x c) = 1 \/ length (split_piece_at x c) = 2)%nat.
 Proof.
   intros x c. unfold split_piece_at.
   destruct (strictly_inside_piece x c); simpl; auto.
@@ -147,7 +147,7 @@ Proof.
 Qed.
 
 Lemma refine_pieces_at_length_le_double : forall x cs,
-  length (refine_pieces_at x cs) <= 2 * length cs.
+  (length (refine_pieces_at x cs) <= 2 * length cs)%nat.
 Proof.
   intros x cs. induction cs as [|c rest IH]; simpl.
   - lia.
