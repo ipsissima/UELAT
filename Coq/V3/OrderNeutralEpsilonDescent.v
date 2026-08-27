@@ -1,5 +1,9 @@
 (** OrderNeutralEpsilonDescent.v -- rational-epsilon core of authoritative
-    Theorem 7.4. *)
+    Theorem 7.4.
+
+    The core theorem uses H1--H7 only.  The source-lookahead conclusion is
+    provided separately under [SourceLookaheadRegime], matching the manuscript.
+*)
 
 From Coq Require Import Reals QArith Qreals Lra.
 From UELAT.V3 Require Import
@@ -46,6 +50,7 @@ Section EpsilonTheorem.
     lra.
   Qed.
 
+  (** Core Theorem 7.4 conclusions at rational epsilon, with H1--H7 only. *)
   Theorem order_neutral_descent_at_rational_epsilon : forall eps Heps,
     represented_value epsilon_limit = f
     /\ fpc_level (epsilon_certificate eps Heps) = epsilon_level eps Heps
@@ -58,8 +63,6 @@ Section EpsilonTheorem.
          <= 2 * h_cverify H * h_cden H * h_Cnum H
               * h_M H (epsilon_level eps Heps)
               * h_A H (h_beta H (epsilon_level eps Heps))
-    /\ h_source_lookahead H (epsilon_level eps Heps)
-         <= h_csource H * h_beta_factor H * S (epsilon_level eps Heps)
     /\ h_target_queries H = 0.
   Proof.
     intros eps Heps.
@@ -69,9 +72,22 @@ Section EpsilonTheorem.
     - apply epsilon_certificate_is_valid.
     - unfold epsilon_level. apply selected_certificate_size_order_neutral.
     - unfold epsilon_level. apply h1h7_verification_bound.
-    - unfold epsilon_level. apply h1h7_source_lookahead_bound.
     - apply h1h7_target_query_zero.
   Qed.
+
+  Section ConditionalSourceLookahead.
+    Variable SR : SourceLookaheadRegime H.
+
+    Theorem order_neutral_source_lookahead_at_rational_epsilon :
+      forall eps Heps,
+        sr_source_lookahead SR (epsilon_level eps Heps)
+          <= sr_csource SR * sr_beta_factor SR * S (epsilon_level eps Heps).
+    Proof.
+      intros eps Heps.
+      unfold epsilon_level.
+      apply h1h7_source_lookahead_at_precision.
+    Qed.
+  End ConditionalSourceLookahead.
 
   Variable SinkIdentifiesCode : Code -> Payload -> Prop.
   Hypothesis Hsink : forall n,
@@ -94,7 +110,9 @@ Section EpsilonTheorem.
            = Some (RuleNode r refs sink_payload))
       /\ SinkIdentifiesCode (fpc_code (epsilon_certificate eps Heps)) sink_payload.
   Proof.
-    intros eps Heps. apply selected_history_sink_identifies_selected_code. exact Hsink.
+    intros eps Heps.
+    apply selected_history_sink_identifies_selected_code.
+    exact Hsink.
   Qed.
 End EpsilonTheorem.
 
