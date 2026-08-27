@@ -54,33 +54,55 @@ Section ClassicalRate.
   Lemma global_l2_rate_derived :
     global_l2_error D <= kappa * C0 * h_alpha * Rbound.
   Proof.
+    assert (HC0R : 0 <= C0 * Rbound) by nra.
+    assert (Hlocal : local_l2_aggregate D <= C0 * h_alpha * Rbound).
+    {
+      eapply Rle_trans; [exact (local_l2_rate D)|].
+      replace (C0 * h_r * Rbound) with ((C0 * Rbound) * h_r) by ring.
+      replace (C0 * h_alpha * Rbound) with ((C0 * Rbound) * h_alpha) by ring.
+      exact (Rmult_le_compat_l (C0 * Rbound) h_r h_alpha HC0R power_loss_one).
+    }
     eapply Rle_trans; [exact (global_l2_from_overlap D)|].
-    apply Rmult_le_compat_l; [exact Hkappa|].
-    eapply Rle_trans; [exact (local_l2_rate D)|].
-    replace (C0 * h_r * Rbound) with ((C0 * Rbound) * h_r) by ring.
-    replace (C0 * h_alpha * Rbound) with ((C0 * Rbound) * h_alpha) by ring.
-    apply Rmult_le_compat_l; [nra|exact power_loss_one].
+    replace (kappa * C0 * h_alpha * Rbound)
+      with (kappa * (C0 * h_alpha * Rbound)) by ring.
+    exact (Rmult_le_compat_l kappa
+      (local_l2_aggregate D) (C0 * h_alpha * Rbound) Hkappa Hlocal).
   Qed.
 
   Lemma global_deriv_rate_derived :
     global_deriv_error D <=
       kappa * (Cchi * C0 + C1) * h_alpha * Rbound.
   Proof.
-    eapply Rle_trans; [exact (global_deriv_from_product_rule D)|].
-    apply Rmult_le_compat_l; [exact Hkappa|].
-    replace ((Cchi * C0 + C1) * h_alpha * Rbound)
-      with (Cchi * C0 * h_alpha * Rbound + C1 * h_alpha * Rbound) by ring.
-    apply Rplus_le_compat.
-    - eapply Rle_trans.
-      + apply Rmult_le_compat_l.
-        * nra.
-        * exact (local_l2_rate D).
-      + replace ((Cchi * h_inv) * (C0 * h_r * Rbound))
+    assert (Hchiinv : 0 <= Cchi * h_inv) by nra.
+    assert (Hfactor : 0 <= Cchi * C0 * Rbound) by nra.
+    assert (Hweighted :
+      Cchi * h_inv * local_l2_aggregate D
+        <= Cchi * C0 * h_alpha * Rbound).
+    {
+      eapply Rle_trans.
+      - exact (Rmult_le_compat_l (Cchi * h_inv)
+          (local_l2_aggregate D) (C0 * h_r * Rbound)
+          Hchiinv (local_l2_rate D)).
+      - replace ((Cchi * h_inv) * (C0 * h_r * Rbound))
           with ((Cchi * C0 * Rbound) * (h_inv * h_r)) by ring.
         replace (Cchi * C0 * h_alpha * Rbound)
           with ((Cchi * C0 * Rbound) * h_alpha) by ring.
-        apply Rmult_le_compat_l; [nra|exact inverse_times_high_order].
-    - exact (local_deriv_rate D).
+        exact (Rmult_le_compat_l (Cchi * C0 * Rbound)
+          (h_inv * h_r) h_alpha Hfactor inverse_times_high_order).
+    }
+    assert (Hinside :
+      Cchi * h_inv * local_l2_aggregate D + local_deriv_aggregate D
+        <= Cchi * C0 * h_alpha * Rbound + C1 * h_alpha * Rbound).
+    {
+      apply Rplus_le_compat.
+      - exact Hweighted.
+      - exact (local_deriv_rate D).
+    }
+    eapply Rle_trans; [exact (global_deriv_from_product_rule D)|].
+    replace (kappa * (Cchi * C0 + C1) * h_alpha * Rbound)
+      with (kappa *
+        (Cchi * C0 * h_alpha * Rbound + C1 * h_alpha * Rbound)) by ring.
+    exact (Rmult_le_compat_l kappa _ _ Hkappa Hinside).
   Qed.
 
   Theorem classical_scale_sensitive_pufem_estimate :
