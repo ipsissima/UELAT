@@ -154,6 +154,19 @@ Record ExactFiniteW12Arithmetic (u v : RationalPiecewiseCode) := {
   efwa_restrict_eq : forall a b, efwa_restrict_u a b = restrict_pieces a b (rpc_pieces u)
 }.
 
+Arguments efwa_inner {u v} _.
+Arguments efwa_sqdist {u v} _.
+Arguments efwa_add {u v} _.
+Arguments efwa_mul {u v} _.
+Arguments efwa_scale_u {u v} _ _.
+Arguments efwa_restrict_u {u v} _ _ _.
+Arguments efwa_inner_eq {u v} _.
+Arguments efwa_sqdist_eq {u v} _.
+Arguments efwa_add_eq {u v} _.
+Arguments efwa_mul_eq {u v} _.
+Arguments efwa_scale_eq {u v} _ _.
+Arguments efwa_restrict_eq {u v} _ _ _.
+
 Definition compute_exact_finite_w12
     (u v : RationalPiecewiseCode) : ExactFiniteW12Arithmetic u v :=
   {| efwa_inner := arbitrary_mesh_inner u v;
