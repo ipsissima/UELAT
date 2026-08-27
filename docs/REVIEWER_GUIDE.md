@@ -16,6 +16,15 @@ The manuscript is the controlling mathematical source:
 
 A green broad repository build is useful engineering evidence, but it is not itself a current-paper theorem claim. Conversely, legacy or experimental modules outside the authoritative project are not part of the audited theorem surface.
 
+## Reading the CI badges
+
+The two top-level badges deliberately answer different questions.
+
+- **Authoritative v3** is the release gate for the declared current-paper surface: pinned Rocq 9.2 build, public-entry-point `coqchk`, and an admission scan restricted to the files actually listed in `_CoqProject.authoritative-v3`.
+- **V3 diagnostic build** compiles the complete `Coq/V3/` source tree. It is intentionally broader and is used to expose migration or reusable-infrastructure regressions that need not be part of the current-paper aggregate.
+
+A failure in either badge should therefore be read from its job log, not converted into a theorem-status claim. The status ledger remains controlling.
+
 ## Status meanings
 
 - `CHECKED-EXACT`: manuscript statement matched at the same strength, authoritative build succeeds, `coqchk` succeeds, and reachable assumptions are audited at the recorded commit.
