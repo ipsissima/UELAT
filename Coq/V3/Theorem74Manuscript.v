@@ -1,10 +1,9 @@
 (** Theorem74Manuscript.v -- manuscript-facing statement of authoritative
     Theorem 7.4, "Encoding-cost evidence transport under Sobolev refinement".
 
-    The core theorem below uses H1--H7 only.  The paper's additional
-    Q_source conclusion is stated separately under [SourceLookaheadRegime].
-    This prevents the optional linear beta schedule from being smuggled into
-    the hypotheses of the headline theorem.
+    The core theorem below uses H1--H7 only. The explicit linear-bit regime
+    and the still stronger source-lookahead regime are separate, matching the
+    manuscript's conditional clauses.
 *)
 
 From Coq Require Import Reals QArith Qreals.
@@ -47,8 +46,6 @@ Section ManuscriptTheorem.
       (eps : Q) (Heps : (0 < eps)%Q) : nat :=
     epsilon_level decode f pcode H eps Heps.
 
-  (** Core H1--H7 theorem.  [Heps1] records the manuscript's external domain
-      0 < epsilon <= 1; the current algebra only needs positivity. *)
   Theorem theorem74_manuscript_core :
     forall (eps : Q) (Heps : (0 < eps)%Q) (Heps1 : (eps <= 1)%Q),
     represented_value (epsilon_limit decode f pcode H) = f
@@ -75,8 +72,6 @@ Section ManuscriptTheorem.
     repeat split; assumption.
   Qed.
 
-  (** The geometric schedule records the r-1 denominator that drives the
-      manuscript estimate m(epsilon)=O(log(1/epsilon)/(r-1)). *)
   Theorem theorem74_level_exponent_control : forall eps Heps,
     epsilon_precision eps Heps + 1 + h_offset H
       <= Nat.pred r * theorem74_level eps Heps.
@@ -87,19 +82,30 @@ Section ManuscriptTheorem.
     apply h_mu_exponent_dominates.
   Qed.
 
-  (** Conditional final clause of Theorem 7.4. *)
-  Section SourceLookahead.
-    Variable SR : SourceLookaheadRegime H.
+  Section LinearBits.
+    Variable LB : LinearBitRegime H.
 
-    Theorem theorem74_manuscript_source_lookahead : forall eps Heps,
-      sr_source_lookahead SR (theorem74_level eps Heps)
-        <= sr_csource SR * sr_beta_factor SR * S (theorem74_level eps Heps).
+    Theorem theorem74_linear_bit_schedule : forall eps Heps,
+      h_beta H (theorem74_level eps Heps)
+        <= lb_beta_factor LB * S (theorem74_level eps Heps).
     Proof.
       intros eps Heps.
-      unfold theorem74_level.
-      apply order_neutral_source_lookahead_at_rational_epsilon.
+      apply lb_beta_linear.
     Qed.
-  End SourceLookahead.
+
+    Section SourceLookahead.
+      Variable SR : SourceLookaheadRegime H LB.
+
+      Theorem theorem74_manuscript_source_lookahead : forall eps Heps,
+        sr_source_lookahead SR (theorem74_level eps Heps)
+          <= sr_csource SR * lb_beta_factor LB * S (theorem74_level eps Heps).
+      Proof.
+        intros eps Heps.
+        unfold theorem74_level.
+        apply order_neutral_source_lookahead_at_rational_epsilon.
+      Qed.
+    End SourceLookahead.
+  End LinearBits.
 
   Variable SinkIdentifiesCode : Code -> Payload -> Prop.
   Hypothesis Hsink : forall n,
