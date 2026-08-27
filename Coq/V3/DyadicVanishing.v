@@ -9,7 +9,11 @@ Module UELAT_V3_DyadicVanishing.
 Import UELAT_V3_RepresentedSpace.
 
 Lemma dyadic_as_power : forall n, dyadic n = (/ 2) ^ n.
-Proof. induction n as [|n IH]; [reflexivity|simpl; rewrite IH; ring]. Qed.
+Proof.
+  induction n as [|n IH].
+  - reflexivity.
+  - simpl. rewrite IH. unfold Rdiv. rewrite Rmult_comm. reflexivity.
+Qed.
 
 Lemma half_abs_lt_one : Rabs (/ 2) < 1.
 Proof.
