@@ -72,11 +72,11 @@ Record CertificateEnrichment (X : MetricPresentation) := {
 }.
 
 Arguments code {X} _.
-Arguments decode_code {X E} _.
+Arguments decode_code {X c} _.
 Arguments app_witness {X} _.
 Arguments dist_witness {X} _.
-Arguments app_check {X E} _ _ _ _.
-Arguments dist_check {X E} _ _ _ _.
+Arguments app_check {X c} _ _ _ _.
+Arguments dist_check {X c} _ _ _ _.
 
 Section Certificates.
   Context {X : MetricPresentation} (E : CertificateEnrichment X).
