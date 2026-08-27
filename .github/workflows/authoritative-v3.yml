@@ -1,0 +1,82 @@
+name: Authoritative v3
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: authoritative-v3-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  OPAMYES: true
+
+jobs:
+  authoritative-v3:
+    name: Build current-paper surface and coqchk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: false
+
+      - name: Restore Rocq 9.2 switch
+        id: rocq-switch
+        uses: actions/cache/restore@v4
+        with:
+          path: _opam
+          key: ${{ runner.os }}-v3-rocq92-local-switch-v1
+
+      - name: Ensure Rocq 9.2
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          if [ "${{ steps.rocq-switch.outputs.cache-hit }}" = "true" ]; then
+            coqc --version
+            coqc --version | grep -Fq 'version 9.2'
+          else
+            if [ -d "$HOME/.opam/repo/coq-released" ] && \
+               ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
+              rm -rf "$HOME/.opam/repo/coq-released" "$HOME/.opam/repo/coq-released.tar.gz"
+            fi
+            opam repo add coq-released https://coq.inria.fr/opam/released || \
+              opam repo set-url coq-released https://coq.inria.fr/opam/released
+            opam update
+            opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
+          fi
+          coqc --version
+
+      - name: Build authoritative project
+        shell: bash
+        run: |
+          set -euxo pipefail
+          eval "$(opam env)"
+          cd Coq
+          coq_makefile -f _CoqProject.authoritative-v3 -o Makefile.authoritative-v3
+          make -f Makefile.authoritative-v3 -j2
+
+      - name: coqchk authoritative entry point
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          coqchk -R Coq UELAT UELAT.UELATAuthoritativeV3
+
+      - name: Reject proof admissions on authoritative surface
+        shell: bash
+        run: |
+          set -e
+          if grep -R -n -E '^[[:space:]]*(Admitted\.|Axiom[[:space:]])' Coq/V3/*.v Coq/UELATAuthoritativeV3.v; then
+            echo "::error::Found Admitted/Axiom declaration on authoritative surface"
+            exit 1
+          fi
+          echo "No Admitted/Axiom declarations found on authoritative surface"
