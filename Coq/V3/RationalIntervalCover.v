@@ -103,22 +103,28 @@ Proof.
   simpl in Hi. subst. now exists u.
 Qed.
 
+Lemma find_covering_from_complete_exists : forall offset s cover,
+  Exists (star_inside_interval s) cover ->
+  exists i, find_covering_from offset s cover = Some i.
+Proof.
+  intros offset s cover Hexists.
+  induction Hexists as [u us Hinside|u us Htail IH].
+  - simpl. rewrite (proj2 (star_insideb_spec s u) Hinside). eauto.
+  - simpl. destruct (star_insideb s u) eqn:Hu; [eauto|].
+    exact IH.
+Qed.
+
 Lemma find_covering_from_complete : forall offset s cover k u,
   nth_error cover k = Some u ->
   star_inside_interval s u ->
   exists i, find_covering_from offset s cover = Some i.
 Proof.
-  intros offset s cover. revert offset.
-  induction cover as [|v vs IH]; intros offset k u Hnth Hinside; simpl in Hnth.
-  - discriminate.
-  - destruct k as [|k].
-    + injection Hnth as Hvu.
-      rewrite <- Hvu in Hinside.
-      simpl. rewrite (proj2 (star_insideb_spec s v) Hinside).
-      eauto.
-    + simpl.
-      destruct (star_insideb s v) eqn:Hv; [eauto|].
-      eapply IH; eauto.
+  intros offset s cover k u Hnth Hinside.
+  apply find_covering_from_complete_exists.
+  apply Exists_exists.
+  exists u. split.
+  - eapply nth_error_In. exact Hnth.
+  - exact Hinside.
 Qed.
 
 Theorem find_covering_interval_complete : forall s cover,
