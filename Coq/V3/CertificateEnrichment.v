@@ -7,6 +7,7 @@
 *)
 
 From Coq Require Import Reals Bool.
+Local Open Scope R_scope.
 
 Module UELAT_V3_CertificateEnrichment.
 
