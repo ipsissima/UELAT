@@ -43,10 +43,8 @@ Record RationalW12Presentation := {
       w12_stage (w12_constant_name p) n = p
 }.
 
-Arguments w12_metric _ : clear implicits.
 Arguments w12_decode {P} _.
 Arguments w12_sqdist {P} _ _.
-Arguments w12_name _ : clear implicits.
 Arguments w12_name_value {P} _.
 Arguments w12_stage {P} _ _.
 Arguments w12_constant_name {P} _.
