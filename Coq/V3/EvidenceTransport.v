@@ -12,7 +12,7 @@
     an independent generic certificate generator for the semantic target.
 *)
 
-From Coq Require Import Reals Lra Field.
+From Coq Require Import Reals Lra Ring Field.
 Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment EvidenceCategory.
 
@@ -140,8 +140,7 @@ Section CheckerLevelLift.
     assert (Hmr : Lambda * r <= max_one_lambda * r) by nra.
     assert (Hscale : max_one_lambda * source_tolerance eps = eps / 3).
     { unfold source_tolerance.
-      field_simpl.
-      nra. }
+      field_simplify; try nra. }
     eapply Rle_lt_trans; [exact Hmr|].
     eapply Rlt_le_trans.
     - apply Rmult_lt_compat_l; assumption.
@@ -197,13 +196,13 @@ Section CheckerLevelLift.
   Proof.
     destruct (compile_dist C
                 (ev_name EX a) (ev_name EX b)
-                (arrow_bound EX f) (arrow_witness EX f)
-                (arrow_accepted EX f)) as [wy Hwy].
-    refine {| arrow_bound := Lambda * arrow_bound EX f;
+                (arrow_bound f) (arrow_witness f)
+                (arrow_accepted f)) as [wy Hwy].
+    refine {| arrow_bound := Lambda * arrow_bound f;
               arrow_bound_nonnegative := _;
               arrow_witness := wy;
               arrow_accepted := Hwy |}.
-    pose proof (arrow_bound_nonnegative EX f). nra.
+    pose proof (arrow_bound_nonnegative f). nra.
   Defined.
 
   Theorem qualitative_local_transport_saturation
