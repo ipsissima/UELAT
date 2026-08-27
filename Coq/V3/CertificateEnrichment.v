@@ -71,10 +71,10 @@ Record CertificateEnrichment (X : MetricPresentation) := {
       { w3 : dist_witness | dist_check nu xi (q + r) w3 = true }
 }.
 
-Arguments code {X} _ : clear implicits.
+Arguments code {X} _.
 Arguments decode_code {X E} _.
-Arguments app_witness {X} _ : clear implicits.
-Arguments dist_witness {X} _ : clear implicits.
+Arguments app_witness {X} _.
+Arguments dist_witness {X} _.
 Arguments app_check {X E} _ _ _ _.
 Arguments dist_check {X E} _ _ _ _.
 

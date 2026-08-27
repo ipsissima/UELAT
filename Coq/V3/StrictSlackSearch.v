@@ -20,8 +20,9 @@ Lemma first_true_upto_sound : forall test fuel n,
 Proof.
   intros test fuel. induction fuel as [|fuel IH]; intros n H.
   - simpl in H. destruct (test 0) eqn:Ht; inversion H; subst; assumption.
-  - simpl in H. destruct (first_true_upto test fuel) eqn:Hprev.
-    + inversion H; subst. now apply IH with (n := n0).
+  - simpl in H.
+    destruct (first_true_upto test fuel) as [n0|] eqn:Hprev.
+    + inversion H; subst. eapply IH. exact Hprev.
     + destruct (test (S fuel)) eqn:Ht; inversion H; subst; assumption.
 Qed.
 
@@ -30,7 +31,8 @@ Lemma first_true_upto_index : forall test fuel n,
 Proof.
   intros test fuel. induction fuel as [|fuel IH]; intros n H.
   - simpl in H. destruct (test 0); inversion H; lia.
-  - simpl in H. destruct (first_true_upto test fuel) eqn:Hprev.
+  - simpl in H.
+    destruct (first_true_upto test fuel) as [n0|] eqn:Hprev.
     + inversion H; subst. specialize (IH n0 Hprev). lia.
     + destruct (test (S fuel)); inversion H; lia.
 Qed.
