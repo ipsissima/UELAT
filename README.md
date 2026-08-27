@@ -1,158 +1,92 @@
 [![CI](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml/badge.svg)](https://github.com/ipsissima/UELAT/actions/workflows/ci.yml)
 
-# Universal Gluing and Contextual Choice
+# Proof-Carrying Analytic Approximation
 
-Formal artifacts accompanying:
+Formal artifacts accompanying the authoritative version 3 of:
 
-> **Universal Gluing and Contextual Choice: Certificate-Carrying
-> Approximation, Functorial Evidence, and Effective Descent.**
+> **Proof-Carrying Analytic Approximation: Local-to-Global Evidence Transport at Encoding Cost**  
 > Andreu Ballús Santacana. arXiv:2506.22693, version 3.
 
-Prior arXiv versions of this preprint used two different titles:
+This title, theorem numbering, hypotheses, caveats, and Section 12 formalization policy are the controlling manuscript contract for this repository. Earlier v3 draft titles and theorem numbers are historical snapshots only.
 
-- **v1** — *Universal Embedding and Linear Approximation Theorem*.
-- **v2** — *Universal Gluing and Contextual Choice: Categorical Logic and the
-  Foundations of Analytic Approximation*.
+## Current repository policy
 
-v3 supersedes both under the title above. This repository is being
-restructured to correspond to v3.
+The public repository named by the paper is **`ipsissima/UELAT`**. The pre-migration state of `main` is preserved on `legacy-pre-authoritative-v3-2026-08-27`. The active reconstruction is staged on `authoritative-v3-final` until the current-manuscript build and assumption audit pass.
 
-## Status of this repository — read before citing
+The repository contains three kinds of material:
 
-This repository contains, in one tree, three logically distinct layers:
+1. **Current-manuscript formalization.** Files explicitly listed in `docs/FORMALIZATION_STATUS.md` against the present 35-page manuscript.
+2. **Reusable analytic/formal infrastructure.** Correct lemmas and definitions that may support the current formalization without themselves constituting a current paper theorem.
+3. **Legacy v1/v2 and superseded-v3 artifacts.** Retained for auditability but not evidence for current claims.
 
-1. **Layer A — `Coq/V3/`** (new, in progress). The
-   theorem-corresponding formalization of version 3 of the manuscript.
-   Only the entries listed as `CHECKED-EXACT` in `FORMALIZATION_STATUS.md`
-   should be treated as machine-checked v3 theorems, and each of those
-   entries also cites the exact Rocq identifier.
+The old probes–models adjunction, old universal finite-rank approximation formulation, incorrect Chebyshev/B-spline calculations, and generic certificate-stability priority claims are not current v3 theorems.
 
-2. **Layer B — reusable analytic cores.** Lemmas and small
-   developments (Bernstein estimates, finite summation, modulus
-   machinery, rational partition-of-unity data) that survive as
-   infrastructure for Layer A even when the enclosing v2 wrapper
-   theorem does not.
+## What the authoritative v3 proves
 
-3. **Layer C — legacy v1–v2 modules** in place elsewhere under `Coq/`.
-   These formalize claims from the v1–v2 programme. Version 3
-   **explicitly withdraws** several of those claims — most notably the
-   probes–models adjunction as stated, and the numerical material in the
-   former Chebyshev / B-spline examples. Legacy modules are retained
-   because portions of their proofs remain useful, but they are
-   **not** to be read as formalizations of v3 theorems. See
-   `docs/LEGACY_AUDIT.md`.
+The paper separates four layers.
 
-**A green CI build is necessary but not sufficient** for calling a
-paper theorem machine-checked. Section 18 of v3 states three
-requirements — clean toolchain build, correspondence to a theorem of
-the same strength in the repository, and either formalization or
-explicit paper-only labelling for the v3 theorem inventory. This
-repository does not yet satisfy those requirements across the full v3
-inventory. Do not describe the paper as machine-checked on the basis
-of a green build alone.
+- **Universal effective linear representation.** Every real computable Banach presentation admits a uniformly computable linear isometric embedding into standard computable `C([0,1])`, with computable inverse on its represented range. Corollary 3.4 gives finite rational polygonal/hat representation of individual embedded points. This is not an approximation-property or finite-rank-identity theorem.
+- **Finite evidence and proof relevance.** Strict-slack complete metric evidence collapses extensionally under full name access, while selected evidence transformers, derivations, proof size, source use, and transport resources remain intensional. The finite-code Lipschitz grammar has canonical evidence-local transport.
+- **Quantitative rational `W^{1,2}(0,1)` transport.** Supplied local approximation and overlap evidence is compiled through exact rational partition-of-unity synthesis and geometric refinement into a represented limit with a shared proof DAG. Under the paper's H1–H7 hypotheses, complete genealogy through the precision-relevant level has size `O(B_{m(epsilon)})` and `Q_target = 0`.
+- **Contextual Choice.** CCP is an operational generated-closure discipline for declared certified primitives and constructors. Its exclusion results are internal to that generated universe; no ambient classical non-existence claim follows.
 
-## Authoritative correspondence table
+## Current exact-numbering targets
 
-| document | purpose |
-| --- | --- |
-| `docs/FORMALIZATION_STATUS.md` | v3 theorem inventory, Rocq identifier when one exists, exact status label (see vocabulary below), and known assumption footprint. |
-| `docs/LEGACY_AUDIT.md` | audit of pre-v3 modules — what survives as analytic infrastructure, what is legacy, what failed a correspondence check. |
-| `docs/AXIOMS_AND_ADMISSIONS.md` | dependency/status report for every `Admitted`, `Axiom`, `Parameter`, and `Hypothesis` in the tree. Assumption text is descriptive; the file makes no scientific-completeness claim. |
-| `docs/BUILD_NOTES.md` | round-by-round record of the Rocq 9 migration and every discovery that changed the status of a legacy theorem. |
+The manuscript-facing headline targets are:
 
-The status vocabulary used consistently across this repository:
+- Proposition 2.5 — canonical slack certification;
+- Theorem 2.8 — conditional extensional collapse;
+- Lemma 3.1 — effective approximate Hahn–Banach;
+- Theorem 3.2 — effective linear Banach–Mazur universality;
+- Theorem 4.2 — qualitative local-transport saturation;
+- Proposition 4.6 — non-faithfulness;
+- Proposition 4.7 — Grothendieck organization;
+- Theorem 5.6 — certified localized PUFEM defect;
+- Theorem 6.2 — single-cover provenance compiler;
+- Proposition 6.3 — weighted global approximation budget, with
+  `w_i^2 = max(C_inf^2 + 2 L_i^2, 2 C_inf^2)`;
+- Proposition 6.4 — global rational-code size;
+- Theorem 7.2 — classical scale-sensitive PUFEM estimate;
+- Proposition 7.3 — concrete compiler bound for standard local encodings;
+- **Theorem 7.4 — encoding-cost evidence transport under Sobolev refinement**;
+- Corollary 7.5 — same-order transport in the standard rational regime;
+- Theorem 8.5 — invariant preservation;
+- Corollary 8.6 — internal finite-measure boundary;
+- Proposition 9.1 — fibre indistinguishability;
+- Proposition 9.2 — extensional sheaf placement.
 
-- **`CHECKED-EXACT`** — Rocq **theorem** with the same statement, at
-  the same strength, as the paper theorem, on a `coqchk`-clean
-  dependency path in the CI-built module set, with a captured
-  `Print Assumptions` audit under `docs/assumptions/`.
-- **`DEFINITION-EXACT`** — Rocq **definition / record** faithfully
-  modelling a paper definition. Does NOT itself count as a
-  machine-checked theorem.
-- **`CHECKED-RESTRICTED`** — Rocq theorem valid but with a documented
-  delta from the paper theorem (extra hypothesis, narrower
-  quantifier, etc.).
-- **`CHECKED-ANALYTIC-CORE`** — classical analytic lemma the paper
-  uses, checked in isolation from the v3 evidence-level statement.
-- **`LEGACY-V2`** — v1/v2 statement no longer asserted in v3. Not a
-  v3 theorem.
-- **`PAPER-ONLY`** — proved in the paper, no Rocq artifact.
-- **`IN-PROGRESS`** — Rocq module exists with partial correspondence;
-  must NOT be advertised as checked.
-- **`FAILED-AUDIT`** — earlier repository incarnation claimed this as
-  checked; audit found the statement false or vacuous.
+Earlier repository names such as `Theorem73Manuscript` are superseded by the authoritative numbering and must not be cited as current correspondence without an explicit mapping.
 
-**The advertised machine-checked v3 theorem list is `CHECKED-EXACT`
-only.** `DEFINITION-EXACT` says "we modelled the object faithfully";
-`CHECKED-RESTRICTED` says "we proved a deltaed statement"; neither
-counts as machine-checked v3 in the sense of paper §18.
+## Formalization-status rule
 
-## Building
+`docs/FORMALIZATION_STATUS.md` is authoritative, exactly as stated in manuscript Section 12. A current paper result may be called **machine-checked** only if that table marks it `CHECKED-EXACT` for this manuscript title and theorem number at a recorded commit, and all of the following hold:
 
-The CI environment is currently specified by lower-bound constraints
-in `uelat.opam`:
+1. the Rocq statement has the same strength as the manuscript statement;
+2. the pinned current build succeeds;
+3. `coqchk` succeeds on the declared current entry point; and
+4. reachable assumptions have been audited at that exact commit.
 
-- OCaml ≥ 4.14.2
-- rocq-prover ≥ 9.0.0 (installed via opam)
-- mathcomp / mathcomp-algebra / mathcomp-analysis (unversioned;
-  whatever the opam solver picks at CI time under the rocq-prover ≥
-  9.0.0 constraint)
-- dune ≥ 3.10.0
+Repository-wide CI, legacy modules, or correspondence to an earlier manuscript snapshot do not establish a current theorem. During the authoritative migration, rows are deliberately conservative and may be downgraded until a fresh current-manuscript audit has run.
 
-**These are constraints, not exact pins.** A fresh build in the future
-can resolve to newer versions inside those ranges, and `opam update`
-runs during CI. For paper-grade reproducibility we need an opam
-lockfile (or an exact-version dependency block, or a pinned
-opam-repository revision) so that this repository can truthfully
-report the versions the paper was checked against, rather than
-"whatever currently satisfies these constraints". Adding a lockfile is
-tracked as a follow-up.
+## Build surfaces
 
-`.github/workflows/ci.yml` provisions the environment from a fresh
-runner. To reproduce locally with opam ≥ 2.5:
+The existing Rocq-9 migration/audit infrastructure is retained. The authoritative branch adds a current-manuscript build surface rather than treating legacy modules as dependencies of v3 claims. See:
 
-```bash
-opam repo add coq-released https://coq.inria.fr/opam/released
-opam switch create uelat ocaml-base-compiler.4.14.2
-eval "$(opam env)"
-opam pin add uelat.dev . --no-action --yes
-opam install . --deps-only --yes
-cd Coq && coq_makefile -f _CoqProject $(grep -E '^[^#[:space:]].*\.v$' _CoqProject) -o Makefile && make -j
-```
-
-`Coq/_CoqProject` is the authoritative list of modules included in the
-build. Files marked `# EXCLUDED:` are not built by CI and each carries
-an inline comment stating **why** — most commonly: awaiting the mathcomp
-1.16+ package reshuffle, awaiting a paper-side restatement, or awaiting
-integration into the v3 skeleton.
-
-## Verification
-
-`coqchk` is run in CI over the included module set. See the
-`coqchk (included modules)` step of `.github/workflows/ci.yml` for the
-exact enumeration. Do not read a `coqchk` pass as endorsement of any
-theorem beyond that enumerated set.
-
-## License
-
-MIT. See the root `LICENSE` file. `uelat.opam` declares `license: "MIT"`
-consistently.
+- `docs/FORMALIZATION_STATUS.md` — theorem-by-theorem correspondence;
+- `docs/AXIOMS_AND_ADMISSIONS.md` — assumption/admission audit;
+- `docs/LEGACY_AUDIT.md` — historical artifacts;
+- `docs/BUILD_NOTES.md` — toolchain/build history.
 
 ## Citation
 
-Cite the paper, not the repository. Cite the repository only for
-formal artifacts that `FORMALIZATION_STATUS.md` marks as `CHECKED-EXACT`
-against the current commit:
-
 ```bibtex
-@misc{uelat-v3,
-  title  = {Universal Gluing and Contextual Choice: Certificate-Carrying Approximation, Functorial Evidence, and Effective Descent},
-  author = {Ballús Santacana, Andreu},
-  year   = {2026},
-  eprint = {2506.22693},
-  archivePrefix = {arXiv},
-  primaryClass  = {math.FA},
-  note   = {Version 3}
+@misc{ballus2026proofcarrying,
+  title        = {Proof-Carrying Analytic Approximation: Local-to-Global Evidence Transport at Encoding Cost},
+  author       = {Ballús Santacana, Andreu},
+  year         = {2026},
+  eprint       = {2506.22693},
+  archivePrefix= {arXiv},
+  note         = {Version 3}
 }
 ```
 
