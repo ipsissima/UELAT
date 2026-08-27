@@ -76,8 +76,10 @@ Section MultiplierEstimate.
         + (L * delta0 - Cinf * delta1)^2) by ring.
     eapply Rle_trans; [exact Hsq|].
     rewrite Hident.
-    pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)).
-    nra.
+    replace ((L * delta0 + Cinf * delta1)^2)
+      with ((L * delta0 + Cinf * delta1)^2 + 0) at 1 by ring.
+    apply Rplus_le_compat_l.
+    apply Rle_0_sqr.
   Qed.
 
   Theorem multiplier_w12_squared :
