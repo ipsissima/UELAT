@@ -8,6 +8,7 @@
 *)
 
 From Coq Require Import Reals Lra Lia.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment EvidenceCategory.
 
 Module UELAT_V3_EvidenceReindexing.
@@ -52,14 +53,14 @@ Proof.
 Qed.
 
 Lemma shrink_strict_of_lt : forall k l eps,
-  0 < eps -> k < l -> shrink l eps < shrink k eps.
+  0 < eps -> (k < l)%nat -> shrink l eps < shrink k eps.
 Proof.
   intros k l eps Heps Hkl.
   revert k Hkl.
   induction l as [|l IH]; intros k Hkl; [lia|].
   destruct (Nat.eq_dec k l) as [Heq|Hneq].
   - subst k. apply shrink_successor_strict. exact Heps.
-  - assert (Hklt : k < l) by lia.
+  - assert (Hklt : (k < l)%nat) by lia.
     eapply Rlt_trans.
     + apply shrink_successor_strict. exact Heps.
     + apply IH. exact Hklt.
@@ -71,12 +72,12 @@ Proof.
   intros k l eps Heps Hneq Heq.
   destruct (Nat.lt_ge_cases k l) as [Hkl|Hlk].
   - pose proof (shrink_strict_of_lt k l eps Heps Hkl). lra.
-  - assert (Hlk' : l < k) by lia.
+  - assert (Hlk' : (l < k)%nat) by lia.
     pose proof (shrink_strict_of_lt l k eps Heps Hlk'). lra.
 Qed.
 
 Lemma shrink_add : forall k l eps,
-  shrink (k + l) eps = shrink k (shrink l eps).
+  shrink (k + l)%nat eps = shrink k (shrink l eps).
 Proof.
   induction k; simpl; intros l eps.
   - reflexivity.
@@ -164,7 +165,7 @@ Section Reindex.
   Qed.
 
   Theorem reindex_tolerance_monoid : forall k l eps,
-    shrink k (shrink l eps) = shrink (k + l) eps.
+    shrink k (shrink l eps) = shrink (k + l)%nat eps.
   Proof.
     intros. symmetry. apply shrink_add.
   Qed.
