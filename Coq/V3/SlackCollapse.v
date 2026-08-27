@@ -34,7 +34,7 @@ Section Collapse.
     distance (decode_name nu) (decode_name mu) <= q.
   Proof.
     intros [w Hw].
-    pose proof (dist_sound E _ _ _ _ Hw) as [_ H]. exact H.
+    pose proof (@dist_sound X E nu mu q w Hw) as [_ H]. exact H.
   Qed.
 
   Theorem strict_slack_supplies_every_larger_bound
