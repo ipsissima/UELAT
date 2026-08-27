@@ -55,7 +55,10 @@ Theorem right_hat_slope_is_inverse_width : forall a b,
 Proof. reflexivity. Qed.
 Theorem left_hat_slope_is_negative_inverse_width : forall a b,
   left_hat_slope a b == - hat_inverse_width a b.
-Proof. intros a b. unfold left_hat_slope, hat_inverse_width. ring. Qed.
+Proof.
+  intros a b. unfold left_hat_slope, hat_inverse_width, Qdiv.
+  ring.
+Qed.
 Theorem inverse_width_positive : forall a b,
   (a < b)%Q -> (0 < hat_inverse_width a b)%Q.
 Proof. intros a b Hab. unfold hat_inverse_width. apply Qinv_lt_0_compat. lra. Qed.
