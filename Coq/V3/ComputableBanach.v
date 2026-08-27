@@ -90,8 +90,6 @@ Record RealComputableBanachPresentation := {
         distance x (core_decode p) < eps
 }.
 
-Arguments cb_metric _ : clear implicits.
-Arguments core_code _ : clear implicits.
 Arguments core_decode {B} _.
 
 Definition cb_neg (B : RealComputableBanachPresentation)
