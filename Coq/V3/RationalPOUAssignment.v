@@ -25,13 +25,23 @@ Fixpoint add_at (i : nat) (v : Q) (bs : list Q) : list Q :=
   end.
 Lemma add_at_length : forall (i : nat) v bs,
   (i < length bs)%nat -> length (add_at i v bs) = length bs.
-Proof. induction i; destruct bs; simpl; intros; try lia; f_equal; eauto. Qed.
+Proof.
+  intros i v bs. revert i.
+  induction bs as [|b rest IH]; intros i Hlt.
+  - simpl in Hlt. lia.
+  - destruct i as [|i].
+    + reflexivity.
+    + simpl. f_equal. apply IH. simpl in Hlt. lia.
+Qed.
 Lemma qsum_add_at : forall (i : nat) v bs,
   (i < length bs)%nat -> qsum (add_at i v bs) == v + qsum bs.
 Proof.
-  induction i; destruct bs as [|b rest]; simpl; intros H; try lia.
-  - ring.
-  - rewrite IHi by lia. ring.
+  intros i v bs. revert i.
+  induction bs as [|b rest IH]; intros i Hlt.
+  - simpl in Hlt. lia.
+  - destruct i as [|i].
+    + simpl. ring.
+    + simpl. rewrite IH by (simpl in Hlt; lia). ring.
 Qed.
 
 Fixpoint bucketize (M : nat) (entries : list (nat * Q)) : list Q :=
