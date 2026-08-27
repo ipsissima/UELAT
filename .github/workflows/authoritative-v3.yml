@@ -1,0 +1,116 @@
+name: Authoritative v3
+
+on:
+  push:
+    branches:
+      - authoritative-v3-final
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: authoritative-v3-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  OPAMYES: true
+
+permissions:
+  contents: read
+
+jobs:
+  authoritative-coq:
+    name: Build authoritative v3 and run coqchk
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache opam
+        uses: actions/cache@v4
+        with:
+          path: ~/.opam
+          key: ${{ runner.os }}-opam-authoritative-${{ hashFiles('**/uelat.opam') }}
+
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: true
+
+      - name: Prepare opam repositories
+        shell: bash
+        run: |
+          set -eux
+          opam init -a --bare --disable-sandboxing || true
+          opam repo add coq-released https://coq.inria.fr/opam/released || \
+            opam repo set-url coq-released https://coq.inria.fr/opam/released
+          opam update
+
+      - name: Install repository dependencies
+        shell: bash
+        run: |
+          set -eux
+          SWITCH_NAME="uelat-authoritative"
+          if opam switch list --short | grep -Fxq "${SWITCH_NAME}"; then
+            opam switch set "${SWITCH_NAME}"
+          else
+            opam switch create "${SWITCH_NAME}" ocaml-base-compiler.4.14.2
+          fi
+          eval "$(opam env)"
+          opam pin add uelat.dev . --no-action --yes
+          opam install . --deps-only --yes
+          rocq --version || coqc --version
+
+      - name: Reject project admissions on authoritative surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(awk '/\.v$/ {print "Coq/"$1}' Coq/_CoqProject.authoritative)
+          for f in "${files[@]}"; do
+            if grep -n -E '(^|[^A-Za-z])(Admitted\.|admit\.|Axiom[[:space:]])' "$f"; then
+              echo "::error file=$f::Found project admission/axiom on authoritative surface"
+              exit 1
+            fi
+          done
+
+      - name: Build authoritative surface
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          cd Coq
+          rm -f Makefile.authoritative Makefile.authoritative.conf
+          coq_makefile -f _CoqProject.authoritative -o Makefile.authoritative
+          make -f Makefile.authoritative -j2
+
+      - name: Kernel check authoritative entry point
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          cd Coq
+          coqchk -q -R . UELAT UELAT.UELATAuthoritative
+
+      - name: Print assumptions of current headline finite statements
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          cat > /tmp/authoritative_assumptions.v <<'EOF'
+          From UELAT.V3 Require Import GenericSlackCertification SlackCollapse PUFEMCompiler Theorem74Manuscript.
+          Print Assumptions UELAT_V3_SlackCollapse.evidence_distance_is_represented_distance.
+          Print Assumptions UELAT_V3_PUFEMCompiler.proposition_6_3_weighted_global_bound.
+          Print Assumptions UELAT_V3_Theorem74Manuscript.theorem74_finite_resource_form.
+          EOF
+          coqc -q -R Coq UELAT /tmp/authoritative_assumptions.v | tee authoritative-assumptions.txt
+
+      - name: Upload assumption report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: authoritative-v3-assumptions
+          path: authoritative-assumptions.txt
+          if-no-files-found: warn
