@@ -108,10 +108,11 @@ Lemma find_covering_from_complete_exists : forall offset s cover,
   exists i, find_covering_from offset s cover = Some i.
 Proof.
   intros offset s cover Hexists.
-  induction Hexists as [u us Hinside|u us Htail IH].
+  revert offset.
+  induction Hexists as [u us Hinside|u us Htail IH]; intro offset.
   - simpl. rewrite (proj2 (star_insideb_spec s u) Hinside). eauto.
   - simpl. destruct (star_insideb s u) eqn:Hu; [eauto|].
-    exact IH.
+    apply IH.
 Qed.
 
 Lemma find_covering_from_complete : forall offset s cover k u,
