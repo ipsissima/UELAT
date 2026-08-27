@@ -151,7 +151,7 @@ Section ProvenanceCertificate.
     pc_sink_lookup :
       nth_error (dag_nodes pc_history) (dag_sink pc_history) = Some pc_sink_node;
     pc_sink_identifies :
-      SinkIdentifies (node_payload pc_sink_node) (cert_code E pc_ordinary)
+      SinkIdentifies (node_payload pc_sink_node) (@cert_code X E nu pc_ordinary)
   }.
 
   Definition provenance_node_count {nu}
@@ -175,9 +175,9 @@ Section ProvenanceCertificate.
       (payload_bits : Payload -> nat)
       (rule_bits : Rule -> nat)
       {nu} (c : ProvenanceCertificate nu) : nat :=
-    code_bits (cert_code E (pc_ordinary c))
-    + bound_bits (cert_bound E (pc_ordinary c))
-    + evidence_bits (cert_evidence E (pc_ordinary c))
+    code_bits (@cert_code X E nu (pc_ordinary c))
+    + bound_bits (@cert_bound X E nu (pc_ordinary c))
+    + evidence_bits (@cert_evidence X E nu (pc_ordinary c))
     + dag_encoded_bitlength payload_bits rule_bits (pc_history c).
 
   Definition ProvenanceChecks
