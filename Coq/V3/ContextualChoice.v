@@ -220,12 +220,14 @@ Section GeneratedUniverse.
   Theorem generated_is_closed : ClosedFamily Generated.
   Proof.
     split.
-    - intros x Hx. apply generated_primitive. exact Hx.
+    - intros x Hx. exact (generated_primitive x Hx).
     - split.
-      + intros out Hout. apply generated_nullary. exact Hout.
+      + intros out Hout. exact (generated_nullary out Hout).
       + split.
-        * intros x out Hx Hstep. eapply generated_unary; eauto.
-        * intros x y out Hx Hy Hstep. eapply generated_binary; eauto.
+        * intros x out Hx Hstep.
+          exact (generated_unary x out Hx Hstep).
+        * intros x y out Hx Hy Hstep.
+          exact (generated_binary x y out Hx Hy Hstep).
   Qed.
 
   Theorem generated_least (P : Obj -> Prop) :
