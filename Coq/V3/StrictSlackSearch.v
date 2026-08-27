@@ -22,11 +22,15 @@ Lemma first_true_upto_sound_invariant : forall test fuel,
   end.
 Proof.
   intros test fuel. induction fuel as [|fuel IH].
-  - cbn. destruct (test 0); reflexivity.
+  - cbn. destruct (test 0) eqn:H0.
+    + exact H0.
+    + exact I.
   - cbn.
     destruct (first_true_upto test fuel) as [m|] eqn:Hprev.
     + exact IH.
-    + destruct (test (S fuel)); reflexivity.
+    + destruct (test (S fuel)) eqn:Hlast.
+      * exact Hlast.
+      * exact I.
 Qed.
 
 Lemma first_true_upto_sound : forall test fuel n,
@@ -44,11 +48,15 @@ Lemma first_true_upto_index_invariant : forall test fuel,
   end.
 Proof.
   intros test fuel. induction fuel as [|fuel IH].
-  - cbn. destruct (test 0); lia.
+  - cbn. destruct (test 0) eqn:H0.
+    + apply Nat.le_refl.
+    + exact I.
   - cbn.
     destruct (first_true_upto test fuel) as [m|] eqn:Hprev.
-    + lia.
-    + destruct (test (S fuel)); lia.
+    + exact (Nat.le_trans _ _ _ IH (Nat.le_succ_diag_r fuel)).
+    + destruct (test (S fuel)) eqn:Hlast.
+      * apply Nat.le_refl.
+      * exact I.
 Qed.
 
 Lemma first_true_upto_index : forall test fuel n,
