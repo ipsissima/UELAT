@@ -19,22 +19,28 @@ Lemma first_true_upto_sound : forall test fuel n,
   first_true_upto test fuel = Some n -> test n = true.
 Proof.
   intros test fuel. induction fuel as [|fuel IH]; intros n H.
-  - simpl in H. destruct (test 0) eqn:Ht; inversion H; subst; assumption.
-  - simpl in H.
-    destruct (first_true_upto test fuel) as [n0|] eqn:Hprev.
-    + inversion H; subst. eapply IH. exact Hprev.
-    + destruct (test (S fuel)) eqn:Ht; inversion H; subst; assumption.
+  - cbn in H. destruct (test 0) eqn:Ht; try discriminate.
+    injection H as Hn. subst n. exact Ht.
+  - cbn in H.
+    destruct (first_true_upto test fuel) as [m|] eqn:Hprev.
+    + injection H as Hmn. subst n.
+      exact (IH m Hprev).
+    + destruct (test (S fuel)) eqn:Ht; try discriminate.
+      injection H as Hn. subst n. exact Ht.
 Qed.
 
 Lemma first_true_upto_index : forall test fuel n,
   first_true_upto test fuel = Some n -> n <= fuel.
 Proof.
   intros test fuel. induction fuel as [|fuel IH]; intros n H.
-  - simpl in H. destruct (test 0); inversion H; lia.
-  - simpl in H.
-    destruct (first_true_upto test fuel) as [n0|] eqn:Hprev.
-    + inversion H; subst. specialize (IH n0 Hprev). lia.
-    + destruct (test (S fuel)); inversion H; lia.
+  - cbn in H. destruct (test 0); try discriminate.
+    injection H as Hn. subst n. lia.
+  - cbn in H.
+    destruct (first_true_upto test fuel) as [m|] eqn:Hprev.
+    + injection H as Hmn. subst n.
+      specialize (IH m Hprev). lia.
+    + destruct (test (S fuel)); try discriminate.
+      injection H as Hn. subst n. lia.
 Qed.
 
 Lemma first_true_upto_complete : forall test fuel witness,
