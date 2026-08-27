@@ -1,5 +1,9 @@
 (** H1H7Descent.v -- manuscript-shaped assembly for the authoritative v3
     encoding-cost evidence-transport theorem (Theorem 7.4).
+
+    The core record contains only H1--H7.  In particular, the manuscript's
+    additional linear-bit/source-lookahead hypothesis is NOT part of H1--H7;
+    it is represented separately by [SourceLookaheadRegime].
 *)
 
 From Coq Require Import Reals Arith Lia Nia List.
@@ -31,6 +35,7 @@ Section FullInterface.
   Variable p : nat -> carrier X.
 
   Record H1H7Data := {
+    (** H1 -- quasi-uniform geometry and bounded incidence. *)
     h_M : nat -> nat;
     h_cnum : nat; h_cden : nat; h_Cnum : nat; h_Cden : nat;
     h_cnum_pos : 0 < h_cnum;
@@ -49,11 +54,13 @@ Section FullInterface.
     h_refinement_incidence_bound : forall n,
       h_refinement_incidences n <= h_refinement_degree * h_M (S n);
 
+    (** H2/H3 -- supplied finite certified partition/local data. *)
     h_partition_certificate : nat -> Type;
     h_partition_supplied : forall n, h_partition_certificate n;
     h_local_certificate : nat -> nat -> Type;
     h_local_supplied : forall n a, a < h_M n -> h_local_certificate n a;
 
+    (** H4 -- exact synthesis and the geometric scale law. *)
     h_synthesis_certificate : nat -> Type;
     h_synthesis_supplied : forall n, h_synthesis_certificate n;
     h_alpha : nat;
@@ -65,12 +72,14 @@ Section FullInterface.
     h_geometric_level_error : forall n,
       distance f (p n) <= h_K * dyadic (h_alpha * n);
 
+    (** H5 -- persistent evidence-local genealogy and Q_target=0. *)
     h_history : nat -> ProofDAG Payload Rule;
     h_history_persistent : forall n,
       history_extends (h_history n) (h_history (S n));
     h_target_queries : nat;
     h_no_target_recertification : h_target_queries = 0;
 
+    (** H6 -- coefficient-wise encoding and new proof payload. *)
     h_beta : nat -> nat;
     h_beta_positive : forall n, 0 < h_beta n;
     h_beta_monotone : forall j n, j <= n -> h_beta j <= h_beta n;
@@ -82,19 +91,25 @@ Section FullInterface.
     h_baseline_dominates : forall n,
       h_M n * h_beta n <= h_base_factor * h_ordinary_bits n;
 
+    (** H7 -- fixed-arity arithmetic verification model. *)
     h_A : nat -> nat;
     h_A_monotone : forall a b, a <= b -> h_A a <= h_A b;
     h_level_verification : nat -> nat;
     h_cverify : nat;
     h_verification_level_bound : forall n,
-      h_level_verification n <= h_cverify * h_M n * h_A (h_beta n);
+      h_level_verification n <= h_cverify * h_M n * h_A (h_beta n)
+  }.
 
-    h_source_lookahead : nat -> nat;
-    h_csource h_beta_factor : nat;
-    h_source_level_bound : forall n,
-      h_source_lookahead n <= h_csource * h_beta n;
-    h_beta_linear : forall n,
-      h_beta n <= h_beta_factor * S n
+  (** Additional hypothesis for the final conditional Q_source statement in
+      Theorem 7.4.  It is deliberately separate from H1--H7. *)
+  Record SourceLookaheadRegime (H : H1H7Data) := {
+    sr_source_lookahead : nat -> nat;
+    sr_csource : nat;
+    sr_beta_factor : nat;
+    sr_source_level_bound : forall n,
+      sr_source_lookahead n <= sr_csource * h_beta H n;
+    sr_beta_linear : forall n,
+      h_beta H n <= sr_beta_factor * S n
   }.
 
   Section Consequences.
@@ -213,19 +228,10 @@ Section FullInterface.
       nia.
     Qed.
 
-    Theorem h1h7_source_lookahead_bound : forall n,
-      h_source_lookahead H n
-        <= h_csource H * h_beta_factor H * S n.
-    Proof.
-      intro n.
-      pose proof (h_source_level_bound H n).
-      pose proof (h_beta_linear H n).
-      nia.
-    Qed.
-
     Theorem h1h7_target_query_zero : h_target_queries H = 0.
     Proof. exact (h_no_target_recertification H). Qed.
 
+    (** Core H1--H7 conclusions: no linear-beta/source-lookahead assumption. *)
     Theorem h1h7_order_neutral_at_precision : forall s,
       represented_value h1h7_represented_limit = f
       /\ approximant (represented_name h1h7_represented_limit) s = p (h_mu s)
@@ -237,8 +243,6 @@ Section FullInterface.
            * nsum_upto (h_level_verification H) (h_mu s)
            <= 2 * h_cverify H * h_cden H * h_Cnum H
                 * h_M H (h_mu s) * h_A H (h_beta H (h_mu s))
-      /\ h_source_lookahead H (h_mu s)
-           <= h_csource H * h_beta_factor H * S (h_mu s)
       /\ h_target_queries H = 0.
     Proof.
       intro s.
@@ -247,9 +251,27 @@ Section FullInterface.
       - apply h1h7_name_stage.
       - apply h1h7_genealogy_size.
       - apply h1h7_verification_bound.
-      - apply h1h7_source_lookahead_bound.
       - apply h1h7_target_query_zero.
     Qed.
+
+    Section OptionalSourceLookahead.
+      Variable SR : SourceLookaheadRegime H.
+
+      Theorem h1h7_source_lookahead_bound : forall n,
+        sr_source_lookahead SR n
+          <= sr_csource SR * sr_beta_factor SR * S n.
+      Proof.
+        intro n.
+        pose proof (sr_source_level_bound SR n).
+        pose proof (sr_beta_linear SR n).
+        nia.
+      Qed.
+
+      Theorem h1h7_source_lookahead_at_precision : forall s,
+        sr_source_lookahead SR (h_mu s)
+          <= sr_csource SR * sr_beta_factor SR * S (h_mu s).
+      Proof. intro s. apply h1h7_source_lookahead_bound. Qed.
+    End OptionalSourceLookahead.
   End Consequences.
 End FullInterface.
 
