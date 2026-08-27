@@ -138,6 +138,59 @@ Section SpanFunctional.
   Proof.
     intros x r [ts [Hx Hr]]. subst x r. apply admissible_span_bound.
   Qed.
+
+  Definition scale_terms (c : Q) (ts : list RationalCoordinateTerm) :
+      list RationalCoordinateTerm :=
+    map (fun qi => (c * fst qi, snd qi)) ts.
+
+  Lemma span_value_scale_terms : forall c ts,
+    span_value (scale_terms c ts) = Q2R c * span_value ts.
+  Proof.
+    intros c ts. induction ts as [|[q i] rest IH]; simpl.
+    - ring.
+    - unfold span_value in *; simpl in *.
+      rewrite Q2R_mult, IH. ring.
+  Qed.
+
+  Lemma span_vector_scale_terms : forall c ts,
+    span_vector (scale_terms c ts) = cb_scale B (Q2R c) (span_vector ts).
+  Proof.
+    intros c ts. induction ts as [|[q i] rest IH].
+    - simpl. rewrite span_vector_nil. symmetry. apply cb_scale_zero_vector.
+    - unfold span_vector in *; simpl in *.
+      repeat rewrite core_add_sound.
+      repeat rewrite core_scale_sound.
+      rewrite Q2R_mult, IH.
+      rewrite cb_scale_add_vectors, cb_scale_assoc. reflexivity.
+  Qed.
+
+  Theorem coordinate_span_graph_add : forall x y r s,
+    CoordinateSpanGraph x r -> CoordinateSpanGraph y s ->
+    CoordinateSpanGraph (cb_add B x y) (r + s).
+  Proof.
+    intros x y r s [ts [Hx Hr]] [us [Hy Hs]].
+    exists (ts ++ us). split.
+    - rewrite span_vector_append, <- Hx, <- Hy. reflexivity.
+    - rewrite span_value_append, <- Hr, <- Hs. reflexivity.
+  Qed.
+
+  Theorem coordinate_span_graph_scale_Q : forall c x r,
+    CoordinateSpanGraph x r ->
+    CoordinateSpanGraph (cb_scale B (Q2R c) x) (Q2R c * r).
+  Proof.
+    intros c x r [ts [Hx Hr]].
+    exists (scale_terms c ts). split.
+    - rewrite span_vector_scale_terms, <- Hx. reflexivity.
+    - rewrite span_value_scale_terms, <- Hr. reflexivity.
+  Qed.
+
+  Theorem coordinate_span_graph_generator : forall i,
+    CoordinateSpanGraph (normalized_core B i) (cdb_coordinates a i).
+  Proof.
+    intro i. exists [(1,i)]. split.
+    - unfold span_vector. apply combination_single_decode.
+    - unfold span_value. apply coordinate_single_sum.
+  Qed.
 End SpanFunctional.
 
 End UELAT_V3_CoordinateFunctionalGraph.
