@@ -23,7 +23,7 @@ The two top-level badges deliberately answer different questions.
 - **Authoritative v3** is the release gate for the declared current-paper surface: pinned Rocq 9.2 build, public-entry-point `coqchk`, and an admission scan restricted to the files actually listed in `_CoqProject.authoritative-v3`.
 - **V3 diagnostic build** compiles the complete `Coq/V3/` source tree. It is intentionally broader and is used to expose migration or reusable-infrastructure regressions that need not be part of the current-paper aggregate.
 
-A failure in either badge should therefore be read from its job log, not converted into a theorem-status claim. The status ledger remains controlling.
+A failure in either badge should therefore be read from its job log, not converted into a theorem-status claim. The status ledger remains controlling. Deprecation or migration warnings emitted by Rocq are engineering cleanup items unless the job actually exits unsuccessfully; they are not theorem-status evidence by themselves.
 
 ## Status meanings
 
