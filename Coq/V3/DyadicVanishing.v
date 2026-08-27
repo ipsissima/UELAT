@@ -2,6 +2,7 @@
     effective descent/range inversion. *)
 
 From Coq Require Import Reals Rseries Lra Lia.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import RepresentedSpace.
 
 Module UELAT_V3_DyadicVanishing.
