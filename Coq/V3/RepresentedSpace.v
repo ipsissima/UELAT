@@ -36,6 +36,7 @@ Record FastCauchyName (X : MetricPresentation) := {
 }.
 
 Arguments approximant {X} _ _.
+Arguments fast_cauchy {X} _ _ _ _.
 
 Record RepresentedPoint (X : MetricPresentation) := {
   represented_value : carrier X;
@@ -46,6 +47,7 @@ Record RepresentedPoint (X : MetricPresentation) := {
 
 Arguments represented_value {X} _.
 Arguments represented_name {X} _.
+Arguments represented_tail {X} _ _.
 
 Lemma tail_reverse {X : MetricPresentation} (x : RepresentedPoint X) :
   forall n : nat,
