@@ -100,8 +100,9 @@ Section Construction.
         {| total_base := x; total_fibre := a |}
         {| total_base := y; total_fibre := push_obj f a |}.
   Proof.
-    refine {| total_arrow_base := f;
-              total_arrow_fibre := fibre_id I y (push_obj f a) |}.
+    constructor.
+    - exact f.
+    - cbn. exact (fibre_id I y (push_obj f a)).
   Defined.
 
   (** Universal factor in the target fibre.  Given an arrow whose base factors
