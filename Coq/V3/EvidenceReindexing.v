@@ -107,10 +107,10 @@ Section Reindex.
       (f : EvidenceArrow E a b) :
       EvidenceArrow E (reindex_object k a) (reindex_object k b).
   Proof.
-    refine {| arrow_bound := arrow_bound E f;
-              arrow_bound_nonnegative := arrow_bound_nonnegative E f;
-              arrow_witness := arrow_witness E f |}.
-    exact (arrow_accepted E f).
+    refine {| arrow_bound := arrow_bound f;
+              arrow_bound_nonnegative := arrow_bound_nonnegative f;
+              arrow_witness := arrow_witness f |}.
+    exact (arrow_accepted f).
   Defined.
 
   Lemma reindex_preserves_underlying_name : forall k a,
@@ -118,7 +118,7 @@ Section Reindex.
   Proof. reflexivity. Qed.
 
   Lemma reindex_arrow_preserves_bound : forall k a b (f : EvidenceArrow E a b),
-    arrow_bound E (reindex_arrow k f) = arrow_bound E f.
+    arrow_bound (reindex_arrow k f) = arrow_bound f.
   Proof. reflexivity. Qed.
 
   Definition exact_half_system
