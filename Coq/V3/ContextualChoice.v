@@ -235,11 +235,15 @@ Section GeneratedUniverse.
     forall x, Generated x -> P x.
   Proof.
     intros [Hprim [H0 [H1 H2]]] x Hgen.
-    induction Hgen.
-    - now apply Hprim.
-    - now apply H0.
-    - eapply H1; eauto.
-    - eapply H2; eauto.
+    induction Hgen as
+      [x Hprimitive
+      |out Hnullary
+      |x out Hgenerated IHx Hstep
+      |x y out Hgenerated_x IHx Hgenerated_y IHy Hstep].
+    - exact (Hprim x Hprimitive).
+    - exact (H0 out Hnullary).
+    - exact (H1 x out IHx Hstep).
+    - exact (H2 x y out IHx IHy Hstep).
   Qed.
 
   Theorem invariant_preservation (R : Obj -> Prop) :
@@ -249,11 +253,12 @@ Section GeneratedUniverse.
     (forall x y out, R x -> R y -> Step2 x y out -> R out) ->
     forall x, Generated x -> R x.
   Proof.
-    intros Hprim H0 H1 H2.
-    apply generated_least.
-    split; [exact Hprim|].
-    split; [exact H0|].
-    split; assumption.
+    intros Hprim H0 H1 H2 x Hgen.
+    apply (generated_least R).
+    - split; [exact Hprim|].
+      split; [exact H0|].
+      split; [exact H1|exact H2].
+    - exact Hgen.
   Qed.
 
   Corollary excluded_class_absent (R Bad : Obj -> Prop) :
@@ -266,7 +271,7 @@ Section GeneratedUniverse.
   Proof.
     intros Hprim H0 H1 H2 Hdisjoint x Hgen Hbad.
     apply (Hdisjoint x Hbad).
-    eapply invariant_preservation; eauto.
+    exact (invariant_preservation R Hprim H0 H1 H2 x Hgen).
   Qed.
 
 End GeneratedUniverse.
