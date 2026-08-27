@@ -82,7 +82,8 @@ Lemma represented_points_same_value_zero_distance
   represented_value x = represented_value y ->
   distance (represented_value x) (represented_value y) = 0.
 Proof.
-  intro H. subst.
+  intro H.
+  rewrite H.
   apply distance_reflexive.
 Qed.
 
