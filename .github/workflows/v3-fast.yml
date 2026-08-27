@@ -28,9 +28,6 @@ jobs:
           ocaml-compiler: 4.14.2
           dune-cache: false
 
-      # Restore only the local switch, and only AFTER setup-ocaml has
-      # initialized opam coherently.  Caching ~/.opam as well can leave
-      # repository registries and installed-package state out of sync.
       - name: Restore exact Rocq 9.2 local switch
         id: rocq-switch
         uses: actions/cache/restore@v4
@@ -59,8 +56,6 @@ jobs:
             coqc --version
           fi
 
-      # Seed the reusable switch before source compilation.  A later
-      # proof failure must not discard a known-good prover installation.
       - name: Save exact Rocq 9.2 local switch
         if: steps.rocq-switch.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -68,7 +63,7 @@ jobs:
           path: _opam
           key: ${{ runner.os }}-v3-rocq92-local-switch-v1
 
-      - name: Compile V3 modules in dependency order
+      - name: Compile legacy checked V3 island
         shell: bash
         run: |
           set -eux
@@ -82,7 +77,16 @@ jobs:
           coqc -R Coq UELAT Coq/V3/GenericLift.v
           coqc -R Coq UELAT Coq/V3/Composition.v
 
-      - name: coqchk V3 theorem island
+      - name: Compile authoritative v3 project graph
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          cd Coq
+          coq_makefile -f _CoqProject.v3 -o Makefile.v3
+          make -f Makefile.v3 -j2
+
+      - name: coqchk legacy checked V3 island
         shell: bash
         run: |
           set -eux
@@ -96,6 +100,17 @@ jobs:
             UELAT.V3.RealizableMap \
             UELAT.V3.GenericLift \
             UELAT.V3.Composition
+
+      - name: coqchk authoritative v3 graph
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          mapfile -t modules < <(
+            awk '/^V3\/.*\.v$/ {gsub(/^V3\//,"",$0); gsub(/\.v$/,"",$0); print "UELAT.V3." $0}' Coq/_CoqProject.v3
+          )
+          test "${#modules[@]}" -gt 0
+          coqchk -R Coq UELAT "${modules[@]}"
 
       - name: Print Assumptions audit
         shell: bash
@@ -116,10 +131,10 @@ jobs:
         run: |
           set -e
           if grep -R -n -E '\b(Admitted|Axiom)\b' Coq/V3/*.v; then
-            echo "::error::Found Admitted/Axiom in V3 theorem island"
+            echo "::error::Found Admitted/Axiom in V3 source tree"
             exit 1
           fi
-          echo "V3 theorem island is free of Admitted/Axiom"
+          echo "V3 source tree is free of Admitted/Axiom"
 
       - name: Upload assumptions audit
         if: always()
