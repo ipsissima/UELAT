@@ -100,7 +100,7 @@ Section Construction.
         {| total_base := x; total_fibre := a |}
         {| total_base := y; total_fibre := push_obj f a |}.
   Proof.
-    refine (@Build_TotalArrow B I
+    refine (@Build_TotalArrow
       {| total_base := x; total_fibre := a |}
       {| total_base := y; total_fibre := push_obj f a |}
       f _).
