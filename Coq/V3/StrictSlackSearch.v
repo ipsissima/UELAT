@@ -15,32 +15,48 @@ Fixpoint first_true_upto (test : nat -> bool) (fuel : nat) : option nat :=
       end
   end.
 
+Lemma first_true_upto_sound_invariant : forall test fuel,
+  match first_true_upto test fuel with
+  | Some n => test n = true
+  | None => True
+  end.
+Proof.
+  intros test fuel. induction fuel as [|fuel IH].
+  - cbn. destruct (test 0); reflexivity.
+  - cbn.
+    destruct (first_true_upto test fuel) as [m|] eqn:Hprev.
+    + exact IH.
+    + destruct (test (S fuel)); reflexivity.
+Qed.
+
 Lemma first_true_upto_sound : forall test fuel n,
   first_true_upto test fuel = Some n -> test n = true.
 Proof.
-  intros test fuel. induction fuel as [|fuel IH]; intros n H.
-  - cbn in H. destruct (test 0) eqn:Ht; try discriminate.
-    injection H as Hn. subst n. exact Ht.
-  - cbn in H.
+  intros test fuel n H.
+  pose proof (first_true_upto_sound_invariant test fuel) as Hsound.
+  rewrite H in Hsound. exact Hsound.
+Qed.
+
+Lemma first_true_upto_index_invariant : forall test fuel,
+  match first_true_upto test fuel with
+  | Some n => n <= fuel
+  | None => True
+  end.
+Proof.
+  intros test fuel. induction fuel as [|fuel IH].
+  - cbn. destruct (test 0); lia.
+  - cbn.
     destruct (first_true_upto test fuel) as [m|] eqn:Hprev.
-    + injection H as Hmn. subst n.
-      exact (IH m Hprev).
-    + destruct (test (S fuel)) eqn:Ht; try discriminate.
-      injection H as Hn. subst n. exact Ht.
+    + lia.
+    + destruct (test (S fuel)); lia.
 Qed.
 
 Lemma first_true_upto_index : forall test fuel n,
   first_true_upto test fuel = Some n -> n <= fuel.
 Proof.
-  intros test fuel. induction fuel as [|fuel IH]; intros n H.
-  - cbn in H. destruct (test 0); try discriminate.
-    injection H as Hn. subst n. lia.
-  - cbn in H.
-    destruct (first_true_upto test fuel) as [m|] eqn:Hprev.
-    + injection H as Hmn. subst n.
-      specialize (IH m Hprev). lia.
-    + destruct (test (S fuel)); try discriminate.
-      injection H as Hn. subst n. lia.
+  intros test fuel n H.
+  pose proof (first_true_upto_index_invariant test fuel) as Hindex.
+  rewrite H in Hindex. exact Hindex.
 Qed.
 
 Lemma first_true_upto_complete : forall test fuel witness,
