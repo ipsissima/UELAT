@@ -63,6 +63,9 @@ Section Construction.
     lift_target_is_push : lift_target = push_obj f a
   }.
 
+  Arguments lift_target {x y f a} _.
+  Arguments lift_target_is_push {x y f a} _.
+
   Definition chosen_lift {x y : BObj B}
       (f : BHom x y) (a : fibre_obj I x) : ChosenLift f a :=
     {| lift_target := push_obj f a;
