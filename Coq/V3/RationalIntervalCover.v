@@ -112,8 +112,8 @@ Proof.
   induction cover as [|v vs IH]; intros offset k u Hnth Hinside; simpl in Hnth.
   - discriminate.
   - destruct k as [|k].
-    + inversion Hnth; subst.
-      simpl. rewrite (proj2 (star_insideb_spec s u) Hinside). eauto.
+    + injection Hnth as Hvu. subst u.
+      simpl. rewrite (proj2 (star_insideb_spec s v) Hinside). eauto.
     + simpl.
       destruct (star_insideb s v) eqn:Hv; [eauto|].
       eapply IH; eauto.
