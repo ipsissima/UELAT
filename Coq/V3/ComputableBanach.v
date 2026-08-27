@@ -13,6 +13,7 @@
 *)
 
 From Coq Require Import Reals QArith Qreals List.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import CertificateEnrichment RepresentedSpace.
 
 Module UELAT_V3_ComputableBanach.
@@ -138,7 +139,7 @@ Qed.
 Record CoreFastName (B : RealComputableBanachPresentation) := {
   core_stage : nat -> core_code B;
   core_stage_fast : forall m n,
-      n <= m ->
+      (n <= m)%nat ->
       distance (core_decode (core_stage m))
                (core_decode (core_stage n)) <= dyadic n
 }.
