@@ -154,6 +154,15 @@ Section ProvenanceCertificate.
       SinkIdentifies (node_payload pc_sink_node) (@cert_code X E nu pc_ordinary)
   }.
 
+  (** The represented name is determined by the provenance certificate itself.
+      Marking it implicit here avoids Rocq-version-dependent elaboration of the
+      dependent record projections below. *)
+  Arguments pc_ordinary {nu} _.
+  Arguments pc_history {nu} _.
+  Arguments pc_sink_node {nu} _.
+  Arguments pc_sink_lookup {nu} _.
+  Arguments pc_sink_identifies {nu} _.
+
   Definition provenance_node_count {nu}
       (c : ProvenanceCertificate nu) : nat :=
     node_count (pc_history c).
