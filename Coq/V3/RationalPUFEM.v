@@ -70,8 +70,13 @@ Section MultiplierEstimate.
   Proof.
     assert (Hsq : deriv_product^2
               <= (L * delta0 + Cinf * delta1)^2) by nra.
-    pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)) as Haux.
+    assert (Hident :
+      2 * L^2 * delta0^2 + 2 * Cinf^2 * delta1^2
+      = (L * delta0 + Cinf * delta1)^2
+        + (L * delta0 - Cinf * delta1)^2) by ring.
     eapply Rle_trans; [exact Hsq|].
+    rewrite Hident.
+    pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)).
     nra.
   Qed.
 
