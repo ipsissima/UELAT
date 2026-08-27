@@ -117,12 +117,9 @@ Section Construction.
         k = opcartesian_factor f g a c h.
   Proof.
     intros x y z f g a c h.
-    refine (@ex_intro_unique
-      (fibre_hom I z (push_obj g (push_obj f a)) c)
-      (fun k => k = opcartesian_factor f g a c h)
-      (opcartesian_factor f g a c h)
-      eq_refl _).
-    intros y0 Hy0. exact Hy0.
+    exists (opcartesian_factor f g a c h). split.
+    - reflexivity.
+    - intros y0 Hy0. symmetry. exact Hy0.
   Qed.
 
   Record SplitOpfibrationData := {
