@@ -6,7 +6,7 @@
     the old node payload is not copied.
 *)
 
-From Coq Require Import List Arith Lia Nia.
+From Coq Require Import List Arith Lia Lia.
 Import ListNotations.
 From UELAT.V3 Require Import ProofDAG ProofDAGBuilder.
 

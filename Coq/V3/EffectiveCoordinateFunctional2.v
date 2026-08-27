@@ -1,7 +1,7 @@
 (** EffectiveCoordinateFunctional2.v -- effective completion of an admissible
     coordinate point to a rational real-name procedure. *)
 
-From Coq Require Import Reals QArith Qreals Bool Arith Lia Lra Nra Ring Field.
+From Coq Require Import Reals QArith Qreals Bool Arith Lia Lra Lra Ring Field.
 Import ListNotations.
 Local Open Scope Q_scope.
 From UELAT.V3 Require Import

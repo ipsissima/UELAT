@@ -1,7 +1,7 @@
 (** DescentCertificateSize.v -- full certificate-size conclusion for
     authoritative Theorem 7.4 from the H1--H7 resource assembly. *)
 
-From Coq Require Import Arith Nia.
+From Coq Require Import Arith Lia.
 From UELAT.V3 Require Import OrderNeutralDescent H1H7Descent.
 
 Module UELAT_V3_DescentCertificateSize.

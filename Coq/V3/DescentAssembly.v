@@ -2,7 +2,7 @@
     authoritative Section 7.
 *)
 
-From Coq Require Import Reals Arith Lia Nia Lra.
+From Coq Require Import Reals Arith Lia Lia Lra.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace OrderNeutralDescent.
 

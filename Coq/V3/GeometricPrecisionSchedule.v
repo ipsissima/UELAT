@@ -1,6 +1,6 @@
 (** GeometricPrecisionSchedule.v -- derive the descent name schedule from H4. *)
 
-From Coq Require Import Reals Arith PeanoNat Lia Nia Lra Nra.
+From Coq Require Import Reals Arith PeanoNat Lia Lia Lra Lra.
 From UELAT.V3 Require Import CertificateEnrichment RepresentedSpace DescentAssembly.
 
 Module UELAT_V3_GeometricPrecisionSchedule.

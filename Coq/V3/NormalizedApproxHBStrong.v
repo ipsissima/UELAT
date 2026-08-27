@@ -1,7 +1,7 @@
 (** NormalizedApproxHBStrong.v -- normalization of the strong Type-2
     epsilon-Hahn--Banach output. *)
 
-From Coq Require Import Reals QArith Qreals Lra Nra Ring Field.
+From Coq Require Import Reals QArith Qreals Lra Lra Ring Field.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ComputableBanach
   RealizedBoundedFunctional ApproximateHahnBanachStrongInterface.

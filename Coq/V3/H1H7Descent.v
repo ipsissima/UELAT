@@ -5,7 +5,7 @@
     beta schedule and source-lookahead hypothesis are represented separately.
 *)
 
-From Coq Require Import Reals Arith Lia Nia List.
+From Coq Require Import Reals Arith Lia Lia List.
 Import ListNotations.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ProofDAG

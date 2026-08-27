@@ -1,7 +1,7 @@
 (** RealizedAconvCombinations2.v -- effective finite absolutely convex hull of
     the strong 1-norming family. *)
 
-From Coq Require Import Reals QArith Qreals List Lra Nra Ring.
+From Coq Require Import Reals QArith Qreals List Lra Lra Ring.
 Import ListNotations.
 Local Open Scope Q_scope.
 From UELAT.V3 Require Import

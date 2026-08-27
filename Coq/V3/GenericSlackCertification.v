@@ -1,6 +1,6 @@
 (** GenericSlackCertification.v -- manuscript Proposition 2.5. *)
 
-From Coq Require Import Reals QArith Qreals Lra Nra.
+From Coq Require Import Reals QArith Qreals Lra Lra.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace DyadicVanishing StrictSlackSearch.
 

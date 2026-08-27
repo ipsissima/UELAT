@@ -1,6 +1,6 @@
 (** LocalizedPUFEMCompiler.v -- concrete finite compiler skeleton for Theorems 5.6/6.2. *)
 
-From Coq Require Import Reals List Arith Lia Nia.
+From Coq Require Import Reals List Arith Lia Lia.
 Import ListNotations.
 From UELAT.V3 Require Import ProofDAG PersistentGenealogy RationalPUFEM.
 

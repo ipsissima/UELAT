@@ -12,7 +12,7 @@
     an independent generic certificate generator for the semantic target.
 *)
 
-From Coq Require Import Reals Lra Nra.
+From Coq Require Import Reals Lra Lra.
 From UELAT.V3 Require Import CertificateEnrichment EvidenceCategory.
 
 Module UELAT_V3_EvidenceTransport.

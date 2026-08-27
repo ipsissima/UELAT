@@ -8,7 +8,7 @@
     an accepted finite witness by dyadic vanishing.
 *)
 
-From Coq Require Import Reals QArith Qreals Bool Lra Nra.
+From Coq Require Import Reals QArith Qreals Bool Lra Lra.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace
   GenericSlackCertification DyadicVanishing

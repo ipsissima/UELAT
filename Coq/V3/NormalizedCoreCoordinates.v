@@ -1,7 +1,7 @@
 (** NormalizedCoreCoordinates.v -- normalized rational-core coordinates for
     Steps 2--3 of authoritative Theorem 3.2. *)
 
-From Coq Require Import Reals QArith Qreals List Lra Nra Field.
+From Coq Require Import Reals QArith Qreals List Lra Lra Field.
 Import ListNotations.
 Local Open Scope Q_scope.
 From UELAT.V3 Require Import

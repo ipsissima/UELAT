@@ -12,7 +12,7 @@
     kappa[B+log(kappa+1)]-style safe upper budget follows for bounded overlap.
 *)
 
-From Coq Require Import Arith Lia Nia List.
+From Coq Require Import Arith Lia Lia List.
 Import ListNotations.
 
 Module UELAT_V3_RationalBitBudget.

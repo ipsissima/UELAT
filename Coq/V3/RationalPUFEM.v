@@ -1,6 +1,6 @@
 (** RationalPUFEM.v -- authoritative rational PUFEM structural/defect core. *)
 
-From Coq Require Import Reals List Lra Nra.
+From Coq Require Import Reals List Lra Lra.
 Import ListNotations.
 
 Module UELAT_V3_RationalPUFEM.

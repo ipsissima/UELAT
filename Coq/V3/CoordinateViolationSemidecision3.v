@@ -1,7 +1,7 @@
 (** CoordinateViolationSemidecision3.v -- genuine ambient finite-violation
     semidecider for the coordinate dual ball. *)
 
-From Coq Require Import Reals QArith Qreals List Bool Lra Nra Ring Field.
+From Coq Require Import Reals QArith Qreals List Bool Lra Lra Ring Field.
 Import ListNotations.
 Local Open Scope Q_scope.
 From UELAT.V3 Require Import

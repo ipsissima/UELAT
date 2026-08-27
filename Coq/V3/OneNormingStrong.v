@@ -1,7 +1,7 @@
 (** OneNormingStrong.v -- finish Step 1 of authoritative Theorem 3.2 under
     the strong effective epsilon-Hahn--Banach contract. *)
 
-From Coq Require Import Reals QArith Qreals Lra Nra Ring Field.
+From Coq Require Import Reals QArith Qreals Lra Lra Ring Field.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ComputableBanach BanachNormLemmas
   DyadicVanishing GenericSlackCertification CoreNonzeroSearchStrong

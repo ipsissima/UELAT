@@ -8,7 +8,7 @@
     two-sided Theta(M_n beta_n).
 *)
 
-From Coq Require Import Arith Lia Nia.
+From Coq Require Import Arith Lia Lia.
 From UELAT.V3 Require Import ProofDAG PUFEMCompiler.
 
 Module UELAT_V3_Proposition73CompilerBound.

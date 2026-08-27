@@ -1,6 +1,6 @@
 (** LocalizedPUFEMEvidence.v -- evidence-level form of manuscript Theorem 5.6. *)
 
-From Coq Require Import Reals List Lra Nra.
+From Coq Require Import Reals List Lra Lra.
 Import ListNotations.
 From UELAT.V3 Require Import RationalPUFEM LocalizedPUFEMCompiler.
 

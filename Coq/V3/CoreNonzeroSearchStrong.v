@@ -1,7 +1,7 @@
 (** CoreNonzeroSearchStrong.v -- effective discovery of nonzero rational-core
     vectors for Step 1 of Theorem 3.2. *)
 
-From Coq Require Import Reals QArith Qreals Lra Nra Ring.
+From Coq Require Import Reals QArith Qreals Lra Lra Ring.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ComputableBanach
   DyadicVanishing GenericSlackCertification.

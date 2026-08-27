@@ -17,7 +17,7 @@
     That statement is intentionally not retained here.
 *)
 
-From Coq Require Import Reals List Arith Lia Lra Nra.
+From Coq Require Import Reals List Arith Lia Lra Lra.
 Import ListNotations.
 From UELAT.V3 Require Import ProofDAG.
 

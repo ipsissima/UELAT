@@ -2,7 +2,7 @@
     Theorem 7.4.
 *)
 
-From Coq Require Import Arith Lia Nia.
+From Coq Require Import Arith Lia Lia.
 From UELAT.V3 Require Import OrderNeutralDescent.
 
 Module UELAT_V3_QuasiUniformGeometry.

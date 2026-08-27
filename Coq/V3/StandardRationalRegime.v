@@ -5,7 +5,7 @@
     epsilon^{-1/(r-1)} and m+1 for the logarithmic factor.
 *)
 
-From Coq Require Import Arith Lia Nia Reals.
+From Coq Require Import Arith Lia Lia Reals.
 From UELAT.V3 Require Import OrderNeutralDescent.
 
 Module UELAT_V3_StandardRationalRegime.

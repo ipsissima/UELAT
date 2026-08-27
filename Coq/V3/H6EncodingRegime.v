@@ -1,6 +1,6 @@
 (** H6EncodingRegime.v -- the two-sided finite-encoding part of manuscript H6. *)
 
-From Coq Require Import Arith Nia.
+From Coq Require Import Arith Lia.
 From UELAT.V3 Require Import H1H7Descent.
 
 Module UELAT_V3_H6EncodingRegime.

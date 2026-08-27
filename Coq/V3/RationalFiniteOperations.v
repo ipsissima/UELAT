@@ -1,6 +1,6 @@
 (** RationalFiniteOperations.v -- arbitrary-mesh finite operations for Lemma 5.2. *)
 
-From Coq Require Import QArith List Arith Lia Nia.
+From Coq Require Import QArith List Arith Lia Lia.
 Import ListNotations.
 Local Open Scope Q_scope.
 From UELAT.V3 Require Import RationalSobolev RationalArbitraryMesh.

@@ -9,7 +9,7 @@
     late stage once semantic strict slack is known.
 *)
 
-From Coq Require Import Reals Lra Nra Arith.
+From Coq Require Import Reals Lra Lra Arith.
 From UELAT.V3 Require Import RepresentedSpace.
 
 Module UELAT_V3_RationalSobolevCheckers.
