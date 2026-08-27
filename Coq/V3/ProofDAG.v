@@ -54,8 +54,6 @@ Proof.
   lia.
 Qed.
 
-(** * Binary-reference encoding *)
-
 Definition nat_bitlength (n : nat) : nat := S (Nat.log2 n).
 
 Fixpoint sum_nat (xs : list nat) : nat :=
@@ -109,11 +107,7 @@ Definition incremental_dag_bits
   - dag_encoded_bitlength payload_bits rule_bits Hin.
 
 Lemma nat_bitlength_positive : forall n, 0 < nat_bitlength n.
-Proof.
-  intro n. unfold nat_bitlength. lia.
-Qed.
-
-(** * Reachability and checking *)
+Proof. intro n. unfold nat_bitlength. lia. Qed.
 
 Inductive Reachable {Payload Rule} (H : ProofDAG Payload Rule) : nat -> Prop :=
 | reachable_sink : Reachable H (dag_sink H)
@@ -141,8 +135,7 @@ Proof.
       [| i rule refs payload j Hreach IH Hnth Hin].
   - exact (dag_sink_in_range H).
   - pose proof (dag_backward H i rule refs payload Hnth) as Hb.
-    apply Forall_forall in Hb.
-    specialize (Hb j Hin).
+    pose proof ((proj1 (@Forall_forall nat (fun j0 => j0 < i) refs)) Hb j Hin) as Hji.
     lia.
 Qed.
 
@@ -168,16 +161,12 @@ Section ProvenanceCertificate.
   Lemma provenance_has_history {nu}
       (c : ProvenanceCertificate nu) :
     0 < provenance_node_count c.
-  Proof.
-    apply proof_dag_nonempty.
-  Qed.
+  Proof. apply proof_dag_nonempty. Qed.
 
   Lemma provenance_sink_reachable {nu}
       (c : ProvenanceCertificate nu) :
     Reachable (pc_history c) (dag_sink (pc_history c)).
-  Proof.
-    apply reachable_sink.
-  Qed.
+  Proof. apply reachable_sink. Qed.
 
   Definition provenance_encoded_bitlength
       (code_bits : code E -> nat)
@@ -191,15 +180,10 @@ Section ProvenanceCertificate.
     + evidence_bits (cert_evidence E (pc_ordinary c))
     + dag_encoded_bitlength payload_bits rule_bits (pc_history c).
 
-  (** The ordinary certificate already carries its acceptance proof in its
-      type. A provenance certificate is accepted precisely when every
-      reachable node in the attached DAG is accepted by the finite node
-      checker; the sink/code relation is carried by the certificate record. *)
   Definition ProvenanceChecks
       (checker : nat -> ProofNode Payload Rule -> bool)
       {nu} (c : ProvenanceCertificate nu) : Prop :=
     ReachableNodesCheck checker (pc_history c).
 
 End ProvenanceCertificate.
-
 End UELAT_V3_ProofDAG.

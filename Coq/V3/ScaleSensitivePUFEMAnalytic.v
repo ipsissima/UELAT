@@ -1,6 +1,6 @@
 (** ScaleSensitivePUFEMAnalytic.v -- standard analytic derivation for v3 Theorem 7.2. *)
 
-From Coq Require Import Reals Lra Lra.
+From Coq Require Import Reals Lra Ring.
 Local Open Scope R_scope.
 
 Module UELAT_V3_ScaleSensitivePUFEMAnalytic.
@@ -50,28 +50,54 @@ Section ClassicalRate.
   Qed.
 
   Variable D : ScaleSensitiveAnalyticData.
+
   Lemma global_l2_rate_derived :
     global_l2_error D <= kappa * C0 * h_alpha * Rbound.
   Proof.
-    pose proof (global_l2_from_overlap D) as Hg.
-    pose proof (local_l2_rate D) as Hl. nra.
+    eapply Rle_trans; [exact (global_l2_from_overlap D)|].
+    apply Rmult_le_compat_l; [exact Hkappa|].
+    eapply Rle_trans; [exact (local_l2_rate D)|].
+    replace (C0 * h_r * Rbound) with ((C0 * Rbound) * h_r) by ring.
+    replace (C0 * h_alpha * Rbound) with ((C0 * Rbound) * h_alpha) by ring.
+    apply Rmult_le_compat_l; [nra|exact power_loss_one].
   Qed.
+
   Lemma global_deriv_rate_derived :
     global_deriv_error D <=
       kappa * (Cchi * C0 + C1) * h_alpha * Rbound.
   Proof.
-    pose proof (global_deriv_from_product_rule D) as Hg.
-    pose proof (local_l2_rate D) as Hl0.
-    pose proof (local_deriv_rate D) as Hl1. nra.
+    eapply Rle_trans; [exact (global_deriv_from_product_rule D)|].
+    apply Rmult_le_compat_l; [exact Hkappa|].
+    replace ((Cchi * C0 + C1) * h_alpha * Rbound)
+      with (Cchi * C0 * h_alpha * Rbound + C1 * h_alpha * Rbound) by ring.
+    apply Rplus_le_compat.
+    - eapply Rle_trans.
+      + apply Rmult_le_compat_l.
+        * nra.
+        * exact (local_l2_rate D).
+      + replace ((Cchi * h_inv) * (C0 * h_r * Rbound))
+          with ((Cchi * C0 * Rbound) * (h_inv * h_r)) by ring.
+        replace (Cchi * C0 * h_alpha * Rbound)
+          with ((Cchi * C0 * Rbound) * h_alpha) by ring.
+        apply Rmult_le_compat_l; [nra|exact inverse_times_high_order].
+    - exact (local_deriv_rate D).
   Qed.
+
   Theorem classical_scale_sensitive_pufem_estimate :
     global_w12_error D <= scale_Cstar * h_alpha * Rbound.
   Proof.
-    pose proof (global_w12_from_components D) as Hw.
-    pose proof global_l2_rate_derived as H0.
-    pose proof global_deriv_rate_derived as H1.
-    unfold scale_Cstar. nra.
+    eapply Rle_trans; [exact (global_w12_from_components D)|].
+    eapply Rle_trans.
+    - apply Rplus_le_compat.
+      + exact global_l2_rate_derived.
+      + exact global_deriv_rate_derived.
+    - unfold scale_Cstar.
+      replace (kappa * ((1 + Cchi) * C0 + C1) * h_alpha * Rbound)
+        with (kappa * C0 * h_alpha * Rbound
+              + kappa * (Cchi * C0 + C1) * h_alpha * Rbound) by ring.
+      reflexivity.
   Qed.
+
   Theorem scale_sensitive_rate_loses_exactly_one_power :
     global_w12_error D <=
       kappa * ((1 + Cchi) * C0 + C1) * h_alpha * Rbound.

@@ -21,18 +21,13 @@ Arguments BHom {b} _ _.
 Arguments bid {b} _.
 Arguments bcomp {b x y z} _ _.
 
-(** Object and morphism data of a strict Cat-valued assignment.  The base and
-    fibre category laws themselves are semantic background; the equations used
-    by the split construction are stored explicitly. *)
 Record StrictIndexed (B : BaseCategory) := {
   fibre_obj : BObj B -> Type;
   fibre_hom : forall x, fibre_obj x -> fibre_obj x -> Type;
   fibre_id : forall x (a : fibre_obj x), fibre_hom x a a;
-
   push_obj : forall {x y}, BHom x y -> fibre_obj x -> fibre_obj y;
   push_hom : forall {x y} (f : BHom x y) {a b},
       fibre_hom x a b -> fibre_hom y (push_obj f a) (push_obj f b);
-
   push_id : forall x (a : fibre_obj x), push_obj (bid x) a = a;
   push_comp : forall x y z (f : BHom x y) (g : BHom y z) (a : fibre_obj x),
       push_obj (bcomp g f) a = push_obj g (push_obj f a)
@@ -75,17 +70,13 @@ Section Construction.
 
   Theorem chosen_lift_identity : forall x (a : fibre_obj I x),
     lift_target (chosen_lift (bid x) a) = a.
-  Proof.
-    intros. simpl. apply push_id.
-  Qed.
+  Proof. intros. simpl. apply push_id. Qed.
 
   Theorem chosen_lift_composition :
     forall x y z (f : BHom x y) (g : BHom y z) (a : fibre_obj I x),
       lift_target (chosen_lift (bcomp g f) a)
       = lift_target (chosen_lift g (lift_target (chosen_lift f a))).
-  Proof.
-    intros. simpl. apply push_comp.
-  Qed.
+  Proof. intros. simpl. apply push_comp. Qed.
 
   Record TotalArrow (a b : TotalObject) := {
     total_arrow_base : BHom (total_base a) (total_base b);
@@ -95,7 +86,6 @@ Section Construction.
         (total_fibre b)
   }.
 
-  (** The chosen arrow over f has identity fibre component. *)
   Definition chosen_total_lift
       {x y : BObj B} (f : BHom x y) (a : fibre_obj I x) :
       TotalArrow
@@ -109,10 +99,6 @@ Section Construction.
     cbn. exact (fibre_id I y (push_obj f a)).
   Defined.
 
-  (** Universal factor in the target fibre.  Given an arrow whose base factors
-      as g o f, strict functoriality identifies its fibre source with
-      g_!(f_!a); transport along that equality yields the unique factor used by
-      the Grothendieck opcartesian lift. *)
   Definition opcartesian_factor
       {x y z : BObj B}
       (f : BHom x y) (g : BHom y z)
@@ -130,10 +116,13 @@ Section Construction.
       exists! k : fibre_hom I z (push_obj g (push_obj f a)) c,
         k = opcartesian_factor f g a c h.
   Proof.
-    intros.
-    exists (opcartesian_factor f g a c h).
-    - reflexivity.
-    - intros y0 Hy0. exact Hy0.
+    intros x y z f g a c h.
+    refine (@ex_intro_unique
+      (fibre_hom I z (push_obj g (push_obj f a)) c)
+      (fun k => k = opcartesian_factor f g a c h)
+      (opcartesian_factor f g a c h)
+      eq_refl _).
+    intros y0 Hy0. exact Hy0.
   Qed.
 
   Record SplitOpfibrationData := {
@@ -157,5 +146,4 @@ Section Construction.
   Defined.
 
 End Construction.
-
 End UELAT_V3_GrothendieckEvidence.

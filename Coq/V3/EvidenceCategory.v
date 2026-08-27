@@ -29,6 +29,11 @@ Section Evidence.
       dist_check (ev_name a) (ev_name b) arrow_bound arrow_witness = true
   }.
 
+  Arguments arrow_bound {a b} _.
+  Arguments arrow_bound_nonnegative {a b} _.
+  Arguments arrow_witness {a b} _.
+  Arguments arrow_accepted {a b} _.
+
   Definition id_arrow (a : EvidenceObject) : EvidenceArrow a a.
   Proof.
     destruct (@dist_identity X E (ev_name a)) as [w Hw].
@@ -61,5 +66,4 @@ Section Evidence.
   Qed.
 
 End Evidence.
-
 End UELAT_V3_EvidenceCategory.

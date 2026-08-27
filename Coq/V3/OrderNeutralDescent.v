@@ -75,8 +75,12 @@ Section DyadicGeometry.
   Proof.
     intro n. eapply Nat.le_trans.
     - apply nsum_upto_le. intros j Hj.
-      specialize (payload_level_bound j) as Hp.
-      specialize (beta_monotone j n Hj) as Hb. nia.
+      eapply Nat.le_trans.
+      + apply payload_level_bound.
+      + replace (c_payload * beta n * M j)
+          with ((c_payload * M j) * beta n) by nia.
+        apply Nat.mul_le_mono_l.
+        apply beta_monotone. exact Hj.
     - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
               <= c_payload * beta n * nsum_upto M n).
       rewrite nsum_upto_scale. reflexivity.

@@ -98,7 +98,7 @@ Theorem derivative_is_finite : forall xs,
 Proof. intros. eexists. reflexivity. Qed.
 
 Lemma collect_against_length_le : forall op u ys,
-  length (collect_against op u ys) <= length ys.
+  (length (collect_against op u ys) <= length ys)%nat.
 Proof.
   intros op u ys. induction ys as [|v rest IH]; simpl.
   - lia.
@@ -107,7 +107,7 @@ Proof.
 Qed.
 
 Theorem common_refined_operation_length_le : forall op xs ys,
-  length (common_refined_operation op xs ys) <= length xs * length ys.
+  (length (common_refined_operation op xs ys) <= length xs * length ys)%nat.
 Proof.
   intros op xs. induction xs as [|u rest IH]; intro ys; simpl.
   - lia.
@@ -117,10 +117,10 @@ Proof.
 Qed.
 
 Corollary common_add_length_le : forall xs ys,
-  length (common_add_pieces xs ys) <= length xs * length ys.
+  (length (common_add_pieces xs ys) <= length xs * length ys)%nat.
 Proof. apply common_refined_operation_length_le. Qed.
 Corollary common_mul_length_le : forall xs ys,
-  length (common_mul_pieces xs ys) <= length xs * length ys.
+  (length (common_mul_pieces xs ys) <= length xs * length ys)%nat.
 Proof. apply common_refined_operation_length_le. Qed.
 
 Lemma common_scale_length : forall a xs,
@@ -130,7 +130,7 @@ Lemma derivative_pieces_length : forall xs,
   length (derivative_pieces xs) = length xs.
 Proof. intro xs. induction xs; simpl; congruence. Qed.
 Lemma restrict_pieces_length_le : forall a b xs,
-  length (restrict_pieces a b xs) <= length xs.
+  (length (restrict_pieces a b xs) <= length xs)%nat.
 Proof.
   intros a b xs. induction xs as [|u rest IH]; simpl.
   - lia.

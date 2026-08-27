@@ -76,8 +76,8 @@ Lemma find_covering_from_sound : forall offset s cover i,
     /\ i = (offset + k)%nat
     /\ star_inside_interval s u.
 Proof.
-  intros offset s cover.
-  induction cover as [|u us IH]; intros i Hfind; simpl in Hfind.
+  intros offset s cover. revert offset.
+  induction cover as [|u us IH]; intros offset i Hfind; simpl in Hfind.
   - discriminate.
   - destruct (star_insideb s u) eqn:Hinside.
     + inversion Hfind; subst.
@@ -108,8 +108,8 @@ Lemma find_covering_from_complete : forall offset s cover k u,
   star_inside_interval s u ->
   exists i, find_covering_from offset s cover = Some i.
 Proof.
-  intros offset s cover.
-  induction cover as [|v vs IH]; intros k u Hnth Hinside; simpl in Hnth.
+  intros offset s cover. revert offset.
+  induction cover as [|v vs IH]; intros offset k u Hnth Hinside; simpl in Hnth.
   - discriminate.
   - destruct k as [|k].
     + inversion Hnth; subst.

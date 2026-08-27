@@ -19,7 +19,6 @@ Record RationalPOUStructure := {
   pou_overlap_positive : (0 < pou_overlap)%nat
 }.
 
-(** Squared operator weight from manuscript Lemma 5.4 / Proposition 6.3. *)
 Definition multiplier_weight (psi : PartitionDatum) : R :=
   Rmax
     (partition_sup_bound psi ^ 2 + 2 * partition_deriv_bound psi ^ 2)
@@ -71,7 +70,7 @@ Section MultiplierEstimate.
   Proof.
     assert (Hsq : deriv_product^2
               <= (L * delta0 + Cinf * delta1)^2) by nra.
-    assert (Haux : 0 <= (L * delta0 - Cinf * delta1)^2) by apply sq_nonneg.
+    pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)) as Haux.
     eapply Rle_trans; [exact Hsq|].
     nra.
   Qed.

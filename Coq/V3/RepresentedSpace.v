@@ -30,8 +30,8 @@ Qed.
 
 Record FastCauchyName (X : MetricPresentation) := {
   approximant : nat -> carrier X;
-  fast_cauchy : forall m n,
-      n <= m ->
+  fast_cauchy : forall (m n : nat),
+      (n <= m)%nat ->
       distance (approximant m) (approximant n) <= dyadic n
 }.
 
@@ -40,7 +40,7 @@ Arguments approximant {X} _ _.
 Record RepresentedPoint (X : MetricPresentation) := {
   represented_value : carrier X;
   represented_name : FastCauchyName X;
-  represented_tail : forall n,
+  represented_tail : forall n : nat,
       distance represented_value (approximant represented_name n) <= dyadic n
 }.
 
@@ -48,7 +48,7 @@ Arguments represented_value {X} _.
 Arguments represented_name {X} _.
 
 Lemma tail_reverse {X : MetricPresentation} (x : RepresentedPoint X) :
-  forall n,
+  forall n : nat,
     distance (approximant (represented_name x) n) (represented_value x)
       <= dyadic n.
 Proof.
@@ -59,7 +59,7 @@ Qed.
 
 Lemma approximants_compare_through_limit
     {X : MetricPresentation} (x y : RepresentedPoint X) :
-  forall n,
+  forall n : nat,
     distance (approximant (represented_name x) n)
              (approximant (represented_name y) n)
     <= dyadic n + distance (represented_value x) (represented_value y) + dyadic n.

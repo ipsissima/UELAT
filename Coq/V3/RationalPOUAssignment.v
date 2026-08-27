@@ -23,11 +23,11 @@ Fixpoint add_at (i : nat) (v : Q) (bs : list Q) : list Q :=
   | S j, b :: rest => b :: add_at j v rest
   | _, [] => []
   end.
-Lemma add_at_length : forall i v bs,
-  i < length bs -> length (add_at i v bs) = length bs.
+Lemma add_at_length : forall (i : nat) v bs,
+  (i < length bs)%nat -> length (add_at i v bs) = length bs.
 Proof. induction i; destruct bs; simpl; intros; try lia; f_equal; eauto. Qed.
-Lemma qsum_add_at : forall i v bs,
-  i < length bs -> qsum (add_at i v bs) == v + qsum bs.
+Lemma qsum_add_at : forall (i : nat) v bs,
+  (i < length bs)%nat -> qsum (add_at i v bs) == v + qsum bs.
 Proof.
   induction i; destruct bs as [|b rest]; simpl; intros H; try lia.
   - ring.
@@ -40,7 +40,7 @@ Fixpoint bucketize (M : nat) (entries : list (nat * Q)) : list Q :=
   | (i,v) :: rest => add_at i v (bucketize M rest)
   end.
 Definition entries_in_range (M : nat) (entries : list (nat * Q)) : Prop :=
-  Forall (fun e => fst e < M) entries.
+  Forall (fun e => (fst e < M)%nat) entries.
 Lemma bucketize_length : forall M entries,
   entries_in_range M entries -> length (bucketize M entries) = M.
 Proof.
@@ -63,9 +63,9 @@ Qed.
 
 Record StarAssignment := {
   sa_patch_count : nat;
-  sa_patch_count_positive : 0 < sa_patch_count;
+  sa_patch_count_positive : (0 < sa_patch_count)%nat;
   sa_vertex_patch : nat -> nat;
-  sa_vertex_in_range : forall k, sa_vertex_patch k < sa_patch_count;
+  sa_vertex_in_range : forall k, (sa_vertex_patch k < sa_patch_count)%nat;
   sa_star_inside : nat -> Prop;
   sa_star_inside_certified : forall k, sa_star_inside k
 }.
