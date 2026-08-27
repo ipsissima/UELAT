@@ -97,10 +97,10 @@ jobs:
           set -eux
           eval "$(opam env)"
           bash .github/scripts/print_assumptions.sh
-          modified_committed="$(git status --porcelain docs/assumptions/ | awk '/^ M|^M /{print $2}')"
-          if [ -n "${modified_committed}" ]; then
-            echo "::error::committed assumption reports drifted"
-            echo "${modified_committed}"
+          audit_drift="$(git status --porcelain --untracked-files=all docs/assumptions/)"
+          if [ -n "${audit_drift}" ]; then
+            echo "::error::assumption reports drifted or are missing from the committed audit set"
+            printf '%s\n' "${audit_drift}"
             git --no-pager diff docs/assumptions/ || true
             exit 1
           fi
