@@ -2,7 +2,7 @@
 
 `V3/` is intentionally flat because the Rocq logical paths were stabilized during reconstruction. It should be read by **manuscript section**, not alphabetically or chronologically.
 
-**Important:** presence in this directory is not a verification claim. The controlling build surface is [`../_CoqProject.authoritative-v3`](../_CoqProject.authoritative-v3), and theorem status is controlled by [`../../docs/FORMALIZATION STATUS.md`](../../docs/FORMALIZATION%20STATUS.md).
+**Important:** presence in this directory is not a verification claim. The controlling build surface is [`../_CoqProject.authoritative-v3`](../_CoqProject.authoritative-v3), the public checked aggregate is [`../UELATAuthoritativeV3.v`](../UELATAuthoritativeV3.v), and theorem status is controlled by [`../../docs/FORMALIZATION STATUS.md`](../../docs/FORMALIZATION%20STATUS.md).
 
 ## §2 — represented analytic objects and finite evidence
 
