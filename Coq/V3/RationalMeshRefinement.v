@@ -23,7 +23,9 @@ Lemma qpoly_integral_between_from_additive :
 Proof.
   induction p as [|x xs IH]; intros n a b c; simpl.
   - ring.
-  - setoid_rewrite (IH (S n) a b c). ring.
+  - setoid_rewrite (IH (S n) a b c).
+    unfold Qdiv.
+    ring.
 Qed.
 
 Theorem qpoly_integral_between_additive : forall p a b c,
