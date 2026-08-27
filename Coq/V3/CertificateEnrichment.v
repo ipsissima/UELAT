@@ -89,9 +89,6 @@ Section Certificates.
     cert_accepted : app_check nu cert_code cert_bound cert_evidence = true
   }.
 
-  Arguments cert_code {nu} _.
-  Arguments cert_bound {nu} _.
-
   Record CertificateAt (nu : name X) (eps : R) := {
     certificate_at_record : Certificate nu;
     certificate_at_strict : cert_bound certificate_at_record < eps
@@ -109,5 +106,17 @@ Section Certificates.
   Qed.
 
 End Certificates.
+
+(** Keep the section parameters stable at call sites.  In particular, the
+    represented name and tolerance are inferable from the certificate value;
+    making that explicit here prevents Rocq-version-dependent projection
+    elaboration in downstream manuscript modules. *)
+Arguments cert_code {X} E {nu} _.
+Arguments cert_bound {X} E {nu} _.
+Arguments cert_bound_nonnegative {X} E {nu} _.
+Arguments cert_evidence {X} E {nu} _.
+Arguments cert_accepted {X} E {nu} _.
+Arguments certificate_at_record {X} E {nu eps} _.
+Arguments certificate_at_strict {X} E {nu eps} _.
 
 End UELAT_V3_CertificateEnrichment.
