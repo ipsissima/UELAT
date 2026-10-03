@@ -1,0 +1,163 @@
+name: V3 Rocq 9.2 diagnostic
+
+# Read-only diagnostic of the V3 source surface under the exact pinned
+# Rocq 9.2 toolchain. It compiles, records what broke and where, and
+# publishes the compiler output as check-run annotations so the result is
+# readable through the REST API without access to the log blob host.
+#
+# It builds nothing new, changes no source, and promotes no formalization
+# status. It exists only to produce a diagnosis for a repair branch.
+
+on:
+  push:
+    branches: [claude/uelat-coq-toolchain-28q0lq]
+  workflow_dispatch:
+
+concurrency:
+  group: v3-diagnostic-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  OPAMYES: true
+
+jobs:
+  diagnose:
+    name: Rocq 9.2 diagnostic audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: false
+
+      # Same cache key as the V3 Fast workflow, so a warm Rocq 9.2 switch
+      # is reused instead of rebuilt.
+      - name: Restore Rocq 9.2 switch
+        id: rocq-switch
+        uses: actions/cache/restore@v4
+        with:
+          path: _opam
+          key: ${{ runner.os }}-v3-rocq92-local-switch-v1
+
+      - name: Ensure Rocq 9.2
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          if [ "${{ steps.rocq-switch.outputs.cache-hit }}" = "true" ]; then
+            coqc --version
+            coqc --version | grep -Fq 'version 9.2'
+          else
+            if [ -d "$HOME/.opam/repo/coq-released" ] && \
+               ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
+              rm -rf "$HOME/.opam/repo/coq-released" \
+                     "$HOME/.opam/repo/coq-released.tar.gz"
+            fi
+            opam repo add coq-released https://coq.inria.fr/opam/released || \
+              opam repo set-url coq-released https://coq.inria.fr/opam/released
+            opam update
+            opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
+            coqc --version
+          fi
+
+      - name: Record toolchain identity
+        shell: bash
+        run: |
+          set -eu
+          eval "$(opam env)"
+          ver="$(coqc --version | tr '\n' ' ')"
+          chk="$(coqchk --version 2>&1 | tr '\n' ' ' || true)"
+          printf '::notice title=Toolchain::coqc %s / coqchk %s\n' "${ver}" "${chk}"
+
+      - name: Compile full V3 surface and capture the log
+        shell: bash
+        run: |
+          set -u
+          eval "$(opam env)"
+          mkdir -p "${RUNNER_TEMP}/diag"
+          cd Coq
+          mapfile -t VFILES < <(
+            find V3 -maxdepth 1 -type f -name '*.v' -print | LC_ALL=C sort
+          )
+          VFILES+=("UELATCheckedCoreV3.v")
+          {
+            printf '%s\n' '-Q . UELAT'
+            printf '%s\n' "${VFILES[@]}"
+          } > _CoqProject.diag
+          # Topological order, so "first failure" is meaningful.
+          coqdep -sort -Q . UELAT "${VFILES[@]}" \
+            > "${RUNNER_TEMP}/diag/order.txt" 2>/dev/null || true
+          if [ ! -s "${RUNNER_TEMP}/diag/order.txt" ]; then
+            printf '%s\n' "${VFILES[@]}" > "${RUNNER_TEMP}/diag/order.txt"
+          fi
+          coq_makefile -f _CoqProject.diag -o Makefile.diag
+          set +e
+          make -k -f Makefile.diag -j2 > "${RUNNER_TEMP}/diag/build.log" 2>&1
+          echo "make_rc=$?" >> "${GITHUB_ENV}"
+          set -e
+          echo "compiled_vo=$(find V3 -maxdepth 1 -name '*.vo' | wc -l)"
+          echo "total_v=$(find V3 -maxdepth 1 -name '*.v' | wc -l)"
+
+      - name: Publish diagnosis as annotations
+        shell: bash
+        run: |
+          set -eu
+          python3 .github/scripts/diag_annotate.py \
+            "${RUNNER_TEMP}/diag/build.log" \
+            Coq \
+            "${RUNNER_TEMP}/diag/order.txt" \
+            Coq/_CoqProject.checked-core-v3 \
+            "${RUNNER_TEMP}/diag"
+
+      - name: Annotations 1
+        if: always()
+        shell: bash
+        run: 'cat "${RUNNER_TEMP}/diag/ann_1.txt" 2>/dev/null || true'
+
+      - name: Annotations 2
+        if: always()
+        shell: bash
+        run: 'cat "${RUNNER_TEMP}/diag/ann_2.txt" 2>/dev/null || true'
+
+      - name: Annotations 3
+        if: always()
+        shell: bash
+        run: 'cat "${RUNNER_TEMP}/diag/ann_3.txt" 2>/dev/null || true'
+
+      - name: Annotations 4
+        if: always()
+        shell: bash
+        run: 'cat "${RUNNER_TEMP}/diag/ann_4.txt" 2>/dev/null || true'
+
+      - name: Annotations 5
+        if: always()
+        shell: bash
+        run: 'cat "${RUNNER_TEMP}/diag/ann_5.txt" 2>/dev/null || true'
+
+      - name: Annotations 6
+        if: always()
+        shell: bash
+        run: 'cat "${RUNNER_TEMP}/diag/ann_6.txt" 2>/dev/null || true'
+
+      - name: coqchk the checked-core entry point if it built
+        if: always()
+        shell: bash
+        run: |
+          set -u
+          eval "$(opam env)"
+          if [ "${make_rc:-1}" != "0" ]; then
+            printf '::notice title=coqchk::skipped - the V3 surface did not compile\n'
+            exit 0
+          fi
+          set +e
+          out="$(coqchk -R Coq UELAT UELAT.UELATCheckedCoreV3 2>&1 | tail -c 1500)"
+          rc=$?
+          set -e
+          esc="${out//$'\n'/%0A}"
+          printf '::notice title=coqchk rc=%s::%s\n' "${rc}" "${esc}"
