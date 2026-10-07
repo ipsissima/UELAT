@@ -78,7 +78,10 @@ Section MultiplierEstimate.
       = 2 * L^2 * delta0^2 + 2 * Cinf^2 * delta1^2).
     { ring. }
     rewrite <- Hidentity.
-    nra.
+    replace ((L * delta0 + Cinf * delta1)^2)
+      with ((L * delta0 + Cinf * delta1)^2 + 0) at 1 by ring.
+    apply Rplus_le_compat_l.
+    exact Hdiff.
   Qed.
 
   Theorem multiplier_w12_squared :
