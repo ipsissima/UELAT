@@ -74,8 +74,14 @@ jobs:
           set -euxo pipefail
           eval "$(opam env)"
           cd Coq
-          coq_makefile -f _CoqProject.theorem74-v3 -o Makefile.theorem74-v3
-          make -f Makefile.theorem74-v3 -j2
+          mapfile -t files < <(
+            sed -e 's/#.*$//' -e '/^[[:space:]]*$/d' _CoqProject.theorem74-v3 \
+              | awk '$1 !~ /^-/ && $1 ~ /\.v$/ { print $1 }'
+          )
+          for source in "${files[@]}"; do
+            echo "ROCQ focused compile ${source}"
+            timeout 60s coqc -R . UELAT "${source}"
+          done
 
       - name: coqchk public entry point
         shell: bash
