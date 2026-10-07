@@ -180,6 +180,8 @@ Section DerivedBudget.
   Qed.
 End DerivedBudget.
 
+Local Close Scope R_scope.
+
 (** * Structural finite-code size bound *)
 
 Fixpoint nsum (xs : list nat) : nat :=
