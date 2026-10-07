@@ -48,6 +48,42 @@ Proof.
   now apply semidecidable_slack_search_minimal.
 Qed.
 
+Lemma dyadic_plus_two : forall k,
+  dyadic (k + 2) = dyadic k / 4.
+Proof.
+  intro k.
+  replace (k + 2)%nat with (S (S k)) by lia.
+  simpl. ring.
+Qed.
+
+Theorem epsilon_stage_from_announced_dyadic : forall eps k,
+  (0 < eps)%Q ->
+  (2 * qdyadic k <= eps)%Q ->
+  epsilon_stage_test eps (k + 2) = true.
+Proof.
+  intros eps k Heps Hk.
+  unfold epsilon_stage_test.
+  apply qltb_true_iff.
+  apply Rlt_Qlt.
+  rewrite Q2R_mult, qdyadic_real, dyadic_plus_two.
+  change (Q2R (4 : Q)) with 4%R.
+  pose proof (Qle_Rle _ _ Hk) as HkR.
+  rewrite Q2R_mult, qdyadic_real in HkR.
+  change (Q2R (2 : Q)) with 2%R in HkR.
+  pose proof (Qlt_Rlt _ _ Heps) as HepsR.
+  change (Q2R (0 : Q)) with 0%R in HepsR.
+  lra.
+Qed.
+
+Theorem epsilon_precision_paper_depth_bound : forall eps Heps k,
+  (2 * qdyadic k <= eps)%Q ->
+  epsilon_precision eps Heps <= k + 2.
+Proof.
+  intros eps Heps k Hk.
+  apply epsilon_precision_minimal.
+  now apply epsilon_stage_from_announced_dyadic.
+Qed.
+
 Theorem epsilon_precision_dyadic_bound : forall eps Heps,
   4 * dyadic (epsilon_precision eps Heps) < Q2R eps.
 Proof.
