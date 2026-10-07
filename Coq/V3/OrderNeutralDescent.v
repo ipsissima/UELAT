@@ -23,7 +23,11 @@ Qed.
 
 Lemma nsum_upto_scale : forall c f n,
   nsum_upto (fun j => c * f j) n = c * nsum_upto f n.
-Proof. intros c f n. induction n; simpl; nia. Qed.
+Proof.
+  intros c f n. induction n as [|n IH].
+  - reflexivity.
+  - simpl. rewrite IH, Nat.mul_add. reflexivity.
+Qed.
 
 Definition pow2 (n : nat) : nat := Nat.pow 2 n.
 
@@ -60,7 +64,9 @@ Section DyadicGeometry.
     nsum_upto M n <= 2 * M n.
   Proof.
     intro n. rewrite sum_M_exact. unfold M.
-    pose proof (pow2_positive n) as Hp. unfold pow2 in *. simpl Nat.pow. nia.
+    apply Nat.mul_le_mono_l.
+    unfold pow2. simpl Nat.pow.
+    lia.
   Qed.
 
   Variables beta payload_bits : nat -> nat.
@@ -93,7 +99,12 @@ Section DyadicGeometry.
   Proof.
     intro n. eapply Nat.le_trans.
     - apply payload_sum_bound_by_patch_sum.
-    - pose proof (dyadic_patch_sum n). nia.
+    - pose proof (Nat.mul_le_mono_l (c_payload * beta n) (dyadic_patch_sum n))
+        as Hscaled.
+      repeat rewrite Nat.mul_assoc in Hscaled.
+      rewrite (Nat.mul_comm (beta n) 2) in Hscaled.
+      repeat rewrite <- Nat.mul_assoc in Hscaled.
+      exact Hscaled.
   Qed.
 
   Variable ordinary_bits : nat -> nat.
@@ -104,8 +115,13 @@ Section DyadicGeometry.
   Theorem order_neutral_relative_to_baseline : forall n,
     nsum_upto payload_bits n <= 2 * c_payload * base_factor * ordinary_bits n.
   Proof.
-    intro n. pose proof (genealogy_sums_to_finest_level n) as Hg.
-    pose proof (baseline_dominates n) as Hb. nia.
+    intro n.
+    eapply Nat.le_trans.
+    - apply genealogy_sums_to_finest_level.
+    - pose proof (Nat.mul_le_mono_l (2 * c_payload) (baseline_dominates n))
+        as Hscaled.
+      repeat rewrite Nat.mul_assoc in Hscaled.
+      exact Hscaled.
   Qed.
 
   Variable beta_factor : nat.
@@ -116,8 +132,16 @@ Section DyadicGeometry.
     nsum_upto payload_bits n
       <= 2 * c_payload * M0 * beta_factor * pow2 n * S n.
   Proof.
-    intro n. pose proof (genealogy_sums_to_finest_level n) as Hg.
-    specialize (beta_linear n) as Hb. unfold M in Hg. nia.
+    intro n.
+    eapply Nat.le_trans.
+    - apply genealogy_sums_to_finest_level.
+    - unfold M.
+      pose proof (Nat.mul_le_mono_l (2 * c_payload * (M0 * pow2 n))
+                    (beta_linear n)) as Hscaled.
+      repeat rewrite Nat.mul_assoc in Hscaled.
+      rewrite (Nat.mul_comm (pow2 n) beta_factor) in Hscaled.
+      repeat rewrite <- Nat.mul_assoc in Hscaled.
+      exact Hscaled.
   Qed.
 End DyadicGeometry.
 
