@@ -3,7 +3,7 @@
     summable relative to the finest relevant level.
 *)
 
-From Coq Require Import Arith Lia List.
+From Coq Require Import Arith Lia List Ring.
 
 Module UELAT_V3_OrderNeutralDescent.
 
