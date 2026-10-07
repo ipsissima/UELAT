@@ -78,7 +78,10 @@ Section DyadicGeometry.
       eapply Nat.le_trans.
       + apply payload_level_bound.
       + pose proof (beta_monotone j n Hj) as Hb.
-        pose proof (Nat.mul_le_mono_l (c_payload * M j) Hb) as Hmul.
+        assert (Hmul :
+          (c_payload * M j) * beta j
+            <= (c_payload * M j) * beta n).
+        { apply Nat.mul_le_mono_l. exact Hb. }
         nia.
     - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
               <= c_payload * beta n * nsum_upto M n).
