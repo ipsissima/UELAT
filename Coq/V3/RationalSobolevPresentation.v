@@ -56,9 +56,9 @@ Inductive ApproxWitness (P : RationalW12Presentation) : Type :=
 Inductive DistanceWitness (P : RationalW12Presentation) : Type :=
 | PositiveDistance : nat -> Q -> DistanceWitness P.
 
-Arguments ExactSelf {r} _.
-Arguments PositiveApprox {r} _ _.
-Arguments PositiveDistance {r} _ _.
+Arguments ExactSelf {P} _.
+Arguments PositiveApprox {P} _ _.
+Arguments PositiveDistance {P} _ _.
 
 Definition approx_accept
     (P : RationalW12Presentation)
