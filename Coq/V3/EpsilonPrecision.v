@@ -14,6 +14,64 @@ Import UELAT_V3_GenericSlackCertification.
 Definition epsilon_stage_test (eps : Q) (s : nat) : bool :=
   qltb (4 * qdyadic s) eps.
 
+Definition qleb (a b : Q) : bool :=
+  if Qle_dec a b then true else false.
+
+Lemma qleb_true_iff : forall a b, qleb a b = true <-> (a <= b)%Q.
+Proof.
+  intros a b. unfold qleb. destruct (Qle_dec a b) as [Hle|Hnle].
+  - split; intros; assumption.
+  - split; intro H.
+    + discriminate.
+    + exfalso. apply Hnle. exact H.
+Qed.
+
+Definition paper_k_test (eps : Q) (k : nat) : bool :=
+  qleb (2 * qdyadic k) eps.
+
+Theorem paper_k_eventually : forall eps,
+  (0 < eps)%Q -> exists k, paper_k_test eps k = true.
+Proof.
+  intros eps Heps.
+  pose proof (Qlt_Rlt _ _ Heps) as HepsR.
+  change (Q2R (0 : Q)) with 0%R in HepsR.
+  destruct (dyadic_eventually_below (Q2R eps / 2) ltac:(lra)) as [k Hk].
+  exists k. unfold paper_k_test. apply qleb_true_iff.
+  apply Rle_Qle.
+  rewrite Q2R_mult, qdyadic_real.
+  change (Q2R (2 : Q)) with 2%R.
+  lra.
+Qed.
+
+Definition paper_k_search (eps : Q) (Heps : (0 < eps)%Q) :
+    SemidecidableSlackSearch :=
+  {| slack_test := paper_k_test eps;
+     slack_eventually := paper_k_eventually eps Heps |}.
+
+Definition paper_k (eps : Q) (Heps : (0 < eps)%Q) : nat :=
+  run_semidecidable_slack_search (paper_k_search eps Heps).
+
+Theorem paper_k_valid : forall eps Heps,
+  (2 * qdyadic (paper_k eps Heps) <= eps)%Q.
+Proof.
+  intros eps Heps.
+  unfold paper_k.
+  pose proof (semidecidable_slack_search_valid (paper_k_search eps Heps)) as H.
+  unfold paper_k_test in H.
+  now apply qleb_true_iff in H.
+Qed.
+
+Theorem paper_k_minimal : forall eps Heps k,
+  (2 * qdyadic k <= eps)%Q ->
+  paper_k eps Heps <= k.
+Proof.
+  intros eps Heps k Hk.
+  unfold paper_k.
+  apply semidecidable_slack_search_minimal.
+  unfold paper_k_test.
+  now apply qleb_true_iff.
+Qed.
+
 Theorem epsilon_stage_eventually : forall eps,
   (0 < eps)%Q -> exists s, epsilon_stage_test eps s = true.
 Proof.
