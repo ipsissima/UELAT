@@ -108,8 +108,8 @@ Section DistanceCertification.
     assert (Hfinite :
       (distance (ems_stage E nu n) (ems_stage E mu n)
         <= dtrue + 2 * dyadic n)%R).
-    { pose proof (ems_stage_tail E nu n) as Hnu.
-      pose proof (ems_stage_tail E mu n) as Hmu.
+    { pose proof (@ems_stage_tail X E nu n) as Hnu.
+      pose proof (@ems_stage_tail X E mu n) as Hmu.
       eapply Rle_trans.
       - apply distance_triangle with (y := decode_name nu).
       - eapply Rle_trans.
@@ -117,7 +117,7 @@ Section DistanceCertification.
           apply distance_triangle with (y := decode_name mu).
         + rewrite distance_symmetric with (x := ems_stage E nu n) (y := decode_name nu).
           unfold dtrue. lra. }
-    pose proof (ems_upper_precision E (ems_stage E nu n) (ems_stage E mu n) n) as Hprec.
+    pose proof (@ems_upper_precision X E (ems_stage E nu n) (ems_stage E mu n) n) as Hprec.
     assert (Hreal :
       Q2R (ems_upper E (ems_stage E nu n) (ems_stage E mu n) n
             + 2 * qdyadic n) < Q2R q)%R.
@@ -161,8 +161,8 @@ Section ApproximationCertification.
     apply qltb_true_iff in Htest.
     pose proof (Qlt_Rlt _ _ Htest) as Hq.
     rewrite Q2R_plus, qdyadic_real in Hq.
-    pose proof (ems_stage_tail E nu n) as Htail.
-    pose proof (ems_upper_sound E (ems_stage E nu n) (decode p) n) as Hupper.
+    pose proof (@ems_stage_tail X E nu n) as Htail.
+    pose proof (@ems_upper_sound X E (ems_stage E nu n) (decode p) n) as Hupper.
     eapply Rle_lt_trans.
     - apply distance_triangle with (y := ems_stage E nu n).
     - lra.
@@ -177,12 +177,12 @@ Section ApproximationCertification.
     assert (Hgap : (0 < Q2R q - dtrue)%R) by (unfold dtrue; lra).
     destruct (dyadic_eventually_below ((Q2R q - dtrue) / 4) ltac:(lra)) as [n Hsmall].
     assert (Hfinite : (distance (ems_stage E nu n) (decode p) <= dtrue + dyadic n)%R).
-    { pose proof (ems_stage_tail E nu n) as Htail.
+    { pose proof (@ems_stage_tail X E nu n) as Htail.
       eapply Rle_trans.
       - apply distance_triangle with (y := decode_name nu).
       - rewrite distance_symmetric with (x := ems_stage E nu n) (y := decode_name nu).
         unfold dtrue. lra. }
-    pose proof (ems_upper_precision E (ems_stage E nu n) (decode p) n) as Hprec.
+    pose proof (@ems_upper_precision X E (ems_stage E nu n) (decode p) n) as Hprec.
     assert (Hreal :
       (Q2R (ems_upper E (ems_stage E nu n) (decode p) n + qdyadic n) < Q2R q)%R.
     { rewrite Q2R_plus, qdyadic_real. unfold dtrue in *. lra. }
