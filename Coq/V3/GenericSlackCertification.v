@@ -83,9 +83,11 @@ Section DistanceCertification.
     repeat rewrite Q2R_plus in Hq.
     rewrite Q2R_mult, qdyadic_real in Hq.
     rewrite Q2R_two in Hq.
-    pose proof (ems_stage_tail E nu n) as Hnu.
-    pose proof (ems_stage_tail E mu n) as Hmu.
-    pose proof (ems_upper_sound E (ems_stage E nu n) (ems_stage E mu n) n) as Hupper.
+    pose proof (@ems_stage_tail X E nu n) as Hnu.
+    pose proof (@ems_stage_tail X E mu n) as Hmu.
+    pose proof
+      (@ems_upper_sound X E (ems_stage E nu n) (ems_stage E mu n) n)
+      as Hupper.
     rewrite distance_symmetric with (x := decode_name mu) (y := ems_stage E mu n) in Hmu.
     eapply Rle_lt_trans.
     - apply distance_triangle with (y := ems_stage E nu n).
