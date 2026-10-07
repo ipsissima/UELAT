@@ -191,7 +191,7 @@ Section ApproximationCertification.
         unfold dtrue. lra. }
     pose proof (@ems_upper_precision X E (ems_stage E nu n) (decode p) n) as Hprec.
     assert (Hreal :
-      (Q2R (ems_upper E (ems_stage E nu n) (decode p) n + qdyadic n) < Q2R q)%R.
+      (Q2R (ems_upper E (ems_stage E nu n) (decode p) n + qdyadic n) < Q2R q)%R).
     { rewrite Q2R_plus, qdyadic_real. unfold dtrue in *. lra. }
     exists n. apply qltb_true_iff. now apply Rlt_Qlt.
   Qed.
