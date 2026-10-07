@@ -40,10 +40,11 @@ Section Builder.
         assert (Heq : i = length (dag_nodes H)) by lia.
         subst i.
         rewrite nth_error_app2 in Hnth by lia.
-        change
-          (Some (RuleNode rule refs payload) = Some (RuleNode r rs p))
-          in Hnth.
-        dependent destruction Hnth.
+        replace (length (dag_nodes H) - length (dag_nodes H)) with 0 in Hnth by lia.
+        simpl in Hnth.
+        assert (Hnode : RuleNode rule refs payload = RuleNode r rs p) by
+          now injection Hnth.
+        inversion Hnode; subst.
         exact Hrefs.
   Defined.
 
