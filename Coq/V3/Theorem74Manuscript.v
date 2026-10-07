@@ -10,7 +10,8 @@ From Coq Require Import Reals QArith Qreals.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ProofDAG
   H1H7Descent FiniteCodeDescent DescentCertificateSize
-  EpsilonPrecision ManuscriptH1H7 OrderNeutralEpsilonDescent.
+  EpsilonPrecision ManuscriptH1H7 OrderNeutralEpsilonDescent
+  GeometricPrecisionSchedule GenericSlackCertification.
 
 Module UELAT_V3_Theorem74Manuscript.
 Import UELAT_V3_CertificateEnrichment.
@@ -22,6 +23,8 @@ Import UELAT_V3_DescentCertificateSize.
 Import UELAT_V3_EpsilonPrecision.
 Import UELAT_V3_ManuscriptH1H7.
 Import UELAT_V3_OrderNeutralEpsilonDescent.
+Import UELAT_V3_GeometricPrecisionSchedule.
+Import UELAT_V3_GenericSlackCertification.
 
 Section ManuscriptTheorem.
   Context {X : MetricPresentation}.
@@ -80,6 +83,24 @@ Section ManuscriptTheorem.
     unfold theorem74_level, epsilon_level.
     rewrite <- (mh_alpha_is_r_minus_1 MH).
     apply h_mu_exponent_dominates.
+  Qed.
+
+  Theorem theorem74_level_dyadic_depth_bound : forall eps Heps k,
+    (2 * qdyadic k <= eps)%Q ->
+    theorem74_level eps Heps
+      <= S ((k + 3 + h_offset H) / Nat.pred r).
+  Proof.
+    intros eps Heps k Hk.
+    unfold theorem74_level, epsilon_level, h_mu.
+    rewrite (mh_alpha_is_r_minus_1 MH).
+    eapply Nat.le_trans.
+    - apply geometric_precision_schedule_monotone.
+      + apply manuscript_alpha_positive. exact MH.
+      + now apply epsilon_precision_paper_depth_bound.
+    - unfold geometric_precision_schedule.
+      replace (k + 2 + 1 + h_offset H)%nat
+        with (k + 3 + h_offset H)%nat by lia.
+      apply Nat.le_refl.
   Qed.
 
   Section LinearBits.
