@@ -77,7 +77,8 @@ Section MultiplierEstimate.
       + (L * delta0 - Cinf * delta1)^2
       = 2 * L^2 * delta0^2 + 2 * Cinf^2 * delta1^2).
     { ring. }
-    nra.
+    rewrite <- Hidentity.
+    lra.
   Qed.
 
   Theorem multiplier_w12_squared :
