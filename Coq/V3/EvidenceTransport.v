@@ -210,8 +210,13 @@ Section CheckerLevelLift.
     refine {| arrow_bound := Lambda * (@arrow_bound X EX a b f);
               arrow_bound_nonnegative := _;
               arrow_witness := wy;
-              arrow_accepted := Hwy |}.
-    pose proof (@arrow_bound_nonnegative X EX a b f). nra.
+              arrow_accepted := _ |}.
+    - pose proof (@arrow_bound_nonnegative X EX a b f). nra.
+    - change
+        (dist_check
+          (Tname (ev_name EX a)) (Tname (ev_name EX b))
+          (Lambda * (@arrow_bound X EX a b f)) wy = true).
+      exact Hwy.
   Defined.
 
   Theorem qualitative_local_transport_saturation
