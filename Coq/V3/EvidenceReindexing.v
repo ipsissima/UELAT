@@ -138,7 +138,7 @@ Section Reindex.
                      cert_evidence := w;
                      cert_accepted := Hw |};
                 certificate_at_strict := _ |}.
-      lra.
+      cbn. lra.
   Defined.
 
   Lemma exact_half_reindexed_bound : forall k nu p w0 Hw0 eps Heps,
