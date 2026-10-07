@@ -93,8 +93,9 @@ Defined.
 Definition first_true
     (test : nat -> bool)
     (eventually : exists n, test n = true) : {n : nat | test n = true} :=
-  constructive_indefinite_ground_description_nat
-    (fun n => test n = true) (bool_true_decidable test) eventually.
+  let w := epsilon_smallest
+    (fun n => test n = true) (bool_true_decidable test) eventually in
+  exist _ (proj1_sig w) (proj1 (proj2_sig w)).
 
 Definition first_true_index
     (test : nat -> bool)
@@ -106,6 +107,18 @@ Theorem first_true_valid : forall test eventually,
 Proof.
   intros test eventually. unfold first_true_index.
   exact (proj2_sig (first_true test eventually)).
+Qed.
+
+Theorem first_true_minimal : forall test eventually k,
+  test k = true ->
+  first_true_index test eventually <= k.
+Proof.
+  intros test eventually k Hk.
+  unfold first_true_index, first_true.
+  destruct (epsilon_smallest
+    (fun n => test n = true) (bool_true_decidable test) eventually)
+    as [n [Hn Hmin]].
+  simpl. apply Hmin. exact Hk.
 Qed.
 
 Record SemidecidableSlackSearch := {
@@ -120,6 +133,15 @@ Definition run_semidecidable_slack_search
 Theorem semidecidable_slack_search_valid : forall S,
   slack_test S (run_semidecidable_slack_search S) = true.
 Proof. intro S. apply first_true_valid. Qed.
+
+Theorem semidecidable_slack_search_minimal : forall S k,
+  slack_test S k = true ->
+  run_semidecidable_slack_search S <= k.
+Proof.
+  intros S k Hk.
+  unfold run_semidecidable_slack_search.
+  now apply first_true_minimal.
+Qed.
 
 Record EffectiveSlackSearch := {
   stage_test : nat -> bool;
