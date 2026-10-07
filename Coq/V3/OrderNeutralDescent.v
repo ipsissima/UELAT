@@ -3,7 +3,7 @@
     summable relative to the finest relevant level.
 *)
 
-From Coq Require Import Arith Lia List.
+From Coq Require Import Arith Lia List Ring.
 
 Module UELAT_V3_OrderNeutralDescent.
 
@@ -66,12 +66,7 @@ Section DyadicGeometry.
     intro n. rewrite sum_M_exact. unfold M.
     assert (Hr :
       2 * (M0 * pow2 n) = M0 * (2 * pow2 n)).
-    {
-      rewrite <- Nat.mul_assoc.
-      rewrite (Nat.mul_comm 2 M0).
-      rewrite Nat.mul_assoc.
-      reflexivity.
-    }
+    { ring. }
     rewrite Hr.
     apply Nat.mul_le_mono_l.
     unfold pow2. simpl Nat.pow.
