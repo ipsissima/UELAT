@@ -5,7 +5,7 @@
     in this file.
 *)
 
-From Coq Require Import Arith Lia Lia.
+From Coq Require Import Arith Lia Ring.
 From UELAT.V3 Require Import
   OrderNeutralDescent H1H7Descent DescentCertificateSize H6EncodingRegime.
 
@@ -30,10 +30,24 @@ Section StandardRegime.
            * pow2 n * S n.
   Proof.
     intro n.
-    pose proof (ordinary_upper E n) as HB.
-    pose proof (h_quasi_upper H n) as HM.
-    pose proof (lb_beta_linear LB n) as Hbeta.
-    nia.
+    pose proof
+      (Nat.mul_le_mono_l (h_Cden H) (ordinary_upper E n)) as HB.
+    pose proof
+      (Nat.mul_le_mono_l
+        (ordinary_upper_factor E * h_beta H n)
+        (h_quasi_upper H n)) as HM.
+    pose proof
+      (Nat.mul_le_mono_l
+        (ordinary_upper_factor E * h_Cnum H * pow2 n)
+        (lb_beta_linear LB n)) as Hbeta.
+    eapply Nat.le_trans.
+    - ring_nf in HB |- *.
+      exact HB.
+    - eapply Nat.le_trans.
+      + ring_nf in HM |- *.
+        exact HM.
+      + ring_nf in Hbeta |- *.
+        exact Hbeta.
   Qed.
 
   Theorem full_certificate_standard_depth_bound : forall s,
@@ -43,9 +57,17 @@ Section StandardRegime.
            * pow2 (h_mu H s) * S (h_mu H s).
   Proof.
     intro s.
-    pose proof (precision_certificate_size_relative_to_B H s) as Hcert.
-    pose proof (ordinary_encoding_standard_depth_bound (h_mu H s)) as HB.
-    nia.
+    pose proof
+      (Nat.mul_le_mono_l (h_Cden H)
+        (precision_certificate_size_relative_to_B H s)) as Hcert.
+    pose proof
+      (Nat.mul_le_mono_l (total_factor H)
+        (ordinary_encoding_standard_depth_bound (h_mu H s))) as HB.
+    eapply Nat.le_trans.
+    - ring_nf in Hcert |- *.
+      exact Hcert.
+    - ring_nf in HB |- *.
+      exact HB.
   Qed.
 
   Theorem selected_level_linear_in_precision_exponent : forall s,
