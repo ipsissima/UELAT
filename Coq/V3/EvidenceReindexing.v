@@ -118,7 +118,8 @@ Section Reindex.
   Proof. reflexivity. Qed.
 
   Lemma reindex_arrow_preserves_bound : forall k a b (f : EvidenceArrow E a b),
-    arrow_bound (reindex_arrow k f) = @arrow_bound X E a b f.
+    @arrow_bound X E (reindex_object k a) (reindex_object k b) (reindex_arrow k f)
+      = @arrow_bound X E a b f.
   Proof. reflexivity. Qed.
 
   Definition exact_half_system
