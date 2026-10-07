@@ -19,6 +19,7 @@
 
 From Coq Require Import Reals List Arith Lia Lra Lra.
 Import ListNotations.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import ProofDAG.
 
 Module UELAT_V3_PUFEMCompiler.
