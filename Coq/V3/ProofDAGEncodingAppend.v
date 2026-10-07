@@ -45,8 +45,10 @@ Section Encoding.
     intros H r refs p Hrefs.
     unfold dag_encoded_bitlength, append_rule. simpl.
     rewrite app_length. simpl.
-    rewrite nodes_bitlength_app. simpl.
-    lia.
+    rewrite nodes_bitlength_app.
+    simpl.
+    repeat rewrite Nat.add_assoc.
+    reflexivity.
   Qed.
 
   (** Safe incremental envelope.  The previous encoding already contains its
