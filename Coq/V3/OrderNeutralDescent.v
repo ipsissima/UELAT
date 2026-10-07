@@ -64,6 +64,15 @@ Section DyadicGeometry.
     nsum_upto M n <= 2 * M n.
   Proof.
     intro n. rewrite sum_M_exact. unfold M.
+    assert (Hr :
+      2 * (M0 * pow2 n) = M0 * (2 * pow2 n)).
+    {
+      rewrite <- Nat.mul_assoc.
+      rewrite (Nat.mul_comm 2 M0).
+      rewrite Nat.mul_assoc.
+      reflexivity.
+    }
+    rewrite Hr.
     apply Nat.mul_le_mono_l.
     unfold pow2. simpl Nat.pow.
     lia.
