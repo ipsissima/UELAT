@@ -60,7 +60,8 @@ Section Builder.
   Proof.
     intros. unfold append_rule. simpl.
     rewrite nth_error_app2 by lia.
-    simpl. reflexivity.
+    replace (length (dag_nodes H) - length (dag_nodes H)) with 0 by lia.
+    reflexivity.
   Qed.
 
   Theorem append_rule_adds_one_node : forall H rule refs payload Hrefs,
