@@ -5,7 +5,7 @@
     beta schedule and source-lookahead hypothesis are represented separately.
 *)
 
-From Coq Require Import Reals Arith Lia Lia List.
+From Coq Require Import Reals Arith Lia List Ring.
 Import ListNotations.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ProofDAG
@@ -196,8 +196,14 @@ Section FullInterface.
         (h_quasi_lower H) (h_quasi_upper H)
         (h_beta H) (h_new_payload_bits H) (h_cpayload H)
         (h_beta_monotone H) (h_payload_level_bound H) n) as Hpayload.
-      pose proof (h_baseline_dominates H n) as Hbase.
-      nia.
+      pose proof
+        (Nat.mul_le_mono_l
+          (2 * h_cpayload H * h_cden H * h_Cnum H)
+          (h_baseline_dominates H n)) as Hbase.
+      eapply Nat.le_trans.
+      - exact Hpayload.
+      - ring_nf in Hbase |- *.
+        exact Hbase.
     Qed.
 
     Lemma verification_scale_monotone_h1h7 : forall j n,
@@ -222,14 +228,27 @@ Section FullInterface.
           intros j Hj.
           pose proof (h_verification_level_bound H j) as Hv.
           pose proof (verification_scale_monotone_h1h7 j n Hj) as HA.
-          nia.
+          eapply Nat.le_trans.
+          + exact Hv.
+          + pose proof
+              (Nat.mul_le_mono_l (h_cverify H * h_M H j) HA) as Hscaled.
+            ring_nf in Hscaled |- *.
+            exact Hscaled.
         - change (nsum_upto
                     (fun j => (h_cverify H * h_A H (h_beta H n)) * h_M H j) n
                   <= h_cverify H * h_A H (h_beta H n)
                      * nsum_upto (h_M H) n).
           rewrite nsum_upto_scale. reflexivity. }
-      pose proof (h1h7_patch_sum n) as Hgeom.
-      nia.
+      pose proof
+        (Nat.mul_le_mono_l (h_cnum H * h_Cden H) Hsum) as Hsum_scaled.
+      pose proof
+        (Nat.mul_le_mono_l (h_cverify H * h_A H (h_beta H n))
+          (h1h7_patch_sum n)) as Hgeom.
+      eapply Nat.le_trans.
+      - ring_nf in Hsum_scaled |- *.
+        exact Hsum_scaled.
+      - ring_nf in Hgeom |- *.
+        exact Hgeom.
     Qed.
 
     Theorem h1h7_target_query_zero : h_target_queries H = 0.
@@ -272,9 +291,13 @@ Section FullInterface.
             <= sr_csource SR * lb_beta_factor LB * S n.
         Proof.
           intro n.
-          pose proof (sr_source_level_bound SR n).
-          pose proof (lb_beta_linear LB n).
-          nia.
+          pose proof (sr_source_level_bound SR n) as Hsource.
+          pose proof (lb_beta_linear LB n) as Hbeta.
+          eapply Nat.le_trans.
+          + exact Hsource.
+          + pose proof (Nat.mul_le_mono_l (sr_csource SR) Hbeta) as Hscaled.
+            ring_nf in Hscaled |- *.
+            exact Hscaled.
         Qed.
 
         Theorem h1h7_source_lookahead_at_precision : forall s,

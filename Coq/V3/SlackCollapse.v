@@ -59,12 +59,13 @@ Section Collapse.
       destruct (Rle_dec b d) as [Hbd|Hbd].
       + exact Hbd.
       + assert (Hdb : d < b) by lra.
-        set (mid := (d + b) / 2).
-        assert (Hdmid : d < mid) by (unfold mid, d; lra).
-        assert (Hmidb : mid < b) by (unfold mid, d; lra).
+        assert (Hdmid : d < (d + b) / 2) by lra.
+        assert (Hmidb : (d + b) / 2 < b) by lra.
         pose proof (strict_slack_supplies_every_larger_bound
-                      Hcomplete nu mu mid Hdmid) as Hacc.
-        specialize (Hb mid Hacc). lra.
+                      Hcomplete nu mu ((d + b) / 2) Hdmid) as Hacc.
+        pose proof (Hb ((d + b) / 2) Hacc) as Hbmid.
+        exfalso.
+        exact (Rlt_not_le _ _ Hmidb Hbmid).
   Qed.
 
   Corollary zero_evidence_distance_iff_zero_metric_glb

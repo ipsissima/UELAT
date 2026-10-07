@@ -30,7 +30,7 @@ Section Encoding.
   Lemma singleton_node_bitlength : forall n,
     nodes_bitlength payload_bits rule_bits [n]
       = proof_node_bitlength payload_bits rule_bits n.
-  Proof. reflexivity. Qed.
+  Proof. intro n. simpl. lia. Qed.
 
   Theorem append_rule_encoded_size_formula :
     forall (H : ProofDAG Payload Rule) r refs p Hrefs,
@@ -45,8 +45,10 @@ Section Encoding.
     intros H r refs p Hrefs.
     unfold dag_encoded_bitlength, append_rule. simpl.
     rewrite app_length. simpl.
-    rewrite nodes_bitlength_app. simpl.
-    lia.
+    rewrite nodes_bitlength_app.
+    simpl.
+    repeat rewrite Nat.add_assoc.
+    reflexivity.
   Qed.
 
   (** Safe incremental envelope.  The previous encoding already contains its

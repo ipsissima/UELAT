@@ -107,10 +107,10 @@ Section Reindex.
       (f : EvidenceArrow E a b) :
       EvidenceArrow E (reindex_object k a) (reindex_object k b).
   Proof.
-    refine {| arrow_bound := arrow_bound f;
-              arrow_bound_nonnegative := arrow_bound_nonnegative f;
-              arrow_witness := arrow_witness f |}.
-    exact (arrow_accepted f).
+    refine {| arrow_bound := @arrow_bound X E a b f;
+              arrow_bound_nonnegative := @arrow_bound_nonnegative X E a b f;
+              arrow_witness := @arrow_witness X E a b f |}.
+    exact (@arrow_accepted X E a b f).
   Defined.
 
   Lemma reindex_preserves_underlying_name : forall k a,
@@ -118,7 +118,8 @@ Section Reindex.
   Proof. reflexivity. Qed.
 
   Lemma reindex_arrow_preserves_bound : forall k a b (f : EvidenceArrow E a b),
-    arrow_bound (reindex_arrow k f) = arrow_bound f.
+    @arrow_bound X E (reindex_object k a) (reindex_object k b) (reindex_arrow k f)
+      = @arrow_bound X E a b f.
   Proof. reflexivity. Qed.
 
   Definition exact_half_system
@@ -128,7 +129,7 @@ Section Reindex.
     intros eps Heps.
     assert (Hhalfpos : 0 < eps / 2) by lra.
     assert (Hhalfnonneg : 0 <= eps / 2) by lra.
-    destruct (app_weaken E nu p 0 (eps / 2) w0 Hw0) as [w Hw].
+    destruct (@app_weaken X E nu p 0 (eps / 2) w0 Hw0) as [w Hw].
     - lra.
     - refine {| certificate_at_record :=
                   {| cert_code := p;
@@ -137,7 +138,7 @@ Section Reindex.
                      cert_evidence := w;
                      cert_accepted := Hw |};
                 certificate_at_strict := _ |}.
-      lra.
+      cbn. lra.
   Defined.
 
   Lemma exact_half_reindexed_bound : forall k nu p w0 Hw0 eps Heps,

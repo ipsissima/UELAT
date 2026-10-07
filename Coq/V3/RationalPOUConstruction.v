@@ -29,13 +29,13 @@ Theorem assigned_patch_valid : forall D k,
 Proof. intros D k. unfold assigned_patch. apply choose_covering_interval_valid. Qed.
 
 Lemma assigned_patch_in_range : forall D k,
-  assigned_patch D k < length (fsc_cover D).
+  (assigned_patch D k < length (fsc_cover D))%nat.
 Proof.
   intros D k. destruct (assigned_patch_valid D k) as [u [Hnth Hinside]].
   apply (proj1 (nth_error_Some (fsc_cover D) (assigned_patch D k))).
   rewrite Hnth. discriminate.
 Qed.
-Lemma cover_length_positive : forall D, 0 < length (fsc_cover D).
+Lemma cover_length_positive : forall D, (0 < length (fsc_cover D))%nat.
 Proof.
   intro D. destruct (fsc_cover D) as [|u us] eqn:Hcover.
   - exfalso. apply (fsc_cover_nonempty D). exact Hcover.
@@ -74,7 +74,9 @@ Theorem integrated_patch_value_count : forall D k a b x,
   = length (fsc_cover D).
 Proof.
   intros D k a b x. unfold cell_patch_values.
-  apply bucketize_length. apply cell_entries_in_range.
+  transitivity (sa_patch_count (integrated_star_assignment D)).
+  - apply bucketize_length. apply cell_entries_in_range.
+  - reflexivity.
 Qed.
 
 End UELAT_V3_RationalPOUConstruction.

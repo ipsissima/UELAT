@@ -6,7 +6,7 @@
     node list is persistent and grows by exactly the number of new steps.
 *)
 
-From Coq Require Import List Arith Lia.
+From Coq Require Import List Arith Lia Program.Equality.
 Import ListNotations.
 From UELAT.V3 Require Import ProofDAG ProofDAGBuilder.
 
@@ -22,7 +22,9 @@ Section Genealogy.
     refine {| dag_nodes := [InputNode payload]; dag_sink := 0 |}.
     - simpl. lia.
     - intros i r refs p Hnth.
-      destruct i; simpl in Hnth; discriminate.
+      destruct i as [|i].
+      + simpl in Hnth. dependent destruction Hnth.
+      + simpl in Hnth. discriminate.
   Defined.
 
   Theorem singleton_input_sink : forall payload,

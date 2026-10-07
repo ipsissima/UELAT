@@ -43,11 +43,11 @@ Record RationalW12Presentation := {
       w12_stage (w12_constant_name p) n = p
 }.
 
-Arguments w12_decode {P} _.
-Arguments w12_sqdist {P} _ _.
-Arguments w12_name_value {P} _.
-Arguments w12_stage {P} _ _.
-Arguments w12_constant_name {P} _.
+Arguments w12_decode {r} _.
+Arguments w12_sqdist {r} _ _.
+Arguments w12_name_value {r} _.
+Arguments w12_stage {r} _ _.
+Arguments w12_constant_name {r} _.
 
 Inductive ApproxWitness (P : RationalW12Presentation) : Type :=
 | ExactSelf : RationalPiecewiseCode -> ApproxWitness P
@@ -66,10 +66,10 @@ Definition approx_accept
     (q : R) (w : ApproxWitness P) : Prop :=
   match w with
   | ExactSelf p0 =>
-      p0 = p /\ nu = w12_constant_name p /\ q = 0
+      p0 = p /\ nu = w12_constant_name (r:=P) p /\ q = 0
   | PositiveApprox n sigma =>
       dyadic n < q /\
-      sigma = w12_sqdist (w12_stage nu n) p /\
+      sigma = w12_sqdist (r:=P) (w12_stage nu n) p /\
       Q2R sigma < (q - dyadic n)^2
   end.
 
@@ -80,7 +80,7 @@ Definition distance_accept
   match w with
   | PositiveDistance n sigma =>
       2 * dyadic n < q /\
-      sigma = w12_sqdist (w12_stage nu n) (w12_stage mu n) /\
+      sigma = w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n) /\
       Q2R sigma < (q - 2 * dyadic n)^2
   end.
 

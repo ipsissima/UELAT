@@ -2,7 +2,7 @@
     Theorem 7.4.
 *)
 
-From Coq Require Import Arith Lia Lia.
+From Coq Require Import Arith Lia Ring.
 From UELAT.V3 Require Import OrderNeutralDescent.
 
 Module UELAT_V3_QuasiUniformGeometry.
@@ -32,8 +32,9 @@ Section Geometry.
   Lemma sum_pow2_le_twice_finest : forall n,
     nsum_upto pow2 n <= 2 * pow2 n.
   Proof.
-    intro n. rewrite sum_pow2. pose proof (pow2_positive n) as Hp.
-    unfold pow2 in *. simpl Nat.pow. nia.
+    intro n. rewrite sum_pow2.
+    unfold pow2. simpl Nat.pow.
+    lia.
   Qed.
 
   Theorem quasi_uniform_patch_sum : forall n,
@@ -41,10 +42,17 @@ Section Geometry.
       <= 2 * c_den * C_num * M n.
   Proof.
     intro n.
-    pose proof (scaled_patch_sum_upper n) as Hsum.
-    pose proof (sum_pow2_le_twice_finest n) as Hpow.
-    pose proof (quasi_lower n) as Hlow.
-    nia.
+    pose proof (Nat.mul_le_mono_l c_num (scaled_patch_sum_upper n)) as Hsum.
+    pose proof (Nat.mul_le_mono_l (c_num * C_num)
+                  (sum_pow2_le_twice_finest n)) as Hpow.
+    pose proof (Nat.mul_le_mono_l (2 * C_num) (quasi_lower n)) as Hlow.
+    eapply Nat.le_trans.
+    - exact Hsum.
+    - eapply Nat.le_trans.
+      + ring_nf in Hsum Hpow |- *.
+        exact Hpow.
+      + ring_nf in Hlow |- *.
+        exact Hlow.
   Qed.
 
   Variables beta payload_bits : nat -> nat.
@@ -63,12 +71,23 @@ Section Geometry.
     { eapply Nat.le_trans.
       - apply nsum_upto_le. intros j Hj.
         specialize (payload_level_bound j) as Hp.
-        specialize (beta_monotone j n Hj) as Hb. nia.
+        specialize (beta_monotone j n Hj) as Hb.
+        eapply Nat.le_trans.
+        + exact Hp.
+        + pose proof (Nat.mul_le_mono_l (c_payload * M j) Hb) as Hscaled.
+          ring_nf in Hscaled |- *.
+          exact Hscaled.
       - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
                   <= c_payload * beta n * nsum_upto M n).
         rewrite nsum_upto_scale. reflexivity. }
-    pose proof (quasi_uniform_patch_sum n) as Hgeom.
-    nia.
+    pose proof (Nat.mul_le_mono_l (c_num * C_den) Hraw) as Hraw_scaled.
+    pose proof (Nat.mul_le_mono_l (c_payload * beta n)
+                  (quasi_uniform_patch_sum n)) as Hgeom.
+    eapply Nat.le_trans.
+    - ring_nf in Hraw_scaled |- *.
+      exact Hraw_scaled.
+    - ring_nf in Hgeom |- *.
+      exact Hgeom.
   Qed.
 End Geometry.
 

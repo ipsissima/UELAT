@@ -143,11 +143,11 @@ Definition CoverContainsStar (cover : list RationalOpenInterval)
 
 Definition choose_covering_interval
     (cover : list RationalOpenInterval) (s : RationalClosedStar)
-    (H : CoverContainsStar cover s) : nat.
-Proof.
-  destruct (find_covering_interval_complete s cover H) as [i Hi].
-  exact i.
-Defined.
+    (_H : CoverContainsStar cover s) : nat :=
+  match find_covering_interval s cover with
+  | Some i => i
+  | None => 0
+  end.
 
 Theorem choose_covering_interval_valid : forall cover s H,
   exists u,
@@ -155,9 +155,11 @@ Theorem choose_covering_interval_valid : forall cover s H,
     /\ star_inside_interval s u.
 Proof.
   intros cover s H.
+  pose proof (find_covering_interval_complete s cover H) as Hex.
   unfold choose_covering_interval.
-  destruct (find_covering_interval_complete s cover H) as [i Hi].
-  simpl. now apply find_covering_interval_sound.
+  destruct (find_covering_interval s cover) as [i|] eqn:Hfind.
+  - now apply find_covering_interval_sound in Hfind.
+  - destruct Hex as [i Hi]. discriminate.
 Qed.
 
 End UELAT_V3_RationalIntervalCover.

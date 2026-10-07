@@ -59,8 +59,8 @@ jobs:
         shell: bash
         run: |
           set -e
-          FILES=$(awk '/\.v$/ {print "Coq/"$1}' Coq/_CoqProject.checked-core-v3)
-          if grep -n -E '^[[:space:]]*(Admitted\.|Axiom[[:space:]])' $FILES; then
+          mapfile -t FILES < <(awk '/\.v$/ {print "Coq/"$1}' Coq/_CoqProject.checked-core-v3)
+          if grep -n -E '^[[:space:]]*(Admitted\.|Axiom[[:space:]])' "${FILES[@]}"; then
             echo "::error::Found Admitted/Axiom declaration on checked-core surface"
             exit 1
           fi

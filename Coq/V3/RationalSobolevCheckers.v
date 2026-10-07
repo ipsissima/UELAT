@@ -79,10 +79,10 @@ Section DistanceCheckerSoundness.
       supplied by the computable-Banach/name layer. *)
   Theorem distance_stage_witness_complete_from_stage : forall q,
     (exists n, DistanceStageWitness q n) ->
-    exists n, distance x y < q.
+    exists n : nat, distance x y < q.
   Proof.
     intros q [n Hn].
-    exists n. now apply distance_stage_witness_sound.
+    exists n. exact (distance_stage_witness_sound q n Hn).
   Qed.
 
 End DistanceCheckerSoundness.

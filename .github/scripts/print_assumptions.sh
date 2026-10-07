@@ -44,6 +44,18 @@ AUDIT_LIST=(
   "composed_lift_underlying|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_underlying"
   "composed_lift_id|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_id"
   "composed_lift_comp|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_comp"
+  "proposition73_level_package|From UELAT.V3 Require Import Proposition73CompilerBound|UELAT_V3_Proposition73CompilerBound.proposition73_level_package"
+  "proposition73_geometric_patch_sum|From UELAT.V3 Require Import Proposition73CompilerBound|UELAT_V3_Proposition73CompilerBound.proposition73_geometric_patch_sum"
+  "proposition73_accumulated_node_count|From UELAT.V3 Require Import Proposition73CompilerBound|UELAT_V3_Proposition73CompilerBound.proposition73_accumulated_node_count"
+  "theorem74_manuscript_core|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_manuscript_core"
+  "theorem74_level_exponent_control|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_level_exponent_control"
+  "theorem74_level_dyadic_depth_bound|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_level_dyadic_depth_bound"
+  "theorem74_level_canonical_paper_k_bound|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_level_canonical_paper_k_bound"
+  "theorem74_linear_bit_schedule|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_linear_bit_schedule"
+  "corollary75_standard_rational_package|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.corollary75_standard_rational_package"
+  "corollary75_canonical_paper_k_package|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.corollary75_canonical_paper_k_package"
+  "theorem74_manuscript_source_lookahead|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_manuscript_source_lookahead"
+  "theorem74_manuscript_preserves_ancestry|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_manuscript_preserves_ancestry"
 )
 
 if [ "${#AUDIT_LIST[@]}" -eq 0 ]; then

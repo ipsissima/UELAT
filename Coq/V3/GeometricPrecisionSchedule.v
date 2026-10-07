@@ -34,6 +34,19 @@ Proof.
   lia.
 Qed.
 
+Lemma geometric_precision_schedule_monotone : forall alpha offset s t,
+  0 < alpha ->
+  s <= t ->
+  geometric_precision_schedule alpha offset s
+    <= geometric_precision_schedule alpha offset t.
+Proof.
+  intros alpha offset s t Halpha Hst.
+  unfold geometric_precision_schedule.
+  apply le_n_S.
+  apply Nat.div_le_mono.
+  lia.
+Qed.
+
 Section Schedule.
   Context {X : MetricPresentation}.
   Variable f : carrier X.

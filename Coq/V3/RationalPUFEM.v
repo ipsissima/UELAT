@@ -1,6 +1,6 @@
 (** RationalPUFEM.v -- authoritative rational PUFEM structural/defect core. *)
 
-From Coq Require Import Reals List Lra.
+From Coq Require Import Reals List Lra Ring.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -71,9 +71,17 @@ Section MultiplierEstimate.
     assert (Hsq : deriv_product^2
               <= (L * delta0 + Cinf * delta1)^2) by nra.
     eapply Rle_trans; [exact Hsq|].
-    pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)) as Hdiff.
-    ring_nf.
-    nra.
+    pose proof (pow2_ge_0 (L * delta0 - Cinf * delta1)) as Hdiff.
+    assert (Hidentity :
+      (L * delta0 + Cinf * delta1)^2
+      + (L * delta0 - Cinf * delta1)^2
+      = 2 * L^2 * delta0^2 + 2 * Cinf^2 * delta1^2).
+    { ring. }
+    rewrite <- Hidentity.
+    replace ((L * delta0 + Cinf * delta1)^2)
+      with ((L * delta0 + Cinf * delta1)^2 + 0) at 1 by ring.
+    apply Rplus_le_compat_l.
+    exact Hdiff.
   Qed.
 
   Theorem multiplier_w12_squared :
@@ -122,11 +130,30 @@ Section LocalizedDefect.
   Definition corrected_R : R := A2 + B2.
 
   Lemma A2_nonnegative : 0 <= A2.
-  Proof. unfold A2. nra. Qed.
+  Proof.
+    unfold A2.
+    apply Rmult_le_pos.
+    - apply Rmult_le_pos; [exact Hkappa|apply pow2_ge_0].
+    - exact Hsum0.
+  Qed.
+
   Lemma B2_nonnegative : 0 <= B2.
-  Proof. unfold B2. nra. Qed.
+  Proof.
+    unfold B2.
+    apply Rmult_le_pos.
+    - apply Rmult_le_pos; lra.
+    - apply Rplus_le_le_0_compat.
+      + exact HsumL0.
+      + apply Rmult_le_pos; [apply pow2_ge_0|exact Hsum1].
+  Qed.
+
   Lemma corrected_R_nonnegative : 0 <= corrected_R.
-  Proof. unfold corrected_R. pose proof A2_nonnegative. pose proof B2_nonnegative. lra. Qed.
+  Proof.
+    unfold corrected_R.
+    apply Rplus_le_le_0_compat.
+    - apply A2_nonnegative.
+    - apply B2_nonnegative.
+  Qed.
 
   Theorem localized_w12_defect_from_components
       (l2_sq deriv_sq : R) :

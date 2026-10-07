@@ -16,13 +16,22 @@ Fixpoint qdyadic (n : nat) : Q :=
 Lemma Q_two_nonzero : ~ (2 : Q) == 0.
 Proof. vm_compute. discriminate. Qed.
 
+Lemma Q2R_two : Q2R (2 : Q) = 2%R.
+Proof.
+  change (Q2R (1 + 1)%Q = 2%R).
+  rewrite Q2R_plus, RMicromega.Q2R_1.
+  lra.
+Qed.
+
 Lemma qdyadic_real : forall n, Q2R (qdyadic n) = dyadic n.
 Proof.
   induction n as [|n IH].
-  - reflexivity.
+  - simpl qdyadic. simpl dyadic.
+    rewrite RMicromega.Q2R_1. reflexivity.
   - simpl qdyadic. simpl dyadic.
     rewrite Q2R_div by apply Q_two_nonzero.
-    rewrite IH. change (Q2R (2 : Q)) with 2%R. field.
+    rewrite IH.
+    rewrite Q2R_two. reflexivity.
 Qed.
 
 Definition qltb (a b : Q) : bool :=
@@ -31,21 +40,24 @@ Definition qltb (a b : Q) : bool :=
 Lemma qltb_true_iff : forall a b, qltb a b = true <-> (a < b)%Q.
 Proof.
   intros a b. unfold qltb. destruct (Qlt_le_dec a b) as [Hlt|Hle].
-  - split; intros; assumption.
-  - split; intro H.
-    + discriminate.
-    + exfalso. now apply (Qlt_not_le _ _ H).
+  - split.
+    + intro Htrue. exact Hlt.
+    + intro Hlt'. reflexivity.
+  - split.
+    + intro H. discriminate.
+    + intro Hlt. exfalso.
+      exact ((Qlt_not_le _ _ Hlt) Hle).
 Qed.
 
 Record EffectiveMetricSlackInterface (X : MetricPresentation) := {
   ems_stage : name X -> nat -> carrier X;
   ems_stage_tail : forall nu n,
-    distance (decode_name nu) (ems_stage nu n) <= dyadic n;
+    (distance (decode_name nu) (ems_stage nu n) <= dyadic n)%R;
   ems_upper : carrier X -> carrier X -> nat -> Q;
   ems_upper_sound : forall x y k,
-    distance x y <= Q2R (ems_upper x y k);
+    (distance x y <= Q2R (ems_upper x y k))%R;
   ems_upper_precision : forall x y k,
-    Q2R (ems_upper x y k) <= distance x y + dyadic k
+    (Q2R (ems_upper x y k) <= distance x y + dyadic k)%R
 }.
 
 Arguments ems_stage {X} _ _ _.
@@ -63,17 +75,19 @@ Section DistanceCertification.
 
   Lemma distance_stage_test_sound : forall nu mu q n,
     distance_stage_test nu mu q n = true ->
-    distance (decode_name nu) (decode_name mu) < Q2R q.
+    (distance (decode_name nu) (decode_name mu) < Q2R q)%R.
   Proof.
     intros nu mu q n Htest.
     apply qltb_true_iff in Htest.
     pose proof (Qlt_Rlt _ _ Htest) as Hq.
     repeat rewrite Q2R_plus in Hq.
     rewrite Q2R_mult, qdyadic_real in Hq.
-    change (Q2R (2 : Q)) with 2%R in Hq.
-    pose proof (ems_stage_tail E nu n) as Hnu.
-    pose proof (ems_stage_tail E mu n) as Hmu.
-    pose proof (ems_upper_sound E (ems_stage E nu n) (ems_stage E mu n) n) as Hupper.
+    rewrite Q2R_two in Hq.
+    pose proof (@ems_stage_tail X E nu n) as Hnu.
+    pose proof (@ems_stage_tail X E mu n) as Hmu.
+    pose proof
+      (@ems_upper_sound X E (ems_stage E nu n) (ems_stage E mu n) n)
+      as Hupper.
     rewrite distance_symmetric with (x := decode_name mu) (y := ems_stage E mu n) in Hmu.
     eapply Rle_lt_trans.
     - apply distance_triangle with (y := ems_stage E nu n).
@@ -84,18 +98,18 @@ Section DistanceCertification.
   Qed.
 
   Theorem distance_stage_eventually_accepts : forall nu mu q,
-    distance (decode_name nu) (decode_name mu) < Q2R q ->
+    (distance (decode_name nu) (decode_name mu) < Q2R q)%R ->
     exists n, distance_stage_test nu mu q n = true.
   Proof.
     intros nu mu q Htrue.
     set (dtrue := distance (decode_name nu) (decode_name mu)).
-    assert (Hgap : 0 < Q2R q - dtrue) by (unfold dtrue; lra).
+    assert (Hgap : (0 < Q2R q - dtrue)%R) by (unfold dtrue; lra).
     destruct (dyadic_eventually_below ((Q2R q - dtrue) / 8) ltac:(lra)) as [n Hsmall].
     assert (Hfinite :
-      distance (ems_stage E nu n) (ems_stage E mu n)
-        <= dtrue + 2 * dyadic n).
-    { pose proof (ems_stage_tail E nu n) as Hnu.
-      pose proof (ems_stage_tail E mu n) as Hmu.
+      (distance (ems_stage E nu n) (ems_stage E mu n)
+        <= dtrue + 2 * dyadic n)%R).
+    { pose proof (@ems_stage_tail X E nu n) as Hnu.
+      pose proof (@ems_stage_tail X E mu n) as Hmu.
       eapply Rle_trans.
       - apply distance_triangle with (y := decode_name nu).
       - eapply Rle_trans.
@@ -103,30 +117,37 @@ Section DistanceCertification.
           apply distance_triangle with (y := decode_name mu).
         + rewrite distance_symmetric with (x := ems_stage E nu n) (y := decode_name nu).
           unfold dtrue. lra. }
-    pose proof (ems_upper_precision E (ems_stage E nu n) (ems_stage E mu n) n) as Hprec.
+    pose proof (@ems_upper_precision X E (ems_stage E nu n) (ems_stage E mu n) n) as Hprec.
     assert (Hreal :
-      Q2R (ems_upper E (ems_stage E nu n) (ems_stage E mu n) n
-            + 2 * qdyadic n) < Q2R q).
+      (Q2R (ems_upper E (ems_stage E nu n) (ems_stage E mu n) n
+            + 2 * qdyadic n) < Q2R q)%R).
     { rewrite Q2R_plus, Q2R_mult, qdyadic_real.
-      change (Q2R (2 : Q)) with 2%R. unfold dtrue in *. lra. }
+      rewrite Q2R_two. unfold dtrue in *. lra. }
     exists n. apply qltb_true_iff. now apply Rlt_Qlt.
   Qed.
 
   Definition distance_slack_search
       (nu mu : name X) (q : Q)
-      (H : distance (decode_name nu) (decode_name mu) < Q2R q) :
+      (H : (distance (decode_name nu) (decode_name mu) < Q2R q)%R) :
       SemidecidableSlackSearch :=
     {| slack_test := distance_stage_test nu mu q;
        slack_eventually := distance_stage_eventually_accepts nu mu q H |}.
 
   Definition distance_slack_stage
       (nu mu : name X) (q : Q)
-      (H : distance (decode_name nu) (decode_name mu) < Q2R q) : nat :=
+      (H : (distance (decode_name nu) (decode_name mu) < Q2R q)%R) : nat :=
     run_semidecidable_slack_search (distance_slack_search nu mu q H).
 
   Theorem distance_slack_stage_valid : forall nu mu q H,
     distance_stage_test nu mu q (distance_slack_stage nu mu q H) = true.
-  Proof. intros. unfold distance_slack_stage. apply semidecidable_slack_search_valid. Qed.
+  Proof.
+    intros nu mu q H.
+    unfold distance_slack_stage.
+    pose proof
+      (semidecidable_slack_search_valid (distance_slack_search nu mu q H))
+      as Hv.
+    cbn in Hv. exact Hv.
+  Qed.
 End DistanceCertification.
 
 Section ApproximationCertification.
@@ -141,55 +162,62 @@ Section ApproximationCertification.
 
   Lemma approximation_stage_test_sound : forall nu p q n,
     approximation_stage_test nu p q n = true ->
-    distance (decode_name nu) (decode p) < Q2R q.
+    (distance (decode_name nu) (decode p) < Q2R q)%R.
   Proof.
     intros nu p q n Htest.
     apply qltb_true_iff in Htest.
     pose proof (Qlt_Rlt _ _ Htest) as Hq.
     rewrite Q2R_plus, qdyadic_real in Hq.
-    pose proof (ems_stage_tail E nu n) as Htail.
-    pose proof (ems_upper_sound E (ems_stage E nu n) (decode p) n) as Hupper.
+    pose proof (@ems_stage_tail X E nu n) as Htail.
+    pose proof (@ems_upper_sound X E (ems_stage E nu n) (decode p) n) as Hupper.
     eapply Rle_lt_trans.
     - apply distance_triangle with (y := ems_stage E nu n).
     - lra.
   Qed.
 
   Theorem approximation_stage_eventually_accepts : forall nu p q,
-    distance (decode_name nu) (decode p) < Q2R q ->
+    (distance (decode_name nu) (decode p) < Q2R q)%R ->
     exists n, approximation_stage_test nu p q n = true.
   Proof.
     intros nu p q Htrue.
     set (dtrue := distance (decode_name nu) (decode p)).
-    assert (Hgap : 0 < Q2R q - dtrue) by (unfold dtrue; lra).
+    assert (Hgap : (0 < Q2R q - dtrue)%R) by (unfold dtrue; lra).
     destruct (dyadic_eventually_below ((Q2R q - dtrue) / 4) ltac:(lra)) as [n Hsmall].
-    assert (Hfinite : distance (ems_stage E nu n) (decode p) <= dtrue + dyadic n).
-    { pose proof (ems_stage_tail E nu n) as Htail.
+    assert (Hfinite : (distance (ems_stage E nu n) (decode p) <= dtrue + dyadic n)%R).
+    { pose proof (@ems_stage_tail X E nu n) as Htail.
       eapply Rle_trans.
       - apply distance_triangle with (y := decode_name nu).
       - rewrite distance_symmetric with (x := ems_stage E nu n) (y := decode_name nu).
         unfold dtrue. lra. }
-    pose proof (ems_upper_precision E (ems_stage E nu n) (decode p) n) as Hprec.
+    pose proof (@ems_upper_precision X E (ems_stage E nu n) (decode p) n) as Hprec.
     assert (Hreal :
-      Q2R (ems_upper E (ems_stage E nu n) (decode p) n + qdyadic n) < Q2R q).
+      (Q2R (ems_upper E (ems_stage E nu n) (decode p) n + qdyadic n) < Q2R q)%R).
     { rewrite Q2R_plus, qdyadic_real. unfold dtrue in *. lra. }
     exists n. apply qltb_true_iff. now apply Rlt_Qlt.
   Qed.
 
   Definition approximation_slack_search
       (nu : name X) (p : Code) (q : Q)
-      (H : distance (decode_name nu) (decode p) < Q2R q) :
+      (H : (distance (decode_name nu) (decode p) < Q2R q)%R) :
       SemidecidableSlackSearch :=
     {| slack_test := approximation_stage_test nu p q;
        slack_eventually := approximation_stage_eventually_accepts nu p q H |}.
 
   Definition approximation_slack_stage
       (nu : name X) (p : Code) (q : Q)
-      (H : distance (decode_name nu) (decode p) < Q2R q) : nat :=
+      (H : (distance (decode_name nu) (decode p) < Q2R q)%R) : nat :=
     run_semidecidable_slack_search (approximation_slack_search nu p q H).
 
   Theorem approximation_slack_stage_valid : forall nu p q H,
     approximation_stage_test nu p q (approximation_slack_stage nu p q H) = true.
-  Proof. intros. unfold approximation_slack_stage. apply semidecidable_slack_search_valid. Qed.
+  Proof.
+    intros nu p q H.
+    unfold approximation_slack_stage.
+    pose proof
+      (semidecidable_slack_search_valid
+        (approximation_slack_search nu p q H)) as Hv.
+    cbn in Hv. exact Hv.
+  Qed.
 End ApproximationCertification.
 
 End UELAT_V3_GenericSlackCertification.

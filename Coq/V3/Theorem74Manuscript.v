@@ -6,11 +6,13 @@
     manuscript's conditional clauses.
 *)
 
-From Coq Require Import Reals QArith Qreals.
+From Coq Require Import Reals QArith Qreals Lia.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ProofDAG
   H1H7Descent FiniteCodeDescent DescentCertificateSize
-  EpsilonPrecision ManuscriptH1H7 OrderNeutralEpsilonDescent.
+  EpsilonPrecision ManuscriptH1H7 OrderNeutralEpsilonDescent
+  GeometricPrecisionSchedule GenericSlackCertification
+  H6EncodingRegime StandardRationalH1H7.
 
 Module UELAT_V3_Theorem74Manuscript.
 Import UELAT_V3_CertificateEnrichment.
@@ -22,6 +24,10 @@ Import UELAT_V3_DescentCertificateSize.
 Import UELAT_V3_EpsilonPrecision.
 Import UELAT_V3_ManuscriptH1H7.
 Import UELAT_V3_OrderNeutralEpsilonDescent.
+Import UELAT_V3_GeometricPrecisionSchedule.
+Import UELAT_V3_GenericSlackCertification.
+Import UELAT_V3_H6EncodingRegime.
+Import UELAT_V3_StandardRationalH1H7.
 
 Section ManuscriptTheorem.
   Context {X : MetricPresentation}.
@@ -82,6 +88,33 @@ Section ManuscriptTheorem.
     apply h_mu_exponent_dominates.
   Qed.
 
+  Theorem theorem74_level_dyadic_depth_bound : forall eps Heps k,
+    (2 * qdyadic k <= eps)%Q ->
+    theorem74_level eps Heps
+      <= S ((k + 3 + h_offset H) / Nat.pred r).
+  Proof.
+    intros eps Heps k Hk.
+    unfold theorem74_level, epsilon_level, h_mu.
+    rewrite (mh_alpha_is_r_minus_1 MH).
+    eapply Nat.le_trans.
+    - apply geometric_precision_schedule_monotone.
+      + exact (manuscript_alpha_positive MH).
+      + now apply epsilon_precision_paper_depth_bound.
+    - unfold geometric_precision_schedule.
+      replace (k + 2 + 1 + h_offset H)%nat
+        with (k + 3 + h_offset H)%nat by lia.
+      apply Nat.le_refl.
+  Qed.
+
+  Theorem theorem74_level_canonical_paper_k_bound : forall eps Heps,
+    theorem74_level eps Heps
+      <= S ((paper_k eps Heps + 3 + h_offset H) / Nat.pred r).
+  Proof.
+    intros eps Heps.
+    apply theorem74_level_dyadic_depth_bound.
+    apply paper_k_valid.
+  Qed.
+
   Section LinearBits.
     Variable LB : LinearBitRegime H.
 
@@ -92,6 +125,53 @@ Section ManuscriptTheorem.
       intros eps Heps.
       apply lb_beta_linear.
     Qed.
+
+    Section StandardRationalCorollary.
+      Variable E : TwoSidedEncoding H.
+
+      Theorem corollary75_standard_rational_package :
+        forall (eps : Q) (Heps : (0 < eps)%Q) (Heps1 : (eps <= 1)%Q) k,
+        (2 * qdyadic k <= eps)%Q ->
+        size_denominator H
+          * selected_certificate_bits decode f pcode H
+              (epsilon_precision eps Heps)
+          <= total_factor H
+              * h_ordinary_bits H (theorem74_level eps Heps)
+        /\ h_Cden H * h_ordinary_bits H (theorem74_level eps Heps)
+          <= ordinary_upper_factor E * h_Cnum H * lb_beta_factor LB
+              * pow2 (theorem74_level eps Heps)
+              * S (theorem74_level eps Heps)
+        /\ theorem74_level eps Heps
+          <= S ((k + 3 + h_offset H) / Nat.pred r).
+      Proof.
+        intros eps Heps Heps1 k Hk.
+        pose proof (theorem74_manuscript_core eps Heps Heps1) as Hcore.
+        destruct Hcore as [_ [_ [Hsize [_ _]]]].
+        repeat split.
+        - exact Hsize.
+        - apply ordinary_encoding_standard_depth_bound.
+        - now apply theorem74_level_dyadic_depth_bound.
+      Qed.
+
+      Theorem corollary75_canonical_paper_k_package :
+        forall (eps : Q) (Heps : (0 < eps)%Q) (Heps1 : (eps <= 1)%Q),
+        size_denominator H
+          * selected_certificate_bits decode f pcode H
+              (epsilon_precision eps Heps)
+          <= total_factor H
+              * h_ordinary_bits H (theorem74_level eps Heps)
+        /\ h_Cden H * h_ordinary_bits H (theorem74_level eps Heps)
+          <= ordinary_upper_factor E * h_Cnum H * lb_beta_factor LB
+              * pow2 (theorem74_level eps Heps)
+              * S (theorem74_level eps Heps)
+        /\ theorem74_level eps Heps
+          <= S ((paper_k eps Heps + 3 + h_offset H) / Nat.pred r).
+      Proof.
+        intros eps Heps Heps1.
+        apply corollary75_standard_rational_package.
+        apply paper_k_valid.
+      Qed.
+    End StandardRationalCorollary.
 
     Section SourceLookahead.
       Variable SR : SourceLookaheadRegime H LB.

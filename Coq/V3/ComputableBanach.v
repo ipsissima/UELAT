@@ -90,7 +90,7 @@ Record RealComputableBanachPresentation := {
         distance x (core_decode p) < eps
 }.
 
-Arguments core_decode {B} _.
+Arguments core_decode {r} _.
 
 Definition cb_neg (B : RealComputableBanachPresentation)
     (x : carrier (cb_metric B)) : carrier (cb_metric B) :=
@@ -160,8 +160,8 @@ Record Type2Realizer
   realize_name : CoreFastName B -> CoreFastName C;
   realize_correct : forall x : CoreNamedPoint B,
       exists y : CoreNamedPoint C,
-        core_named_value y = T (core_named_value x) /\
-        core_named_name y = realize_name (core_named_name x)
+        core_named_value C y = T (core_named_value B x) /\
+        core_named_name C y = realize_name (core_named_name B x)
 }.
 
 (** Effective certificate enrichment over the computable Banach presentation.
@@ -189,19 +189,19 @@ Definition core_name_as_fast_cauchy
 Proof.
   refine {| approximant := fun n => core_decode (core_stage nu n) |}.
   intros m n Hmn.
-  exact (core_stage_fast nu m n Hmn).
+  exact (core_stage_fast B nu m n Hmn).
 Defined.
 
 Theorem core_named_point_has_represented_point
     (B : RealComputableBanachPresentation)
     (x : CoreNamedPoint B) :
   exists rx : RepresentedPoint (cb_metric B),
-    represented_value rx = core_named_value x.
+    represented_value rx = core_named_value B x.
 Proof.
   refine (ex_intro _
-    {| represented_value := core_named_value x;
-       represented_name := core_name_as_fast_cauchy B (core_named_name x);
-       represented_tail := core_named_tail x |} _).
+    {| represented_value := core_named_value B x;
+       represented_name := core_name_as_fast_cauchy B (core_named_name B x);
+       represented_tail := core_named_tail B x |} _).
   reflexivity.
 Qed.
 

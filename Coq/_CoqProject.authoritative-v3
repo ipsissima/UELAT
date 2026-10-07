@@ -66,6 +66,7 @@ V3/FiniteCodeDescent.v
 V3/EpsilonPrecision.v
 V3/OrderNeutralEpsilonDescent.v
 V3/H6EncodingRegime.v
+V3/Proposition73CompilerBound.v
 V3/StandardRationalRegime.v
 V3/StandardRationalH1H7.v
 V3/ManuscriptH1H7.v

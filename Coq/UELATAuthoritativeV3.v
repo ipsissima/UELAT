@@ -79,6 +79,7 @@ From UELAT.V3 Require Export
   EpsilonPrecision
   OrderNeutralEpsilonDescent
   H6EncodingRegime
+  Proposition73CompilerBound
   StandardRationalRegime
   StandardRationalH1H7
   ManuscriptH1H7
