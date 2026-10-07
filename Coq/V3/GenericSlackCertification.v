@@ -119,8 +119,8 @@ Section DistanceCertification.
           unfold dtrue. lra. }
     pose proof (@ems_upper_precision X E (ems_stage E nu n) (ems_stage E mu n) n) as Hprec.
     assert (Hreal :
-      Q2R (ems_upper E (ems_stage E nu n) (ems_stage E mu n) n
-            + 2 * qdyadic n) < Q2R q)%R.
+      (Q2R (ems_upper E (ems_stage E nu n) (ems_stage E mu n) n
+            + 2 * qdyadic n) < Q2R q)%R).
     { rewrite Q2R_plus, Q2R_mult, qdyadic_real.
       rewrite Q2R_two. unfold dtrue in *. lra. }
     exists n. apply qltb_true_iff. now apply Rlt_Qlt.
