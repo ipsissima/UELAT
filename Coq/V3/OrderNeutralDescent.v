@@ -26,7 +26,7 @@ Lemma nsum_upto_scale : forall c f n,
 Proof.
   intros c f n. induction n as [|n IH].
   - reflexivity.
-  - simpl. rewrite IH, Nat.mul_add. reflexivity.
+  - simpl. rewrite IH, Nat.mul_add_distr_l. reflexivity.
 Qed.
 
 Definition pow2 (n : nat) : nat := Nat.pow 2 n.
