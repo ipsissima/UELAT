@@ -19,8 +19,8 @@ Import UELAT_V3_RationalSynthesis.
 Import UELAT_V3_PUFEMCompiler.
 
 Section Package.
-  Variable R : SynthesisRuleSystem.
-  Variable xs : SynthesisInput R.
+  Variable S : SynthesisRuleSystem.
+  Variable xs : SynthesisInput S.
 
   Variables kappa Cinf epsilon : R.
   Hypothesis Hkappa : 0 <= kappa.
@@ -35,18 +35,18 @@ Section Package.
     global_error_sq <= kappa * local_component_sum Cinf Ls l2s derivs.
 
   Hypothesis Hlocal_evidence :
-    Forall (fun t => synth_valid R (snd t)) (synthesis_evidence_terms xs).
+    Forall (fun t => synth_valid S (snd t)) (synthesis_evidence_terms xs).
 
-  Definition weighted_synthesis_output : ExactSynthesisOutput R :=
-    compile_exact_synthesis R xs.
+  Definition weighted_synthesis_output : ExactSynthesisOutput S :=
+    compile_exact_synthesis S xs.
 
   Theorem weighted_synthesis_code_is_exact :
-    synthesized_code R weighted_synthesis_output
+    synthesized_code S weighted_synthesis_output
       = synthesize_raw (synthesis_code_terms xs).
   Proof. reflexivity. Qed.
 
   Theorem weighted_synthesis_evidence_is_valid :
-    synth_valid R (synthesized_evidence R weighted_synthesis_output).
+    synth_valid S (synthesized_evidence S weighted_synthesis_output).
   Proof.
     unfold weighted_synthesis_output.
     simpl.
@@ -62,9 +62,9 @@ Section Package.
   Theorem weighted_synthesis_epsilon_certificate :
     kappa * manuscript_weighted_sum Cinf Ls alphas < epsilon^2 ->
     global_error_sq < epsilon^2
-    /\ synthesized_code R weighted_synthesis_output
+    /\ synthesized_code S weighted_synthesis_output
          = synthesize_raw (synthesis_code_terms xs)
-    /\ synth_valid R (synthesized_evidence R weighted_synthesis_output).
+    /\ synth_valid S (synthesized_evidence S weighted_synthesis_output).
   Proof.
     intro Hallocation.
     repeat split.
