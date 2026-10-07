@@ -41,7 +41,9 @@ Section Builder.
         subst i.
         rewrite nth_error_app2 in Hnth by lia.
         simpl in Hnth.
-        inversion Hnth; subst.
+        injection Hnth as Hr Hrs Hp.
+        subst r p.
+        subst rs.
         exact Hrefs.
   Defined.
 
