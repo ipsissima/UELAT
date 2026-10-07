@@ -121,10 +121,8 @@ Section AccumulatedNodes.
       pow2 n * nsum_upto M n
         <= cGeom * M n * nsum_upto pow2 n).
     {
-      rewrite <- nsum_upto_scale.
-      change
-        (nsum_upto (fun j => pow2 n * M j) n
-          <= nsum_upto (fun j => (cGeom * M n) * pow2 j) n).
+      rewrite <- (nsum_upto_scale (pow2 n) M n).
+      rewrite <- (nsum_upto_scale (cGeom * M n) pow2 n).
       apply nsum_upto_le.
       intros j Hj.
       specialize (geometric_decay j n Hj).
