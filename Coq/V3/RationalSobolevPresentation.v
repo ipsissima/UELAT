@@ -43,11 +43,11 @@ Record RationalW12Presentation := {
       w12_stage (w12_constant_name p) n = p
 }.
 
-Arguments w12_decode {P} _.
-Arguments w12_sqdist {P} _ _.
-Arguments w12_name_value {P} _.
-Arguments w12_stage {P} _ _.
-Arguments w12_constant_name {P} _.
+Arguments w12_decode {r} _.
+Arguments w12_sqdist {r} _ _.
+Arguments w12_name_value {r} _.
+Arguments w12_stage {r} _ _.
+Arguments w12_constant_name {r} _.
 
 Inductive ApproxWitness (P : RationalW12Presentation) : Type :=
 | ExactSelf : RationalPiecewiseCode -> ApproxWitness P
@@ -56,9 +56,9 @@ Inductive ApproxWitness (P : RationalW12Presentation) : Type :=
 Inductive DistanceWitness (P : RationalW12Presentation) : Type :=
 | PositiveDistance : nat -> Q -> DistanceWitness P.
 
-Arguments ExactSelf {P} _.
-Arguments PositiveApprox {P} _ _.
-Arguments PositiveDistance {P} _ _.
+Arguments ExactSelf {r} _.
+Arguments PositiveApprox {r} _ _.
+Arguments PositiveDistance {r} _ _.
 
 Definition approx_accept
     (P : RationalW12Presentation)
