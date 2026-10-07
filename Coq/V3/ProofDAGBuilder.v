@@ -42,9 +42,7 @@ Section Builder.
         rewrite nth_error_app2 in Hnth by lia.
         replace (length (dag_nodes H) - length (dag_nodes H)) with 0 in Hnth by lia.
         simpl in Hnth.
-        assert (Hnode : RuleNode rule refs payload = RuleNode r rs p) by
-          now injection Hnth.
-        inversion Hnode; subst.
+        inversion Hnth; subst.
         exact Hrefs.
   Defined.
 
