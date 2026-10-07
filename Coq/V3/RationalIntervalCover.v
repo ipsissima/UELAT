@@ -148,7 +148,7 @@ Definition choose_covering_interval_witness
     (cover : list RationalOpenInterval) (s : RationalClosedStar)
     (H : CoverContainsStar cover s) :
     {i : nat | find_covering_interval s cover = Some i} :=
-  ConstructiveEpsilon.constructive_indefinite_ground_description_nat
+  constructive_indefinite_ground_description_nat
     (fun i => find_covering_interval s cover = Some i)
     (fun i => option_nat_eq_dec (find_covering_interval s cover) (Some i))
     (find_covering_interval_complete s cover H).
