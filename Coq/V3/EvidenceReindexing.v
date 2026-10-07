@@ -129,7 +129,7 @@ Section Reindex.
     intros eps Heps.
     assert (Hhalfpos : 0 < eps / 2) by lra.
     assert (Hhalfnonneg : 0 <= eps / 2) by lra.
-    destruct (app_weaken E nu p 0 (eps / 2) w0 Hw0) as [w Hw].
+    destruct (@app_weaken X E nu p 0 (eps / 2) w0 Hw0) as [w Hw].
     - lra.
     - refine {| certificate_at_record :=
                   {| cert_code := p;
