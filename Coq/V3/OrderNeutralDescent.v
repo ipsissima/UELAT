@@ -82,7 +82,10 @@ Section DyadicGeometry.
           (c_payload * M j) * beta j
             <= (c_payload * M j) * beta n).
         { apply Nat.mul_le_mono_l. exact Hb. }
-        nia.
+        rewrite Nat.mul_assoc.
+        rewrite (Nat.mul_comm (M j) (beta n)).
+        rewrite <- Nat.mul_assoc.
+        exact Hmul.
     - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
               <= c_payload * beta n * nsum_upto M n).
       rewrite nsum_upto_scale. reflexivity.
