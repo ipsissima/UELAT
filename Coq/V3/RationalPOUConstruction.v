@@ -74,7 +74,9 @@ Theorem integrated_patch_value_count : forall D k a b x,
   = length (fsc_cover D).
 Proof.
   intros D k a b x. unfold cell_patch_values.
-  apply bucketize_length. apply cell_entries_in_range.
+  transitivity (sa_patch_count (integrated_star_assignment D)).
+  - apply bucketize_length. apply cell_entries_in_range.
+  - reflexivity.
 Qed.
 
 End UELAT_V3_RationalPOUConstruction.
