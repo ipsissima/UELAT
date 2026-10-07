@@ -44,7 +44,7 @@ Lemma weighted_sq_sum_nonnegative : forall ws es,
 Proof.
   induction ws as [|w ws IH]; destruct es as [|a es]; simpl; intros Hws Hes; try lra.
   inversion Hws; subst. inversion Hes; subst.
-  specialize (IH H3 H5).
+  specialize (IH es H2 H4).
   nra.
 Qed.
 
