@@ -1,6 +1,6 @@
 (** RationalPUFEM.v -- authoritative rational PUFEM structural/defect core. *)
 
-From Coq Require Import Reals List Lra.
+From Coq Require Import Reals List Lra Ring.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -72,6 +72,7 @@ Section MultiplierEstimate.
               <= (L * delta0 + Cinf * delta1)^2) by nra.
     eapply Rle_trans; [exact Hsq|].
     pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)) as Hdiff.
+    ring_nf in Hdiff |- *.
     nra.
   Qed.
 
