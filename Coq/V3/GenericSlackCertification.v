@@ -39,10 +39,13 @@ Definition qltb (a b : Q) : bool :=
 Lemma qltb_true_iff : forall a b, qltb a b = true <-> (a < b)%Q.
 Proof.
   intros a b. unfold qltb. destruct (Qlt_le_dec a b) as [Hlt|Hle].
-  - split; intros; assumption.
-  - split; intro H.
-    + discriminate.
-    + exfalso. now apply (Qlt_not_le _ _ H).
+  - split.
+    + intro _. exact Hlt.
+    + intro _. reflexivity.
+  - split.
+    + intro H. discriminate.
+    + intro Hlt. exfalso.
+      exact ((Qlt_not_le _ _ Hlt) Hle).
 Qed.
 
 Record EffectiveMetricSlackInterface (X : MetricPresentation) := {
