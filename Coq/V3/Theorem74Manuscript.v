@@ -106,6 +106,15 @@ Section ManuscriptTheorem.
       apply Nat.le_refl.
   Qed.
 
+  Theorem theorem74_level_canonical_paper_k_bound : forall eps Heps,
+    theorem74_level eps Heps
+      <= S ((paper_k eps Heps + 3 + h_offset H) / Nat.pred r).
+  Proof.
+    intros eps Heps.
+    apply theorem74_level_dyadic_depth_bound.
+    apply paper_k_valid.
+  Qed.
+
   Section LinearBits.
     Variable LB : LinearBitRegime H.
 
@@ -142,6 +151,25 @@ Section ManuscriptTheorem.
         - exact Hsize.
         - apply ordinary_encoding_standard_depth_bound.
         - now apply theorem74_level_dyadic_depth_bound.
+      Qed.
+
+      Theorem corollary75_canonical_paper_k_package :
+        forall (eps : Q) (Heps : (0 < eps)%Q) (Heps1 : (eps <= 1)%Q),
+        size_denominator H
+          * selected_certificate_bits decode f pcode H
+              (epsilon_precision eps Heps)
+          <= total_factor H
+              * h_ordinary_bits H (theorem74_level eps Heps)
+        /\ h_Cden H * h_ordinary_bits H (theorem74_level eps Heps)
+          <= ordinary_upper_factor E * h_Cnum H * lb_beta_factor LB
+              * pow2 (theorem74_level eps Heps)
+              * S (theorem74_level eps Heps)
+        /\ theorem74_level eps Heps
+          <= S ((paper_k eps Heps + 3 + h_offset H) / Nat.pred r).
+      Proof.
+        intros eps Heps Heps1.
+        apply corollary75_standard_rational_package.
+        apply paper_k_valid.
       Qed.
     End StandardRationalCorollary.
 
