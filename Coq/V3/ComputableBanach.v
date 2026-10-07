@@ -142,7 +142,7 @@ Record CoreFastName (B : RealComputableBanachPresentation) := {
                (core_decode (core_stage n)) <= dyadic n
 }.
 
-Arguments core_stage {r} _ _.
+Arguments core_stage {B} _ _.
 
 Record CoreNamedPoint (B : RealComputableBanachPresentation) := {
   core_named_value : carrier (cb_metric B);
