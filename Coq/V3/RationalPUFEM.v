@@ -130,11 +130,30 @@ Section LocalizedDefect.
   Definition corrected_R : R := A2 + B2.
 
   Lemma A2_nonnegative : 0 <= A2.
-  Proof. unfold A2. nra. Qed.
+  Proof.
+    unfold A2.
+    apply Rmult_le_pos.
+    - apply Rmult_le_pos; [exact Hkappa|apply pow2_ge_0].
+    - exact Hsum0.
+  Qed.
+
   Lemma B2_nonnegative : 0 <= B2.
-  Proof. unfold B2. nra. Qed.
+  Proof.
+    unfold B2.
+    apply Rmult_le_pos.
+    - apply Rmult_le_pos; lra.
+    - apply Rplus_le_le_0_compat.
+      + exact HsumL0.
+      + apply Rmult_le_pos; [apply pow2_ge_0|exact Hsum1].
+  Qed.
+
   Lemma corrected_R_nonnegative : 0 <= corrected_R.
-  Proof. unfold corrected_R. pose proof A2_nonnegative. pose proof B2_nonnegative. lra. Qed.
+  Proof.
+    unfold corrected_R.
+    apply Rplus_le_le_0_compat.
+    - apply A2_nonnegative.
+    - apply B2_nonnegative.
+  Qed.
 
   Theorem localized_w12_defect_from_components
       (l2_sq deriv_sq : R) :
