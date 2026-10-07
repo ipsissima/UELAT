@@ -34,7 +34,9 @@ Definition pow2 (n : nat) : nat := Nat.pow 2 n.
 Lemma pow2_positive : forall n, 0 < pow2 n.
 Proof.
   intro n. unfold pow2.
-  apply Nat.pow_nonzero. discriminate.
+  apply Nat.neq_0_lt_0.
+  apply Nat.pow_nonzero.
+  discriminate.
 Qed.
 
 Lemma sum_pow2 : forall n,
