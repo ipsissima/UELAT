@@ -61,8 +61,8 @@ Section Collapse.
       + assert (Hdb : d < b) by lra.
         assert (Hdmid : d < (d + b) / 2) by lra.
         assert (Hmidb : (d + b) / 2 < b) by lra.
-        pose proof (@strict_slack_supplies_every_larger_bound
-                      X E Hcomplete nu mu ((d + b) / 2) Hdmid) as Hacc.
+        pose proof (strict_slack_supplies_every_larger_bound
+                      E Hcomplete nu mu ((d + b) / 2) Hdmid) as Hacc.
         pose proof (Hb ((d + b) / 2) Hacc) as Hbmid.
         exact (Rlt_not_le _ _ Hmidb Hbmid).
   Qed.
