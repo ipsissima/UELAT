@@ -39,6 +39,15 @@ Proof.
   intros eps Heps. unfold epsilon_precision. apply semidecidable_slack_search_valid.
 Qed.
 
+Theorem epsilon_precision_minimal : forall eps Heps s,
+  epsilon_stage_test eps s = true ->
+  epsilon_precision eps Heps <= s.
+Proof.
+  intros eps Heps s Hs.
+  unfold epsilon_precision.
+  now apply semidecidable_slack_search_minimal.
+Qed.
+
 Theorem epsilon_precision_dyadic_bound : forall eps Heps,
   4 * dyadic (epsilon_precision eps Heps) < Q2R eps.
 Proof.
