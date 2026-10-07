@@ -64,7 +64,8 @@ Section Collapse.
         assert (Hmidb : mid < b) by (unfold mid, d; lra).
         pose proof (strict_slack_supplies_every_larger_bound
                       Hcomplete nu mu mid Hdmid) as Hacc.
-        specialize (Hb mid Hacc). lra.
+        pose proof (Hb mid Hacc) as Hbmid.
+        exfalso. lra.
   Qed.
 
   Corollary zero_evidence_distance_iff_zero_metric_glb
