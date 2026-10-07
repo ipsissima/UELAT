@@ -143,7 +143,7 @@ Section CheckerLevelLift.
       field_simplify; try nra. }
     eapply Rle_lt_trans; [exact Hmr|].
     eapply Rlt_le_trans.
-    - apply Rmult_lt_compat_l; assumption.
+    - apply Rmult_lt_compat_l; [exact Hmpos|exact Hsmall].
     - rewrite Hscale. lra.
   Qed.
 
