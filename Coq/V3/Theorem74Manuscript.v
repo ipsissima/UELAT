@@ -98,7 +98,7 @@ Section ManuscriptTheorem.
     rewrite (mh_alpha_is_r_minus_1 MH).
     eapply Nat.le_trans.
     - apply geometric_precision_schedule_monotone.
-      + apply manuscript_alpha_positive. exact MH.
+      + exact (manuscript_alpha_positive MH).
       + now apply epsilon_precision_paper_depth_bound.
     - unfold geometric_precision_schedule.
       replace (k + 2 + 1 + h_offset H)%nat
