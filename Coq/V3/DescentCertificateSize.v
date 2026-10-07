@@ -1,7 +1,7 @@
 (** DescentCertificateSize.v -- full certificate-size conclusion for
     authoritative Theorem 7.4 from the H1--H7 resource assembly. *)
 
-From Coq Require Import Arith Lia.
+From Coq Require Import Arith Lia Ring.
 From UELAT.V3 Require Import OrderNeutralDescent H1H7Descent.
 
 Module UELAT_V3_DescentCertificateSize.
@@ -38,14 +38,25 @@ Section Size.
     size_denominator * precision_certificate_bits s
       <= total_factor * h_ordinary_bits H (h_mu H s).
   Proof.
-    intro s. pose proof (precision_proof_size_relative_to_B s) as Hproof.
-    unfold precision_certificate_bits, total_factor in *. nia.
+    intro s.
+    pose proof (precision_proof_size_relative_to_B s) as Hproof.
+    unfold precision_certificate_bits, total_factor.
+    unfold precision_proof_bits in Hproof.
+    pose proof
+      (Nat.mul_le_mono_l size_denominator
+        (Nat.le_add_r
+          (h_ordinary_bits H (h_mu H s))
+          (precision_proof_bits s))) as Hbase.
+    ring_nf in Hbase Hproof |- *.
+    lia.
   Qed.
 
   Lemma size_denominator_positive : 0 < size_denominator.
   Proof.
-    unfold size_denominator. pose proof (h_cnum_pos H).
-    pose proof (h_Cden_pos H). nia.
+    unfold size_denominator.
+    apply Nat.mul_pos_pos.
+    - exact (h_cnum_pos H).
+    - exact (h_Cden_pos H).
   Qed.
 End Size.
 
