@@ -23,7 +23,14 @@ Proof.
     rewrite RMicromega.Q2R_1. reflexivity.
   - simpl qdyadic. simpl dyadic.
     rewrite Q2R_div by apply Q_two_nonzero.
-    rewrite IH. change (Q2R (2 : Q)) with 2%R. field.
+    rewrite IH.
+    assert (Htwo : Q2R (2 : Q) = 2%R).
+    {
+      change (Q2R (1 + 1)%Q = 2%R).
+      rewrite Q2R_plus, RMicromega.Q2R_1.
+      lra.
+    }
+    rewrite Htwo. reflexivity.
 Qed.
 
 Definition qltb (a b : Q) : bool :=
