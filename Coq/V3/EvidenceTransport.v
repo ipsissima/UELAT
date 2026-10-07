@@ -181,6 +181,7 @@ Section CheckerLevelLift.
       pose proof (source_part_below_third eps (cert_bound EX src)
                     Heps Hsrc0 Hsrc) as Hthird.
       unfold eta, compiler_tolerance.
+      change (Lambda * cert_bound EX src + eps / 3 < eps).
       lra.
   Defined.
 
