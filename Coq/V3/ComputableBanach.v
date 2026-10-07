@@ -179,7 +179,7 @@ Record EffectiveCertificateEnrichment
         distance x (decode_code p) < eps
 }.
 
-Arguments ece_base {r} _.
+Arguments ece_base {B} _.
 
 (** The representation inherited from a core name is a fast-Cauchy sequence in
     the ambient metric presentation. *)
@@ -196,12 +196,12 @@ Theorem core_named_point_has_represented_point
     (B : RealComputableBanachPresentation)
     (x : CoreNamedPoint B) :
   exists rx : RepresentedPoint (cb_metric B),
-    represented_value rx = core_named_value x.
+    represented_value rx = core_named_value B x.
 Proof.
   refine (ex_intro _
-    {| represented_value := core_named_value x;
-       represented_name := core_name_as_fast_cauchy B (core_named_name x);
-       represented_tail := core_named_tail x |} _).
+    {| represented_value := core_named_value B x;
+       represented_name := core_name_as_fast_cauchy B (core_named_name B x);
+       represented_tail := core_named_tail B x |} _).
   reflexivity.
 Qed.
 
