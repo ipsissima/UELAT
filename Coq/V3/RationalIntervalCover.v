@@ -159,7 +159,7 @@ Proof.
   unfold choose_covering_interval.
   destruct (find_covering_interval s cover) as [i|] eqn:Hfind.
   - now apply find_covering_interval_sound in Hfind.
-  - destruct Hex as [i Hi]. rewrite Hfind in Hi. discriminate.
+  - destruct Hex as [i Hi]. discriminate.
 Qed.
 
 End UELAT_V3_RationalIntervalCover.
