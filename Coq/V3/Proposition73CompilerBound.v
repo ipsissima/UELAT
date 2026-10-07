@@ -9,11 +9,13 @@
 *)
 
 From Coq Require Import Arith Lia Lia.
-From UELAT.V3 Require Import ProofDAG PUFEMCompiler.
+From UELAT.V3 Require Import ProofDAG PUFEMCompiler OrderNeutralDescent QuasiUniformGeometry.
 
 Module UELAT_V3_Proposition73CompilerBound.
 Import UELAT_V3_ProofDAG.
 Import UELAT_V3_PUFEMCompiler.
+Import UELAT_V3_OrderNeutralDescent.
+Import UELAT_V3_QuasiUniformGeometry.
 
 Section Level.
   Variables M I Nin beta slack B : nat.
@@ -82,14 +84,11 @@ Section AccumulatedNodes.
   Variable node_increment : nat -> nat.
   Variables cGeom cNodes : nat.
 
-  Hypothesis geometric_history : forall j n,
-    j <= n -> M j <= cGeom * M n.
-  Hypothesis geometric_sum : forall n,
-    (fix sum_to (k : nat) : nat :=
-       match k with
-       | O => M 0
-       | S q => sum_to q + M (S q)
-       end) n <= cGeom * M n.
+  (** Cross-multiplied form of the manuscript hypothesis
+      M_j <= C_g 2^(j-n) M_n for j <= n.  This avoids division in nat. *)
+  Hypothesis geometric_decay : forall j n,
+    j <= n -> pow2 n * M j <= cGeom * pow2 j * M n.
+
   Hypothesis level_nodes : forall n,
     node_increment n <= cNodes * M n.
 
@@ -105,6 +104,37 @@ Section AccumulatedNodes.
     | S k => patch_sum k + M (S k)
     end.
 
+  Lemma patch_sum_eq_nsum : forall n,
+    patch_sum n = nsum_upto M n.
+  Proof.
+    induction n as [|n IH]; simpl.
+    - reflexivity.
+    - now rewrite IH.
+  Qed.
+
+  Theorem proposition73_geometric_patch_sum : forall n,
+    patch_sum n <= 2 * cGeom * M n.
+  Proof.
+    intro n.
+    rewrite patch_sum_eq_nsum.
+    assert (Hscaled :
+      pow2 n * nsum_upto M n
+        <= cGeom * M n * nsum_upto pow2 n).
+    {
+      rewrite <- nsum_upto_scale.
+      change
+        (nsum_upto (fun j => pow2 n * M j) n
+          <= nsum_upto (fun j => (cGeom * M n) * pow2 j) n).
+      apply nsum_upto_le.
+      intros j Hj.
+      specialize (geometric_decay j n Hj).
+      nia.
+    }
+    pose proof (sum_pow2_le_twice_finest n) as Hpow.
+    pose proof (pow2_positive n) as Hpos.
+    nia.
+  Qed.
+
   Lemma accumulated_nodes_le_patch_sum : forall n,
     accumulated_nodes n <= cNodes * patch_sum n.
   Proof.
@@ -113,15 +143,12 @@ Section AccumulatedNodes.
     - specialize (level_nodes (S n)). nia.
   Qed.
 
-  Hypothesis patch_sum_geometric : forall n,
-    patch_sum n <= cGeom * M n.
-
   Theorem proposition73_accumulated_node_count : forall n,
-    accumulated_nodes n <= cNodes * cGeom * M n.
+    accumulated_nodes n <= 2 * cNodes * cGeom * M n.
   Proof.
     intro n.
     pose proof (accumulated_nodes_le_patch_sum n) as Hacc.
-    pose proof (patch_sum_geometric n) as Hsum.
+    pose proof (proposition73_geometric_patch_sum n) as Hsum.
     nia.
   Qed.
 End AccumulatedNodes.
