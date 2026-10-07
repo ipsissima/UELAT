@@ -45,6 +45,7 @@ AUDIT_LIST=(
   "composed_lift_id|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_id"
   "composed_lift_comp|From UELAT.V3 Require Import Composition|V3_Composition.composed_lift_comp"
   "proposition73_level_package|From UELAT.V3 Require Import Proposition73CompilerBound|UELAT_V3_Proposition73CompilerBound.proposition73_level_package"
+  "proposition73_geometric_patch_sum|From UELAT.V3 Require Import Proposition73CompilerBound|UELAT_V3_Proposition73CompilerBound.proposition73_geometric_patch_sum"
   "proposition73_accumulated_node_count|From UELAT.V3 Require Import Proposition73CompilerBound|UELAT_V3_Proposition73CompilerBound.proposition73_accumulated_node_count"
   "theorem74_manuscript_core|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_manuscript_core"
   "theorem74_level_exponent_control|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_level_exponent_control"
