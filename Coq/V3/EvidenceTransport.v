@@ -173,8 +173,9 @@ Section CheckerLevelLift.
                    cert_evidence := wy;
                    cert_accepted := Hwy |};
               certificate_at_strict := _ |}.
-    - pose proof (cert_bound_nonnegative EX src).
-      pose proof (compiler_tolerance_pos eps Heps).
+    - pose proof (cert_bound_nonnegative EX src) as Hbound0.
+      pose proof (compiler_tolerance_pos eps Heps) as Heta0.
+      unfold eta, compiler_tolerance.
       nra.
     - pose proof (certificate_at_strict EX src) as Hsrc.
       pose proof (cert_bound_nonnegative EX src) as Hsrc0.
