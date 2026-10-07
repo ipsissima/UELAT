@@ -33,7 +33,8 @@ Definition pow2 (n : nat) : nat := Nat.pow 2 n.
 
 Lemma pow2_positive : forall n, 0 < pow2 n.
 Proof.
-  intro n. unfold pow2. induction n; simpl; nia.
+  intro n. unfold pow2.
+  apply Nat.pow_nonzero. discriminate.
 Qed.
 
 Lemma sum_pow2 : forall n,
@@ -45,7 +46,7 @@ Proof.
     pose proof (pow2_positive (S n)) as Hpos.
     unfold pow2 in *.
     simpl Nat.pow.
-    nia.
+    lia.
 Qed.
 
 Section DyadicGeometry.
@@ -54,7 +55,12 @@ Section DyadicGeometry.
   Definition M (n : nat) : nat := M0 * pow2 n.
 
   Lemma M_positive : forall n, 0 < M n.
-  Proof. intro n. unfold M. pose proof (pow2_positive n). nia. Qed.
+  Proof.
+    intro n. unfold M.
+    apply Nat.mul_pos_pos.
+    - exact HM0.
+    - apply pow2_positive.
+  Qed.
 
   Lemma sum_M_exact : forall n,
     nsum_upto M n = M0 * (pow2 (S n) - 1).
