@@ -68,10 +68,11 @@ Section Package.
     /\ synth_valid S (synthesized_evidence S weighted_synthesis_output).
   Proof.
     intro Hallocation.
-    repeat split.
+    split.
     - pose proof weighted_synthesis_global_bound. lra.
-    - apply weighted_synthesis_code_is_exact.
-    - apply weighted_synthesis_evidence_is_valid.
+    - split.
+      + apply weighted_synthesis_code_is_exact.
+      + apply weighted_synthesis_evidence_is_valid.
   Qed.
 End Package.
 
