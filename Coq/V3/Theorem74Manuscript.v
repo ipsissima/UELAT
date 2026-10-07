@@ -11,7 +11,8 @@ From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ProofDAG
   H1H7Descent FiniteCodeDescent DescentCertificateSize
   EpsilonPrecision ManuscriptH1H7 OrderNeutralEpsilonDescent
-  GeometricPrecisionSchedule GenericSlackCertification.
+  GeometricPrecisionSchedule GenericSlackCertification
+  H6EncodingRegime StandardRationalH1H7.
 
 Module UELAT_V3_Theorem74Manuscript.
 Import UELAT_V3_CertificateEnrichment.
@@ -25,6 +26,8 @@ Import UELAT_V3_ManuscriptH1H7.
 Import UELAT_V3_OrderNeutralEpsilonDescent.
 Import UELAT_V3_GeometricPrecisionSchedule.
 Import UELAT_V3_GenericSlackCertification.
+Import UELAT_V3_H6EncodingRegime.
+Import UELAT_V3_StandardRationalH1H7.
 
 Section ManuscriptTheorem.
   Context {X : MetricPresentation}.
@@ -113,6 +116,34 @@ Section ManuscriptTheorem.
       intros eps Heps.
       apply lb_beta_linear.
     Qed.
+
+    Section StandardRationalCorollary.
+      Variable E : TwoSidedEncoding H.
+
+      Theorem corollary75_standard_rational_package :
+        forall (eps : Q) (Heps : (0 < eps)%Q) (Heps1 : (eps <= 1)%Q) k,
+        (2 * qdyadic k <= eps)%Q ->
+        size_denominator H
+          * selected_certificate_bits decode f pcode H
+              (epsilon_precision eps Heps)
+          <= total_factor H
+              * h_ordinary_bits H (theorem74_level eps Heps)
+        /\ h_Cden H * h_ordinary_bits H (theorem74_level eps Heps)
+          <= ordinary_upper_factor E * h_Cnum H * lb_beta_factor LB
+              * pow2 (theorem74_level eps Heps)
+              * S (theorem74_level eps Heps)
+        /\ theorem74_level eps Heps
+          <= S ((k + 3 + h_offset H) / Nat.pred r).
+      Proof.
+        intros eps Heps Heps1 k Hk.
+        pose proof (theorem74_manuscript_core eps Heps Heps1) as Hcore.
+        destruct Hcore as [_ [_ [Hsize [_ _]]]].
+        repeat split.
+        - exact Hsize.
+        - apply ordinary_encoding_standard_depth_bound.
+        - now apply theorem74_level_dyadic_depth_bound.
+      Qed.
+    End StandardRationalCorollary.
 
     Section SourceLookahead.
       Variable SR : SourceLookaheadRegime H LB.
