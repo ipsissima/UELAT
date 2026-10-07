@@ -82,7 +82,7 @@ Section DistanceCheckerSoundness.
     exists n : nat, distance x y < q.
   Proof.
     intros q [n Hn].
-    exists n. now apply distance_stage_witness_sound.
+    exists n. exact (distance_stage_witness_sound q n Hn).
   Qed.
 
 End DistanceCheckerSoundness.
