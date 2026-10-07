@@ -140,7 +140,14 @@ Section DistanceCertification.
 
   Theorem distance_slack_stage_valid : forall nu mu q H,
     distance_stage_test nu mu q (distance_slack_stage nu mu q H) = true.
-  Proof. intros. unfold distance_slack_stage. apply semidecidable_slack_search_valid. Qed.
+  Proof.
+    intros nu mu q H.
+    unfold distance_slack_stage.
+    pose proof
+      (semidecidable_slack_search_valid (distance_slack_search nu mu q H))
+      as Hv.
+    cbn in Hv. exact Hv.
+  Qed.
 End DistanceCertification.
 
 Section ApproximationCertification.
@@ -203,7 +210,14 @@ Section ApproximationCertification.
 
   Theorem approximation_slack_stage_valid : forall nu p q H,
     approximation_stage_test nu p q (approximation_slack_stage nu p q H) = true.
-  Proof. intros. unfold approximation_slack_stage. apply semidecidable_slack_search_valid. Qed.
+  Proof.
+    intros nu p q H.
+    unfold approximation_slack_stage.
+    pose proof
+      (semidecidable_slack_search_valid
+        (approximation_slack_search nu p q H)) as Hv.
+    cbn in Hv. exact Hv.
+  Qed.
 End ApproximationCertification.
 
 End UELAT_V3_GenericSlackCertification.
