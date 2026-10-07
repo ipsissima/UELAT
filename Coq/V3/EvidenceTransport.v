@@ -175,8 +175,10 @@ Section CheckerLevelLift.
               certificate_at_strict := _ |}.
     - pose proof (cert_bound_nonnegative EX src) as Hbound0.
       pose proof (compiler_tolerance_pos eps Heps) as Heta0.
-      unfold eta, compiler_tolerance.
-      nra.
+      unfold eta.
+      apply Rplus_le_le_0_compat.
+      + apply Rmult_le_pos; assumption.
+      + left. exact Heta0.
     - pose proof (certificate_at_strict EX src) as Hsrc.
       pose proof (cert_bound_nonnegative EX src) as Hsrc0.
       pose proof (source_part_below_third eps (cert_bound EX src)
