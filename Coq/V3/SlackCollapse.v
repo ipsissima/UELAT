@@ -64,6 +64,7 @@ Section Collapse.
         pose proof (strict_slack_supplies_every_larger_bound
                       Hcomplete nu mu ((d + b) / 2) Hdmid) as Hacc.
         pose proof (Hb ((d + b) / 2) Hacc) as Hbmid.
+        exfalso.
         exact (Rlt_not_le _ _ Hmidb Hbmid).
   Qed.
 
