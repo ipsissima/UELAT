@@ -72,8 +72,11 @@ Section MultiplierEstimate.
               <= (L * delta0 + Cinf * delta1)^2) by nra.
     eapply Rle_trans; [exact Hsq|].
     pose proof (Rle_0_sqr (L * delta0 - Cinf * delta1)) as Hdiff.
-    ring_nf in Hdiff.
-    ring_nf.
+    assert (Hidentity :
+      (L * delta0 + Cinf * delta1)^2
+      + (L * delta0 - Cinf * delta1)^2
+      = 2 * L^2 * delta0^2 + 2 * Cinf^2 * delta1^2).
+    { ring. }
     nra.
   Qed.
 
