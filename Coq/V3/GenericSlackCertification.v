@@ -40,8 +40,8 @@ Lemma qltb_true_iff : forall a b, qltb a b = true <-> (a < b)%Q.
 Proof.
   intros a b. unfold qltb. destruct (Qlt_le_dec a b) as [Hlt|Hle].
   - split.
-    + intro _. exact Hlt.
-    + intro _. reflexivity.
+    + intro Htrue. exact Hlt.
+    + intro Hlt'. reflexivity.
   - split.
     + intro H. discriminate.
     + intro Hlt. exfalso.
