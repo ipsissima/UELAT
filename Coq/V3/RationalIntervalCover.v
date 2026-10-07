@@ -141,22 +141,13 @@ Definition CoverContainsStar (cover : list RationalOpenInterval)
     (s : RationalClosedStar) : Prop :=
   exists k u, nth_error cover k = Some u /\ star_inside_interval s u.
 
-Definition option_nat_eq_dec (x y : option nat) : {x = y} + {x <> y}.
-Proof. decide equality; apply Nat.eq_dec. Defined.
-
-Definition choose_covering_interval_witness
-    (cover : list RationalOpenInterval) (s : RationalClosedStar)
-    (H : CoverContainsStar cover s) :
-    {i : nat | find_covering_interval s cover = Some i} :=
-  constructive_indefinite_ground_description_nat
-    (fun i => find_covering_interval s cover = Some i)
-    (fun i => option_nat_eq_dec (find_covering_interval s cover) (Some i))
-    (find_covering_interval_complete s cover H).
-
 Definition choose_covering_interval
     (cover : list RationalOpenInterval) (s : RationalClosedStar)
-    (H : CoverContainsStar cover s) : nat :=
-  proj1_sig (choose_covering_interval_witness cover s H).
+    (_H : CoverContainsStar cover s) : nat :=
+  match find_covering_interval s cover with
+  | Some i => i
+  | None => 0
+  end.
 
 Theorem choose_covering_interval_valid : forall cover s H,
   exists u,
@@ -164,9 +155,11 @@ Theorem choose_covering_interval_valid : forall cover s H,
     /\ star_inside_interval s u.
 Proof.
   intros cover s H.
-  pose proof (proj2_sig (choose_covering_interval_witness cover s H)) as Hi.
+  pose proof (find_covering_interval_complete s cover H) as Hex.
   unfold choose_covering_interval.
-  now apply find_covering_interval_sound.
+  destruct (find_covering_interval s cover) as [i|] eqn:Hfind.
+  - now apply find_covering_interval_sound in Hfind.
+  - destruct Hex as [i Hi]. rewrite Hfind in Hi. discriminate.
 Qed.
 
 End UELAT_V3_RationalIntervalCover.
