@@ -56,7 +56,9 @@ Theorem paper_k_valid : forall eps Heps,
 Proof.
   intros eps Heps.
   unfold paper_k.
-  pose proof (semidecidable_slack_search_valid (paper_k_search eps Heps)) as H.
+  pose proof
+    (semidecidable_slack_search_valid (paper_k_search eps Heps)) as H.
+  cbn in H.
   unfold paper_k_test in H.
   now apply qleb_true_iff in H.
 Qed.
@@ -67,7 +69,10 @@ Theorem paper_k_minimal : forall eps Heps k,
 Proof.
   intros eps Heps k Hk.
   unfold paper_k.
-  apply semidecidable_slack_search_minimal.
+  pose proof
+    (semidecidable_slack_search_minimal (paper_k_search eps Heps) k) as Hmin.
+  cbn in Hmin.
+  apply Hmin.
   unfold paper_k_test.
   now apply qleb_true_iff.
 Qed.
@@ -94,7 +99,11 @@ Definition epsilon_precision (eps : Q) (Heps : (0 < eps)%Q) : nat :=
 Theorem epsilon_precision_valid : forall eps Heps,
   epsilon_stage_test eps (epsilon_precision eps Heps) = true.
 Proof.
-  intros eps Heps. unfold epsilon_precision. apply semidecidable_slack_search_valid.
+  intros eps Heps.
+  unfold epsilon_precision.
+  pose proof
+    (semidecidable_slack_search_valid (epsilon_search eps Heps)) as H.
+  cbn in H. exact H.
 Qed.
 
 Theorem epsilon_precision_minimal : forall eps Heps s,
@@ -103,7 +112,10 @@ Theorem epsilon_precision_minimal : forall eps Heps s,
 Proof.
   intros eps Heps s Hs.
   unfold epsilon_precision.
-  now apply semidecidable_slack_search_minimal.
+  pose proof
+    (semidecidable_slack_search_minimal (epsilon_search eps Heps) s) as Hmin.
+  cbn in Hmin.
+  now apply Hmin.
 Qed.
 
 Lemma dyadic_plus_two : forall k,
