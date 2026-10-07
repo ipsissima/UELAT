@@ -1,0 +1,115 @@
+name: Theorem 7.4-7.5 exact surface
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: theorem74-v3-${{ github.sha }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  OPAMYES: true
+
+jobs:
+  theorem74-v3:
+    name: Build, coqchk, and audit Theorem 7.4-7.5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: false
+
+      - name: Restore Rocq 9.2 switch
+        id: rocq-switch
+        uses: actions/cache/restore@v4
+        with:
+          path: _opam
+          key: ${{ runner.os }}-v3-rocq92-local-switch-v1
+
+      - name: Ensure Rocq 9.2
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          if [ "${{ steps.rocq-switch.outputs.cache-hit }}" = "true" ]; then
+            coqc --version
+            coqc --version | grep -Fq 'version 9.2'
+          else
+            if [ -d "$HOME/.opam/repo/coq-released" ] && \
+               ! opam repo list --all --short 2>/dev/null | grep -Fxq coq-released; then
+              rm -rf "$HOME/.opam/repo/coq-released" "$HOME/.opam/repo/coq-released.tar.gz"
+            fi
+            opam repo add coq-released https://coq.inria.fr/opam/released || \
+              opam repo set-url coq-released https://coq.inria.fr/opam/released
+            opam update
+            opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
+          fi
+          coqc --version
+
+      - name: Reject proof admissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(
+            sed -e 's/#.*$//' -e '/^[[:space:]]*$/d' Coq/_CoqProject.theorem74-v3 \
+              | awk '$1 !~ /^-/ && $1 ~ /\.v$/ { print "Coq/" $1 }'
+          )
+          if grep -n -E '^[[:space:]]*(Admitted\.|Axiom[[:space:]])' "${files[@]}"; then
+            echo "::error::Found Admitted/Axiom on Theorem 7.4-7.5 surface"
+            exit 1
+          fi
+
+      - name: Build Theorem 7.4-7.5 surface
+        shell: bash
+        run: |
+          set -euxo pipefail
+          eval "$(opam env)"
+          cd Coq
+          coq_makefile -f _CoqProject.theorem74-v3 -o Makefile.theorem74-v3
+          make -f Makefile.theorem74-v3 -j2
+
+      - name: coqchk public entry point
+        shell: bash
+        run: |
+          set -eux
+          eval "$(opam env)"
+          coqchk -R Coq UELAT UELAT.UELATTheorem74V3
+
+      - name: Print Assumptions for manuscript-facing results
+        shell: bash
+        run: |
+          set -euo pipefail
+          eval "$(opam env)"
+          cd Coq
+          theorems=(
+            theorem74_manuscript_core
+            theorem74_level_exponent_control
+            theorem74_level_dyadic_depth_bound
+            theorem74_level_canonical_paper_k_bound
+            theorem74_linear_bit_schedule
+            corollary75_standard_rational_package
+            corollary75_canonical_paper_k_package
+            theorem74_manuscript_source_lookahead
+            theorem74_manuscript_preserves_ancestry
+          )
+          : > theorem74-assumptions.txt
+          for thm in "${theorems[@]}"; do
+            probe="$(mktemp --suffix=.v)"
+            cat > "$probe" <<EOF
+          From UELAT.V3 Require Import Theorem74Manuscript.
+          Print Assumptions UELAT_V3_Theorem74Manuscript.${thm}.
+          EOF
+            echo "===== ${thm} =====" >> theorem74-assumptions.txt
+            coqc -R . UELAT "$probe" >> theorem74-assumptions.txt 2>&1
+            rm -f "$probe"
+          done
+          cat theorem74-assumptions.txt
