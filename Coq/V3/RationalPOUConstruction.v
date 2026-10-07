@@ -29,13 +29,13 @@ Theorem assigned_patch_valid : forall D k,
 Proof. intros D k. unfold assigned_patch. apply choose_covering_interval_valid. Qed.
 
 Lemma assigned_patch_in_range : forall D k,
-  assigned_patch D k < length (fsc_cover D).
+  (assigned_patch D k < length (fsc_cover D))%nat.
 Proof.
   intros D k. destruct (assigned_patch_valid D k) as [u [Hnth Hinside]].
   apply (proj1 (nth_error_Some (fsc_cover D) (assigned_patch D k))).
   rewrite Hnth. discriminate.
 Qed.
-Lemma cover_length_positive : forall D, 0 < length (fsc_cover D).
+Lemma cover_length_positive : forall D, (0 < length (fsc_cover D))%nat.
 Proof.
   intro D. destruct (fsc_cover D) as [|u us] eqn:Hcover.
   - exfalso. apply (fsc_cover_nonempty D). exact Hcover.
