@@ -3,7 +3,7 @@
     summable relative to the finest relevant level.
 *)
 
-From Coq Require Import Arith Lia List Ring.
+From Coq Require Import Arith Lia List.
 
 Module UELAT_V3_OrderNeutralDescent.
 
@@ -78,9 +78,11 @@ Section DyadicGeometry.
       eapply Nat.le_trans.
       + apply payload_level_bound.
       + pose proof (beta_monotone j n Hj) as Hb.
-        eapply Nat.le_trans with (m := (c_payload * M j) * beta n).
-        * apply Nat.mul_le_mono_l. exact Hb.
-        * ring_nf. apply Nat.le_refl.
+        repeat rewrite <- Nat.mul_assoc.
+        apply Nat.mul_le_mono_l.
+        rewrite (Nat.mul_comm (beta n) (M j)).
+        apply Nat.mul_le_mono_l.
+        exact Hb.
     - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
               <= c_payload * beta n * nsum_upto M n).
       rewrite nsum_upto_scale. reflexivity.
