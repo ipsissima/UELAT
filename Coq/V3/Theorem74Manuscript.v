@@ -6,7 +6,7 @@
     manuscript's conditional clauses.
 *)
 
-From Coq Require Import Reals QArith Qreals.
+From Coq Require Import Reals QArith Qreals Lia.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ProofDAG
   H1H7Descent FiniteCodeDescent DescentCertificateSize
