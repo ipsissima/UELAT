@@ -166,26 +166,30 @@ Section CheckerLevelLift.
                 (cert_accepted EX src)
                 (Rlt_le _ _ (compiler_tolerance_pos eps Heps)))
       as [wy Hwy].
-    refine {| certificate_at_record :=
-                {| cert_code := compile_code C (cert_code EX src) eta;
-                   cert_bound := Lambda * cert_bound EX src + eta;
-                   cert_bound_nonnegative := _;
-                   cert_evidence := wy;
-                   cert_accepted := Hwy |};
-              certificate_at_strict := _ |}.
-    - pose proof (cert_bound_nonnegative EX src) as Hbound0.
+    assert (Hbound :
+      0 <= Lambda * cert_bound EX src + eta).
+    {
+      pose proof (cert_bound_nonnegative EX src) as Hbound0.
       pose proof (compiler_tolerance_pos eps Heps) as Heta0.
       unfold eta.
       apply Rplus_le_le_0_compat.
-      + apply Rmult_le_pos; assumption.
-      + left. exact Heta0.
-    - pose proof (certificate_at_strict EX src) as Hsrc.
-      pose proof (cert_bound_nonnegative EX src) as Hsrc0.
-      pose proof (source_part_below_third eps (cert_bound EX src)
-                    Heps Hsrc0 Hsrc) as Hthird.
-      unfold eta, compiler_tolerance.
-      change (Lambda * cert_bound EX src + eps / 3 < eps).
-      lra.
+      - apply Rmult_le_pos; assumption.
+      - left. exact Heta0.
+    }
+    refine {| certificate_at_record :=
+                {| cert_code := compile_code C (cert_code EX src) eta;
+                   cert_bound := Lambda * cert_bound EX src + eta;
+                   cert_bound_nonnegative := Hbound;
+                   cert_evidence := wy;
+                   cert_accepted := Hwy |};
+              certificate_at_strict := _ |}.
+    pose proof (certificate_at_strict EX src) as Hsrc.
+    pose proof (cert_bound_nonnegative EX src) as Hsrc0.
+    pose proof (source_part_below_third eps (cert_bound EX src)
+                  Heps Hsrc0 Hsrc) as Hthird.
+    unfold eta, compiler_tolerance.
+    change (Lambda * cert_bound EX src + eps / 3 < eps).
+    lra.
   Defined.
 
   Definition lift_distance
@@ -200,13 +204,13 @@ Section CheckerLevelLift.
   Proof.
     destruct (compile_dist C
                 (ev_name EX a) (ev_name EX b)
-                (arrow_bound f) (arrow_witness f)
-                (arrow_accepted f)) as [wy Hwy].
-    refine {| arrow_bound := Lambda * arrow_bound f;
+                (@arrow_bound X EX a b f) (@arrow_witness X EX a b f)
+                (@arrow_accepted X EX a b f)) as [wy Hwy].
+    refine {| arrow_bound := Lambda * (@arrow_bound X EX a b f);
               arrow_bound_nonnegative := _;
               arrow_witness := wy;
               arrow_accepted := Hwy |}.
-    pose proof (arrow_bound_nonnegative f). nra.
+    pose proof (@arrow_bound_nonnegative X EX a b f). nra.
   Defined.
 
   Theorem qualitative_local_transport_saturation
