@@ -181,6 +181,7 @@ Section DerivedBudget.
 End DerivedBudget.
 
 Local Close Scope R_scope.
+Local Open Scope nat_scope.
 
 (** * Structural finite-code size bound *)
 
