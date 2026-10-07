@@ -189,7 +189,7 @@ Definition core_name_as_fast_cauchy
 Proof.
   refine {| approximant := fun n => core_decode (core_stage nu n) |}.
   intros m n Hmn.
-  exact (core_stage_fast nu m n Hmn).
+  exact (core_stage_fast B nu m n Hmn).
 Defined.
 
 Theorem core_named_point_has_represented_point
