@@ -19,7 +19,8 @@ Proof. vm_compute. discriminate. Qed.
 Lemma qdyadic_real : forall n, Q2R (qdyadic n) = dyadic n.
 Proof.
   induction n as [|n IH].
-  - reflexivity.
+  - simpl qdyadic. simpl dyadic.
+    rewrite RMicromega.Q2R_1. reflexivity.
   - simpl qdyadic. simpl dyadic.
     rewrite Q2R_div by apply Q_two_nonzero.
     rewrite IH. change (Q2R (2 : Q)) with 2%R. field.
