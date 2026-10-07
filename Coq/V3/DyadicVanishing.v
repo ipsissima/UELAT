@@ -18,7 +18,10 @@ Qed.
 Lemma half_abs_lt_one : Rabs (/ 2) < 1.
 Proof.
   rewrite Rabs_pos_eq.
-  - apply Rinv_lt_1. lra.
+  - rewrite <- Rinv_1.
+    apply Rinv_lt_contravar.
+    + rewrite Rmult_1_l. lra.
+    + lra.
   - left. apply Rinv_0_lt_compat. lra.
 Qed.
 
