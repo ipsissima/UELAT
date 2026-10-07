@@ -183,7 +183,8 @@ Section CheckerLevelLift.
                    cert_evidence := wy;
                    cert_accepted := Hwy |};
               certificate_at_strict := _ |}.
-    pose proof (certificate_at_strict EX src) as Hsrc.
+    pose proof (certificate_at_strict EX src_at) as Hsrc.
+    change (cert_bound EX src < a) in Hsrc.
     pose proof (cert_bound_nonnegative EX src) as Hsrc0.
     pose proof (source_part_below_third eps (cert_bound EX src)
                   Heps Hsrc0 Hsrc) as Hthird.
