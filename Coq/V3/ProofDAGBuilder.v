@@ -7,7 +7,7 @@
     and the new sink is the appended node.
 *)
 
-From Coq Require Import List Arith Lia.
+From Coq Require Import List Arith Lia Program.Equality.
 Import ListNotations.
 From UELAT.V3 Require Import ProofDAG.
 
@@ -40,10 +40,10 @@ Section Builder.
         assert (Heq : i = length (dag_nodes H)) by lia.
         subst i.
         rewrite nth_error_app2 in Hnth by lia.
-        simpl in Hnth.
-        injection Hnth as Hr Hrs Hp.
-        subst r p.
-        subst rs.
+        change
+          (Some (RuleNode rule refs payload) = Some (RuleNode r rs p))
+          in Hnth.
+        dependent destruction Hnth.
         exact Hrefs.
   Defined.
 
