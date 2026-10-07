@@ -160,8 +160,8 @@ Record Type2Realizer
   realize_name : CoreFastName B -> CoreFastName C;
   realize_correct : forall x : CoreNamedPoint B,
       exists y : CoreNamedPoint C,
-        core_named_value y = T (core_named_value x) /\
-        core_named_name y = realize_name (core_named_name x)
+        core_named_value C y = T (core_named_value B x) /\
+        core_named_name C y = realize_name (core_named_name B x)
 }.
 
 (** Effective certificate enrichment over the computable Banach presentation.
