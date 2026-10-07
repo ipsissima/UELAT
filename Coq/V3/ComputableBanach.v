@@ -90,7 +90,7 @@ Record RealComputableBanachPresentation := {
         distance x (core_decode p) < eps
 }.
 
-Arguments core_decode {B} _.
+Arguments core_decode {r} _.
 
 Definition cb_neg (B : RealComputableBanachPresentation)
     (x : carrier (cb_metric B)) : carrier (cb_metric B) :=
@@ -142,7 +142,7 @@ Record CoreFastName (B : RealComputableBanachPresentation) := {
                (core_decode (core_stage n)) <= dyadic n
 }.
 
-Arguments core_stage {B} _ _.
+Arguments core_stage {r} _ _.
 
 Record CoreNamedPoint (B : RealComputableBanachPresentation) := {
   core_named_value : carrier (cb_metric B);
@@ -179,7 +179,7 @@ Record EffectiveCertificateEnrichment
         distance x (decode_code p) < eps
 }.
 
-Arguments ece_base {B} _.
+Arguments ece_base {r} _.
 
 (** The representation inherited from a core name is a fast-Cauchy sequence in
     the ambient metric presentation. *)
