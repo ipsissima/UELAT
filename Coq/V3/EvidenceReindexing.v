@@ -127,18 +127,19 @@ Section Reindex.
       (Hw0 : app_check nu p 0 w0 = true) : CertificateSystem E nu.
   Proof.
     intros eps Heps.
-    assert (Hhalfpos : 0 < eps / 2) by lra.
     assert (Hhalfnonneg : 0 <= eps / 2) by lra.
-    destruct (@app_weaken X E nu p 0 (eps / 2) w0 Hw0) as [w Hw].
-    - lra.
-    - refine {| certificate_at_record :=
+    (* Keep the sigma witness opaque in its own field, rather than
+       destructing it around the entire dependent record: the numerical
+       bound must remain definitionally independent of the chosen witness. *)
+    pose (witness := @app_weaken X E nu p 0 (eps / 2) w0 Hw0 Hhalfnonneg).
+    refine {| certificate_at_record :=
                   {| cert_code := p;
                      cert_bound := eps / 2;
                      cert_bound_nonnegative := Hhalfnonneg;
-                     cert_evidence := w;
-                     cert_accepted := Hw |};
-                certificate_at_strict := _ |}.
-      cbn. lra.
+                     cert_evidence := proj1_sig witness;
+                     cert_accepted := proj2_sig witness |};
+              certificate_at_strict := _ |}.
+    cbn. lra.
   Defined.
 
   Lemma exact_half_reindexed_bound : forall k nu p w0 Hw0 eps Heps,
