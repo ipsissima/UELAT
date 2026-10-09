@@ -20,6 +20,7 @@ Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_DyadicVanishing.
 Import UELAT_V3_RationalSobolev.
 Import UELAT_V3_RationalSobolevPresentation.
+Local Open Scope R_scope.
 
 Section ApproximationCompleteness.
 
