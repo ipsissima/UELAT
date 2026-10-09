@@ -15,15 +15,18 @@ Definition epsilon_stage_test (eps : Q) (s : nat) : bool :=
   qltb (4 * qdyadic s) eps.
 
 Definition qleb (a b : Q) : bool :=
-  if Qle_dec a b then true else false.
+  if Qlt_le_dec b a then false else true.
 
 Lemma qleb_true_iff : forall a b, qleb a b = true <-> (a <= b)%Q.
 Proof.
-  intros a b. unfold qleb. destruct (Qle_dec a b) as [Hle|Hnle].
-  - split; intros; assumption.
+  intros a b. unfold qleb.
+  destruct (Qlt_le_dec b a) as [Hgt|Hle].
   - split; intro H.
     + discriminate.
-    + exfalso. apply Hnle. exact H.
+    + exfalso. exact ((Qlt_not_le _ _ Hgt) H).
+  - split; intro H.
+    + exact Hle.
+    + reflexivity.
 Qed.
 
 Definition paper_k_test (eps : Q) (k : nat) : bool :=
