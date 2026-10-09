@@ -13,6 +13,7 @@ Module UELAT_V3_RealizedBoundedFunctional.
 Import UELAT_V3_CertificateEnrichment.
 Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_ComputableBanach.
+Local Open Scope R_scope.
 
 Record RealizedBoundedFunctional
     (B : RealComputableBanachPresentation) := {
