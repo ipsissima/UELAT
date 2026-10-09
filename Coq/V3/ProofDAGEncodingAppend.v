@@ -48,7 +48,7 @@ Section Encoding.
     rewrite nodes_bitlength_app.
     simpl.
     repeat rewrite Nat.add_assoc.
-    reflexivity.
+    nia.
   Qed.
 
   (** Safe incremental envelope.  The previous encoding already contains its
