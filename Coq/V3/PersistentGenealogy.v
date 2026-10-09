@@ -22,9 +22,7 @@ Section Genealogy.
     refine {| dag_nodes := [InputNode payload]; dag_sink := 0 |}.
     - simpl. lia.
     - intros i r refs p Hnth.
-      destruct i as [|i].
-      + simpl in Hnth. dependent destruction Hnth.
-      + simpl in Hnth. discriminate.
+      destruct i as [|i]; simpl in Hnth; discriminate.
   Defined.
 
   Theorem singleton_input_sink : forall payload,
