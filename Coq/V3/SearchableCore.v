@@ -23,7 +23,9 @@ Lemma core_eqb_true_iff : forall B p q,
 Proof.
   intros B p q. unfold core_eqb.
   destruct (sc_core_eq_dec B p q) as [Heq|Hneq].
-  - split; intro; assumption.
+  - split; intro H.
+    + exact Heq.
+    + reflexivity.
   - split; intro H; [discriminate|contradiction].
 Qed.
 
