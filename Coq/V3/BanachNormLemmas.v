@@ -55,7 +55,6 @@ Proof.
   unfold cb_norm, cb_sub.
   pose proof (cb_distance_translation B x y (cb_neg B y)) as H.
   rewrite cb_add_neg_r in H.
-  rewrite cb_add_zero_r in H.
   exact H.
 Qed.
 
