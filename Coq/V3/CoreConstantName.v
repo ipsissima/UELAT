@@ -27,11 +27,11 @@ Section ConstantName.
   Defined.
 
   Theorem constant_core_stage : forall p n,
-    core_stage (core_named_name (constant_core_named_point p)) n = p.
+    core_stage (core_named_name B (constant_core_named_point p)) n = p.
   Proof. reflexivity. Qed.
 
   Theorem constant_core_value : forall p,
-    core_named_value (constant_core_named_point p) = core_decode p.
+    core_named_value B (constant_core_named_point p) = core_decode p.
   Proof. reflexivity. Qed.
 End ConstantName.
 
