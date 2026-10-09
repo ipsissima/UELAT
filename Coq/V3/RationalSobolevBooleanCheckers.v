@@ -30,7 +30,9 @@ Lemma qeqb_true_iff : forall a b,
 Proof.
   intros a b. unfold qeqb.
   destruct (Qeq_dec a b) as [Heq|Hneq].
-  - split; intro; assumption.
+  - split; intro H.
+    + exact Heq.
+    + reflexivity.
   - split; intro H.
     + discriminate.
     + contradiction.
