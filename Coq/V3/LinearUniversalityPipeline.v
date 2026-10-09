@@ -12,10 +12,12 @@
 *)
 
 From Coq Require Import Reals List.
-From UELAT.V3 Require Import ComputableBanach LinearUniversality.
+From UELAT.V3 Require Import CertificateEnrichment ComputableBanach LinearUniversality.
 
 Module UELAT_V3_LinearUniversalityPipeline.
 Import UELAT_V3_ComputableBanach.
+Import UELAT_V3_CertificateEnrichment.
+Local Open Scope R_scope.
 
 Section Pipeline.
 
