@@ -95,7 +95,7 @@ Section Soundness.
     repeat rewrite Q2R_minus in HsqR.
     repeat rewrite qdyadic_real in HsqR.
     rewrite HexactR in HsqR.
-    rewrite (w12_sqdist_sound (P:=P) (w12_stage nu n) p) in HsqR.
+    rewrite (w12_sqdist_sound P (w12_stage nu n) p) in HsqR.
     pose proof (w12_stage_tail P nu n) as Hname.
     pose proof (distance_nonnegative (w12_metric P)
       (w12_decode (w12_stage nu n)) (w12_decode p)) as Hfin0.
@@ -183,7 +183,7 @@ Section Completeness.
         rewrite Q2R_mult.
         repeat rewrite Q2R_minus.
         repeat rewrite qdyadic_real.
-        rewrite (w12_sqdist_sound (P:=P) (w12_stage nu n) p).
+        rewrite (w12_sqdist_sound P (w12_stage nu n) p).
         pose proof (w12_stage_tail P nu n) as Htail.
         pose proof (distance_nonnegative (w12_metric P)
           (w12_decode (w12_stage nu n)) (w12_decode p)) as Hfin0.

@@ -52,7 +52,8 @@ Section RepresentedLimit.
     refine {| represented_value := f;
               represented_name := descent_fast_name;
               represented_tail := _ |}.
-    intro s. specialize (scheduled_error s).
+    intro s.
+    pose proof (scheduled_error s) as Hs.
     pose proof (dyadic_nonnegative s). lra.
   Defined.
 

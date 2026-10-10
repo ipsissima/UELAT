@@ -31,7 +31,7 @@ Record EffectiveApproxHahnBanachStrong
     rbf_apply (ahbs_extend v eta Hv Heta) v = cb_norm B v;
 
   ahbs_norm_bound : forall v eta Hv Heta,
-    rbf_norm_bound (ahbs_extend v eta Hv Heta) <= 1 + Q2R eta
+    rbf_norm_bound B (ahbs_extend v eta Hv Heta) <= 1 + Q2R eta
 }.
 
 Arguments ahbs_extend {B} _ _ _ _ _.

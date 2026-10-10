@@ -80,7 +80,7 @@ Section Geometry.
             (c_payload * M j) * beta j
               <= (c_payload * M j) * beta n).
           { apply Nat.mul_le_mono_l. exact Hb. }
-          nia.
+          exact Hscaled.
       - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
                   <= c_payload * beta n * nsum_upto M n).
         rewrite nsum_upto_scale. reflexivity. }

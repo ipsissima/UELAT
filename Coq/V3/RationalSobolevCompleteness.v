@@ -43,7 +43,7 @@ Section ApproximationCompleteness.
         (w12_name_value nu) (w12_decode p)) as Hnonneg.
       unfold dtrue in Hsmall. lra.
     - reflexivity.
-    - rewrite (w12_sqdist_sound (P:=P) (w12_stage nu n) p).
+    - rewrite (w12_sqdist_sound P (w12_stage nu n) p).
       pose proof (w12_stage_tail P nu n) as Htail.
       pose proof (distance_nonnegative (w12_metric P)
                     (w12_decode (w12_stage nu n)) (w12_decode p)) as Hfin0.
@@ -88,7 +88,7 @@ Section DistanceCompleteness.
         (w12_name_value nu) (w12_name_value mu)) as Hnonneg.
       unfold dtrue in Hsmall. lra.
     - reflexivity.
-    - rewrite (w12_sqdist_sound (P:=P)
+    - rewrite (w12_sqdist_sound P
                 (w12_stage nu n) (w12_stage mu n)).
       pose proof (w12_stage_tail P nu n) as Hnu.
       pose proof (w12_stage_tail P mu n) as Hmu.

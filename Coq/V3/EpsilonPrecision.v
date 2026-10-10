@@ -1,7 +1,7 @@
 (** EpsilonPrecision.v -- rational epsilon selector for authoritative
     Theorem 7.4. *)
 
-From Coq Require Import Reals QArith Qreals Lra Ring.
+From Coq Require Import Reals QArith Qreals Lia Lra Ring.
 From UELAT.V3 Require Import
   RepresentedSpace StrictSlackSearch DyadicVanishing GenericSlackCertification.
 
