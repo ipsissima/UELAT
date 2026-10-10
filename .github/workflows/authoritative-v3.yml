@@ -97,3 +97,23 @@ jobs:
             exit 1
           fi
           echo "No Admitted/Axiom declarations found in ${#authoritative_files[@]} authoritative source files"
+
+      - name: Audit manuscript theorem assumptions
+        shell: bash
+        run: |
+          set -euo pipefail
+          eval "$(opam env)"
+          bash .github/scripts/print_assumptions.sh
+          if [ -n "$(git status --porcelain docs/assumptions/)" ]; then
+            echo "::error::Authoritative assumption reports drift or are not yet committed"
+            git status --short docs/assumptions/
+            exit 1
+          fi
+
+      - name: Upload authoritative assumption reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: authoritative-v3-assumptions
+          path: docs/assumptions/
+          if-no-files-found: warn

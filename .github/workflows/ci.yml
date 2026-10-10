@@ -113,7 +113,9 @@ jobs:
         run: |
           set -eux
           eval "$(opam env)"
-          bash .github/scripts/print_assumptions.sh
+          # _CoqProject builds only the 18 foundational v3 theorem modules.
+          # The authoritative-v3 workflow audits the additional 7.3-7.5 modules.
+          bash .github/scripts/print_assumptions.sh --core-only
 
           modified_committed="$(git status --porcelain docs/assumptions/ | awk '/^ M|^M /{print $2}')"
           if [ -n "${modified_committed}" ]; then
