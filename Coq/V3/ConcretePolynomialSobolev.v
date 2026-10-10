@@ -13,7 +13,7 @@
   completeness, the effective metric realization, and final 5.6/7.2.
   All source proofs remain unverified until Rocq 9.2 CI/coqchk passes.
 *)
-From Stdlib Require Import Reals QArith Qreals List Lra Ring Ranalysis1 RiemannInt.
+From Stdlib Require Import Reals QArith Qreals List Lra Ring Ranalysis1 RiemannInt micromega.RMicromega.
 Import ListNotations.
 Local Open Scope R_scope.
 
@@ -33,7 +33,7 @@ Proof.
   - ring.
   - rewrite !Q2R_mult.
     rewrite Q2R_plus.
-    change (Q2R (1%Q)) with 1%R.
+    rewrite Q2R_1.
     rewrite (IH (S n) x).
     ring.
 Qed.
