@@ -10,6 +10,10 @@ on:
       - '.github/workflows/pufem-pointwise.yml'
   workflow_dispatch:
 
+concurrency:
+  group: pufem-pointwise-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
