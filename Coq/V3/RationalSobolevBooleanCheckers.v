@@ -30,7 +30,9 @@ Lemma qeqb_true_iff : forall a b,
 Proof.
   intros a b. unfold qeqb.
   destruct (Qeq_dec a b) as [Heq|Hneq].
-  - split; intro; assumption.
+  - split; intro H.
+    + exact Heq.
+    + reflexivity.
   - split; intro H.
     + discriminate.
     + contradiction.
@@ -54,7 +56,7 @@ Definition approx_check_Q
   let sigma := qaw_sigma w in
   andb (qltb (qdyadic n) q)
     (andb
-      (qeqb sigma (w12_sqdist (w12_stage nu n) p))
+      (qeqb sigma (w12_sqdist (r:=P) (w12_stage nu n) p))
       (qltb sigma ((q - qdyadic n) * (q - qdyadic n)))).
 
 Definition distance_check_Q
@@ -66,11 +68,12 @@ Definition distance_check_Q
   andb (qltb (2 * qdyadic n) q)
     (andb
       (qeqb sigma
-        (w12_sqdist (w12_stage nu n) (w12_stage mu n)))
+        (w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n)))
       (qltb sigma
         ((q - 2 * qdyadic n) * (q - 2 * qdyadic n)))).
 
 Section Soundness.
+  Local Open Scope R_scope.
   Variable P : RationalW12Presentation.
 
   Theorem approx_check_Q_sound : forall nu p q w,
@@ -92,7 +95,7 @@ Section Soundness.
     repeat rewrite Q2R_minus in HsqR.
     repeat rewrite qdyadic_real in HsqR.
     rewrite HexactR in HsqR.
-    rewrite (w12_sqdist_sound (P:=P) (w12_stage nu n) p) in HsqR.
+    rewrite (w12_sqdist_sound P (w12_stage nu n) p) in HsqR.
     pose proof (w12_stage_tail P nu n) as Hname.
     pose proof (distance_nonnegative (w12_metric P)
       (w12_decode (w12_stage nu n)) (w12_decode p)) as Hfin0.
@@ -157,6 +160,7 @@ Section Soundness.
 End Soundness.
 
 Section Completeness.
+  Local Open Scope R_scope.
   Variable P : RationalW12Presentation.
 
   Theorem approx_check_Q_complete_strict : forall nu p q,
@@ -167,7 +171,7 @@ Section Completeness.
     set (dtrue := distance (w12_name_value nu) (w12_decode p)).
     assert (Hgap : 0 < Q2R q - dtrue) by (unfold dtrue; lra).
     destruct (two_dyadic_eventually_below (Q2R q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) p).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) p).
     exists {| qaw_stage := n; qaw_sigma := sigma |}.
     unfold approx_check_Q. simpl.
     apply andb_true_iff. split.
@@ -179,7 +183,7 @@ Section Completeness.
         rewrite Q2R_mult.
         repeat rewrite Q2R_minus.
         repeat rewrite qdyadic_real.
-        rewrite (w12_sqdist_sound (P:=P) (w12_stage nu n) p).
+        rewrite (w12_sqdist_sound P (w12_stage nu n) p).
         pose proof (w12_stage_tail P nu n) as Htail.
         pose proof (distance_nonnegative (w12_metric P)
           (w12_decode (w12_stage nu n)) (w12_decode p)) as Hfin0.
@@ -203,7 +207,7 @@ Section Completeness.
     set (dtrue := distance (w12_name_value nu) (w12_name_value mu)).
     assert (Hgap : 0 < Q2R q - dtrue) by (unfold dtrue; lra).
     destruct (four_dyadic_eventually_below (Q2R q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) (w12_stage mu n)).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n)).
     exists {| qdw_stage := n; qdw_sigma := sigma |}.
     unfold distance_check_Q. simpl.
     apply andb_true_iff. split.

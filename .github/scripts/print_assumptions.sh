@@ -58,6 +58,22 @@ AUDIT_LIST=(
   "theorem74_manuscript_preserves_ancestry|From UELAT.V3 Require Import Theorem74Manuscript|UELAT_V3_Theorem74Manuscript.theorem74_manuscript_preserves_ancestry"
 )
 
+# The old CI island (_CoqProject) compiles only the first 18 v3
+# theorems. Its audit must not try to import authoritative-only modules;
+# the authoritative-v3 workflow independently builds and audits all 30.
+case "${1:-}" in
+  --core-only)
+    if [ "${#AUDIT_LIST[@]}" -lt 18 ] ||
+       [[ "${AUDIT_LIST[17]}" != composed_lift_comp\|* ]]; then
+      echo "::error::Unexpected audit-list layout; refusing core subset" >&2
+      exit 1
+    fi
+    AUDIT_LIST=("${AUDIT_LIST[@]:0:18}")
+    ;;
+  "") ;; # authoritative full surface is the default
+  *) echo "::error::Unknown audit mode: $1" >&2; exit 1 ;;
+esac
+
 if [ "${#AUDIT_LIST[@]}" -eq 0 ]; then
   echo "print_assumptions: audit list empty — nothing to check yet."
   exit 0

@@ -20,6 +20,7 @@ Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_DyadicVanishing.
 Import UELAT_V3_RationalSobolev.
 Import UELAT_V3_RationalSobolevPresentation.
+Local Open Scope R_scope.
 
 Section ApproximationCompleteness.
 
@@ -34,13 +35,14 @@ Section ApproximationCompleteness.
     set (dtrue := distance (w12_name_value nu) (w12_decode p)).
     assert (Hgap : 0 < q - dtrue) by (unfold dtrue; lra).
     destruct (two_dyadic_eventually_below (q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) p).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) p).
     exists (PositiveApprox n sigma).
     simpl.
-    repeat split.
-    - unfold dtrue in Hsmall. lra.
-    - reflexivity.
-    - rewrite (w12_sqdist_sound (P:=P) (w12_stage nu n) p).
+    refine (conj _ (conj eq_refl _)).
+    - pose proof (distance_nonnegative (w12_metric P)
+        (w12_name_value nu) (w12_decode p)) as Hnonneg.
+      unfold dtrue in Hsmall. lra.
+    - rewrite (w12_sqdist_sound P (w12_stage nu n) p).
       pose proof (w12_stage_tail P nu n) as Htail.
       pose proof (distance_nonnegative (w12_metric P)
                     (w12_decode (w12_stage nu n)) (w12_decode p)) as Hfin0.
@@ -77,13 +79,14 @@ Section DistanceCompleteness.
     set (dtrue := distance (w12_name_value nu) (w12_name_value mu)).
     assert (Hgap : 0 < q - dtrue) by (unfold dtrue; lra).
     destruct (four_dyadic_eventually_below (q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) (w12_stage mu n)).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n)).
     exists (PositiveDistance n sigma).
     simpl.
-    repeat split.
-    - unfold dtrue in Hsmall. lra.
-    - reflexivity.
-    - rewrite (w12_sqdist_sound (P:=P)
+    refine (conj _ (conj eq_refl _)).
+    - pose proof (distance_nonnegative (w12_metric P)
+        (w12_name_value nu) (w12_name_value mu)) as Hnonneg.
+      unfold dtrue in Hsmall. lra.
+    - rewrite (w12_sqdist_sound P
                 (w12_stage nu n) (w12_stage mu n)).
       pose proof (w12_stage_tail P nu n) as Hnu.
       pose proof (w12_stage_tail P mu n) as Hmu.

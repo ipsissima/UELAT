@@ -12,6 +12,7 @@ Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_ComputableBanach.
 Import UELAT_V3_DyadicVanishing.
 Import UELAT_V3_GenericSlackCertification.
+Local Open Scope R_scope.
 
 Section Search.
   Variable B : RealComputableBanachPresentation.
@@ -19,7 +20,11 @@ Section Search.
   Lemma qdyadic_positive_strong : forall n, (0 < qdyadic n)%Q.
   Proof.
     intro n. apply Rlt_Qlt. rewrite qdyadic_real.
-    change (Q2R (0 : Q)) with 0%R. apply dyadic_pos.
+    assert (HQzero : Q2R (0 : Q) = 0%R).
+    { pose proof (Q2R_plus (0 : Q) (0 : Q)) as Hplus.
+      replace ((0 + 0)%Q) with (0 : Q) in Hplus by reflexivity.
+      lra. }
+    rewrite HQzero. apply dyadic_pos.
   Qed.
 
   Definition core_nonzero_test_strong
@@ -63,8 +68,11 @@ Section Search.
         with
         (-(Q2R (core_norm_approx B p n)
            - cb_norm B (core_decode p))) by ring.
-      rewrite <- Rabs_Ropp.
-      eapply Rle_trans; [apply Rle_abs|exact Happ]. }
+      eapply Rle_trans with
+        (r2 := Rabs (-(Q2R (core_norm_approx B p n)
+                        - cb_norm B (core_decode p)))).
+      - apply Rle_abs.
+      - rewrite Rabs_Ropp. exact Happ. }
     exists n.
     unfold core_nonzero_test_strong.
     apply qltb_true_iff. apply Rlt_Qlt. rewrite qdyadic_real. nra.

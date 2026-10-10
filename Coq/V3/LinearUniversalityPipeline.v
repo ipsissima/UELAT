@@ -12,10 +12,12 @@
 *)
 
 From Coq Require Import Reals List.
-From UELAT.V3 Require Import ComputableBanach LinearUniversality.
+From UELAT.V3 Require Import CertificateEnrichment ComputableBanach LinearUniversality.
 
 Module UELAT_V3_LinearUniversalityPipeline.
 Import UELAT_V3_ComputableBanach.
+Import UELAT_V3_CertificateEnrichment.
+Local Open Scope R_scope.
 
 Section Pipeline.
 
@@ -109,7 +111,7 @@ Section Pipeline.
       {K : EffectiveDualBall} {Q : EffectiveCantorSurjection K}
       {F : CantorFunctionRepresentation K Q}
       (E : IntervalExtension F) := {
-    invert_range : C01 E -> option X;
+    invert_range : C01 F E -> option X;
     invert_on_embedding : forall x,
       invert_range (extend_to_interval F E (embed_cantor K Q F x)) = Some x
   }.
@@ -123,7 +125,7 @@ Section Pipeline.
   }.
 
   Definition universal_embedding
-      (P : EffectiveLinearUniversalityPackage) : X -> C01 (elu_interval P) :=
+      (P : EffectiveLinearUniversalityPackage) : X -> C01 (elu_cfun P) (elu_interval P) :=
     fun x =>
       extend_to_interval (elu_cfun P) (elu_interval P)
         (embed_cantor (elu_dual P) (elu_cantor P) (elu_cfun P) x).
@@ -131,7 +133,7 @@ Section Pipeline.
   Theorem universal_embedding_linear_add
       (P : EffectiveLinearUniversalityPackage) : forall x y,
     universal_embedding P (cb_add B x y)
-      = c01_add (elu_interval P) (universal_embedding P x) (universal_embedding P y).
+      = c01_add (elu_cfun P) (elu_interval P) (universal_embedding P x) (universal_embedding P y).
   Proof.
     intros x y. unfold universal_embedding.
     rewrite embed_cantor_add.
@@ -141,7 +143,7 @@ Section Pipeline.
   Theorem universal_embedding_linear_smul
       (P : EffectiveLinearUniversalityPackage) : forall a x,
     universal_embedding P (cb_scale B a x)
-      = c01_smul (elu_interval P) a (universal_embedding P x).
+      = c01_smul (elu_cfun P) (elu_interval P) a (universal_embedding P x).
   Proof.
     intros a x. unfold universal_embedding.
     rewrite embed_cantor_smul.
@@ -150,7 +152,7 @@ Section Pipeline.
 
   Theorem universal_embedding_isometric
       (P : EffectiveLinearUniversalityPackage) : forall x,
-    c01_norm (elu_interval P) (universal_embedding P x)
+    c01_norm (elu_cfun P) (elu_interval P) (universal_embedding P x)
       = distance x (cb_zero B).
   Proof.
     intro x.
@@ -161,7 +163,7 @@ Section Pipeline.
 
   Theorem universal_embedding_has_inverse_on_range
       (P : EffectiveLinearUniversalityPackage) : forall x,
-    invert_range (elu_inverse P) (universal_embedding P x) = Some x.
+    invert_range (elu_interval P) (elu_inverse P) (universal_embedding P x) = Some x.
   Proof.
     intro x.
     unfold universal_embedding.

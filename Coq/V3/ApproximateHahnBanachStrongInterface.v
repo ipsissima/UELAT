@@ -10,11 +10,13 @@
 *)
 
 From Coq Require Import Reals QArith Qreals.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import
-  CertificateEnrichment ComputableBanach RealizedBoundedFunctional.
+  CertificateEnrichment RepresentedSpace ComputableBanach RealizedBoundedFunctional.
 
 Module UELAT_V3_ApproximateHahnBanachStrongInterface.
 Import UELAT_V3_CertificateEnrichment.
+Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_ComputableBanach.
 Import UELAT_V3_RealizedBoundedFunctional.
 
@@ -30,7 +32,7 @@ Record EffectiveApproxHahnBanachStrong
     rbf_apply (ahbs_extend v eta Hv Heta) v = cb_norm B v;
 
   ahbs_norm_bound : forall v eta Hv Heta,
-    rbf_norm_bound (ahbs_extend v eta Hv Heta) <= 1 + Q2R eta
+    rbf_norm_bound B (ahbs_extend v eta Hv Heta) <= 1 + Q2R eta
 }.
 
 Arguments ahbs_extend {B} _ _ _ _ _.
@@ -40,9 +42,9 @@ Theorem strong_ahb_is_genuinely_type2 :
          v eta Hv Heta (x : CoreNamedPoint B) n,
     Rabs
       (Q2R (rbf_realize (ahbs_extend A v eta Hv Heta)
-                (core_named_name x) n)
+                (core_named_name B x) n)
        - rbf_apply (ahbs_extend A v eta Hv Heta)
-                (core_named_value x))
+                (core_named_value B x))
       <= dyadic n.
 Proof.
   intros.

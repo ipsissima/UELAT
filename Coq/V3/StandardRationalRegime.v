@@ -18,7 +18,7 @@ Definition precision_level (r s : nat) : nat := ceil_div s (r - 1).
 Definition dyadic_tolerance (s : nat) : R := / INR (pow2 s).
 
 Lemma dyadic_tolerance_positive : forall s,
-  0 < dyadic_tolerance s.
+  (0 < dyadic_tolerance s)%R.
 Proof.
   intro s. unfold dyadic_tolerance. apply Rinv_0_lt_compat.
   apply lt_0_INR. apply pow2_positive.

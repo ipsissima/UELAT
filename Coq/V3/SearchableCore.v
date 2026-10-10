@@ -23,7 +23,9 @@ Lemma core_eqb_true_iff : forall B p q,
 Proof.
   intros B p q. unfold core_eqb.
   destruct (sc_core_eq_dec B p q) as [Heq|Hneq].
-  - split; intro; assumption.
+  - split; intro H.
+    + exact Heq.
+    + reflexivity.
   - split; intro H; [discriminate|contradiction].
 Qed.
 
@@ -45,7 +47,12 @@ Theorem core_index_correct : forall B p,
   core_enum (sc_banach B) (core_index B p) = p.
 Proof.
   intros B p. apply core_eqb_true_iff.
-  unfold core_index. apply first_true_valid.
+  unfold core_index.
+  change ((fun n => core_eqb B (core_enum (sc_banach B) n) p)
+            (first_true_index
+              (fun n => core_eqb B (core_enum (sc_banach B) n) p)
+              (core_index_eventually B p)) = true).
+  apply first_true_valid.
 Qed.
 
 End UELAT_V3_SearchableCore.

@@ -43,12 +43,17 @@ Section Encoding.
           (RuleNode r refs p).
   Proof.
     intros H r refs p Hrefs.
-    unfold dag_encoded_bitlength, append_rule. simpl.
-    rewrite app_length. simpl.
+    unfold dag_encoded_bitlength.
+    change (dag_nodes (append_rule H r refs p Hrefs))
+      with (dag_nodes H ++ [RuleNode r refs p]).
+    change (dag_sink (append_rule H r refs p Hrefs))
+      with (length (dag_nodes H)).
+    rewrite app_length.
+    simpl (length [RuleNode r refs p]).
+    rewrite Nat.add_1_r.
     rewrite nodes_bitlength_app.
-    simpl.
-    repeat rewrite Nat.add_assoc.
-    reflexivity.
+    rewrite singleton_node_bitlength.
+    lia.
   Qed.
 
   (** Safe incremental envelope.  The previous encoding already contains its

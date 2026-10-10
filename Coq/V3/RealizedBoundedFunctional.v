@@ -5,7 +5,7 @@
     on source fast names and a correctness theorem against the semantic value.
 *)
 
-From Coq Require Import Reals QArith Qreals Lra.
+From Coq Require Import Reals QArith Qreals Lra Ring.
 From UELAT.V3 Require Import
   CertificateEnrichment RepresentedSpace ComputableBanach.
 
@@ -13,6 +13,7 @@ Module UELAT_V3_RealizedBoundedFunctional.
 Import UELAT_V3_CertificateEnrichment.
 Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_ComputableBanach.
+Local Open Scope R_scope.
 
 Record RealizedBoundedFunctional
     (B : RealComputableBanachPresentation) := {
@@ -30,8 +31,8 @@ Record RealizedBoundedFunctional
   rbf_realize : CoreFastName B -> nat -> Q;
   rbf_realize_correct : forall (x : CoreNamedPoint B) n,
     Rabs
-      (Q2R (rbf_realize (core_named_name x) n)
-       - rbf_apply (core_named_value x))
+      (Q2R (rbf_realize (core_named_name B x) n)
+       - rbf_apply (core_named_value B x))
       <= dyadic n
 }.
 
@@ -42,11 +43,11 @@ Definition realized_functional_extensional
     {B : RealComputableBanachPresentation}
     (g : RealizedBoundedFunctional B) : Prop :=
   forall (x y : CoreNamedPoint B),
-    core_named_value x = core_named_value y ->
+    core_named_value B x = core_named_value B y ->
     forall n,
       Rabs
-        (Q2R (rbf_realize g (core_named_name x) n)
-         - Q2R (rbf_realize g (core_named_name y) n))
+        (Q2R (rbf_realize g (core_named_name B x) n)
+         - Q2R (rbf_realize g (core_named_name B y) n))
       <= 2 * dyadic n.
 
 Theorem realized_functional_names_extensional :
@@ -54,24 +55,24 @@ Theorem realized_functional_names_extensional :
     realized_functional_extensional g.
 Proof.
   intros B g x y Hxy n.
-  pose proof (rbf_realize_correct g x n) as Hx.
-  pose proof (rbf_realize_correct g y n) as Hy.
+  pose proof (rbf_realize_correct B g x n) as Hx.
+  pose proof (rbf_realize_correct B g y n) as Hy.
   rewrite <- Hxy in Hy.
   replace
-    (Q2R (rbf_realize g (core_named_name x) n)
-     - Q2R (rbf_realize g (core_named_name y) n))
+    (Q2R (rbf_realize g (core_named_name B x) n)
+     - Q2R (rbf_realize g (core_named_name B y) n))
     with
-    ((Q2R (rbf_realize g (core_named_name x) n)
-      - rbf_apply g (core_named_value x))
-     + (rbf_apply g (core_named_value x)
-      - Q2R (rbf_realize g (core_named_name y) n))) by ring.
+    ((Q2R (rbf_realize g (core_named_name B x) n)
+      - rbf_apply g (core_named_value B x))
+     + (rbf_apply g (core_named_value B x)
+      - Q2R (rbf_realize g (core_named_name B y) n))) by ring.
   eapply Rle_trans; [apply Rabs_triang|].
   replace
-    (rbf_apply g (core_named_value x)
-     - Q2R (rbf_realize g (core_named_name y) n))
+    (rbf_apply g (core_named_value B x)
+     - Q2R (rbf_realize g (core_named_name B y) n))
     with
-    (-(Q2R (rbf_realize g (core_named_name y) n)
-       - rbf_apply g (core_named_value x))) by ring.
+    (-(Q2R (rbf_realize g (core_named_name B y) n)
+       - rbf_apply g (core_named_value B x))) by ring.
   rewrite Rabs_Ropp.
   lra.
 Qed.
