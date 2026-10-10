@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'Coq/V3/PUFEMPointwiseCore.v'
+      - 'Coq/V3/PUFEMIntegralBridge.v'
       - '.github/workflows/pufem-pointwise.yml'
   workflow_dispatch:
 
@@ -39,9 +40,23 @@ jobs:
           coqc --version
           coqc --version | grep -F 'version 9.2'
           coqc -R Coq UELAT Coq/V3/PUFEMPointwiseCore.v
-          coqchk -R Coq UELAT UELAT.V3.PUFEMPointwiseCore
+          coqc -R Coq UELAT Coq/V3/PUFEMIntegralBridge.v
+          coqchk -R Coq UELAT UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge
           for thm in finite_cauchy_overlap bounded_overlap_squared localized_integrand_56 finite_quadrature_localized_56; do
             printf 'From UELAT.V3 Require Import PUFEMPointwiseCore.\nPrint Assumptions UELAT_V3_PUFEMPointwiseCore.%s.\n' "$thm" \
+              | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
+            cat "/tmp/pufem-${thm}.txt"
+            if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::Undischarged axioms in ${thm}"
+              exit 1
+            fi
+            if ! grep -q 'Closed under the global context' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::No closed-context verdict for ${thm}"
+              exit 1
+            fi
+          done
+          for thm in integrated_localized_56 finite_positive_integrated_56; do
+            printf 'From UELAT.V3 Require Import PUFEMIntegralBridge.\nPrint Assumptions UELAT_V3_PUFEMIntegralBridge.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
             cat "/tmp/pufem-${thm}.txt"
             if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
