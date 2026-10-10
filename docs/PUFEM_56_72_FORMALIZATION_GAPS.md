@@ -19,6 +19,7 @@ This note describes a **candidate, unverified** formal development on the PR #42
 - `ConcreteRiemannPUFEM56.v`: derives the local-to-global bound using Stdlib's actual monotonicity of real Riemann integrals, conditional on integrability of the piecewise composite integrands and certified active overlap; unlike earlier generic `PositiveLinearIntegral`, this is **a real continuous-integral statement**.
 - `ConcretePolynomialWeakTest.v`: candidate proof of exact real Riemann integration-by-parts and the polynomial-test weak-derivative identity, via the C1 product and library FTC.
 - `ConcretePiecewiseWeakTest.v`: sums actual cell Riemann integrals and cancels interior boundary terms using the rational seam certificates; proves a weak-derivative identity for rational polynomial test functions zero at the domain endpoints. **This is not yet a distributional weak derivative theorem for all test functions.**
+- `ConcreteUnitIntervalSobolev.v`: adds a distinct wrapper with **actual 0 and 1 endpoint certificates** over a well-formed continuous chain; proves that the piecewise polynomial-test weak-derivative identity applies when the test vanishes at these fixed manuscript endpoints. It does not retrofit these constraints to unconstrained legacy codes.
 - `tests/test_piecewise_weak_derivative_exact.py`: 1,600 deterministic, exact-Fraction polynomial-chain regression examples for integration by parts and boundary cancellation (not a proof).
 
 Every result above requires successful compilation with Rocq 9.2, `coqchk`, and a theorem-specific assumptions audit at one immutable SHA. See `.github/workflows/pufem-pointwise.yml`.
@@ -42,7 +43,7 @@ Every result above requires successful compilation with Rocq 9.2, `coqchk`, and 
 ## CI limitations and claim policy
 
 - The legacy/general v3 pipeline currently has unrelated failing modules; the isolated PUFEM gate is designed to show **which** candidate file first fails.
-- No `Admitted` or `Axiom` is intentionally introduced in these thirteen new Rocq files. This is a source-level claim pending build and kernel verification.
+- No `Admitted` or `Axiom` is intentionally introduced in these fourteen new Rocq files. This is a source-level claim pending build and kernel verification.
 - Finite numerical smoke tests are useful to detect coefficient mistakes but do not prove theorem correctness.
 - `Print Assumptions` reporting **Closed under the global context** does **not** discharge hypotheses explicitly quantified in a theorem. Exact theorem-type comparison against the manuscript is always required.
 
@@ -90,12 +91,13 @@ interfaces. The following statements are **not yet established in Rocq**:
    energies are precisely the `Q2R` images of the rational polynomial
    integration operations in `RationalSobolev.v`. This uses the
    antiderivative and fundamental theorem but is not yet proved.
-3. **Unit interval coverage:** a `RationalPiecewiseCode` currently
-   contains a nonempty continuous chain of positive cells but does not
-   itself certify that its first left endpoint is exactly 0 and its
-   last right endpoint is exactly 1. Add an explicit unit-domain
-   certificate and verify coverage before calling this the whole
-   `W^{1,2}(0,1)` coding language.
+3. **Unit interval coverage:** the new `UnitIntervalRationalCode`
+   wrapper now requires exact rational endpoint certificates for 0 and 1,
+   in addition to the original continuous positive-cell chain. It is
+   still necessary to instantiate this wrapper from the actual rational
+   PUFEM constructors, and to prove the concrete code denotes a
+   well-defined (Lebesgue-a.e.) element of the full `W^{1,2}(0,1)`
+   carrier, not merely a finite piecewise-real function.
 4. **Density/completion:** prove that the concrete finite-code
    carrier is dense in the represented full Sobolev space and that its
    exact coded distances agree with the desired metric presentation.
@@ -118,3 +120,23 @@ of the *glued* function must still be justified formally.
 All of the above progress is candidate source code until machine
 validation. The existing manuscript status of 5.6 and 7.2 remains
 `PARTIAL`.
+
+## Correct Rocq-real assumptions audit (updated)
+
+The prior isolated PUFEM workflow incorrectly classified **any**
+`Print Assumptions` result with an `Axioms:` heading as a failure.
+That rule was inconsistent with the current repository's 18
+published Rocq 9.2 assumption reports in `docs/assumptions/`.
+These reports explicitly list standard-library
+`ClassicalDedekindReals.sig_forall_dec` and
+`FunctionalExtensionality.functional_extensionality_dep` dependencies.
+
+The new `.github/scripts/audit_pufem_assumptions.sh` replaces the
+blanket rejection: it compiles standalone probes, preserves complete
+raw reports, and **rejects every dependency not in that explicitly
+documented standard-library baseline**. It also scans the 14 candidate
+Rocq modules for source-level admissions, Axiom declarations and
+top-level Parameter declarations. The gate currently checks 50 named
+candidate theorems; pending execution, NONE are declared checked.
+A reviewer must additionally compare the exported theorem types to
+the manuscript's precise hypotheses and strength.
