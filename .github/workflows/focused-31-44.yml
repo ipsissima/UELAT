@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'Coq/V3/NamedNonzeroWitness.v'
+      - 'Coq/V3/OneDimensionalHBSeed.v'
       - 'Coq/V3/Category44FiniteCompilerClosure.v'
       - '.github/workflows/focused-31-44.yml'
   workflow_dispatch:
@@ -58,13 +59,14 @@ jobs:
           coqc -R Coq UELAT Coq/V3/DyadicVanishing.v
           coqc -R Coq UELAT Coq/V3/GenericSlackCertification.v
           coqc -R Coq UELAT Coq/V3/NamedNonzeroWitness.v
+          coqc -R Coq UELAT Coq/V3/OneDimensionalHBSeed.v
           coqc -R Coq UELAT Coq/V3/Category44FiniteCompilerClosure.v
       - name: Kernel checking
         shell: bash
         run: |
           set -euo pipefail
           eval "$(opam env)"
-          coqchk -R Coq UELAT UELAT.V3.NamedNonzeroWitness UELAT.V3.Category44FiniteCompilerClosure
+          coqchk -R Coq UELAT UELAT.V3.NamedNonzeroWitness UELAT.V3.OneDimensionalHBSeed UELAT.V3.Category44FiniteCompilerClosure
       - name: Audit all new proof obligations
         shell: bash
         run: |
@@ -77,6 +79,9 @@ jobs:
             NamedNonzeroWitness:named_nonzero_test_eventually \
             NamedNonzeroWitness:named_nonzero_stage_accepted \
             NamedNonzeroWitness:named_positive_lower_bound_sound \
+            OneDimensionalHBSeed:line_embed_injective \
+            OneDimensionalHBSeed:source_functional_norm_one \
+            OneDimensionalHBSeed:source_functional_hits_input_vector \
             Category44FiniteCompilerClosure:first_tolerance_positive \
             Category44FiniteCompilerClosure:finite_compiler_budget_strict \
             Category44FiniteCompilerClosure:finite_composition_pointwise_associative; do
