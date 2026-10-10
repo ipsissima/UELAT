@@ -49,8 +49,9 @@ Section EffectiveNonzeroName.
     assert (Hback :
       distance (core_decode p) (core_named_value B x)
         <= dyadic n).
-    { rewrite (distance_symmetric
-        (x := core_decode p) (y := core_named_value B x)).
+    { pose proof (distance_symmetric (cb_metric B)
+          (core_decode p) (core_named_value B x)) as Hsym.
+      rewrite Hsym.
       exact Htail. }
     apply Rabs_le in Hcore.
     unfold named_norm_approx, cb_norm.
