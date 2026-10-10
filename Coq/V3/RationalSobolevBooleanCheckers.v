@@ -73,6 +73,7 @@ Definition distance_check_Q
         ((q - 2 * qdyadic n) * (q - 2 * qdyadic n)))).
 
 Section Soundness.
+  Local Open Scope R_scope.
   Variable P : RationalW12Presentation.
 
   Theorem approx_check_Q_sound : forall nu p q w,
@@ -159,6 +160,7 @@ Section Soundness.
 End Soundness.
 
 Section Completeness.
+  Local Open Scope R_scope.
   Variable P : RationalW12Presentation.
 
   Theorem approx_check_Q_complete_strict : forall nu p q,

@@ -11,13 +11,13 @@ Import UELAT_V3_CertificateEnrichment.
 Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_OrderNeutralDescent.
 
-Lemma dyadic_step_le : forall n, dyadic (S n) <= dyadic n.
+Lemma dyadic_step_le : forall n, (dyadic (S n) <= dyadic n)%R.
 Proof.
   intro n. simpl. pose proof (dyadic_nonnegative n). lra.
 Qed.
 
 Lemma dyadic_antitone : forall n m,
-  n <= m -> dyadic m <= dyadic n.
+  n <= m -> (dyadic m <= dyadic n)%R.
 Proof.
   intros n m Hnm. induction Hnm.
   - lra.
@@ -32,7 +32,7 @@ Section RepresentedLimit.
   Variable p : nat -> carrier X.
   Variable mu : nat -> nat.
   Hypothesis scheduled_error : forall s,
-    distance f (p (mu s)) <= dyadic s / 2.
+    (distance f (p (mu s)) <= dyadic s / 2)%R.
 
   Definition descent_fast_name : FastCauchyName X.
   Proof.

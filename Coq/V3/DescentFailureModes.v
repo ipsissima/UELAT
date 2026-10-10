@@ -20,7 +20,7 @@ Definition growing_payload (n : nat) : nat := S n.
 Lemma cumulative_unit_payload : forall n,
   nsum_upto unit_payload n = S n.
 Proof.
-  induction n; simpl; lia.
+  induction n as [|n IH]; cbn [nsum_upto unit_payload]; lia.
 Qed.
 
 Theorem no_uniform_order_neutrality_without_geometric_growth :
