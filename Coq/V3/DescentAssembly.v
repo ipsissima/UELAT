@@ -53,8 +53,13 @@ Section RepresentedLimit.
               represented_name := descent_fast_name;
               represented_tail := _ |}.
     intro s.
-    pose proof (scheduled_error s) as Hs.
-    pose proof (dyadic_nonnegative s). lra.
+    change (distance f (p (mu s)) <= dyadic s)%R.
+    pose proof (dyadic_nonnegative s) as Hd.
+    eapply Rle_trans.
+    - exact (scheduled_error s).
+    - apply (Rmult_le_reg_r 2); [lra|].
+      replace (dyadic s / 2 * 2)%R with (dyadic s) by field.
+      nra.
   Defined.
 
   Theorem descent_name_stage : forall s,

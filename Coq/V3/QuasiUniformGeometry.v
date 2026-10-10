@@ -70,20 +70,16 @@ Section Geometry.
     intro n.
     assert (Hraw : nsum_upto payload_bits n
               <= c_payload * beta n * nsum_upto M n).
-    { eapply Nat.le_trans.
+    { eapply Nat.le_trans with
+          (m := nsum_upto (fun j => (c_payload * beta n) * M j) n).
       - apply nsum_upto_le. intros j Hj.
-        specialize (payload_level_bound j) as Hp.
-        specialize (beta_monotone j n Hj) as Hb.
         eapply Nat.le_trans.
-        + exact Hp.
-        + assert (Hscaled :
-            (c_payload * M j) * beta j
-              <= (c_payload * M j) * beta n).
-          { apply Nat.mul_le_mono_l. exact Hb. }
-          exact Hscaled.
-      - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
-                  <= c_payload * beta n * nsum_upto M n).
-        rewrite nsum_upto_scale. reflexivity. }
+        + apply payload_level_bound.
+        + replace ((c_payload * beta n) * M j)
+            with ((c_payload * M j) * beta n) by ring.
+          apply Nat.mul_le_mono_l.
+          apply beta_monotone. exact Hj.
+      - rewrite nsum_upto_scale. apply Nat.le_refl. }
     assert (Hraw_scaled :
       (c_num * C_den) * nsum_upto payload_bits n
         <= (c_num * C_den) *

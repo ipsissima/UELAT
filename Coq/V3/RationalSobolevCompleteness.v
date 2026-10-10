@@ -38,11 +38,10 @@ Section ApproximationCompleteness.
     set (sigma := w12_sqdist (r:=P) (w12_stage nu n) p).
     exists (PositiveApprox n sigma).
     simpl.
-    repeat split.
+    refine (conj _ (conj eq_refl _)).
     - pose proof (distance_nonnegative (w12_metric P)
         (w12_name_value nu) (w12_decode p)) as Hnonneg.
       unfold dtrue in Hsmall. lra.
-    - reflexivity.
     - rewrite (w12_sqdist_sound P (w12_stage nu n) p).
       pose proof (w12_stage_tail P nu n) as Htail.
       pose proof (distance_nonnegative (w12_metric P)
@@ -83,11 +82,10 @@ Section DistanceCompleteness.
     set (sigma := w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n)).
     exists (PositiveDistance n sigma).
     simpl.
-    repeat split.
+    refine (conj _ (conj eq_refl _)).
     - pose proof (distance_nonnegative (w12_metric P)
         (w12_name_value nu) (w12_name_value mu)) as Hnonneg.
       unfold dtrue in Hsmall. lra.
-    - reflexivity.
     - rewrite (w12_sqdist_sound P
                 (w12_stage nu n) (w12_stage mu n)).
       pose proof (w12_stage_tail P nu n) as Hnu.
