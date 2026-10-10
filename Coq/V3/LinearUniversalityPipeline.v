@@ -163,7 +163,7 @@ Section Pipeline.
 
   Theorem universal_embedding_has_inverse_on_range
       (P : EffectiveLinearUniversalityPackage) : forall x,
-    invert_range (elu_inverse P) (universal_embedding P x) = Some x.
+    invert_range (elu_interval P) (elu_inverse P) (universal_embedding P x) = Some x.
   Proof.
     intro x.
     unfold universal_embedding.
