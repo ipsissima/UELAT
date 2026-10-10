@@ -93,8 +93,7 @@ Theorem real_polynomial_product_FTC :
 Proof.
   intros p phi a b Hab.
   exact (FTC_Riemann (real_polynomial_product_C1 p phi) a b
-    (real_polynomial_product_derivative_integrable p phi a b Hab)
-    Hab).
+    (real_polynomial_product_derivative_integrable p phi a b Hab)).
 Qed.
 
 (** The combined-integrand weak test identity for a polynomial test
