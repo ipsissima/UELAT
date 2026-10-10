@@ -3,6 +3,7 @@ name: PUFEM 5.6-7.2 pointwise kernel gate
 on:
   pull_request:
     paths:
+      - 'Coq/V3/RationalPolynomialSemantic.v'
       - 'Coq/V3/PUFEMPointwiseCore.v'
       - 'Coq/V3/PUFEMIntegralBridge.v'
       - 'Coq/V3/PUFEMScaleBridge.v'
@@ -45,11 +46,13 @@ jobs:
           fi
           coqc --version
           coqc --version | grep -F 'version 9.2'
+          coqc -R Coq UELAT Coq/V3/RationalSobolev.v
+          coqc -R Coq UELAT Coq/V3/RationalPolynomialSemantic.v
           coqc -R Coq UELAT Coq/V3/PUFEMPointwiseCore.v
           coqc -R Coq UELAT Coq/V3/PUFEMIntegralBridge.v
           coqc -R Coq UELAT Coq/V3/PUFEMScaleBridge.v
           coqc -R Coq UELAT Coq/V3/PUFEMLimitBridge.v
-          coqchk -R Coq UELAT UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.PUFEMScaleBridge UELAT.V3.PUFEMLimitBridge
+          coqchk -R Coq UELAT UELAT.V3.RationalSobolev UELAT.V3.RationalPolynomialSemantic UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.PUFEMScaleBridge UELAT.V3.PUFEMLimitBridge
           for thm in finite_cauchy_overlap bounded_overlap_squared localized_integrand_56 finite_quadrature_localized_56; do
             printf 'From UELAT.V3 Require Import PUFEMPointwiseCore.\nPrint Assumptions UELAT_V3_PUFEMPointwiseCore.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
@@ -91,6 +94,19 @@ jobs:
           done
           for thm in sequence_order_limit integrated_localized_56_from_quadrature_limits scale_sensitive_72_from_quadrature_limits; do
             printf 'From UELAT.V3 Require Import PUFEMLimitBridge.\nPrint Assumptions UELAT_V3_PUFEMLimitBridge.%s.\n' "$thm" \
+              | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
+            cat "/tmp/pufem-${thm}.txt"
+            if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::Undischarged axioms in ${thm}"
+              exit 1
+            fi
+            if ! grep -q 'Closed under the global context' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::No closed-context verdict for ${thm}"
+              exit 1
+            fi
+          done
+          for thm in qpoly_eval_mul_sound qpoly_deriv_mul_eval affine_hat_product_derivative qpoly_integral_add_sound qpoly_integral_scale_sound; do
+            printf 'From UELAT.V3 Require Import RationalPolynomialSemantic.\nPrint Assumptions UELAT_V3_RationalPolynomialSemantic.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
             cat "/tmp/pufem-${thm}.txt"
             if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
