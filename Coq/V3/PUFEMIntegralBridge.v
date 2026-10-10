@@ -214,7 +214,10 @@ Section LocalizedIntegratedEstimate.
   Lemma integrated_zero : integral I (fun _ => 0) = 0.
   Proof.
     pose proof (integral_add I (fun _ => 0) (fun _ => 0)) as Hz.
-    simpl in Hz. lra.
+    assert (Hzero :
+      integral I (fun x => 0 + 0) = integral I (fun _ => 0)).
+    { apply integral_ext. intro x. ring. }
+    rewrite Hzero in Hz. lra.
   Qed.
 
   Corollary integrated_localized_56_nonnegative :
@@ -241,12 +244,12 @@ Theorem finite_positive_integrated_56 :
     (Hoverlap : forall x,
       (length (filter si_active (incidence_at x)) <= kappa)%nat),
     let I := finite_positive_integral samples Hweights in
-    integral I (global_squared_integrand Cinf kappa incidence_at) <=
+    integral I (global_squared_integrand Cinf incidence_at) <=
       INR kappa *
-        (Cinf ^ 2 * integral I (local_squared_l2 Cinf kappa incidence_at)
-        + 2 * integral I (local_weighted_l2 Cinf kappa incidence_at)
+        (Cinf ^ 2 * integral I (local_squared_l2 Cinf incidence_at)
+        + 2 * integral I (local_weighted_l2 Cinf incidence_at)
         + 2 * Cinf ^ 2 *
-            integral I (local_squared_derivative Cinf kappa incidence_at)).
+            integral I (local_squared_derivative Cinf incidence_at)).
 Proof.
   intros X samples Hweights Cinf kappa incidence_at Hoverlap I.
   apply (integrated_localized_56 I Cinf kappa incidence_at Hoverlap).
