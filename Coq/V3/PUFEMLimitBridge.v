@@ -53,8 +53,9 @@ Proof.
     {
       replace (a - u (Nat.max Nu Nv))
         with (-(u (Nat.max Nu Nv) - a)) by ring.
-      rewrite Rabs_Ropp.
-      apply Rle_abs.
+      pose proof (Rle_abs (-(u (Nat.max Nu Nv) - a))) as Habs.
+      rewrite Rabs_Ropp in Habs.
+      exact Habs.
     }
     assert (Hupper :
       v (Nat.max Nu Nv) - b <=
