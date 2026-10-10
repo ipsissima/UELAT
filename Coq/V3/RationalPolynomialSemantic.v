@@ -150,11 +150,9 @@ Proof.
     setoid_rewrite qpoly_deriv_shift_eval.
     setoid_rewrite (qpoly_eval_mul_sound ps q x).
     setoid_rewrite (IH q x).
-    assert (Hshift :
-      qpoly_eval (qpoly_deriv (a :: ps)) x ==
-        qpoly_eval ps x + x * qpoly_eval (qpoly_deriv ps) x).
-    { exact (qpoly_deriv_shift_eval ps x). }
-    setoid_rewrite Hshift.
+    (* The earlier generic setoid rewrite for [qpoly_deriv_shift_eval]
+       also simplifies the right-hand occurrence. There is no remaining
+       subterm matching [Hshift] at this stage. *)
     simpl qpoly_eval.
     ring.
 Qed.

@@ -23,7 +23,7 @@ Lemma cross_sum_bound : forall x xs,
 Proof.
   intros x xs; induction xs as [|y ys IH]; simpl.
   - nra.
-  - rewrite S_INR.
+  - (* simpl already normalizes INR (S n); avoid a redundant rewrite. *)
     assert (Hpair : 2 * x * y <= x ^ 2 + y ^ 2) by nra.
     nra.
 Qed.
@@ -34,7 +34,7 @@ Theorem finite_cauchy_overlap : forall xs,
 Proof.
   induction xs as [|x xs IH]; simpl.
   - nra.
-  - rewrite S_INR.
+  - (* simpl already normalizes INR (S n); avoid a redundant rewrite. *)
     pose proof (cross_sum_bound x xs) as Hcross.
     nra.
 Qed.
