@@ -53,7 +53,11 @@ Qed.
 
 Lemma squareSum_map : forall (A : Type) (f : A -> R) (xs : list A),
   squareSum (map f xs) = sumR (map (fun a => (f a) ^ 2) xs).
-Proof. intros A f xs; induction xs; simpl; congruence. Qed.
+Proof.
+  intros A f xs. induction xs as [|x xs IH]; simpl.
+  - reflexivity.
+  - now rewrite IH.
+Qed.
 
 Lemma sumR_map_mono : forall (A : Type) (f g : A -> R) xs,
   (forall a, In a xs -> f a <= g a) ->
