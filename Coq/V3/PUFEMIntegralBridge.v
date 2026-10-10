@@ -211,14 +211,23 @@ Section LocalizedIntegratedEstimate.
     rewrite Hbudget in H. exact H.
   Qed.
 
+  Lemma integrated_zero : integral I (fun _ => 0) = 0.
+  Proof.
+    pose proof (integral_add I (fun _ => 0) (fun _ => 0)) as Hz.
+    simpl in Hz. lra.
+  Qed.
+
   Corollary integrated_localized_56_nonnegative :
     0 <= integral I global_squared_integrand.
   Proof.
-    apply integral_monotone with (f := fun _ => 0).
-    - intros x. unfold global_squared_integrand.
-      pose proof (pow2_ge_0 (value_at x)).
-      pose proof (pow2_ge_0 (derivative_at x)).
-      lra.
+    pose proof (integral_monotone I (fun _ => 0)
+      global_squared_integrand) as H.
+    rewrite integrated_zero in H.
+    apply H. intro x.
+    unfold global_squared_integrand.
+    pose proof (pow2_ge_0 (value_at x)).
+    pose proof (pow2_ge_0 (derivative_at x)).
+    lra.
   Qed.
 End LocalizedIntegratedEstimate.
 
