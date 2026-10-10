@@ -270,4 +270,39 @@ Section Scale.
   Qed.
 End Scale.
 
+
+(** The only scale manipulations needed for one-power loss, abstracting
+    the higher-order factor as t = h^(2(r-1)), with h_r=h^2*t. The
+    reciprocal-square identity holds exactly for h>0. *)
+Section ExactScaleLoss.
+  Variables h t : R.
+  Hypothesis Hh : 0 < h.
+  Hypothesis Hh_le_one : h <= 1.
+  Hypothesis Ht : 0 <= t.
+
+  Definition high_order_squared_scale : R := h ^ 2 * t.
+  Definition inverse_mesh_scale : R := / h.
+
+  Lemma one_power_loss_squared :
+    high_order_squared_scale <= t.
+  Proof.
+    unfold high_order_squared_scale.
+    assert (Hsq : h ^ 2 <= 1) by nra.
+    replace t with (1 * t) at 2 by ring.
+    apply Rmult_le_compat_r.
+    - exact Ht.
+    - exact Hsq.
+  Qed.
+
+  Lemma inverse_squared_exactly_consumes_two_powers :
+    inverse_mesh_scale ^ 2 * high_order_squared_scale = t.
+  Proof.
+    unfold inverse_mesh_scale, high_order_squared_scale.
+    replace ((/ h) ^ 2 * (h ^ 2 * t))
+      with ((h * / h) ^ 2 * t) by ring.
+    rewrite Rinv_r by lra.
+    ring.
+  Qed.
+End ExactScaleLoss.
+
 End UELAT_V3_PUFEMScaleBridge.
