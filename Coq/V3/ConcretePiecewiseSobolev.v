@@ -53,9 +53,6 @@ Lemma real_cell_w12_energy_nonnegative :
 Proof.
   intros c H.
   pose proof (RiemannInt_P19
-    (fct_cte 0)
-    (rpoly_eval (polynomial_energy_code (piece_poly c)))
-    (Q2R (piece_left c)) (Q2R (piece_right c))
     (RiemannInt_P14 (Q2R (piece_left c))
       (Q2R (piece_right c)) 0)
     (concrete_polynomial_integrable_interval
