@@ -68,8 +68,11 @@ Section Search.
         with
         (-(Q2R (core_norm_approx B p n)
            - cb_norm B (core_decode p))) by ring.
-      rewrite <- Rabs_Ropp.
-      eapply Rle_trans; [apply Rle_abs|exact Happ]. }
+      eapply Rle_trans with
+        (r2 := Rabs (-(Q2R (core_norm_approx B p n)
+                        - cb_norm B (core_decode p)))).
+      - apply Rle_abs.
+      - rewrite Rabs_Ropp. exact Happ. }
     exists n.
     unfold core_nonzero_test_strong.
     apply qltb_true_iff. apply Rlt_Qlt. rewrite qdyadic_real. nra.

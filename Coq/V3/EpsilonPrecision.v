@@ -11,6 +11,20 @@ Import UELAT_V3_StrictSlackSearch.
 Import UELAT_V3_DyadicVanishing.
 Import UELAT_V3_GenericSlackCertification.
 
+Lemma q2r_zero_local : Q2R (0 : Q) = 0%R.
+Proof.
+  pose proof (Q2R_plus (0 : Q) (0 : Q)) as H.
+  replace ((0 + 0)%Q) with (0 : Q) in H by reflexivity.
+  lra.
+Qed.
+
+Lemma q2r_four_local : Q2R (4 : Q) = 4%R.
+Proof.
+  change (4 : Q) with (2 + 2)%Q.
+  rewrite Q2R_plus, Q2R_two.
+  lra.
+Qed.
+
 Definition epsilon_stage_test (eps : Q) (s : nat) : bool :=
   qltb (4 * qdyadic s) eps.
 
@@ -37,12 +51,12 @@ Theorem paper_k_eventually : forall eps,
 Proof.
   intros eps Heps.
   pose proof (Qlt_Rlt _ _ Heps) as HepsR.
-  change (Q2R (0 : Q)) with 0%R in HepsR.
+  rewrite q2r_zero_local in HepsR.
   destruct (dyadic_eventually_below (Q2R eps / 2) ltac:(lra)) as [k Hk].
   exists k. unfold paper_k_test. apply qleb_true_iff.
   apply Rle_Qle.
   rewrite Q2R_mult, qdyadic_real.
-  change (Q2R (2 : Q)) with 2%R.
+  rewrite Q2R_two.
   lra.
 Qed.
 
@@ -85,10 +99,10 @@ Theorem epsilon_stage_eventually : forall eps,
 Proof.
   intros eps Heps.
   pose proof (Qlt_Rlt _ _ Heps) as HepsR.
-  change (Q2R (0 : Q)) with 0%R in HepsR.
+  rewrite q2r_zero_local in HepsR.
   destruct (dyadic_eventually_below (Q2R eps / 4) ltac:(lra)) as [s Hs].
   exists s. unfold epsilon_stage_test. apply qltb_true_iff. apply Rlt_Qlt.
-  rewrite Q2R_mult, qdyadic_real. change (Q2R (4 : Q)) with 4%R. lra.
+  rewrite Q2R_mult, qdyadic_real. rewrite q2r_four_local. lra.
 Qed.
 
 Definition epsilon_search (eps : Q) (Heps : (0 < eps)%Q) :
@@ -139,12 +153,12 @@ Proof.
   apply qltb_true_iff.
   apply Rlt_Qlt.
   rewrite Q2R_mult, qdyadic_real, dyadic_plus_two.
-  change (Q2R (4 : Q)) with 4%R.
+  rewrite q2r_four_local.
   pose proof (Qle_Rle _ _ Hk) as HkR.
   rewrite Q2R_mult, qdyadic_real in HkR.
-  change (Q2R (2 : Q)) with 2%R in HkR.
+  rewrite Q2R_two in HkR.
   pose proof (Qlt_Rlt _ _ Heps) as HepsR.
-  change (Q2R (0 : Q)) with 0%R in HepsR.
+  rewrite q2r_zero_local in HepsR.
   lra.
 Qed.
 
@@ -165,7 +179,7 @@ Proof.
   unfold epsilon_stage_test in H. apply qltb_true_iff in H.
   pose proof (Qlt_Rlt _ _ H) as HR.
   rewrite Q2R_mult, qdyadic_real in HR.
-  change (Q2R (4 : Q)) with 4%R in HR. exact HR.
+  rewrite q2r_four_local in HR. exact HR.
 Qed.
 
 Corollary epsilon_precision_half_tail : forall eps Heps,

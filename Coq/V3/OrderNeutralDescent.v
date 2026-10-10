@@ -3,7 +3,7 @@
     summable relative to the finest relevant level.
 *)
 
-From Coq Require Import Arith Lia List.
+From Coq Require Import Arith Lia List Ring.
 
 Module UELAT_V3_OrderNeutralDescent.
 
@@ -45,9 +45,8 @@ Proof.
   induction n as [|n IH].
   - reflexivity.
   - simpl nsum_upto. rewrite IH.
+    change (pow2 (S (S n))) with (2 * pow2 (S n)).
     pose proof (pow2_positive (S n)) as Hpos.
-    unfold pow2 in *.
-    simpl Nat.pow.
     lia.
 Qed.
 
@@ -72,17 +71,10 @@ Section DyadicGeometry.
     nsum_upto M n <= 2 * M n.
   Proof.
     intro n. rewrite sum_M_exact. unfold M.
-    assert (Hr :
-      2 * (M0 * pow2 n) = M0 * (2 * pow2 n)).
-    {
-      rewrite Nat.mul_assoc.
-      rewrite (Nat.mul_comm 2 M0).
-      rewrite <- Nat.mul_assoc.
-      reflexivity.
-    }
-    rewrite Hr.
+    replace (2 * (M0 * pow2 n))
+      with (M0 * (2 * pow2 n)) by ring.
     apply Nat.mul_le_mono_l.
-    unfold pow2. simpl Nat.pow.
+    change (pow2 (S n)) with (2 * pow2 n).
     lia.
   Qed.
 
@@ -96,19 +88,19 @@ Section DyadicGeometry.
   Lemma payload_sum_bound_by_patch_sum : forall n,
     nsum_upto payload_bits n <= c_payload * beta n * nsum_upto M n.
   Proof.
-    intro n. eapply Nat.le_trans.
+    intro n.
+    eapply Nat.le_trans with
+      (m := nsum_upto (fun j => (c_payload * beta n) * M j) n).
     - apply nsum_upto_le. intros j Hj.
       eapply Nat.le_trans.
       + apply payload_level_bound.
-      + pose proof (beta_monotone j n Hj) as Hb.
-        repeat rewrite <- Nat.mul_assoc.
+      + replace (c_payload * M j * beta j)
+          with ((c_payload * M j) * beta j) by ring.
+        replace (c_payload * beta n * M j)
+          with ((c_payload * M j) * beta n) by ring.
         apply Nat.mul_le_mono_l.
-        rewrite (Nat.mul_comm (beta n) (M j)).
-        apply Nat.mul_le_mono_l.
-        exact Hb.
-    - change (nsum_upto (fun j => (c_payload * beta n) * M j) n
-              <= c_payload * beta n * nsum_upto M n).
-      rewrite nsum_upto_scale. reflexivity.
+        apply beta_monotone. exact Hj.
+    - rewrite nsum_upto_scale. reflexivity.
   Qed.
 
   Theorem genealogy_sums_to_finest_level : forall n,
@@ -116,12 +108,10 @@ Section DyadicGeometry.
   Proof.
     intro n. eapply Nat.le_trans.
     - apply payload_sum_bound_by_patch_sum.
-    - pose proof (Nat.mul_le_mono_l (c_payload * beta n) (dyadic_patch_sum n))
-        as Hscaled.
-      repeat rewrite Nat.mul_assoc in Hscaled.
-      rewrite (Nat.mul_comm (beta n) 2) in Hscaled.
-      repeat rewrite <- Nat.mul_assoc in Hscaled.
-      exact Hscaled.
+    - replace (2 * c_payload * M n * beta n)
+        with ((c_payload * beta n) * (2 * M n)) by ring.
+      apply Nat.mul_le_mono_l.
+      apply dyadic_patch_sum.
   Qed.
 
   Variable ordinary_bits : nat -> nat.
@@ -135,10 +125,12 @@ Section DyadicGeometry.
     intro n.
     eapply Nat.le_trans.
     - apply genealogy_sums_to_finest_level.
-    - pose proof (Nat.mul_le_mono_l (2 * c_payload) (baseline_dominates n))
-        as Hscaled.
-      repeat rewrite Nat.mul_assoc in Hscaled.
-      exact Hscaled.
+    - replace (2 * c_payload * M n * beta n)
+        with ((2 * c_payload) * (M n * beta n)) by ring.
+      replace (2 * c_payload * base_factor * ordinary_bits n)
+        with ((2 * c_payload) * (base_factor * ordinary_bits n)) by ring.
+      apply Nat.mul_le_mono_l.
+      apply baseline_dominates.
   Qed.
 
   Variable beta_factor : nat.
@@ -153,12 +145,13 @@ Section DyadicGeometry.
     eapply Nat.le_trans.
     - apply genealogy_sums_to_finest_level.
     - unfold M.
-      pose proof (Nat.mul_le_mono_l (2 * c_payload * (M0 * pow2 n))
-                    (beta_linear n)) as Hscaled.
-      repeat rewrite Nat.mul_assoc in Hscaled.
-      rewrite (Nat.mul_comm (pow2 n) beta_factor) in Hscaled.
-      repeat rewrite <- Nat.mul_assoc in Hscaled.
-      exact Hscaled.
+      replace (2 * c_payload * (M0 * pow2 n) * beta n)
+        with ((2 * c_payload * M0 * pow2 n) * beta n) by ring.
+      replace (2 * c_payload * M0 * beta_factor * pow2 n * S n)
+        with ((2 * c_payload * M0 * pow2 n) *
+              (beta_factor * S n)) by ring.
+      apply Nat.mul_le_mono_l.
+      apply beta_linear.
   Qed.
 End DyadicGeometry.
 

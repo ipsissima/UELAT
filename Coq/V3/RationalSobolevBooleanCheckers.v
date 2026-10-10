@@ -56,7 +56,7 @@ Definition approx_check_Q
   let sigma := qaw_sigma w in
   andb (qltb (qdyadic n) q)
     (andb
-      (qeqb sigma (w12_sqdist (w12_stage nu n) p))
+      (qeqb sigma (w12_sqdist (r:=P) (w12_stage nu n) p))
       (qltb sigma ((q - qdyadic n) * (q - qdyadic n)))).
 
 Definition distance_check_Q
@@ -68,7 +68,7 @@ Definition distance_check_Q
   andb (qltb (2 * qdyadic n) q)
     (andb
       (qeqb sigma
-        (w12_sqdist (w12_stage nu n) (w12_stage mu n)))
+        (w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n)))
       (qltb sigma
         ((q - 2 * qdyadic n) * (q - 2 * qdyadic n)))).
 
@@ -169,7 +169,7 @@ Section Completeness.
     set (dtrue := distance (w12_name_value nu) (w12_decode p)).
     assert (Hgap : 0 < Q2R q - dtrue) by (unfold dtrue; lra).
     destruct (two_dyadic_eventually_below (Q2R q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) p).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) p).
     exists {| qaw_stage := n; qaw_sigma := sigma |}.
     unfold approx_check_Q. simpl.
     apply andb_true_iff. split.
@@ -205,7 +205,7 @@ Section Completeness.
     set (dtrue := distance (w12_name_value nu) (w12_name_value mu)).
     assert (Hgap : 0 < Q2R q - dtrue) by (unfold dtrue; lra).
     destruct (four_dyadic_eventually_below (Q2R q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) (w12_stage mu n)).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n)).
     exists {| qdw_stage := n; qdw_sigma := sigma |}.
     unfold distance_check_Q. simpl.
     apply andb_true_iff. split.

@@ -12,6 +12,7 @@ From UELAT.V3 Require Import CertificateEnrichment ComputableBanach.
 Module UELAT_V3_BanachNormLemmas.
 Import UELAT_V3_CertificateEnrichment.
 Import UELAT_V3_ComputableBanach.
+Local Open Scope R_scope.
 
 Lemma cb_add_neg_l : forall B x,
   cb_add B (cb_neg B x) x = cb_zero B.

@@ -35,7 +35,7 @@ Section ApproximationCompleteness.
     set (dtrue := distance (w12_name_value nu) (w12_decode p)).
     assert (Hgap : 0 < q - dtrue) by (unfold dtrue; lra).
     destruct (two_dyadic_eventually_below (q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) p).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) p).
     exists (PositiveApprox n sigma).
     simpl.
     repeat split.
@@ -78,7 +78,7 @@ Section DistanceCompleteness.
     set (dtrue := distance (w12_name_value nu) (w12_name_value mu)).
     assert (Hgap : 0 < q - dtrue) by (unfold dtrue; lra).
     destruct (four_dyadic_eventually_below (q - dtrue) Hgap) as [n Hsmall].
-    set (sigma := w12_sqdist (w12_stage nu n) (w12_stage mu n)).
+    set (sigma := w12_sqdist (r:=P) (w12_stage nu n) (w12_stage mu n)).
     exists (PositiveDistance n sigma).
     simpl.
     repeat split.
