@@ -243,16 +243,21 @@ Theorem finite_positive_integrated_56 :
     Cinf kappa (incidence_at : X -> list (SupportIncidence Cinf))
     (Hoverlap : forall x,
       (length (filter si_active (incidence_at x)) <= kappa)%nat),
-    let I := finite_positive_integral samples Hweights in
-    integral I (global_squared_integrand Cinf incidence_at) <=
+    integral (finite_positive_integral samples Hweights)
+      (global_squared_integrand Cinf incidence_at) <=
       INR kappa *
-        (Cinf ^ 2 * integral I (local_squared_l2 Cinf incidence_at)
-        + 2 * integral I (local_weighted_l2 Cinf incidence_at)
+        (Cinf ^ 2 * integral (finite_positive_integral samples Hweights)
+          (local_squared_l2 Cinf incidence_at)
+        + 2 * integral (finite_positive_integral samples Hweights)
+          (local_weighted_l2 Cinf incidence_at)
         + 2 * Cinf ^ 2 *
-            integral I (local_squared_derivative Cinf incidence_at)).
+            integral (finite_positive_integral samples Hweights)
+              (local_squared_derivative Cinf incidence_at)).
 Proof.
-  intros X samples Hweights Cinf kappa incidence_at Hoverlap I.
-  apply (integrated_localized_56 I Cinf kappa incidence_at Hoverlap).
+  intros X samples Hweights Cinf kappa incidence_at Hoverlap.
+  exact (integrated_localized_56
+    (finite_positive_integral samples Hweights)
+    Cinf kappa incidence_at Hoverlap).
 Qed.
 
 End UELAT_V3_PUFEMIntegralBridge.
