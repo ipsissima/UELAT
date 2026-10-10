@@ -6,6 +6,7 @@ on:
       - 'Coq/V3/PUFEMPointwiseCore.v'
       - 'Coq/V3/PUFEMIntegralBridge.v'
       - 'Coq/V3/PUFEMScaleBridge.v'
+      - 'Coq/V3/PUFEMLimitBridge.v'
       - '.github/workflows/pufem-pointwise.yml'
   workflow_dispatch:
 
@@ -43,7 +44,8 @@ jobs:
           coqc -R Coq UELAT Coq/V3/PUFEMPointwiseCore.v
           coqc -R Coq UELAT Coq/V3/PUFEMIntegralBridge.v
           coqc -R Coq UELAT Coq/V3/PUFEMScaleBridge.v
-          coqchk -R Coq UELAT UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.PUFEMScaleBridge
+          coqc -R Coq UELAT Coq/V3/PUFEMLimitBridge.v
+          coqchk -R Coq UELAT UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.PUFEMScaleBridge UELAT.V3.PUFEMLimitBridge
           for thm in finite_cauchy_overlap bounded_overlap_squared localized_integrand_56 finite_quadrature_localized_56; do
             printf 'From UELAT.V3 Require Import PUFEMPointwiseCore.\nPrint Assumptions UELAT_V3_PUFEMPointwiseCore.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
@@ -72,6 +74,19 @@ jobs:
           done
           for thm in weighted_energy_bound scale_sensitive_squared_72 norm_scale_sensitive_72 one_power_loss_squared inverse_squared_exactly_consumes_two_powers; do
             printf 'From UELAT.V3 Require Import PUFEMScaleBridge.\nPrint Assumptions UELAT_V3_PUFEMScaleBridge.%s.\n' "$thm" \
+              | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
+            cat "/tmp/pufem-${thm}.txt"
+            if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::Undischarged axioms in ${thm}"
+              exit 1
+            fi
+            if ! grep -q 'Closed under the global context' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::No closed-context verdict for ${thm}"
+              exit 1
+            fi
+          done
+          for thm in sequence_order_limit integrated_localized_56_from_quadrature_limits scale_sensitive_72_from_quadrature_limits; do
+            printf 'From UELAT.V3 Require Import PUFEMLimitBridge.\nPrint Assumptions UELAT_V3_PUFEMLimitBridge.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
             cat "/tmp/pufem-${thm}.txt"
             if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
