@@ -159,8 +159,6 @@ Proof.
   intro p.
   pose proof
     (RiemannInt_P19
-      (fct_cte 0) (concrete_polynomial_energy_integrand p)
-      0 1
       (RiemannInt_P14 0 1 0)
       (concrete_polynomial_energy_integrable p)) as Hmon.
   assert (H01 : 0 <= 1) by lra.
