@@ -158,17 +158,16 @@ Proof.
   - intros x Hx. apply weak_term_right_continuous.
 Defined.
 
-(** A real weak-derivative equality, separated into the usual
-    \int p phi' = -\int p' phi form, for polynomial tests vanishing
-    at both endpoints. Both integrals are concrete Riemann integrals. *)
-Theorem rational_polynomial_weak_derivative_test :
+(** Real integration by parts WITH the boundary term. This is the
+    engine for cancellation at internal rational-mesh knots. *)
+Theorem rational_polynomial_interval_integration_by_parts :
   forall p phi a b (Hab : a <= b),
-    rpoly_eval phi a = 0 ->
-    rpoly_eval phi b = 0 ->
-    RiemannInt (weak_term_right_integrable p phi a b Hab)
-      = - RiemannInt (weak_term_left_integrable p phi a b Hab).
+    RiemannInt (weak_term_left_integrable p phi a b Hab)
+      + RiemannInt (weak_term_right_integrable p phi a b Hab)
+    = real_polynomial_product p phi b
+      - real_polynomial_product p phi a.
 Proof.
-  intros p phi a b Hab Ha Hb.
+  intros p phi a b Hab.
   set (f := weak_term_derivative_times_test p phi).
   set (g := weak_term_value_times_test_derivative p phi).
   set (prf := weak_term_left_integrable p phi a b Hab).
@@ -191,12 +190,28 @@ Proof.
       weak_term_value_times_test_derivative.
     ring. }
   specialize (Hext Heq).
-  pose proof
-    (rational_polynomial_weak_test_combined p phi a b Hab Ha Hb)
-      as Hzero.
+  pose proof (real_polynomial_product_FTC p phi a b Hab) as HFTC.
   rewrite Hext in Hline.
-  rewrite Hzero in Hline.
+  rewrite HFTC in Hline.
   unfold prf, prg in Hline.
+  lra.
+Qed.
+
+(** Weak-derivative identity for polynomial tests zero at the endpoints.
+    General distributional tests are not yet covered by this module. *)
+Theorem rational_polynomial_weak_derivative_test :
+  forall p phi a b (Hab : a <= b),
+    rpoly_eval phi a = 0 ->
+    rpoly_eval phi b = 0 ->
+    RiemannInt (weak_term_right_integrable p phi a b Hab)
+      = - RiemannInt (weak_term_left_integrable p phi a b Hab).
+Proof.
+  intros p phi a b Hab Ha Hb.
+  pose proof
+    (rational_polynomial_interval_integration_by_parts p phi a b Hab)
+      as H.
+  unfold real_polynomial_product in H.
+  rewrite Ha, Hb in H.
   lra.
 Qed.
 
