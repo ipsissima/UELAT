@@ -96,6 +96,67 @@ Section OneDimensionalSource.
     lra.
   Qed.
 
+  (** Explicit coefficient recovery from three NORM evaluations.
+      This avoids using the functional we are trying to construct.
+      For y=a*v, the parallelogram-looking identity is special to
+      this ONE-dimensional line; no inner-product law is assumed. *)
+  Definition recovered_line_coordinate
+      (y : carrier (cb_metric B)) : R :=
+    (cb_norm B (cb_add B y v) ^ 2
+     - cb_norm B (cb_sub B y v) ^ 2)
+      / (4 * cb_norm B v ^ 2).
+
+  Lemma absolute_square_identity : forall t : R,
+    (Rabs t) ^ 2 = t ^ 2.
+  Proof.
+    intro t.
+    destruct (Rle_dec 0 t) as [Ht|Ht].
+    - rewrite Rabs_pos_eq by lra. reflexivity.
+    - rewrite Rabs_left by lra. ring.
+  Qed.
+
+  Theorem recovered_coordinate_is_exact_on_span : forall a,
+    recovered_line_coordinate (line_embed a) = a.
+  Proof.
+    intro a.
+    assert (Hplus : cb_add B (line_embed a) v
+        = cb_scale B (a + 1) v).
+    {
+      unfold line_embed.
+      transitivity
+        (cb_add B (cb_scale B a v) (cb_scale B 1 v)).
+      - rewrite cb_scale_one. reflexivity.
+      - rewrite <- cb_scale_add_scalars. reflexivity.
+    }
+    assert (Hminus : cb_sub B (line_embed a) v
+        = cb_scale B (a - 1) v).
+    {
+      unfold cb_sub, cb_neg, line_embed.
+      rewrite <- cb_scale_add_scalars.
+      replace (a + -1) with (a - 1) by ring.
+      reflexivity.
+    }
+    unfold recovered_line_coordinate.
+    rewrite Hplus, Hminus.
+    repeat rewrite cb_norm_scale.
+    assert (Habsplus :
+      (Rabs (a + 1) * cb_norm B v) ^ 2 =
+      (a + 1) ^ 2 * cb_norm B v ^ 2).
+    { rewrite <- (absolute_square_identity (a + 1)).
+      ring. }
+    assert (Habsminus :
+      (Rabs (a - 1) * cb_norm B v) ^ 2 =
+      (a - 1) ^ 2 * cb_norm B v ^ 2).
+    { rewrite <- (absolute_square_identity (a - 1)).
+      ring. }
+    rewrite Habsplus, Habsminus.
+    unfold Rdiv. field. nra.
+  Qed.
+
+  (** The actual Type-2 algorithm still needs certified error bounds
+      for the numerator and reciprocal: the denominator is bounded
+      away from zero using NamedNonzeroWitness. *)
+
   Lemma source_functional_add : forall a b,
     source_functional (a + b) =
       source_functional a + source_functional b.
