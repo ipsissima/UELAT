@@ -25,6 +25,38 @@ epsilon-Hahn--Banach extension as a uniform Type-2 program from the
 one-dimensional named subspace. The pre-existing record
 EffectiveApproxHahnBanachStrong only assumes this extension as a field.
 
+## 3.1: exact source line, inverse, and error control
+
+OneDimensionalHBSeed.v now provides a concrete scalar-span starting
+functional f0(a*v)=a*norm(v), with exact norm one, saturation at v,
+and injectivity of a -> a*v.
+
+The **computable scalar inverse** has two complementary routes:
+
+- An explicit norm-only identity, valid for y=a*v:
+
+      a = (norm(y+v)^2 - norm(y-v)^2)/(4*norm(v)^2).
+
+  The positive rational norm lower bound produced by the previous
+  sublemma allows effective reciprocal computation. Addition and norm
+  approximation are computable in the Banach presentation. No
+  functional of the full space is presupposed.
+
+- A quantitative inverse modulus on the embedded line:
+
+      distance(a*v,b*v) = |a-b|*norm(v).
+
+  For any rational 0<ell<=norm(v), if
+  distance(a*v,b*v)<ell*eps, then |a-b|<eps.
+
+  Thus strict-distance semidecision searches over rational a have
+  explicit scalar error certificates on the promised line.
+
+These are mathematically constructive primitives for the initial
+functional, not yet a fully implemented Type-2 coefficient realizer on
+arbitrary incoming line names. The epsilon-Hahn--Banach extension
+remains a separate and substantially harder obligation.
+
 ## 3.2: concrete route to compact finite nets
 
 The key issue is computing the weak-star dual unit ball *as a compactum*

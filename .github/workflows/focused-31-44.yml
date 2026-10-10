@@ -80,6 +80,9 @@ jobs:
             NamedNonzeroWitness:named_nonzero_stage_accepted \
             NamedNonzeroWitness:named_positive_lower_bound_sound \
             OneDimensionalHBSeed:line_embed_injective \
+            OneDimensionalHBSeed:line_distance_exact \
+            OneDimensionalHBSeed:line_inverse_error_control \
+            OneDimensionalHBSeed:recovered_coordinate_is_exact_on_span \
             OneDimensionalHBSeed:source_functional_norm_one \
             OneDimensionalHBSeed:source_functional_hits_input_vector \
             Category44FiniteCompilerClosure:first_tolerance_positive \
@@ -92,6 +95,26 @@ jobs:
             if ! grep -Eq '^Closed under the global context|^Axioms:' "/tmp/31-44-assumptions/$module-$theorem.txt"; then
               echo "::error::Missing assumption audit for $module.$theorem"
               exit 1
+            fi
+            report="/tmp/31-44-assumptions/$module-$theorem.txt"
+            if grep -q '^Axioms:' "$report"; then
+              names="$(sed -n '/^Axioms:/,$p' "$report" |
+                grep -E '^[A-Za-z_][A-Za-z_0-9.]*[[:space:]]*:' |
+                sed -E 's/[[:space:]]*:.*$//' || true)"
+              if [ -z "$names" ]; then
+                echo "::error::Unparseable assumptions in $module.$theorem"
+                exit 1
+              fi
+              while IFS= read -r dep; do
+                case "$dep" in
+                  ClassicalDedekindReals.sig_forall_dec|FunctionalExtensionality.functional_extensionality_dep)
+                    ;;
+                  *)
+                    echo "::error::Unapproved axiom $dep in $module.$theorem"
+                    exit 1
+                    ;;
+                esac
+              done <<< "$names"
             fi
           done
       - name: Retain assumption logs
