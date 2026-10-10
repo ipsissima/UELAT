@@ -115,9 +115,8 @@ Section OneDimensionalSource.
     intro a.
     unfold source_functional.
     rewrite Rabs_mult.
-    rewrite Rabs_pos_eq.
-    - symmetry. apply source_norm_realized.
-    - lra.
+    rewrite (Rabs_pos_eq (cb_norm B v)) by lra.
+    symmetry. apply source_norm_realized.
   Qed.
 
   Lemma source_functional_norm_one :
@@ -134,7 +133,8 @@ Section OneDimensionalSource.
       rewrite line_embed_one.
       split.
       + exact Hv.
-      + apply source_functional_absolute_value.
+      + rewrite <- line_embed_one.
+        apply source_functional_absolute_value.
   Qed.
 
   Theorem source_functional_hits_input_vector :
