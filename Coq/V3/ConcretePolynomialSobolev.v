@@ -32,7 +32,8 @@ Proof.
   induction ps as [|a ps IH]; intros n x; simpl.
   - ring.
   - rewrite !Q2R_mult.
-    rewrite Q2R_plus, Q2R_one.
+    rewrite Q2R_plus.
+    change (Q2R (1%Q)) with 1%R.
     rewrite (IH (S n) x).
     ring.
 Qed.
