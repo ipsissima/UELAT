@@ -1,0 +1,98 @@
+name: Focused 3.1 name witness and 4.4 compiler closure
+
+on:
+  pull_request:
+    paths:
+      - 'Coq/V3/NamedNonzeroWitness.v'
+      - 'Coq/V3/Category44FiniteCompilerClosure.v'
+      - '.github/workflows/focused-31-44.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: focused-31-44
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    name: Rocq 9.2 minimal trusted dependency island
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OCaml/opam
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14.2
+          dune-cache: false
+      - name: Restore pinned Rocq 9.2 switch
+        id: rocq-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: _opam
+          key: ubuntu-v3-rocq92-local-switch-v1
+      - name: Validate compiler version
+        shell: bash
+        run: |
+          set -euo pipefail
+          eval "$(opam env)"
+          if ! command -v coqc >/dev/null 2>&1; then
+            opam repo add coq-released https://coq.inria.fr/opam/released || true
+            opam update
+            opam install rocq-core.9.2.0 rocq-stdlib.9.2.0 coq-core.9.2.0 --yes
+            eval "$(opam env)"
+          fi
+          coqc --version
+          coqc --version | grep -F 'version 9.2'
+      - name: Compile precise dependencies and 3.1/4.4 new lemmas
+        shell: bash
+        run: |
+          set -euo pipefail
+          eval "$(opam env)"
+          coqc -R Coq UELAT Coq/V3/CertificateEnrichment.v
+          coqc -R Coq UELAT Coq/V3/RepresentedSpace.v
+          coqc -R Coq UELAT Coq/V3/ComputableBanach.v
+          coqc -R Coq UELAT Coq/V3/StrictSlackSearch.v
+          coqc -R Coq UELAT Coq/V3/DyadicVanishing.v
+          coqc -R Coq UELAT Coq/V3/GenericSlackCertification.v
+          coqc -R Coq UELAT Coq/V3/NamedNonzeroWitness.v
+          coqc -R Coq UELAT Coq/V3/Category44FiniteCompilerClosure.v
+      - name: Kernel checking
+        shell: bash
+        run: |
+          set -euo pipefail
+          eval "$(opam env)"
+          coqchk -R Coq UELAT UELAT.V3.NamedNonzeroWitness UELAT.V3.Category44FiniteCompilerClosure
+      - name: Audit all new proof obligations
+        shell: bash
+        run: |
+          set -euo pipefail
+          eval "$(opam env)"
+          mkdir -p /tmp/31-44-assumptions
+          for entry in \
+            NamedNonzeroWitness:named_norm_error \
+            NamedNonzeroWitness:named_nonzero_test_sound \
+            NamedNonzeroWitness:named_nonzero_test_eventually \
+            NamedNonzeroWitness:named_nonzero_stage_accepted \
+            NamedNonzeroWitness:named_positive_lower_bound_sound \
+            Category44FiniteCompilerClosure:first_tolerance_positive \
+            Category44FiniteCompilerClosure:finite_compiler_budget_strict \
+            Category44FiniteCompilerClosure:finite_composition_pointwise_associative; do
+            IFS=':' read -r module theorem <<< "$entry"
+            printf 'From UELAT.V3 Require Import %s.\nPrint Assumptions UELAT_V3_%s.%s.\n' "$module" "$module" "$theorem" \
+              | coqtop -quiet -R Coq UELAT > "/tmp/31-44-assumptions/$module-$theorem.txt"
+            cat "/tmp/31-44-assumptions/$module-$theorem.txt"
+            if ! grep -Eq '^Closed under the global context|^Axioms:' "/tmp/31-44-assumptions/$module-$theorem.txt"; then
+              echo "::error::Missing assumption audit for $module.$theorem"
+              exit 1
+            fi
+          done
+      - name: Retain assumption logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: focused-31-44-assumption-reports
+          path: /tmp/31-44-assumptions/
+          if-no-files-found: warn
