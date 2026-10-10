@@ -59,8 +59,8 @@ Lemma sumR_map_mono : forall (A : Type) (f g : A -> R) xs,
   (forall a, In a xs -> f a <= g a) ->
   sumR (map f xs) <= sumR (map g xs).
 Proof.
-  intros A f g xs H.
-  induction xs as [|a xs IH]; simpl; [lra|].
+  intros A f g xs.
+  induction xs as [|a xs IH]; intro H; simpl; [lra|].
   assert (Ha : f a <= g a) by (apply H; left; reflexivity).
   assert (Ht : sumR (map f xs) <= sumR (map g xs)).
   { apply IH. intros z Hz. apply H. right. exact Hz. }
