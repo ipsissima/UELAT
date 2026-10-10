@@ -1,0 +1,88 @@
+% Targeted proposed insertions for
+% Proof-Carrying Analytic Approximation, arXiv:2506.22693 v3.
+% Draft only: the authoritative manuscript source is not stored in this
+% GitHub repository. This file does not silently modify arXiv v3.
+% Proof text is mathematically motivated, not yet Rocq CHECKED-EXACT.
+
+% INSERT AFTER DEFINITION 4.4
+\paragraph{Category closure and admissibility witnesses.}
+In $\mathbf{CAn}$, arrows are identified extensionally by their
+underlying analytic maps. A Type--2 realizer, a certified Lipschitz
+constant, and a finite-code compiler are witnesses of admissibility,
+rather than additional components of arrow identity. We require the
+finite-evidence grammar to supply reflexive zero-defect evidence for
+an unchanged code and typed constructors for Lipschitz transport
+and triangle composition of finite witnesses.
+
+The identity is realized on names by the identity and on finite
+codes by $p\mapsto p$ with its reflexive witness. For composable
+maps $T:\mathfrak X\to\mathfrak Y$ and
+$S:\mathfrak Y\to\mathfrak Z$, fix a nonnegative rational
+Lipschitz bound $\Lambda_S$. At a requested rational accuracy
+$\varepsilon>0$, run the code compiler of $T$ at
+$\eta_T=\varepsilon/[3(1+\Lambda_S)]$ and that of $S$ on the
+resulting code at $\eta_S=\varepsilon/3$. The typed Lipschitz and
+triangle rules transport these finite witnesses to a witness for
+\[
+ \begin{aligned}
+ d_Z(ST\rho_X(p),\rho_Z(r))
+ &\leq\Lambda_S d_Y(T\rho_X(p),\rho_Y(q))
+      +d_Z(S\rho_Y(q),\rho_Z(r))\\
+ &\leq\Lambda_S\eta_T+\eta_S<\varepsilon.
+ \end{aligned}
+\]
+The composite Type--2 realizer is $S^\sharp\circ T^\sharp$;
+a composite Lipschitz constant is $\Lambda_S\Lambda_T$.
+Associativity and unit laws hold extensionally at the level of
+analytic maps. In $\mathbf{CAn}^{\uparrow}$, chosen evidence lifts
+are genuinely part of arrow data; identity and composition use the
+corresponding identity and composite lift functors. The stronger
+evidence-regularity requirement of Definition~4.5 is not assumed
+for arbitrary objects of $\mathbf{CAn}$.
+
+% INSERT AT THE START OF LEMMA 3.1 OR IMMEDIATELY BEFORE ITS PROOF
+\paragraph{Uniform input convention for Lemma~3.1.}
+The vector $v$ is supplied through its Type--2 fast Cauchy name
+$\nu_v$ in the specified computable Banach presentation. The
+uniform extension procedure receives the presentation index,
+$\nu_v$, and the rational tolerance $\eta>0$, with the promise
+$\|\delta_X(\nu_v)\|>0$. No positive rational lower bound on
+$\|v\|$ is required as separate input: from the name, the computable
+core norms, and the fast-name tail estimates one computes rational
+approximations $a_n$ with
+$|a_n-\|v\||\leq 2^{1-n}$ and searches for
+$a_n>2^{1-n}$. The search terminates on the promised domain,
+and $a_n-2^{1-n}>0$ is an explicit rational lower bound on
+$\|v\|$. The output of the approximate Hahn--Banach procedure is
+a Type--2 name of a linear functional $g$ satisfying
+$g(v)=\|v\|$ and $\|g\|\leq 1+\eta$.
+The constructive \emph{extension} itself requires the separate
+epsilon-Hahn--Banach algorithm and is not supplied merely by this
+nonzero-norm preprocessing.
+
+% INSERT AT STEP 4 OF THEOREM 3.2
+\paragraph{Effective finite nets for the dual compactum.}
+The coordinate constraints describe the dual unit ball $K_X$
+as a co-c.e.-closed subset of a computably compact Hilbert cube
+$H$, furnishing negative information. Positive information is
+constructed independently: the rational absolutely convex hull
+of the computable norming family is weak-star dense in $K_X$
+by the bipolar argument. Enumerate this dense family as
+$d_0,d_1,\ldots$. For each prescribed dyadic $\delta>0$,
+dovetail over finite prefixes $D_m=\{d_0,\ldots,d_m\}$ and
+the ambient finite-open-cover semidecision
+\[
+ H\subseteq (H\setminus K_X)
+   \cup\bigcup_{d\in D_m} B_H(d,\delta).
+\]
+The complement $H\setminus K_X$ is c.e. open. Ordinary compactness
+and density guarantee that some prefix passes the cover test;
+computable compactness of $H$ supplies the effective positive
+termination test. The resulting finite $\delta$-nets provide
+the compact representation required for the effective Cantor
+surjection. The evaluation embedding is separately proved
+linear and isometric, and the Cantor-gap affine extension must
+be both computable and linear. Computable metric universality
+alone is not an adequate substitute.
+
+% No theorem is declared CHECKED-EXACT by these proposed insertions.
