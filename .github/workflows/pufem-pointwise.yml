@@ -5,6 +5,7 @@ on:
     paths:
       - 'Coq/V3/RationalPolynomialSemantic.v'
       - 'Coq/V3/RationalHatProductSemantic.v'
+      - 'Coq/V3/RationalRealPolynomialSemantics.v'
       - 'Coq/V3/PUFEMPointwiseCore.v'
       - 'Coq/V3/PUFEMIntegralBridge.v'
       - 'Coq/V3/PUFEMScaleBridge.v'
@@ -51,11 +52,12 @@ jobs:
           coqc -R Coq UELAT Coq/V3/RationalPolynomialSemantic.v
           coqc -R Coq UELAT Coq/V3/RationalHatPOU.v
           coqc -R Coq UELAT Coq/V3/RationalHatProductSemantic.v
+          coqc -R Coq UELAT Coq/V3/RationalRealPolynomialSemantics.v
           coqc -R Coq UELAT Coq/V3/PUFEMPointwiseCore.v
           coqc -R Coq UELAT Coq/V3/PUFEMIntegralBridge.v
           coqc -R Coq UELAT Coq/V3/PUFEMScaleBridge.v
           coqc -R Coq UELAT Coq/V3/PUFEMLimitBridge.v
-          coqchk -R Coq UELAT UELAT.V3.RationalSobolev UELAT.V3.RationalPolynomialSemantic UELAT.V3.RationalHatPOU UELAT.V3.RationalHatProductSemantic UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.PUFEMScaleBridge UELAT.V3.PUFEMLimitBridge
+          coqchk -R Coq UELAT UELAT.V3.RationalSobolev UELAT.V3.RationalPolynomialSemantic UELAT.V3.RationalHatPOU UELAT.V3.RationalHatProductSemantic UELAT.V3.RationalRealPolynomialSemantics UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.PUFEMScaleBridge UELAT.V3.PUFEMLimitBridge
           for thm in finite_cauchy_overlap bounded_overlap_squared localized_integrand_56 finite_quadrature_localized_56; do
             printf 'From UELAT.V3 Require Import PUFEMPointwiseCore.\nPrint Assumptions UELAT_V3_PUFEMPointwiseCore.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
@@ -123,6 +125,19 @@ jobs:
           done
           for thm in concrete_hat_partition_identity concrete_left_hat_product_derivative concrete_right_hat_product_derivative concrete_left_hat_product_value concrete_right_hat_product_value; do
             printf 'From UELAT.V3 Require Import RationalHatProductSemantic.\nPrint Assumptions UELAT_V3_RationalHatProductSemantic.%s.\n' "$thm" \
+              | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
+            cat "/tmp/pufem-${thm}.txt"
+            if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::Undischarged axioms in ${thm}"
+              exit 1
+            fi
+            if ! grep -q 'Closed under the global context' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::No closed-context verdict for ${thm}"
+              exit 1
+            fi
+          done
+          for thm in rpoly_rational_stage_agrees rpoly_eval_add_sound rpoly_eval_scale_sound rpoly_eval_mul_sound; do
+            printf 'From UELAT.V3 Require Import RationalRealPolynomialSemantics.\nPrint Assumptions UELAT_V3_RationalRealPolynomialSemantics.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
             cat "/tmp/pufem-${thm}.txt"
             if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
