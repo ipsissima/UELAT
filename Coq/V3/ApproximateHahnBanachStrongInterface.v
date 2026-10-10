@@ -10,6 +10,7 @@
 *)
 
 From Coq Require Import Reals QArith Qreals.
+Local Open Scope R_scope.
 From UELAT.V3 Require Import
   CertificateEnrichment ComputableBanach RealizedBoundedFunctional.
 
@@ -40,9 +41,9 @@ Theorem strong_ahb_is_genuinely_type2 :
          v eta Hv Heta (x : CoreNamedPoint B) n,
     Rabs
       (Q2R (rbf_realize (ahbs_extend A v eta Hv Heta)
-                (core_named_name x) n)
+                (core_named_name B x) n)
        - rbf_apply (ahbs_extend A v eta Hv Heta)
-                (core_named_value x))
+                (core_named_value B x))
       <= dyadic n.
 Proof.
   intros.
