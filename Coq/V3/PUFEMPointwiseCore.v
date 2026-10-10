@@ -243,4 +243,171 @@ Proof.
   intros s Hs. apply sample_defect_le_budget.
 Qed.
 
+
+(** The manuscript assumes at most kappa *active* partition summands
+    at each point, not that the entire neighbour list has length kappa.
+    Support tags are explicitly supplied, with proofs that inactive
+    summands vanish both in value and derivative. This allows a fixed
+    neighbour list of arbitrary size without weakening the theorem. *)
+
+Lemma total_allowance_nonnegative : forall Cinf (z : Incidence Cinf),
+  0 <= total_allowance z.
+Proof.
+  intros Cinf z.
+  unfold total_allowance, l2_allowance, derivative_allowance.
+  assert (H0 : 0 <= Cinf ^ 2 * pw_error z ^ 2).
+  { apply Rmult_le_pos; apply pow2_ge_0. }
+  assert (H1 : 0 <= pw_L z ^ 2 * pw_error z ^ 2).
+  { apply Rmult_le_pos; apply pow2_ge_0. }
+  assert (H2 : 0 <= Cinf ^ 2 * pw_error_prime z ^ 2).
+  { apply Rmult_le_pos; apply pow2_ge_0. }
+  lra.
+Qed.
+
+Lemma sumR_filter_nonnegative :
+  forall (A : Type) (f : A -> R) (active : A -> bool) xs,
+    (forall a, In a xs -> 0 <= f a) ->
+    sumR (map f (filter active xs)) <= sumR (map f xs).
+Proof.
+  intros A f active xs.
+  induction xs as [|a xs IH]; intro Hnonneg; simpl.
+  - lra.
+  - destruct (active a) eqn:Ha; simpl.
+    + assert (Ht : sumR (map f (filter active xs)) <=
+                    sumR (map f xs)).
+      { apply IH. intros z Hz. apply Hnonneg.
+        right. exact Hz. }
+      lra.
+    + assert (Ha0 : 0 <= f a).
+      { apply Hnonneg. left. reflexivity. }
+      assert (Ht : sumR (map f (filter active xs)) <=
+                    sumR (map f xs)).
+      { apply IH. intros z Hz. apply Hnonneg.
+        right. exact Hz. }
+      lra.
+Qed.
+
+Record SupportIncidence (Cinf : R) := {
+  si_incidence : Incidence Cinf;
+  si_active : bool;
+  si_zero_if_inactive :
+    si_active = false ->
+      value_term si_incidence = 0 /\ derivative_term si_incidence = 0
+}.
+Arguments si_incidence {Cinf} _.
+Arguments si_active {Cinf} _.
+Arguments si_zero_if_inactive {Cinf} _ _.
+
+Definition active_patch {Cinf} (xs : list (SupportIncidence Cinf)) :
+    list (Incidence Cinf) :=
+  map si_incidence (filter si_active xs).
+
+Lemma support_value_sum : forall Cinf (xs : list (SupportIncidence Cinf)),
+  sumR (map (fun z => value_term (si_incidence z)) xs) =
+  sumR (map (@value_term Cinf) (active_patch xs)).
+Proof.
+  intros Cinf xs. unfold active_patch.
+  induction xs as [|z xs IH]; simpl; [reflexivity|].
+  destruct (si_active z) eqn:Hz; simpl.
+  - rewrite IH. reflexivity.
+  - destruct (si_zero_if_inactive z Hz) as [Hvalue _].
+    rewrite Hvalue, IH. ring.
+Qed.
+
+Lemma support_derivative_sum :
+  forall Cinf (xs : list (SupportIncidence Cinf)),
+  sumR (map (fun z => derivative_term (si_incidence z)) xs) =
+  sumR (map (@derivative_term Cinf) (active_patch xs)).
+Proof.
+  intros Cinf xs. unfold active_patch.
+  induction xs as [|z xs IH]; simpl; [reflexivity|].
+  destruct (si_active z) eqn:Hz; simpl.
+  - rewrite IH. reflexivity.
+  - destruct (si_zero_if_inactive z Hz) as [_ Hderiv].
+    rewrite Hderiv, IH. ring.
+Qed.
+
+(** Exact pointwise overlap statement: only active terms are counted,
+    but the right-hand side sums the defects for the full neighbour list. *)
+Theorem localized_integrand_supported_56 :
+  forall Cinf (xs : list (SupportIncidence Cinf)) kappa,
+    (length (filter si_active xs) <= kappa)%nat ->
+    (sumR (map (fun z => value_term (si_incidence z)) xs)) ^ 2
+      + (sumR (map (fun z => derivative_term (si_incidence z)) xs)) ^ 2
+    <= INR kappa *
+       sumR (map (fun z => total_allowance (si_incidence z)) xs).
+Proof.
+  intros Cinf xs kappa Hactive.
+  rewrite (support_value_sum Cinf xs).
+  rewrite (support_derivative_sum Cinf xs).
+  assert (Hlen : (length (active_patch xs) <= kappa)%nat).
+  { unfold active_patch. rewrite map_length. exact Hactive. }
+  eapply Rle_trans.
+  - apply localized_integrand_56. exact Hlen.
+  - apply Rmult_le_compat_l.
+    + apply pos_INR.
+    + unfold active_patch.
+      rewrite map_map.
+      apply sumR_filter_nonnegative.
+      intros z Hz.
+      apply total_allowance_nonnegative.
+Qed.
+
+(** Discrete integration over nonnegative weights, with a variable
+    set of at most kappa active incidence terms at every sample. *)
+Record SupportedSample (Cinf : R) (kappa : nat) := {
+  ss_weight : R;
+  ss_weight_nonnegative : 0 <= ss_weight;
+  ss_neighbours : list (SupportIncidence Cinf);
+  ss_active_overlap :
+    (length (filter si_active ss_neighbours) <= kappa)%nat
+}.
+Arguments ss_weight {Cinf kappa} _.
+Arguments ss_weight_nonnegative {Cinf kappa} _.
+Arguments ss_neighbours {Cinf kappa} _.
+Arguments ss_active_overlap {Cinf kappa} _.
+
+Definition supported_sample_defect {Cinf kappa}
+    (s : SupportedSample Cinf kappa) : R :=
+  ss_weight s *
+    ((sumR (map (fun z => value_term (si_incidence z))
+       (ss_neighbours s))) ^ 2
+    + (sumR (map (fun z => derivative_term (si_incidence z))
+       (ss_neighbours s))) ^ 2).
+
+Definition supported_sample_budget {Cinf kappa}
+    (s : SupportedSample Cinf kappa) : R :=
+  ss_weight s * INR kappa *
+    sumR (map (fun z => total_allowance (si_incidence z))
+      (ss_neighbours s)).
+
+Lemma supported_sample_defect_bound :
+  forall Cinf kappa (s : SupportedSample Cinf kappa),
+    supported_sample_defect s <= supported_sample_budget s.
+Proof.
+  intros Cinf kappa s.
+  unfold supported_sample_defect, supported_sample_budget.
+  replace (ss_weight s * INR kappa *
+      sumR (map (fun z => total_allowance (si_incidence z))
+        (ss_neighbours s)))
+    with (ss_weight s *
+      (INR kappa *
+        sumR (map (fun z => total_allowance (si_incidence z))
+          (ss_neighbours s)))) by ring.
+  apply Rmult_le_compat_l.
+  - apply ss_weight_nonnegative.
+  - apply localized_integrand_supported_56.
+    apply ss_active_overlap.
+Qed.
+
+Theorem finite_supported_quadrature_56 :
+  forall Cinf kappa (samples : list (SupportedSample Cinf kappa)),
+    sumR (map (@supported_sample_defect Cinf kappa) samples)
+      <= sumR (map (@supported_sample_budget Cinf kappa) samples).
+Proof.
+  intros Cinf kappa samples.
+  apply sumR_map_mono. intros s Hs.
+  apply supported_sample_defect_bound.
+Qed.
+
 End UELAT_V3_PUFEMPointwiseCore.
