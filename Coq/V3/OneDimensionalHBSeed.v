@@ -96,6 +96,61 @@ Section OneDimensionalSource.
     lra.
   Qed.
 
+  (** The metric restricted to this line is exactly the scalar
+      distance multiplied by the known positive norm of v. *)
+  Lemma line_distance_exact : forall a b,
+    distance (line_embed a) (line_embed b)
+      = Rabs (a - b) * cb_norm B v.
+  Proof.
+    intros a b.
+    rewrite <- (cb_distance_translation B
+      (line_embed a) (line_embed b) (cb_scale B (-b) v)).
+    assert (Hleft :
+      cb_add B (line_embed a) (cb_scale B (-b) v)
+        = cb_scale B (a - b) v).
+    {
+      unfold line_embed.
+      rewrite <- cb_scale_add_scalars.
+      replace (a + -b) with (a - b) by ring.
+      reflexivity.
+    }
+    assert (Hright :
+      cb_add B (line_embed b) (cb_scale B (-b) v)
+        = cb_zero B).
+    {
+      unfold line_embed.
+      rewrite <- cb_scale_add_scalars.
+      replace (b + -b) with 0 by ring.
+      apply cb_scale_zero_scalar.
+    }
+    rewrite Hleft, Hright.
+    change (cb_norm B (cb_scale B (a - b) v)
+              = Rabs (a - b) * cb_norm B v).
+    apply cb_norm_scale.
+  Qed.
+
+  (** Crucial quantitative inverse modulus: once we have a positive
+      rational lower bound ell <= norm(v), any computed rational
+      scalar a giving an ell*eps approximation to a point b*v
+      yields an eps approximation to its scalar coefficient b.
+      A Type-2 search over rational a can consume this theorem. *)
+  Lemma line_inverse_error_control : forall ell eps a b,
+    0 < ell ->
+    ell <= cb_norm B v ->
+    0 < eps ->
+    distance (line_embed a) (line_embed b) < ell * eps ->
+    Rabs (a - b) < eps.
+  Proof.
+    intros ell eps a b Hellpos Hell Heps Hdist.
+    rewrite line_distance_exact in Hdist.
+    pose proof (Rabs_pos (a - b)) as Habs.
+    assert (Hscale :
+      Rabs (a - b) * ell
+        <= Rabs (a - b) * cb_norm B v).
+    { apply Rmult_le_compat_l; assumption. }
+    nra.
+  Qed.
+
   (** Explicit coefficient recovery from three NORM evaluations.
       This avoids using the functional we are trying to construct.
       For y=a*v, the parallelogram-looking identity is special to
