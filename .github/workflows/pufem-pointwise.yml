@@ -8,6 +8,8 @@ on:
       - 'Coq/V3/RationalRealPolynomialSemantics.v'
       - 'Coq/V3/ConcretePolynomialSobolev.v'
       - 'Coq/V3/ConcretePolynomialFTC.v'
+      - 'Coq/V3/ConcretePolynomialWeakTest.v'
+      - 'Coq/V3/ConcretePiecewiseWeakTest.v'
       - 'Coq/V3/ConcretePiecewiseSobolev.v'
       - 'Coq/V3/ConcreteRiemannPUFEM56.v'
       - 'Coq/V3/PUFEMPointwiseCore.v'
@@ -60,12 +62,14 @@ jobs:
           coqc -R Coq UELAT Coq/V3/ConcretePolynomialSobolev.v
           coqc -R Coq UELAT Coq/V3/ConcretePolynomialFTC.v
           coqc -R Coq UELAT Coq/V3/ConcretePiecewiseSobolev.v
+          coqc -R Coq UELAT Coq/V3/ConcretePolynomialWeakTest.v
+          coqc -R Coq UELAT Coq/V3/ConcretePiecewiseWeakTest.v
           coqc -R Coq UELAT Coq/V3/PUFEMPointwiseCore.v
           coqc -R Coq UELAT Coq/V3/PUFEMIntegralBridge.v
           coqc -R Coq UELAT Coq/V3/ConcreteRiemannPUFEM56.v
           coqc -R Coq UELAT Coq/V3/PUFEMScaleBridge.v
           coqc -R Coq UELAT Coq/V3/PUFEMLimitBridge.v
-          coqchk -R Coq UELAT UELAT.V3.RationalSobolev UELAT.V3.RationalPolynomialSemantic UELAT.V3.RationalHatPOU UELAT.V3.RationalHatProductSemantic UELAT.V3.RationalRealPolynomialSemantics UELAT.V3.ConcretePolynomialSobolev UELAT.V3.ConcretePolynomialFTC UELAT.V3.ConcretePiecewiseSobolev UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.ConcreteRiemannPUFEM56 UELAT.V3.PUFEMScaleBridge UELAT.V3.PUFEMLimitBridge
+          coqchk -R Coq UELAT UELAT.V3.RationalSobolev UELAT.V3.RationalPolynomialSemantic UELAT.V3.RationalHatPOU UELAT.V3.RationalHatProductSemantic UELAT.V3.RationalRealPolynomialSemantics UELAT.V3.ConcretePolynomialSobolev UELAT.V3.ConcretePolynomialFTC UELAT.V3.ConcretePiecewiseSobolev UELAT.V3.ConcretePolynomialWeakTest UELAT.V3.ConcretePiecewiseWeakTest UELAT.V3.PUFEMPointwiseCore UELAT.V3.PUFEMIntegralBridge UELAT.V3.ConcreteRiemannPUFEM56 UELAT.V3.PUFEMScaleBridge UELAT.V3.PUFEMLimitBridge
           for thm in finite_cauchy_overlap bounded_overlap_squared localized_integrand_56 finite_quadrature_localized_56; do
             printf 'From UELAT.V3 Require Import PUFEMPointwiseCore.\nPrint Assumptions UELAT_V3_PUFEMPointwiseCore.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
@@ -194,6 +198,26 @@ jobs:
           grep -q 'Closed under the global context' "/tmp/pufem-${thm}.txt"
           for thm in rational_polynomial_C1_derivative real_polynomial_coded_FTC; do
             printf 'From UELAT.V3 Require Import ConcretePolynomialFTC.\nPrint Assumptions UELAT_V3_ConcretePolynomialFTC.%s.\n' "$thm" \
+              | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
+            cat "/tmp/pufem-${thm}.txt"
+            if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::Undischarged axioms in ${thm}"
+              exit 1
+            fi
+            grep -q 'Closed under the global context' "/tmp/pufem-${thm}.txt"
+          done
+          for thm in real_polynomial_product_has_correct_derivative real_polynomial_product_FTC rational_polynomial_interval_integration_by_parts rational_polynomial_weak_derivative_test; do
+            printf 'From UELAT.V3 Require Import ConcretePolynomialWeakTest.\nPrint Assumptions UELAT_V3_ConcretePolynomialWeakTest.%s.\n' "$thm" \
+              | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
+            cat "/tmp/pufem-${thm}.txt"
+            if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
+              echo "::error::Undischarged axioms in ${thm}"
+              exit 1
+            fi
+            grep -q 'Closed under the global context' "/tmp/pufem-${thm}.txt"
+          done
+          for thm in piecewise_Riemann_integration_by_parts adjacent_product_value_match piecewise_seams_telescope piecewise_polynomial_weak_test_endpoint_zero; do
+            printf 'From UELAT.V3 Require Import ConcretePiecewiseWeakTest.\nPrint Assumptions UELAT_V3_ConcretePiecewiseWeakTest.%s.\n' "$thm" \
               | coqtop -quiet -R Coq UELAT > "/tmp/pufem-${thm}.txt"
             cat "/tmp/pufem-${thm}.txt"
             if grep -q '^Axioms:' "/tmp/pufem-${thm}.txt"; then
