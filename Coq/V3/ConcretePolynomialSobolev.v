@@ -99,13 +99,19 @@ Qed.
 Lemma real_unit_interval_order : 0 <= 1.
 Proof. lra. Qed.
 
-Definition concrete_polynomial_integrable_01 (p : QPoly) :
-  Riemann_integrable (rpoly_eval p) 0 1.
+Definition concrete_polynomial_integrable_interval
+    (p : QPoly) (a b : R) (Hab : a <= b) :
+    Riemann_integrable (rpoly_eval p) a b.
 Proof.
   apply continuity_implies_RiemannInt.
-  - apply real_unit_interval_order.
+  - exact Hab.
   - intros x Hx. apply polynomial_is_continuous.
 Defined.
+
+Definition concrete_polynomial_integrable_01 (p : QPoly) :
+  Riemann_integrable (rpoly_eval p) 0 1 :=
+  concrete_polynomial_integrable_interval p 0 1
+    real_unit_interval_order.
 
 Definition polynomial_energy_code (p : QPoly) : QPoly :=
   qpoly_add (qpoly_mul p p)
