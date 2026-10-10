@@ -30,7 +30,7 @@ Import UELAT_V3_RationalRealPolynomialSemantics.
 Import UELAT_V3_ConcretePiecewiseSobolev.
 Import UELAT_V3_ConcretePolynomialWeakTest.
 
-Fixpoint initial_boundary (cs : list RationalPiece) (phi : QPoly) : R :=
+Definition initial_boundary (cs : list RationalPiece) (phi : QPoly) : R :=
   match cs with
   | [] => 0
   | c :: rest =>
@@ -172,6 +172,66 @@ Proof.
   rewrite Htel in Hparts.
   rewrite Hinitial, Hterminal in Hparts.
   lra.
+Qed.
+
+Definition initial_endpoint (cs : list RationalPiece) : Q :=
+  match cs with
+  | [] => 0%Q
+  | c :: _ => piece_left c
+  end.
+
+Fixpoint terminal_endpoint (cs : list RationalPiece) : Q :=
+  match cs with
+  | [] => 0%Q
+  | c :: rest =>
+      match rest with
+      | [] => piece_right c
+      | _ :: _ => terminal_endpoint rest
+      end
+  end.
+
+Lemma initial_boundary_vanishes_from_test_endpoint :
+  forall cs phi,
+    rpoly_eval phi (Q2R (initial_endpoint cs)) = 0 ->
+    initial_boundary cs phi = 0.
+Proof.
+  intros [|c rest] phi Hzero; simpl.
+  - reflexivity.
+  - unfold real_polynomial_product.
+    rewrite Hzero.
+    ring.
+Qed.
+
+Lemma terminal_boundary_vanishes_from_test_endpoint :
+  forall cs phi,
+    rpoly_eval phi (Q2R (terminal_endpoint cs)) = 0 ->
+    terminal_boundary cs phi = 0.
+Proof.
+  induction cs as [|c rest IH]; intros phi Hzero.
+  - reflexivity.
+  - destruct rest as [|d tail].
+    + simpl in *.
+      unfold real_polynomial_product.
+      rewrite Hzero.
+      ring.
+    + simpl in *.
+      apply IH. exact Hzero.
+Qed.
+
+(** Polynomial test functions vanishing at the actual domain endpoints:
+    a genuine finite-cell integration-by-parts identity for the code. *)
+Theorem piecewise_polynomial_weak_test_endpoint_zero :
+  forall (u : RationalPiecewiseCode) (phi : QPoly),
+    rpoly_eval phi (Q2R (initial_endpoint (rpc_pieces u))) = 0 ->
+    rpoly_eval phi (Q2R (terminal_endpoint (rpc_pieces u))) = 0 ->
+    code_weak_right u phi = - code_weak_left u phi.
+Proof.
+  intros u phi Hinitial Hterminal.
+  apply code_piecewise_polynomial_test_weak_derivative.
+  - apply initial_boundary_vanishes_from_test_endpoint.
+    exact Hinitial.
+  - apply terminal_boundary_vanishes_from_test_endpoint.
+    exact Hterminal.
 Qed.
 
 End UELAT_V3_ConcretePiecewiseWeakTest.
