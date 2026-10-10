@@ -12,7 +12,7 @@
   epsilon-HB extension program into the full dual. This is not the
   complete manuscript Lemma 3.1.
 *)
-From Coq Require Import Reals Lra Ring.
+From Coq Require Import Reals Lra Ring Field.
 From UELAT.V3 Require Import CertificateEnrichment ComputableBanach.
 
 Module UELAT_V3_OneDimensionalHBSeed.
