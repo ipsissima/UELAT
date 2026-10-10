@@ -65,7 +65,7 @@ Proof.
   intros p a b Hab.
   exact (FTC_Riemann (rational_polynomial_C1 p) a b
     (concrete_polynomial_integrable_interval
-      (qpoly_deriv p) a b Hab) Hab).
+      (qpoly_deriv p) a b Hab)).
 Qed.
 
 End UELAT_V3_ConcretePolynomialFTC.
