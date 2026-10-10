@@ -55,8 +55,8 @@ Theorem realized_functional_names_extensional :
     realized_functional_extensional g.
 Proof.
   intros B g x y Hxy n.
-  pose proof (rbf_realize_correct g x n) as Hx.
-  pose proof (rbf_realize_correct g y n) as Hy.
+  pose proof (rbf_realize_correct B g x n) as Hx.
+  pose proof (rbf_realize_correct B g y n) as Hy.
   rewrite <- Hxy in Hy.
   replace
     (Q2R (rbf_realize g (core_named_name B x) n)

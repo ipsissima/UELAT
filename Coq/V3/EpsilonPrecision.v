@@ -52,7 +52,7 @@ Proof.
   intros eps Heps.
   pose proof (Qlt_Rlt _ _ Heps) as HepsR.
   rewrite q2r_zero_local in HepsR.
-  destruct (dyadic_eventually_below (Q2R eps / 2) ltac:(lra)) as [k Hk].
+  destruct (dyadic_eventually_below (Q2R eps / 2)%R ltac:(lra)) as [k Hk].
   exists k. unfold paper_k_test. apply qleb_true_iff.
   apply Rle_Qle.
   rewrite Q2R_mult, qdyadic_real.
@@ -82,7 +82,7 @@ Qed.
 
 Theorem paper_k_minimal : forall eps Heps k,
   (2 * qdyadic k <= eps)%Q ->
-  paper_k eps Heps <= k.
+  (paper_k eps Heps <= k)%nat.
 Proof.
   intros eps Heps k Hk.
   unfold paper_k.
@@ -100,7 +100,7 @@ Proof.
   intros eps Heps.
   pose proof (Qlt_Rlt _ _ Heps) as HepsR.
   rewrite q2r_zero_local in HepsR.
-  destruct (dyadic_eventually_below (Q2R eps / 4) ltac:(lra)) as [s Hs].
+  destruct (dyadic_eventually_below (Q2R eps / 4)%R ltac:(lra)) as [s Hs].
   exists s. unfold epsilon_stage_test. apply qltb_true_iff. apply Rlt_Qlt.
   rewrite Q2R_mult, qdyadic_real. rewrite q2r_four_local. lra.
 Qed.
@@ -125,7 +125,7 @@ Qed.
 
 Theorem epsilon_precision_minimal : forall eps Heps s,
   epsilon_stage_test eps s = true ->
-  epsilon_precision eps Heps <= s.
+  (epsilon_precision eps Heps <= s)%nat.
 Proof.
   intros eps Heps s Hs.
   unfold epsilon_precision.
@@ -136,7 +136,7 @@ Proof.
 Qed.
 
 Lemma dyadic_plus_two : forall k,
-  dyadic (k + 2) = dyadic k / 4.
+  (dyadic (k + 2)%nat = dyadic k / 4)%R.
 Proof.
   intro k.
   replace (k + 2)%nat with (S (S k)) by lia.
@@ -164,7 +164,7 @@ Qed.
 
 Theorem epsilon_precision_paper_depth_bound : forall eps Heps k,
   (2 * qdyadic k <= eps)%Q ->
-  epsilon_precision eps Heps <= k + 2.
+  (epsilon_precision eps Heps <= k + 2)%nat.
 Proof.
   intros eps Heps k Hk.
   apply epsilon_precision_minimal.
@@ -172,7 +172,7 @@ Proof.
 Qed.
 
 Theorem epsilon_precision_dyadic_bound : forall eps Heps,
-  4 * dyadic (epsilon_precision eps Heps) < Q2R eps.
+  (4 * dyadic (epsilon_precision eps Heps) < Q2R eps)%R.
 Proof.
   intros eps Heps.
   pose proof (epsilon_precision_valid eps Heps) as H.
@@ -183,7 +183,7 @@ Proof.
 Qed.
 
 Corollary epsilon_precision_half_tail : forall eps Heps,
-  dyadic (epsilon_precision eps Heps) / 2 < Q2R eps.
+  (dyadic (epsilon_precision eps Heps) / 2 < Q2R eps)%R.
 Proof.
   intros eps Heps. pose proof (epsilon_precision_dyadic_bound eps Heps).
   pose proof (dyadic_pos (epsilon_precision eps Heps)). lra.

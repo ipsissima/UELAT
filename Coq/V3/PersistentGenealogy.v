@@ -23,7 +23,7 @@ Section Genealogy.
     - simpl. lia.
     - intros i r refs p Hnth.
       change (nth_error [InputNode payload] i = Some (RuleNode r refs p)) in Hnth.
-      destruct i; inversion Hnth.
+      destruct i; simpl in Hnth; discriminate.
   Defined.
 
   Theorem singleton_input_sink : forall payload,

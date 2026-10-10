@@ -83,6 +83,7 @@ Proof.
   eapply Rle_trans.
   - apply distance_triangle with (y := x).
   - rewrite cb_distance_add_to_left.
+    unfold cb_norm.
     lra.
 Qed.
 
