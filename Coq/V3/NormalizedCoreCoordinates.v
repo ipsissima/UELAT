@@ -20,7 +20,7 @@ Section Coordinates.
     let q := core_norm_approx B p 0 in q * q + 4.
 
   Lemma core_scale_factor_real_positive : forall p,
-    0 < Q2R (core_scale_factor p).
+    (0 < Q2R (core_scale_factor p))%R.
   Proof.
     intro p. unfold core_scale_factor. rewrite Q2R_plus, Q2R_mult.
     change (Q2R (4 : Q)) with 4%R. nra.
@@ -35,7 +35,7 @@ Section Coordinates.
   Qed.
 
   Lemma core_norm_below_scale_factor : forall p,
-    cb_norm B (core_decode p) < Q2R (core_scale_factor p).
+    (cb_norm B (core_decode p) < Q2R (core_scale_factor p))%R.
   Proof.
     intro p. set (q := core_norm_approx B p 0).
     pose proof (core_norm_approx_sound B p 0) as Happ.
@@ -55,7 +55,7 @@ Section Coordinates.
     core_decode (normalized_core_code (core_enum B i)).
 
   Theorem normalized_core_norm_lt_one : forall p,
-    cb_norm B (core_decode (normalized_core_code p)) < 1.
+    (cb_norm B (core_decode (normalized_core_code p)) < 1)%R.
   Proof.
     intro p. unfold normalized_core_code.
     rewrite core_scale_sound, cb_norm_scale.
@@ -71,7 +71,7 @@ Section Coordinates.
   Qed.
 
   Corollary normalized_enumerated_core_norm_lt_one : forall i,
-    cb_norm B (normalized_core i) < 1.
+    (cb_norm B (normalized_core i) < 1)%R.
   Proof. intro i. unfold normalized_core. apply normalized_core_norm_lt_one. Qed.
 
   Theorem normalized_core_rationally_spans_original_core : forall p,
@@ -111,8 +111,8 @@ Section Coordinates.
 
   Definition CoordinateAdmissible (a : CoordinatePoint) : Prop :=
     forall terms,
-      Rabs (coordinate_sum a terms)
-        <= cb_norm B (core_decode (combination_code terms)).
+      (Rabs (coordinate_sum a terms)
+        <= cb_norm B (core_decode (combination_code terms)))%R.
 End Coordinates.
 
 End UELAT_V3_NormalizedCoreCoordinates.

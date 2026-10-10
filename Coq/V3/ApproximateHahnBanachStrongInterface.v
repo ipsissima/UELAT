@@ -12,10 +12,11 @@
 From Coq Require Import Reals QArith Qreals.
 Local Open Scope R_scope.
 From UELAT.V3 Require Import
-  CertificateEnrichment ComputableBanach RealizedBoundedFunctional.
+  CertificateEnrichment RepresentedSpace ComputableBanach RealizedBoundedFunctional.
 
 Module UELAT_V3_ApproximateHahnBanachStrongInterface.
 Import UELAT_V3_CertificateEnrichment.
+Import UELAT_V3_RepresentedSpace.
 Import UELAT_V3_ComputableBanach.
 Import UELAT_V3_RealizedBoundedFunctional.
 

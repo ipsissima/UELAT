@@ -140,7 +140,7 @@ Lemma dyadic_plus_two : forall k,
 Proof.
   intro k.
   replace (k + 2)%nat with (S (S k)) by lia.
-  simpl. ring.
+  simpl. unfold Rdiv. field; lra.
 Qed.
 
 Theorem epsilon_stage_from_announced_dyadic : forall eps k,
